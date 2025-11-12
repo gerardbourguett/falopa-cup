@@ -1,0 +1,33 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Holi</h1>
+			<p>
+				Bienvenidos al sitio oficial de la <b>Falopa Cup</b> y de la <b>Copa Pablo Milad</b>. El torneo no oficial del fútbol chileno
+			</p>
+			<h2>Actual Campeón</h2>
+			<p>Actualmente, la <b>Falopa Cup 2025-2</b> está en manos de <span class="font-bold">Everton</span> (2-1 a Cobresal).</p>
+			<small>¿Por qué es 2025-2?</small>
+			<p> Por su parte, la <b>Copa Pablo Milad 2025</b> está en manos de <span class="font-bold">Unión La Calera</span> (1-2 ante Iquique)</p>
+			<h3>Próximas defensas</h3>
+			<ul>
+				<li><b>Falopa Cup 2025-2</b> vs <span class="font-bold">Everton</span>(V) vs <span class="font-bold">Audax Italiano</span> (23 de noviembre)</li>
+				<li><b>Copa Pablo Milad 2025</b> vs <span class="font-bold">Unión La Calera</span>(V) vs <span class="font-bold">Colo Colo</span> (23 de noviembre)</li>
+			</ul>
+			
+		</main>
+		<Footer />
+	</body>
+</html>

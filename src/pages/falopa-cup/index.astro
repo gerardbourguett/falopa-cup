@@ -1,0 +1,137 @@
+---
+import { getCollection } from 'astro:content';
+import season2025Raw from '../../content/falopa-cup/2025.json';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+const cupEntries = await getCollection('falopa-cup');
+const season2025 = cupEntries.find((e) => e.id === '2025' || e.data.year === 2025);
+
+// Load clubs metadata and index by id
+const clubsEntries = await getCollection('clubs');
+const clubById = new Map(
+    clubsEntries.map((e) => [e.data.id || e.id, e.data])
+);
+const year = season2025?.data.year ?? season2025Raw.year;
+const matches = (season2025?.data.matches ?? season2025Raw.matches).map((m) => ({
+    ...m,
+    date: m.date instanceof Date ? m.date : new Date(m.date as unknown as string),
+}));
+
+function clubLabel(id?: string, useShortName = false) {
+    const club = id ? clubById.get(id) : undefined;
+    if (!club) return id ?? '';
+    return useShortName && club.shortName ? club.shortName : club.name;
+}
+
+function clubLogo(id?: string) {
+    const club = id ? clubById.get(id) : undefined;
+    return club?.logo;
+}
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+        <style>
+            main {
+                width: 960px;
+                margin: 0 auto;
+                padding: 1rem;
+            }
+            ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            li {
+                border: 1px solid rgb(var(--gray-light));
+                border-radius: 8px;
+                padding: 0.75rem 1rem;
+            }
+            .club {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+            }
+            .club img {
+                border-radius: 4px;
+                background: rgb(var(--gray-light));
+            }
+            .club-name { font-weight: 600; }
+            .meta {
+                color: rgb(var(--gray));
+                margin: 0.25rem 0 0.5rem 0;
+            }
+            .title {
+                margin: 0;
+                line-height: 1.2;
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <section>
+                <h1 class="title">Falopa Cup {year}</h1>
+                <ul>
+                        {matches.map((m) => (
+                            <li>
+                                <div class="meta">
+                                    <FormattedDate date={m.date} />
+                                    {m.competition && <span> · {m.competition}</span>}
+                                </div>
+                                {m.type === 'seeding' ? (
+                                    <p>
+                                        Sembrado inicial: 
+                                        <span class="club">
+                                            {clubLogo(m.holderId) && (
+                                                <img src={clubLogo(m.holderId)} alt={clubLabel(m.holderId)} width={24} height={24} />
+                                            )}
+                                            <span class="club-name">{clubLabel(m.holderId)}</span>
+                                        </span>
+                                        {m.reason && <span> — {m.reason}</span>}
+                                    </p>
+                                ) : (
+                                    <p>
+                                        <span class="club">
+                                            {clubLogo(m.holderId) && (
+                                                <img src={clubLogo(m.holderId)} alt={clubLabel(m.holderId, true)} width={24} height={24} />
+                                            )}
+                                            <span class="club-name">{clubLabel(m.holderId, true)}</span>
+                                        </span>
+                                        {' '}{m.scoreHolder}–{m.scoreChallenger}{' '}
+                                        <span class="club">
+                                            {clubLogo(m.challengerId) && (
+                                                <img src={clubLogo(m.challengerId)} alt={clubLabel(m.challengerId, true)} width={24} height={24} />
+                                            )}
+                                            <span class="club-name">{clubLabel(m.challengerId, true)}</span>
+                                        </span>
+                                        {m.newHolderId && (
+                                            <span>
+                                                {' '}
+                                                → Nuevo poseedor: 
+                                                <span class="club">
+                                                    {clubLogo(m.newHolderId) && (
+                                                        <img src={clubLogo(m.newHolderId)} alt={clubLabel(m.newHolderId, true)} width={24} height={24} />
+                                                    )}
+                                                    <span class="club-name">{clubLabel(m.newHolderId, true)}</span>
+                                                </span>
+                                            </span>
+                                        )}
+                                    </p>
+                                )}
+                            </li>
+                        ))}
+                </ul>
+            </section>
+        </main>
+        <Footer />
+    </body>
+</html>
