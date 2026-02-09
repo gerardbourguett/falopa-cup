@@ -4,18 +4,338 @@
     {
       "type": "seeding",
       "date": "2025-01-01",
-      "holderId": "CLUB_ID_AQUI",
-      "reason": "Razon del sembrado (ej: Campeón Torneo Nacional 2024)"
+      "holderId": "deportes-concepcion",
+      "reason": "Poseedor Copa Pablo Milad 2024"
     },
     {
       "type": "match",
-      "date": "2025-01-30",
-      "competition": "Copa Chile · Fase de Grupos",
-      "holderId": "CLUB_POSEEDOR",
-      "challengerId": "CLUB_RETADOR",
+      "date": "2025-02-21",
+      "competition": "Liga de Ascenso",
+      "holderId": "deportes-concepcion",
+      "challengerId": "deportes-temuco",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2025-03-02",
+      "competition": "Liga de Ascenso",
+      "holderId": "deportes-concepcion",
+      "challengerId": "deportes-antofagasta",
+      "scoreHolder": 1,
+      "scoreChallenger": 3,
+      "newHolderId": "deportes-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2025-03-09",
+      "competition": "Liga de Ascenso",
+      "holderId": "deportes-concepcion",
+      "challengerId": "deportes-recoleta",
       "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2025-03-16",
+      "competition": "Liga de Ascenso",
+      "holderId": "deportes-concepcion",
+      "challengerId": "deportes-santa-cruz",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2025-03-23",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "deportes-concepcion",
+      "challengerId": "palestino",
+      "scoreHolder": 3,
+      "scoreChallenger": 2,
+      "newHolderId": "palestino"
+    },
+    {
+      "type": "match",
+      "date": "2025-03-30",
+      "competition": "Liga de Primera",
+      "holderId": "palestino",
+      "challengerId": "colo-colo",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "palestino"
+    },
+    {
+      "type": "match",
+      "date": "2025-04-06",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "palestino",
+      "challengerId": "union-espanola",
+      "scoreHolder": 0,
+      "scoreChallenger": 3,
+      "newHolderId": "palestino"
+    },
+    {
+      "type": "match",
+      "date": "2025-04-14",
+      "competition": "Liga de Primera",
+      "holderId": "palestino",
+      "challengerId": "union-la-calera",
+      "scoreHolder": 1,
       "scoreChallenger": 0,
-      "newHolderId": "CLUB_QUE_QUEDA_CON_TITULO"
+      "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2025-04-19",
+      "competition": "Liga de Primera",
+      "holderId": "union-la-calera",
+      "challengerId": "everton",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2025-04-25",
+      "competition": "Liga de Primera",
+      "holderId": "union-la-calera",
+      "challengerId": "audax-italiano",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2025-05-03",
+      "competition": "Liga de Primera",
+      "holderId": "audax-italiano",
+      "challengerId": "deportes-la-serena",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-la-serena"
+    },
+    {
+      "type": "match",
+      "date": "2025-05-11",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "deportes-la-serena",
+      "challengerId": "cobresal",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-la-serena"
+    },
+    {
+      "type": "match",
+      "date": "2025-05-19",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-la-serena",
+      "challengerId": "deportes-iquique",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-05-25",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "union-la-calera",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-06-02",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "cobresal",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-06-12",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "colo-colo",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-06-16",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "everton",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-06-21",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "universidad-de-chile",
+      "scoreHolder": 1,
+      "scoreChallenger": 3,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-07-19",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "coquimbo-unido",
+      "scoreHolder": 1,
+      "scoreChallenger": 4,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-07-27",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "audax-italiano",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2025-08-03",
+      "competition": "Liga de Primera",
+      "holderId": "audax-italiano",
+      "challengerId": "palestino",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2025-08-11",
+      "competition": "Liga de Primera",
+      "holderId": "audax-italiano",
+      "challengerId": "deportes-limache",
+      "scoreHolder": 0,
+      "scoreChallenger": 4,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2025-08-17",
+      "competition": "Liga de Primera",
+      "holderId": "audax-italiano",
+      "challengerId": "universidad-de-chile",
+      "scoreHolder": 3,
+      "scoreChallenger": 1,
+      "newHolderId": "universidad-de-chile"
+    },
+    {
+      "type": "match",
+      "date": "2025-08-24",
+      "competition": "Liga de Primera",
+      "holderId": "universidad-de-chile",
+      "challengerId": "colo-colo",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "universidad-de-chile"
+    },
+    {
+      "type": "match",
+      "date": "2025-09-14",
+      "competition": "Supercopa de Chile · Final",
+      "holderId": "universidad-de-chile",
+      "challengerId": "colo-colo",
+      "scoreHolder": 3,
+      "scoreChallenger": 0,
+      "newHolderId": "colo-colo"
+    },
+    {
+      "type": "match",
+      "date": "2025-09-26",
+      "competition": "Liga de Primera",
+      "holderId": "colo-colo",
+      "challengerId": "deportes-iquique",
+      "scoreHolder": 4,
+      "scoreChallenger": 0,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-10-05",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "ohiggins",
+      "scoreHolder": 2,
+      "scoreChallenger": 3,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-10-25",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "huachipato",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-10-31",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "deportes-la-serena",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-iquique"
+    },
+    {
+      "type": "match",
+      "date": "2025-11-07",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-iquique",
+      "challengerId": "union-la-calera",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2025-11-16",
+      "competition": "Liga de Primera",
+      "holderId": "union-la-calera",
+      "challengerId": "colo-colo",
+      "scoreHolder": 1,
+      "scoreChallenger": 4,
+      "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2025-11-30",
+      "competition": "Liga de Primera",
+      "holderId": "union-la-calera",
+      "challengerId": "deportes-limache",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2025-12-06",
+      "competition": "Liga de Primera",
+      "holderId": "union-la-calera",
+      "challengerId": "universidad-catolica",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "union-la-calera"
     }
   ]
 }

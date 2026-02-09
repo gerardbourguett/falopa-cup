@@ -12,21 +12,84 @@ const clubsEntries = await getCollection('clubs');
 
 const clubById = new Map(clubsEntries.map((e) => [e.data.id || e.id, e.data]));
 
-// Get all seasons sorted by year (newest first)
-const seasons = cupEntries
-  .map((e) => ({
-    year: e.data.year,
-    matches: e.data.matches.map((m: any) => ({
-      ...m,
-      date: m.date instanceof Date ? m.date : new Date(m.date),
-    })),
-  }))
+// Normalize match dates
+function normalizeMatches(matches: any[]) {
+  return matches.map((m: any) => ({
+    ...m,
+    date: m.date instanceof Date ? m.date : new Date(m.date),
+  }));
+}
+
+// Match key for divergence detection
+function matchKey(m: any): string {
+  const d = m.date instanceof Date ? m.date.toISOString() : String(m.date);
+  return `${m.type}-${d}-${m.holderId}-${m.challengerId}-${m.scoreHolder}-${m.scoreChallenger}`;
+}
+
+// Find where two match arrays start to differ
+function findDivergenceIndex(a: any[], b: any[]): number {
+  const len = Math.min(a.length, b.length);
+  for (let i = 0; i < len; i++) {
+    if (matchKey(a[i]) !== matchKey(b[i])) return i;
+  }
+  return len;
+}
+
+// Group entries by year
+const entriesByYear = new Map<number, typeof cupEntries>();
+for (const e of cupEntries) {
+  const yr = e.data.year;
+  if (!entriesByYear.has(yr)) entriesByYear.set(yr, []);
+  entriesByYear.get(yr)!.push(e);
+}
+
+// Build season objects
+type Branch = {
+  label: string;
+  matches: any[];
+  championReason?: string;
+  whatIf?: any[];
+};
+type Season = {
+  year: number;
+  branches: Branch[] | null;
+  sharedMatches: any[];
+  allUniqueMatches: any[];
+};
+
+const seasons: Season[] = [...entriesByYear.entries()]
+  .map(([year, entries]) => {
+    if (entries.length === 1) {
+      const matches = normalizeMatches(entries[0].data.matches);
+      return { year, branches: null, sharedMatches: matches, allUniqueMatches: matches };
+    }
+
+    // Multiple entries = cisma
+    const branches: Branch[] = entries.map(e => ({
+      label: e.data.branch || 'Rama',
+      matches: normalizeMatches(e.data.matches),
+      championReason: e.data.championReason,
+      whatIf: e.data.whatIf ? normalizeMatches(e.data.whatIf) : undefined,
+    }));
+
+    const divIdx = findDivergenceIndex(branches[0].matches, branches[1].matches);
+    const shared = branches[0].matches.slice(0, divIdx);
+    const branchAOnly = branches[0].matches.slice(divIdx);
+    const branchBOnly = branches[1].matches.slice(divIdx);
+
+    return {
+      year,
+      branches,
+      sharedMatches: shared,
+      allUniqueMatches: [...shared, ...branchAOnly, ...branchBOnly],
+    };
+  })
   .sort((a, b) => b.year - a.year);
 
 const currentSeason = seasons[0];
 
-// All matches for palmarés
-const allMatches = seasons.flatMap(s => s.matches);
+// All matches for palmares (deduplicated for branched seasons)
+const allMatches = seasons.flatMap(s => s.allUniqueMatches);
 
 function countTitleChanges(matches: any[]) {
   return matches.filter(m => m.type === 'match' && m.newHolderId && m.newHolderId !== m.holderId).length;
@@ -38,6 +101,27 @@ function countHolders(matches: any[]) {
 
 function countDefenses(matches: any[]) {
   return matches.filter(m => m.type === 'match' && m.newHolderId === m.holderId).length;
+}
+
+// Tab match count: total unique matches
+function seasonMatchCount(s: Season): number {
+  return s.allUniqueMatches.length;
+}
+
+// Get branch-only matches (after divergence)
+function getBranchMatches(s: Season, branchIdx: number): any[] {
+  if (!s.branches) return [];
+  const divIdx = findDivergenceIndex(s.branches[0].matches, s.branches[1].matches);
+  return s.branches[branchIdx].matches.slice(divIdx);
+}
+
+// Get champion (last holder) from a list of matches
+function getChampionId(matches: any[]): string | undefined {
+  for (let i = matches.length - 1; i >= 0; i--) {
+    if (matches[i].newHolderId) return matches[i].newHolderId;
+    if (matches[i].holderId) return matches[i].holderId;
+  }
+  return undefined;
 }
 ---
 
@@ -56,13 +140,13 @@ function countDefenses(matches: any[]) {
                 <div class="page-hero-label">Campeonato No Oficial</div>
                 <h1 class="page-hero-title">Falopa Cup</h1>
                 <p class="page-hero-desc">
-                    El titulo se defiende en cada partido oficial. Si el defensor pierde o empata de visitante, el titulo cambia de manos.
+                    El titulo se defiende en cada partido oficial. Si el defensor pierde el titulo cambia de manos.
                 </p>
             </div>
         </section>
 
         <main>
-            <!-- Palmarés -->
+            <!-- Palmares -->
             <Palmares allMatches={allMatches} clubs={clubById} accentColor="gold" />
 
             <!-- Season Tabs -->
@@ -74,7 +158,7 @@ function countDefenses(matches: any[]) {
                         data-year={season.year}
                     >
                         <span class="tab-year">{season.year}</span>
-                        <span class="tab-count">{season.matches.length} P</span>
+                        <span class="tab-count">{seasonMatchCount(season)} P</span>
                     </button>
                 ))}
             </nav>
@@ -92,29 +176,107 @@ function countDefenses(matches: any[]) {
                         </h2>
                         <div class="season-stats">
                             <div class="mini-stat">
-                                <span class="mini-stat-num">{season.matches.length}</span>
+                                <span class="mini-stat-num">{seasonMatchCount(season)}</span>
                                 <span class="mini-stat-label">Partidos</span>
                             </div>
                             <div class="mini-stat">
-                                <span class="mini-stat-num">{countTitleChanges(season.matches)}</span>
+                                <span class="mini-stat-num">{countTitleChanges(season.allUniqueMatches)}</span>
                                 <span class="mini-stat-label">Cambios</span>
                             </div>
                             <div class="mini-stat">
-                                <span class="mini-stat-num">{countDefenses(season.matches)}</span>
+                                <span class="mini-stat-num">{countDefenses(season.allUniqueMatches)}</span>
                                 <span class="mini-stat-label">Defensas</span>
                             </div>
                             <div class="mini-stat">
-                                <span class="mini-stat-num">{countHolders(season.matches)}</span>
+                                <span class="mini-stat-num">{countHolders(season.allUniqueMatches)}</span>
                                 <span class="mini-stat-label">Poseedores</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="matches-list">
-                        {season.matches.map((match: any, index: number) => (
-                            <MatchCard match={match} clubs={clubById} index={index} />
-                        ))}
-                    </div>
+                    {season.branches ? (
+                        <>
+                            {/* Shared matches */}
+                            <div class="matches-list">
+                                {season.sharedMatches.map((match: any, index: number) => (
+                                    <MatchCard match={match} clubs={clubById} index={index} />
+                                ))}
+                            </div>
+
+                            {/* Cisma divider */}
+                            <div class="cisma-divider">
+                                <div class="cisma-line"></div>
+                                <span class="cisma-label">El Cisma</span>
+                                <div class="cisma-line"></div>
+                            </div>
+
+                            {/* Branches */}
+                            {season.branches.map((branch, bIdx) => {
+                                const branchMatches = getBranchMatches(season, bIdx);
+                                const baseIdx = season.sharedMatches.length;
+                                const championId = getChampionId(branchMatches);
+                                const champion = championId ? clubById.get(championId) : undefined;
+                                return (
+                                    <div class="branch-section">
+                                        <div class="branch-header">
+                                            <span class="branch-icon">{bIdx === 0 ? '\u25C0' : '\u25B6'}</span>
+                                            <h3 class="branch-title">{branch.label}</h3>
+                                            <span class="branch-count">{branchMatches.length} partidos</span>
+                                        </div>
+                                        <div class="matches-list">
+                                            {branchMatches.map((match: any, index: number) => (
+                                                <MatchCard match={match} clubs={clubById} index={baseIdx + index} />
+                                            ))}
+                                        </div>
+
+                                        {/* Champion banner */}
+                                        {champion && (
+                                            <div class="branch-champion">
+                                                <span class="champion-trophy">&#9733;</span>
+                                                <div class="champion-info">
+                                                    <span class="champion-label">Campeon de la rama</span>
+                                                    <div class="champion-club">
+                                                        {champion.logo && (
+                                                            <img src={champion.logo} alt={champion.name} class="champion-logo" width="32" height="32" />
+                                                        )}
+                                                        <span class="champion-name">{champion.name}</span>
+                                                    </div>
+                                                    {branch.championReason && (
+                                                        <span class="champion-reason">{branch.championReason}</span>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* What-if collapsible */}
+                                        {branch.whatIf && branch.whatIf.length > 0 && (
+                                            <details class="whatif-section">
+                                                <summary class="whatif-toggle">
+                                                    <span class="whatif-icon">&#9881;</span>
+                                                    <span>What if...?</span>
+                                                    <span class="whatif-count">{branch.whatIf.length} partidos hipoteticos</span>
+                                                </summary>
+                                                <div class="whatif-body">
+                                                    <p class="whatif-desc">Si el titulo se hubiera seguido rastreando por esta rama...</p>
+                                                    <div class="matches-list whatif-matches">
+                                                        {branch.whatIf.map((match: any, index: number) => (
+                                                            <MatchCard match={match} clubs={clubById} index={index} />
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </details>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </>
+                    ) : (
+                        <div class="matches-list">
+                            {season.sharedMatches.map((match: any, index: number) => (
+                                <MatchCard match={match} clubs={clubById} index={index} />
+                            ))}
+                        </div>
+                    )}
                 </section>
             ))}
         </main>
@@ -158,7 +320,7 @@ function countDefenses(matches: any[]) {
 </script>
 
 <style>
-    /* ═══ PAGE HERO ═══ */
+    /* === PAGE HERO === */
     .page-hero {
         padding: 3rem 1.5rem;
         text-align: center;
@@ -215,7 +377,7 @@ function countDefenses(matches: any[]) {
         margin-right: auto;
     }
 
-    /* ═══ SEASON NAV ═══ */
+    /* === SEASON NAV === */
     .season-nav {
         display: flex;
         gap: 0.5rem;
@@ -271,7 +433,7 @@ function countDefenses(matches: any[]) {
         color: rgba(201, 168, 76, 0.6);
     }
 
-    /* ═══ SEASON SECTION ═══ */
+    /* === SEASON SECTION === */
     .season-section {
         margin-bottom: 3rem;
     }
@@ -349,7 +511,240 @@ function countDefenses(matches: any[]) {
         gap: 0.75rem;
     }
 
-    /* ═══ RESPONSIVE ═══ */
+    /* === CISMA DIVIDER === */
+    .cisma-divider {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+
+    .cisma-line {
+        flex: 1;
+        height: 2px;
+        background: repeating-linear-gradient(
+            90deg,
+            var(--burgundy) 0,
+            var(--burgundy) 8px,
+            transparent 8px,
+            transparent 14px
+        );
+        opacity: 0.5;
+    }
+
+    .cisma-label {
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--burgundy);
+        background: var(--aged-cream);
+        padding: 0.3rem 1rem;
+        border: 2px solid var(--burgundy);
+        border-radius: 3px;
+        white-space: nowrap;
+    }
+
+    /* === BRANCH SECTION === */
+    .branch-section {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border: 2px solid var(--border-vintage);
+        border-left: 4px solid var(--worn-gold);
+        border-radius: 4px;
+        background: rgba(201, 168, 76, 0.03);
+    }
+
+    .branch-section + .branch-section {
+        margin-top: 1.25rem;
+        border-left-color: var(--burgundy);
+        background: rgba(139, 26, 43, 0.03);
+    }
+
+    .branch-header {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.6rem;
+        border-bottom: 1px dashed var(--border-vintage);
+    }
+
+    .branch-icon {
+        font-size: 0.7rem;
+        color: var(--worn-gold);
+    }
+
+    .branch-section + .branch-section .branch-icon {
+        color: var(--burgundy);
+    }
+
+    .branch-title {
+        font-family: var(--font-display);
+        font-size: 1.15rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-primary);
+        margin: 0;
+    }
+
+    .branch-count {
+        font-family: var(--font-body);
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        margin-left: auto;
+    }
+
+    /* === CHAMPION BANNER === */
+    .branch-champion {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+        padding: 1rem 1.25rem;
+        background: linear-gradient(135deg, rgba(201, 168, 76, 0.1) 0%, rgba(201, 168, 76, 0.04) 100%);
+        border: 2px solid var(--worn-gold);
+        border-radius: 4px;
+        position: relative;
+    }
+
+    .branch-champion::before {
+        content: "";
+        position: absolute;
+        inset: 3px;
+        border: 1px solid rgba(201, 168, 76, 0.15);
+        border-radius: 2px;
+        pointer-events: none;
+    }
+
+    .champion-trophy {
+        font-size: 1.6rem;
+        color: var(--worn-gold);
+        flex-shrink: 0;
+    }
+
+    .champion-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    .champion-label {
+        font-family: var(--font-display);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--worn-gold);
+    }
+
+    .champion-club {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .champion-logo {
+        border-radius: 3px;
+        background: var(--aged-cream-dark);
+        padding: 2px;
+        border: 1px solid var(--border-vintage);
+    }
+
+    .champion-name {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-primary);
+    }
+
+    .champion-reason {
+        font-family: var(--font-body);
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        font-style: italic;
+    }
+
+    /* === WHAT-IF SECTION === */
+    .whatif-section {
+        margin-top: 1rem;
+        border: 1px dashed var(--border-vintage);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .whatif-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+        background: var(--parchment);
+        cursor: pointer;
+        font-family: var(--font-display);
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-secondary);
+        list-style: none;
+        user-select: none;
+    }
+
+    .whatif-toggle::-webkit-details-marker {
+        display: none;
+    }
+
+    .whatif-toggle::after {
+        content: "\25B6";
+        font-size: 0.6rem;
+        margin-left: auto;
+        transition: transform 0.2s ease;
+        color: var(--text-muted);
+    }
+
+    .whatif-section[open] .whatif-toggle::after {
+        transform: rotate(90deg);
+    }
+
+    .whatif-icon {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .whatif-count {
+        font-family: var(--font-body);
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+    }
+
+    .whatif-body {
+        padding: 1rem;
+    }
+
+    .whatif-desc {
+        font-family: var(--font-body);
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        font-style: italic;
+        margin: 0 0 0.75rem 0;
+    }
+
+    .whatif-matches :global(.match-card) {
+        opacity: 0.6;
+        border-style: dashed;
+    }
+
+    .whatif-matches :global(.match-card:hover) {
+        opacity: 0.85;
+    }
+
+    /* === RESPONSIVE === */
     @media (max-width: 640px) {
         .page-hero {
             padding: 2rem 1rem;
@@ -407,6 +802,52 @@ function countDefenses(matches: any[]) {
 
         .mini-stat-label {
             font-size: 0.45rem;
+        }
+
+        .cisma-divider {
+            margin: 1.5rem 0;
+            gap: 0.5rem;
+        }
+
+        .cisma-label {
+            font-size: 0.9rem;
+            padding: 0.2rem 0.6rem;
+            letter-spacing: 0.12em;
+        }
+
+        .branch-section {
+            padding: 0.75rem;
+        }
+
+        .branch-title {
+            font-size: 1rem;
+        }
+
+        .branch-champion {
+            padding: 0.75rem 1rem;
+            gap: 0.5rem;
+        }
+
+        .champion-trophy {
+            font-size: 1.2rem;
+        }
+
+        .champion-name {
+            font-size: 1.1rem;
+        }
+
+        .champion-logo {
+            width: 24px;
+            height: 24px;
+        }
+
+        .whatif-toggle {
+            font-size: 0.85rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .whatif-body {
+            padding: 0.75rem;
         }
     }
 </style>

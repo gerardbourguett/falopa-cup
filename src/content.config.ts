@@ -31,6 +31,9 @@ const matchSchema = z.object({
 
 const tournamentSchema = z.object({
     year: z.number(),
+    branch: z.string().optional(),
+    championReason: z.string().optional(),
+    whatIf: z.array(matchSchema).optional(),
     matches: z.array(matchSchema),
 });
 

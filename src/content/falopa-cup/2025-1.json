@@ -1,0 +1,455 @@
+{
+  "year": 2025,
+  "branch": "Rama Copa Biobío",
+  "championReason": "Cierre de la rama por el Cisma",
+  "whatIf": [
+    {
+      "type": "match",
+      "date": "2025-11-18",
+      "competition": "Primera B · Cuartos de Final (Ida)",
+      "holderId": "san-marcos-de-arica",
+      "challengerId": "rangers",
+      "scoreHolder": 2,
+      "scoreChallenger": 0,
+      "newHolderId": "san-marcos-de-arica"
+    },
+    {
+      "type": "match",
+      "date": "2025-11-23",
+      "competition": "Primera B · Cuartos de Final (Vuelta)",
+      "holderId": "san-marcos-de-arica",
+      "challengerId": "rangers",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "san-marcos-de-arica"
+    },
+    {
+      "type": "match",
+      "date": "2025-11-26",
+      "competition": "Primera B · Semifinal (Ida)",
+      "holderId": "san-marcos-de-arica",
+      "challengerId": "cobreloa",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "san-marcos-de-arica"
+    },
+    {
+      "type": "match",
+      "date": "2025-11-30",
+      "competition": "Primera B · Semifinal (Vuelta)",
+      "holderId": "san-marcos-de-arica",
+      "challengerId": "cobreloa",
+      "scoreHolder": 1,
+      "scoreChallenger": 3,
+      "newHolderId": "cobreloa"
+    },
+    {
+      "type": "match",
+      "date": "2025-12-03",
+      "competition": "Primera B · Final (Ida)",
+      "holderId": "cobreloa",
+      "challengerId": "deportes-concepcion",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "cobreloa"
+    },
+    {
+      "type": "match",
+      "date": "2025-12-07",
+      "competition": "Primera B · Final (Vuelta)",
+      "holderId": "cobreloa",
+      "challengerId": "deportes-concepcion",
+      "scoreHolder": 2,
+      "scoreChallenger": 3,
+      "newHolderId": "deportes-concepcion"
+    }
+  ],
+  "matches": [
+    {
+      "type": "seeding",
+      "date": "2025-01-01",
+      "holderId": "colo-colo",
+      "reason": "Campeón Torneo Nacional 2024"
+    },
+    {
+      "type": "match",
+      "date": "2025-01-30",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "colo-colo",
+      "challengerId": "deportes-limache",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "colo-colo"
+    },
+    {
+      "type": "match",
+      "date": "2025-02-03",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "colo-colo",
+      "challengerId": "santiago-wanderers",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "santiago-wanderers"
+    },
+    {
+      "type": "match",
+      "date": "2025-02-09",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "santiago-wanderers",
+      "challengerId": "deportes-limache",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "santiago-wanderers"
+    },
+    {
+      "type": "match",
+      "date": "2025-02-18",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "santiago-wanderers",
+      "challengerId": "union-san-felipe",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "santiago-wanderers"
+    },
+    {
+      "type": "match",
+      "date": "2025-02-21",
+      "competition": "Liga de Ascenso",
+      "holderId": "santiago-wanderers",
+      "challengerId": "universidad-de-concepcion",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "santiago-wanderers"
+    },
+    {
+      "type": "match",
+      "date": "2025-03-02",
+      "competition": "Liga de Ascenso",
+      "holderId": "santiago-wanderers",
+      "challengerId": "union-san-felipe",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "santiago-wanderers"
+    },
+    {
+      "type": "match",
+      "date": "2025-03-10",
+      "competition": "Liga de Ascenso",
+      "holderId": "santiago-wanderers",
+      "challengerId": "deportes-antofagasta",
+      "scoreHolder": 4,
+      "scoreChallenger": 0,
+      "newHolderId": "santiago-wanderers"
+    },
+    {
+      "type": "match",
+      "date": "2025-03-16",
+      "competition": "Liga de Ascenso",
+      "holderId": "santiago-wanderers",
+      "challengerId": "san-marcos-de-arica",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "santiago-wanderers"
+    },
+    {
+      "type": "match",
+      "date": "2025-03-24",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "santiago-wanderers",
+      "challengerId": "deportes-limache",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-limache"
+    },
+    {
+      "type": "match",
+      "date": "2025-03-29",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-limache",
+      "challengerId": "ohiggins",
+      "scoreHolder": 1,
+      "scoreChallenger": 3,
+      "newHolderId": "ohiggins"
+    },
+    {
+      "type": "match",
+      "date": "2025-04-05",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "ohiggins",
+      "challengerId": "deportes-temuco",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "ohiggins"
+    },
+    {
+      "type": "match",
+      "date": "2025-04-12",
+      "competition": "Liga de Primera",
+      "holderId": "ohiggins",
+      "challengerId": "audax-italiano",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2025-04-18",
+      "competition": "Liga de Primera",
+      "holderId": "audax-italiano",
+      "challengerId": "union-espanola",
+      "scoreHolder": 2,
+      "scoreChallenger": 0,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2025-04-25",
+      "competition": "Liga de Primera",
+      "holderId": "union-la-calera",
+      "challengerId": "nublense",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2025-05-11",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "union-la-calera",
+      "challengerId": "san-luis",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2025-05-16",
+      "competition": "Liga de Primera",
+      "holderId": "union-la-calera",
+      "challengerId": "coquimbo-unido",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2025-05-24",
+      "competition": "Liga de Primera",
+      "holderId": "coquimbo-unido",
+      "challengerId": "palestino",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2025-05-31",
+      "competition": "Liga de Primera",
+      "holderId": "coquimbo-unido",
+      "challengerId": "deportes-la-serena",
+      "scoreHolder": 4,
+      "scoreChallenger": 2,
+      "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2025-06-08",
+      "competition": "Copa Chile · Octavos de Final",
+      "holderId": "coquimbo-unido",
+      "challengerId": "union-la-calera",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2025-06-15",
+      "competition": "Liga de Primera",
+      "holderId": "coquimbo-unido",
+      "challengerId": "universidad-de-chile",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2025-06-21",
+      "competition": "Liga de Primera",
+      "holderId": "coquimbo-unido",
+      "challengerId": "union-espanola",
+      "scoreHolder": 2,
+      "scoreChallenger": 0,
+      "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2025-07-02",
+      "competition": "Copa Chile · Octavos de Final",
+      "holderId": "coquimbo-unido",
+      "challengerId": "union-la-calera",
+      "scoreHolder": 4,
+      "scoreChallenger": 1,
+      "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2025-04-25",
+      "competition": "Copa Chile · Cuartos de Final",
+      "holderId": "coquimbo-unido",
+      "challengerId": "deportes-limache",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-limache"
+    },
+    {
+      "type": "match",
+      "date": "2025-07-10",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-limache",
+      "challengerId": "coquimbo-unido",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-limache"
+    },
+    {
+      "type": "match",
+      "date": "2025-07-13",
+      "competition": "Copa Chile · Cuartos de Final",
+      "holderId": "deportes-limache",
+      "challengerId": "coquimbo-unido",
+      "scoreHolder": 3,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-limache"
+    },
+    {
+      "type": "match",
+      "date": "2025-07-18",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-limache",
+      "challengerId": "everton",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "deportes-limache"
+    },
+    {
+      "type": "match",
+      "date": "2025-07-25",
+      "competition": "Liga de Primera",
+      "holderId": "deportes-limache",
+      "challengerId": "nublense",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "nublense"
+    },
+    {
+      "type": "match",
+      "date": "2025-08-03",
+      "competition": "Liga de Primera",
+      "holderId": "nublense",
+      "challengerId": "everton",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "nublense"
+    },
+    {
+      "type": "match",
+      "date": "2025-08-16",
+      "competition": "Liga de Primera",
+      "holderId": "nublense",
+      "challengerId": "palestino",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "nublense"
+    },
+    {
+      "type": "match",
+      "date": "2025-08-24",
+      "competition": "Liga de Primera",
+      "holderId": "nublense",
+      "challengerId": "iquique",
+      "scoreHolder": 2,
+      "scoreChallenger": 0,
+      "newHolderId": "nublense"
+    },
+    {
+      "type": "match",
+      "date": "2025-08-31",
+      "competition": "Liga de Primera",
+      "holderId": "nublense",
+      "challengerId": "union-espanola",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "union-espanola"
+    },
+    {
+      "type": "match",
+      "date": "2025-09-13",
+      "competition": "Liga de Primera",
+      "holderId": "union-espanola",
+      "challengerId": "audax-italiano",
+      "scoreHolder": 3,
+      "scoreChallenger": 4,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2025-09-29",
+      "competition": "Copa Chile · Semifinal",
+      "holderId": "audax-italiano",
+      "challengerId": "huachipato",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2025-10-05",
+      "competition": "Copa Chile · Semifinal",
+      "holderId": "audax-italiano",
+      "challengerId": "huachipato",
+      "scoreHolder": 2,
+      "scoreChallenger": 4,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "date": "2025-10-07",
+      "competition": "Copa Biobío · Final",
+      "holderId": "huachipato",
+      "challengerId": "deportes-concepcion",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2025-10-07",
+      "competition": "Liga de Ascenso",
+      "holderId": "deportes-concepcion",
+      "challengerId": "santiago-wanderers",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2025-10-26",
+      "competition": "Liga de Ascenso",
+      "holderId": "deportes-concepcion",
+      "challengerId": "rangers",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2025-11-23",
+      "competition": "Liga de Ascenso",
+      "holderId": "rangers",
+      "challengerId": "san-marcos-de-arica",
+      "scoreHolder": 0,
+      "scoreChallenger": 3,
+      "newHolderId": "san-marcos-de-arica"
+    }
+  ]
+}
