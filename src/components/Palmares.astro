@@ -1,0 +1,335 @@
+---
+interface Club {
+  id: string;
+  name: string;
+  shortName: string;
+  logo: string;
+}
+
+interface Props {
+  allMatches: any[];
+  clubs: Map<string, Club>;
+  accentColor?: 'gold' | 'burgundy';
+}
+
+const { allMatches, clubs, accentColor = 'gold' } = Astro.props;
+
+// Compute per-club stats
+interface ClubStats {
+  id: string;
+  reigns: number;
+  defenses: number;
+  conquests: number;
+  losses: number;
+  matchesAsHolder: number;
+}
+
+const statsMap = new Map<string, ClubStats>();
+
+function ensure(id: string): ClubStats {
+  if (!statsMap.has(id)) {
+    statsMap.set(id, { id, reigns: 0, defenses: 0, conquests: 0, losses: 0, matchesAsHolder: 0 });
+  }
+  return statsMap.get(id)!;
+}
+
+for (const m of allMatches) {
+  if (m.type === 'seeding' && m.holderId) {
+    const s = ensure(m.holderId);
+    s.reigns++;
+  }
+  if (m.type === 'match') {
+    if (m.holderId) {
+      const holder = ensure(m.holderId);
+      holder.matchesAsHolder++;
+      if (m.newHolderId === m.holderId) {
+        holder.defenses++;
+      } else if (m.newHolderId && m.newHolderId !== m.holderId) {
+        holder.losses++;
+        const winner = ensure(m.newHolderId);
+        winner.conquests++;
+        winner.reigns++;
+      }
+    }
+  }
+}
+
+const ranked = [...statsMap.values()]
+  .sort((a, b) => {
+    if (b.reigns !== a.reigns) return b.reigns - a.reigns;
+    if (b.defenses !== a.defenses) return b.defenses - a.defenses;
+    return b.conquests - a.conquests;
+  });
+
+function getClub(id: string) {
+  return clubs.get(id);
+}
+---
+
+<section class:list={['palmares', `palmares-${accentColor}`]}>
+  <div class="palmares-header">
+    <h2 class="palmares-title">Palmares</h2>
+    <span class="palmares-subtitle">{ranked.length} equipos participantes</span>
+  </div>
+
+  <!-- Mobile: cards layout, Desktop: table -->
+  <div class="palmares-table-wrap">
+    <table class="palmares-table">
+      <thead>
+        <tr>
+          <th class="th-pos">#</th>
+          <th class="th-club">Equipo</th>
+          <th class="th-num" title="Reinados">Reinados</th>
+          <th class="th-num" title="Conquistas">Conquistas</th>
+          <th class="th-num" title="Defensas exitosas">Defensas</th>
+          <th class="th-num" title="Perdidas del titulo">Perdidas</th>
+          <th class="th-num" title="Partidos como poseedor">PJ</th>
+        </tr>
+      </thead>
+      <tbody>
+        {ranked.map((stat, i) => {
+          const club = getClub(stat.id);
+          return (
+            <tr class:list={{ 'row-top': i === 0 }}>
+              <td class="td-pos">{i + 1}</td>
+              <td class="td-club">
+                {club?.logo && (
+                  <img src={club.logo} alt="" width="24" height="24" class="club-logo" />
+                )}
+                <span class="club-name">{club?.shortName || club?.name || stat.id}</span>
+                <span class="club-fullname">{club?.name || stat.id}</span>
+              </td>
+              <td class="td-num td-reigns">{stat.reigns}</td>
+              <td class="td-num">{stat.conquests}</td>
+              <td class="td-num">{stat.defenses}</td>
+              <td class="td-num">{stat.losses}</td>
+              <td class="td-num">{stat.matchesAsHolder}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .palmares {
+    margin: 2.5rem 0 3rem;
+  }
+
+  .palmares-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 3px solid var(--border-vintage);
+    position: relative;
+  }
+
+  .palmares-header::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border-vintage);
+  }
+
+  .palmares-title {
+    margin: 0;
+  }
+
+  .palmares-gold .palmares-title {
+    color: var(--worn-gold);
+  }
+
+  .palmares-burgundy .palmares-title {
+    color: var(--burgundy);
+  }
+
+  .palmares-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+
+  .palmares-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .palmares-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--faded-white);
+    border: 2px solid var(--border-vintage);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .palmares-table thead {
+    background: var(--parchment);
+  }
+
+  .palmares-table th {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+    border-bottom: 2px solid var(--border-vintage);
+    white-space: nowrap;
+  }
+
+  .th-num {
+    text-align: center !important;
+    min-width: 50px;
+  }
+
+  .th-pos {
+    width: 36px;
+    text-align: center !important;
+  }
+
+  .palmares-table td {
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border-vintage);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .palmares-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .palmares-table tbody tr:hover {
+    background: var(--parchment);
+  }
+
+  .row-top {
+    background: rgba(201, 168, 76, 0.06);
+  }
+
+  .palmares-burgundy .row-top {
+    background: rgba(139, 26, 43, 0.04);
+  }
+
+  .td-pos {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--text-muted);
+  }
+
+  .row-top .td-pos {
+    color: var(--worn-gold);
+  }
+
+  .palmares-burgundy .row-top .td-pos {
+    color: var(--burgundy);
+  }
+
+  .td-club {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .club-logo {
+    border-radius: 3px;
+    background: var(--aged-cream-dark);
+    padding: 1px;
+    border: 1px solid var(--border-vintage);
+    flex-shrink: 0;
+  }
+
+  .club-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+    display: none;
+  }
+
+  .club-fullname {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+  }
+
+  .td-num {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+  }
+
+  .td-reigns {
+    color: var(--text-primary);
+  }
+
+  .palmares-gold .row-top .td-reigns {
+    color: var(--worn-gold);
+  }
+
+  .palmares-burgundy .row-top .td-reigns {
+    color: var(--burgundy);
+  }
+
+  /* ═══ MOBILE ═══ */
+  @media (max-width: 640px) {
+    .palmares-header {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .palmares-table th {
+      font-size: 0.7rem;
+      padding: 0.5rem 0.4rem;
+      letter-spacing: 0;
+    }
+
+    .palmares-table td {
+      padding: 0.4rem;
+      font-size: 0.8rem;
+    }
+
+    .td-num {
+      font-size: 0.95rem;
+    }
+
+    .td-pos {
+      font-size: 0.9rem;
+    }
+
+    .club-fullname {
+      display: none;
+    }
+
+    .club-name {
+      display: inline;
+      font-size: 0.85rem;
+    }
+
+    .club-logo {
+      width: 20px;
+      height: 20px;
+    }
+
+    .th-num {
+      min-width: 36px;
+    }
+  }
+</style>

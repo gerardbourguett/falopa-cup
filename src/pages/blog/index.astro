@@ -13,102 +13,201 @@ const posts = (await getCollection('blog')).sort(
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
+		<BaseHead title={`Blog — ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
 		<Header />
+
+		<!-- Page Hero -->
+		<section class="page-hero pitch-bg">
+			<div class="page-hero-inner">
+				<div class="page-hero-label">Noticias y Cronica</div>
+				<h1 class="page-hero-title">Blog</h1>
+			</div>
+		</section>
+
 		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
+			<section class="blog-grid stagger-in">
+				{posts.map((post, i) => (
+					<a href={`/blog/${post.id}/`} class:list={['blog-card', { featured: i === 0 }]}>
+						{post.data.heroImage && (
+							<div class="blog-card-image">
+								<Image width={720} height={360} src={post.data.heroImage} alt="" />
+							</div>
+						)}
+						<div class="blog-card-body">
+							<div class="blog-card-date">
+								<FormattedDate date={post.data.pubDate} />
+							</div>
+							<h3 class="blog-card-title">{post.data.title}</h3>
+							{post.data.description && (
+								<p class="blog-card-desc">{post.data.description}</p>
+							)}
+							<span class="blog-card-link">Leer mas</span>
+						</div>
+					</a>
+				))}
 			</section>
 		</main>
+
 		<Footer />
 	</body>
 </html>
+
+<style>
+	.page-hero {
+		padding: 2.5rem 1.5rem;
+		text-align: center;
+	}
+
+	.page-hero-inner {
+		max-width: 700px;
+		margin: 0 auto;
+	}
+
+	.page-hero-label {
+		font-family: var(--font-display);
+		font-size: 0.65rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.3em;
+		color: var(--worn-gold);
+		opacity: 0.8;
+		margin-bottom: 0.4rem;
+	}
+
+	.page-hero-title {
+		font-size: 3rem;
+		color: var(--faded-white);
+		margin: 0;
+		background: linear-gradient(180deg, #faf7f0, var(--worn-gold));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	/* Blog Grid */
+	.blog-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.25rem;
+	}
+
+	.blog-card {
+		display: flex;
+		flex-direction: column;
+		background: var(--faded-white);
+		border: 2px solid var(--border-vintage);
+		border-radius: 6px;
+		overflow: hidden;
+		text-decoration: none;
+		color: inherit;
+		box-shadow: var(--shadow-card);
+		transition: box-shadow 0.2s ease, transform 0.2s ease;
+		position: relative;
+	}
+
+	.blog-card::before {
+		content: "";
+		position: absolute;
+		inset: 3px;
+		border: 1px solid rgba(201, 168, 76, 0.1);
+		border-radius: 4px;
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	.blog-card:hover {
+		box-shadow: var(--shadow-elevated);
+		transform: translateY(-2px);
+		color: inherit;
+	}
+
+	.blog-card.featured {
+		grid-column: 1 / -1;
+	}
+
+	.blog-card.featured .blog-card-title {
+		font-size: 1.6rem;
+	}
+
+	.blog-card-image {
+		overflow: hidden;
+		border-bottom: 2px solid var(--border-vintage);
+	}
+
+	.blog-card-image img {
+		width: 100%;
+		height: auto;
+		display: block;
+		border-radius: 0;
+		transition: transform 0.3s ease;
+	}
+
+	.blog-card:hover .blog-card-image img {
+		transform: scale(1.03);
+	}
+
+	.blog-card-body {
+		padding: 1.25rem;
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+	}
+
+	.blog-card-date {
+		font-size: 0.7rem;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		margin-bottom: 0.4rem;
+	}
+
+	.blog-card-title {
+		font-family: var(--font-display);
+		font-size: 1.1rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		color: var(--text-primary);
+		margin: 0 0 0.5rem 0;
+		line-height: 1.2;
+	}
+
+	.blog-card:hover .blog-card-title {
+		color: var(--burgundy);
+	}
+
+	.blog-card-desc {
+		font-size: 0.85rem;
+		color: var(--text-secondary);
+		line-height: 1.5;
+		margin: 0 0 0.75rem 0;
+		flex: 1;
+	}
+
+	.blog-card-link {
+		font-family: var(--font-display);
+		font-size: 0.7rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.12em;
+		color: var(--worn-gold);
+		margin-top: auto;
+	}
+
+	.blog-card:hover .blog-card-link {
+		color: var(--burgundy);
+	}
+
+	@media (max-width: 768px) {
+		.blog-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.page-hero-title {
+			font-size: 2.2rem;
+		}
+	}
+</style>

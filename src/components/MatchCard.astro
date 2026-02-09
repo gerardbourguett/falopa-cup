@@ -1,0 +1,456 @@
+---
+interface Club {
+  id: string;
+  name: string;
+  shortName: string;
+  logo: string;
+}
+
+interface Props {
+  match: {
+    type: 'seeding' | 'match';
+    date: Date;
+    competition?: string;
+    reason?: string;
+    holderId?: string;
+    challengerId?: string;
+    scoreHolder?: number;
+    scoreChallenger?: number;
+    penalties?: { holder: number; challenger: number };
+    newHolderId?: string;
+  };
+  clubs: Map<string, Club>;
+  index?: number;
+  accentColor?: 'gold' | 'burgundy';
+}
+
+const { match, clubs, index = 0, accentColor = 'gold' } = Astro.props;
+
+function getClub(id?: string) {
+  return id ? clubs.get(id) : undefined;
+}
+
+const holder = getClub(match.holderId);
+const challenger = getClub(match.challengerId);
+const newHolder = getClub(match.newHolderId);
+
+const holderWon = match.newHolderId === match.holderId;
+const challengerWon = match.newHolderId !== match.holderId && match.newHolderId === match.challengerId;
+const isDraw = match.scoreHolder === match.scoreChallenger && !match.penalties;
+
+const dateStr = match.date.toLocaleDateString('es-CL', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+---
+
+<article class:list={['match-card', { 'title-change': challengerWon, 'seeding-card': match.type === 'seeding' }]} style={`--delay: ${index * 0.04}s`}>
+  {match.type === 'seeding' ? (
+    <div class="seeding">
+      <div class="seeding-header">
+        <span class="seeding-badge">&#9733; Sembrado Inicial</span>
+        <time class="match-date">{dateStr}</time>
+      </div>
+      <div class="seeding-body">
+        <div class="seeding-content">
+          <div class="seeding-team">
+            {holder?.logo && (
+              <img src={holder.logo} alt={holder.name} class="team-logo" width="40" height="40" />
+            )}
+            <span class="team-name seeding-name">{holder?.name || match.holderId}</span>
+          </div>
+          {match.reason && <span class="seeding-reason">{match.reason}</span>}
+        </div>
+      </div>
+    </div>
+  ) : (
+    <div class="match">
+      <div class="match-header">
+        <time class="match-date">{dateStr}</time>
+        {match.competition && (
+          <span class="match-competition">{match.competition}</span>
+        )}
+        {challengerWon && (
+          <span class="change-badge">&#9650; Cambio de Titulo</span>
+        )}
+        {holderWon && !isDraw && (
+          <span class="retain-badge">Defiende</span>
+        )}
+        {isDraw && (
+          <span class="draw-badge">Empate</span>
+        )}
+      </div>
+
+      <div class="match-body">
+        <div class:list={['team', 'team-home', { winner: holderWon && !isDraw }]}>
+          {holder?.logo && (
+            <img src={holder.logo} alt={holder.name} class="team-logo" width="32" height="32" />
+          )}
+          <span class="team-name">{holder?.shortName || holder?.name || match.holderId}</span>
+          <span class="holder-tag">Titulo</span>
+        </div>
+
+        <div class="score-block">
+          <div class="score-row">
+            <span class="scoreboard">{match.scoreHolder}</span>
+            <span class="score-dash">&ndash;</span>
+            <span class="scoreboard">{match.scoreChallenger}</span>
+          </div>
+          {match.penalties && (
+            <span class="penalties">({match.penalties.holder}-{match.penalties.challenger} pen.)</span>
+          )}
+        </div>
+
+        <div class:list={['team', 'team-away', { winner: challengerWon }]}>
+          <span class="team-name">{challenger?.shortName || challenger?.name || match.challengerId}</span>
+          {challenger?.logo && (
+            <img src={challenger.logo} alt={challenger.name} class="team-logo" width="32" height="32" />
+          )}
+        </div>
+      </div>
+
+      {challengerWon && newHolder && (
+        <div class="new-holder">
+          <span class="new-holder-arrow">&#9658;</span>
+          <span class="new-holder-label">Nuevo poseedor:</span>
+          {newHolder.logo && (
+            <img src={newHolder.logo} alt="" width="22" height="22" class="team-logo-sm" />
+          )}
+          <span class="new-holder-name">{newHolder.name}</span>
+        </div>
+      )}
+    </div>
+  )}
+</article>
+
+<style>
+  .match-card {
+    background: var(--faded-white);
+    border: 2px solid var(--border-vintage);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    transition: box-shadow 0.2s ease;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.4s ease-out forwards;
+    animation-delay: var(--delay);
+    position: relative;
+  }
+
+  .match-card::before {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(201, 168, 76, 0.08);
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .match-card:hover {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .match-card.title-change {
+    border-color: var(--burgundy);
+    border-left-width: 5px;
+  }
+
+  .match-card.seeding-card {
+    border-color: var(--worn-gold);
+    border-left-width: 5px;
+  }
+
+  /* ═══ SEEDING ═══ */
+  .seeding-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 1rem;
+    background: var(--parchment);
+    border-bottom: 1px solid var(--border-vintage);
+  }
+
+  .seeding-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.15rem 0.6rem;
+    background: var(--worn-gold);
+    color: var(--pitch-green-dark);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+  }
+
+  .seeding-body {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .seeding-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .seeding-team {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .seeding-name {
+    font-size: 1.3rem !important;
+  }
+
+  .seeding-reason {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* ═══ MATCH ═══ */
+  .match-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    padding: 0.5rem 1rem;
+    background: var(--parchment);
+    border-bottom: 1px solid var(--border-vintage);
+  }
+
+  .match-date {
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .match-competition {
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .change-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.1rem 0.5rem;
+    background: var(--burgundy);
+    color: var(--faded-white);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+    margin-left: auto;
+  }
+
+  .retain-badge {
+    display: inline-flex;
+    padding: 0.1rem 0.5rem;
+    background: var(--pitch-green);
+    color: var(--worn-gold);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+    margin-left: auto;
+  }
+
+  .draw-badge {
+    display: inline-flex;
+    padding: 0.1rem 0.5rem;
+    background: var(--aged-cream-dark);
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 2px;
+    margin-left: auto;
+  }
+
+  .match-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  /* Teams */
+  .team {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  .team-away {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .team-logo {
+    border-radius: 3px;
+    background: var(--aged-cream-dark);
+    padding: 2px;
+    border: 1px solid var(--border-vintage);
+    flex-shrink: 0;
+  }
+
+  .team-name {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    color: var(--text-primary);
+    letter-spacing: 0.04em;
+  }
+
+  .team.winner .team-name {
+    color: var(--pitch-green);
+  }
+
+  .holder-tag {
+    display: inline-flex;
+    padding: 0.05rem 0.35rem;
+    background: rgba(201, 168, 76, 0.15);
+    color: var(--worn-gold);
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 2px;
+    flex-shrink: 0;
+    border: 1px solid rgba(201, 168, 76, 0.2);
+  }
+
+  /* Score */
+  .score-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    flex-shrink: 0;
+  }
+
+  .score-row {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .scoreboard {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--scoreboard-dark);
+    color: var(--faded-white);
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    border: 2px solid #333;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
+    min-width: 2rem;
+  }
+
+  .score-dash {
+    font-family: var(--font-display);
+    color: var(--text-muted);
+    font-size: 1.1rem;
+  }
+
+  .penalties {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* New holder */
+  .new-holder {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.75rem 1rem;
+    border-top: 2px dashed var(--border-vintage);
+    background: rgba(139, 26, 43, 0.04);
+  }
+
+  .new-holder-arrow {
+    color: var(--burgundy);
+    font-size: 0.7rem;
+  }
+
+  .new-holder-label {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .team-logo-sm {
+    border-radius: 3px;
+    background: var(--aged-cream-dark);
+    padding: 1px;
+  }
+
+  .new-holder-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    letter-spacing: 0.04em;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .match-body {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .team {
+      justify-content: center !important;
+    }
+
+    .team-name {
+      font-size: 0.95rem;
+    }
+
+    .holder-tag {
+      display: none;
+    }
+
+    .score-block {
+      order: -1;
+    }
+  }
+</style>

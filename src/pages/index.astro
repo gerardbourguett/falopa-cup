@@ -2,32 +2,572 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import { getCollection } from 'astro:content';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+// Load all data
+const falopaCupEntries = await getCollection('falopa-cup');
+const copaPabloMiladEntries = await getCollection('copa-pablo-milad');
+const clubsEntries = await getCollection('clubs');
+
+const clubById = new Map(clubsEntries.map((e) => [e.data.id || e.id, e.data]));
+
+// Get latest season for each tournament
+const latestFalopa = falopaCupEntries.sort((a, b) => b.data.year - a.data.year)[0];
+const latestMilad = copaPabloMiladEntries.sort((a, b) => b.data.year - a.data.year)[0];
+
+// Get current holder from matches
+function getCurrentHolder(matches: any[]) {
+	const sorted = [...matches].sort((a, b) =>
+		new Date(b.date).getTime() - new Date(a.date).getTime()
+	);
+	for (const m of sorted) {
+		if (m.newHolderId) return { holderId: m.newHolderId, match: m };
+		if (m.type === 'seeding' && m.holderId) return { holderId: m.holderId, match: m };
+	}
+	return null;
+}
+
+const falopaHolder = latestFalopa ? getCurrentHolder(latestFalopa.data.matches) : null;
+const miladHolder = latestMilad ? getCurrentHolder(latestMilad.data.matches) : null;
+
+function getClub(id?: string) {
+	return id ? clubById.get(id) : undefined;
+}
+
+const falopaClub = getClub(falopaHolder?.holderId);
+const miladClub = getClub(miladHolder?.holderId);
+const falopaYear = latestFalopa?.data.year ?? 2026;
+const miladYear = latestMilad?.data.year ?? 2026;
+
+function formatSinceDate(match: any) {
+	if (!match?.date) return '';
+	const d = match.date instanceof Date ? match.date : new Date(match.date);
+	return d.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+}
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
 		<Header />
+
+		<!-- ═══ HERO SECTION ═══ -->
+		<section class="hero pitch-bg">
+			<div class="hero-pattern"></div>
+			<div class="hero-inner">
+				<div class="hero-decoration-left"></div>
+				<div class="hero-center">
+					<div class="hero-label">Temporada {falopaYear}</div>
+					<h1 class="hero-title">Falopa Cup</h1>
+					<p class="hero-desc">
+						El campeonato NO oficial del futbol chileno. Inspirado en el
+						<a href="https://en.wikipedia.org/wiki/Unofficial_Football_World_Championships" target="_blank" class="hero-link">
+							Campeonato Mundial No Oficial
+						</a>, seguimos al campeon itinerante del futbol chileno.
+					</p>
+					<div class="hero-cta">
+						<a href="/falopa-cup" class="btn-primary">Ver Historial Completo</a>
+					</div>
+				</div>
+				<div class="hero-decoration-right"></div>
+			</div>
+		</section>
+
 		<main>
-			<h1>Holi</h1>
-			<p>
-				Bienvenidos al sitio oficial de la <b>Falopa Cup</b> y de la <b>Copa Pablo Milad</b>. El torneo no oficial del fútbol chileno
-			</p>
-			<h2>Actual Campeón</h2>
-			<p>Actualmente, la <b>Falopa Cup 2025-2</b> está en manos de <span class="font-bold">Everton</span> (2-1 a Cobresal).</p>
-			<small>¿Por qué es 2025-2?</small>
-			<p> Por su parte, la <b>Copa Pablo Milad 2025</b> está en manos de <span class="font-bold">Unión La Calera</span> (1-2 ante Iquique)</p>
-			<h3>Próximas defensas</h3>
-			<ul>
-				<li><b>Falopa Cup 2025-2</b> vs <span class="font-bold">Everton</span>(V) vs <span class="font-bold">Audax Italiano</span> (23 de noviembre)</li>
-				<li><b>Copa Pablo Milad 2025</b> vs <span class="font-bold">Unión La Calera</span>(V) vs <span class="font-bold">Colo Colo</span> (23 de noviembre)</li>
-			</ul>
-			
+			<!-- ═══ CURRENT CHAMPIONS ═══ -->
+			<section class="champions-section animate-in">
+				<div class="section-header">
+					<div class="section-label">Poseedores Actuales</div>
+					<h2>Campeones Reinantes</h2>
+				</div>
+
+				<div class="champions-grid">
+					<!-- Falopa Cup Champion -->
+					<a href="/falopa-cup" class="champion-card">
+						<div class="champion-header">
+							<span class="tournament-badge">Falopa Cup {falopaYear}</span>
+							<span class="champion-arrow">&rarr;</span>
+						</div>
+						<div class="champion-body">
+							<div class="champion-logo">
+								{falopaClub?.logo && (
+									<img src={falopaClub.logo} alt={falopaClub.name} width="72" height="72" />
+								)}
+							</div>
+							<div class="champion-info">
+								<span class="champion-name">{falopaClub?.name || 'Desconocido'}</span>
+								<span class="champion-detail">
+									Desde {formatSinceDate(falopaHolder?.match)}
+								</span>
+							</div>
+						</div>
+						<div class="champion-footer">
+							<span>Ver historial completo</span>
+						</div>
+					</a>
+
+					<!-- Copa Pablo Milad Champion -->
+					<a href="/copa-pablo-milad" class="champion-card milad-card">
+						<div class="champion-header">
+							<span class="tournament-badge milad">Copa Pablo Milad {miladYear}</span>
+							<span class="champion-arrow">&rarr;</span>
+						</div>
+						<div class="champion-body">
+							<div class="champion-logo">
+								{miladClub?.logo && (
+									<img src={miladClub.logo} alt={miladClub.name} width="72" height="72" />
+								)}
+							</div>
+							<div class="champion-info">
+								<span class="champion-name">{miladClub?.name || 'Desconocido'}</span>
+								<span class="champion-detail">
+									Desde {formatSinceDate(miladHolder?.match)}
+								</span>
+							</div>
+						</div>
+						<div class="champion-footer">
+							<span>Ver historial completo</span>
+						</div>
+					</a>
+				</div>
+			</section>
+
+			<!-- ═══ HOW IT WORKS ═══ -->
+			<section class="rules-section animate-in" style="animation-delay: 0.15s">
+				<div class="section-header">
+					<div class="section-label">El Formato</div>
+					<h2>Como Funciona</h2>
+				</div>
+
+				<div class="rules-grid stagger-in">
+					<div class="rule-card">
+						<div class="rule-number">01</div>
+						<h3 class="rule-title">Falopa Cup</h3>
+						<p class="rule-text">El titulo se defiende en <b>cada partido oficial</b>. Si el defensor pierde <em>o empata de visitante</em>, el titulo cambia de manos.</p>
+					</div>
+					<div class="rule-card">
+						<div class="rule-number">02</div>
+						<h3 class="rule-title">Copa Pablo Milad</h3>
+						<p class="rule-text">Funciona como "la tina": el titulo <b>solo cambia si el defensor pierde</b>. Los empates no afectan.</p>
+					</div>
+					<div class="rule-card">
+						<div class="rule-number">03</div>
+						<h3 class="rule-title">Cada Temporada</h3>
+						<p class="rule-text">Cada ano comienza con el <b>campeon del Torneo Nacional</b> como poseedor inicial de la Falopa Cup.</p>
+					</div>
+				</div>
+			</section>
 		</main>
+
 		<Footer />
 	</body>
 </html>
+
+<style>
+	/* ═══ HERO ═══ */
+	.hero {
+		position: relative;
+		overflow: hidden;
+		padding: 4.5rem 1.5rem;
+		text-align: center;
+	}
+
+	.hero-pattern {
+		position: absolute;
+		inset: 0;
+		background:
+			radial-gradient(circle at 50% 50%, transparent 120px, rgba(0,0,0,0.12) 121px, transparent 122px),
+			radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 250px);
+		pointer-events: none;
+	}
+
+	.hero-inner {
+		max-width: 960px;
+		margin: 0 auto;
+		position: relative;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 2rem;
+	}
+
+	.hero-center {
+		max-width: 600px;
+	}
+
+	.hero-label {
+		font-family: var(--font-display);
+		font-size: 0.9rem;
+		text-transform: uppercase;
+		letter-spacing: 0.35em;
+		color: var(--worn-gold);
+		margin-bottom: 0.5rem;
+		opacity: 0.8;
+	}
+
+	.hero-title {
+		font-size: 5.5rem;
+		color: var(--faded-white);
+		text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+		margin-bottom: 0.75rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		background: linear-gradient(180deg, #faf7f0 30%, var(--worn-gold));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	.hero-desc {
+		color: rgba(245, 237, 214, 0.65);
+		font-family: var(--font-body);
+		font-size: 1rem;
+		line-height: 1.6;
+		margin-bottom: 1.5rem;
+		max-width: 480px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.hero-link {
+		color: var(--aged-cream);
+		text-decoration: underline;
+		text-underline-offset: 3px;
+	}
+
+	.hero-link:hover {
+		color: var(--worn-gold);
+	}
+
+	.hero-decoration-left,
+	.hero-decoration-right {
+		width: 80px;
+		height: 80px;
+		border: 2px solid rgba(201, 168, 76, 0.2);
+		border-radius: 50%;
+		flex-shrink: 0;
+		display: none;
+	}
+
+	.btn-primary {
+		display: inline-block;
+		padding: 0.7rem 2rem;
+		background: var(--worn-gold);
+		color: var(--pitch-green-dark);
+		font-family: var(--font-display);
+		font-size: 1rem;
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		text-decoration: none;
+		border-radius: 3px;
+		transition: all 0.2s ease;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+	}
+
+	.btn-primary:hover {
+		background: var(--worn-gold-light);
+		color: var(--pitch-green-dark);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+	}
+
+	/* ═══ SECTIONS ═══ */
+	.section-header {
+		margin-bottom: 1.5rem;
+	}
+
+	.section-label {
+		font-family: var(--font-display);
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.25em;
+		color: var(--worn-gold);
+		margin-bottom: 0.1rem;
+	}
+
+	.section-header h2 {
+		margin: 0;
+	}
+
+	.champions-section,
+	.rules-section {
+		margin-bottom: 3rem;
+	}
+
+	/* ═══ CHAMPION CARDS ═══ */
+	.champions-grid {
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 1.25rem;
+	}
+
+	.champion-card {
+		display: flex;
+		flex-direction: column;
+		background: var(--faded-white);
+		border: 2px solid var(--border-vintage);
+		border-radius: 4px;
+		overflow: hidden;
+		box-shadow: var(--shadow-card);
+		position: relative;
+		transition: box-shadow 0.2s ease, transform 0.2s ease;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.champion-card:hover {
+		box-shadow: var(--shadow-elevated);
+		transform: translateY(-2px);
+		color: inherit;
+	}
+
+	.champion-card::before {
+		content: "";
+		position: absolute;
+		inset: 3px;
+		border: 1px solid rgba(201, 168, 76, 0.12);
+		border-radius: 3px;
+		pointer-events: none;
+	}
+
+	.champion-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.6rem 1rem;
+		background: var(--parchment);
+		border-bottom: 1px solid var(--border-vintage);
+	}
+
+	.champion-arrow {
+		color: var(--text-muted);
+		font-size: 1rem;
+		transition: transform 0.2s ease, color 0.2s ease;
+	}
+
+	.champion-card:hover .champion-arrow {
+		transform: translateX(3px);
+		color: var(--worn-gold);
+	}
+
+	.tournament-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.2rem 0.6rem;
+		background: var(--pitch-green);
+		color: var(--worn-gold);
+		font-family: var(--font-display);
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		border-radius: 2px;
+	}
+
+	.tournament-badge.milad {
+		background: var(--burgundy);
+		color: var(--faded-white);
+	}
+
+	.champion-body {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1.25rem;
+		flex: 1;
+	}
+
+	.champion-logo img {
+		border-radius: 4px;
+		background: var(--aged-cream-dark);
+		padding: 4px;
+		border: 1px solid var(--border-vintage);
+	}
+
+	.champion-info {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.champion-name {
+		font-family: var(--font-display);
+		font-size: 1.7rem;
+		text-transform: uppercase;
+		color: var(--text-primary);
+		line-height: 1;
+		letter-spacing: 0.04em;
+	}
+
+	.champion-detail {
+		font-family: var(--font-body);
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		margin-top: 0.25rem;
+	}
+
+	.champion-footer {
+		padding: 0.6rem 1rem;
+		background: var(--parchment);
+		border-top: 1px solid var(--border-vintage);
+		font-family: var(--font-display);
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--text-muted);
+	}
+
+	.champion-card:hover .champion-footer {
+		color: var(--worn-gold);
+	}
+
+	/* ═══ RULES CARDS ═══ */
+	.rules-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1.25rem;
+	}
+
+	.rule-card {
+		background: var(--faded-white);
+		border: 2px solid var(--border-vintage);
+		border-radius: 4px;
+		padding: 1.5rem;
+		box-shadow: var(--shadow-card);
+		position: relative;
+		transition: box-shadow 0.2s ease, transform 0.2s ease;
+	}
+
+	.rule-card:hover {
+		box-shadow: var(--shadow-elevated);
+		transform: translateY(-2px);
+	}
+
+	.rule-card::before {
+		content: "";
+		position: absolute;
+		inset: 3px;
+		border: 1px solid rgba(201, 168, 76, 0.1);
+		border-radius: 3px;
+		pointer-events: none;
+	}
+
+	.rule-number {
+		font-family: var(--font-display);
+		font-size: 2.5rem;
+		color: var(--worn-gold);
+		line-height: 1;
+		margin-bottom: 0.5rem;
+		opacity: 0.4;
+	}
+
+	.rule-title {
+		font-size: 1.2rem;
+		margin-bottom: 0.5rem;
+		color: var(--text-primary);
+		letter-spacing: 0.05em;
+	}
+
+	.rule-text {
+		font-family: var(--font-body);
+		font-size: 0.9rem;
+		color: var(--text-secondary);
+		line-height: 1.5;
+		margin: 0;
+	}
+
+	.rule-text em {
+		color: var(--worn-gold);
+		font-style: normal;
+		font-weight: 600;
+	}
+
+	/* ═══ RESPONSIVE ═══ */
+	@media (min-width: 960px) {
+		.hero-decoration-left,
+		.hero-decoration-right {
+			display: block;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.hero {
+			padding: 3rem 1rem;
+		}
+
+		.hero-title {
+			font-size: 3.5rem;
+		}
+
+		.champions-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.rules-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.hero {
+			padding: 2rem 1rem;
+		}
+
+		.hero-label {
+			font-size: 0.7rem;
+			letter-spacing: 0.2em;
+		}
+
+		.hero-title {
+			font-size: 2.8rem;
+			margin-bottom: 0.5rem;
+		}
+
+		.hero-desc {
+			font-size: 0.9rem;
+			margin-bottom: 1rem;
+		}
+
+		.btn-primary {
+			padding: 0.6rem 1.5rem;
+			font-size: 0.9rem;
+		}
+
+		.champion-name {
+			font-size: 1.3rem;
+		}
+
+		.champion-body {
+			padding: 1rem;
+			gap: 0.75rem;
+		}
+
+		.champion-logo img {
+			width: 56px;
+			height: 56px;
+		}
+
+		.rule-card {
+			padding: 1rem;
+		}
+
+		.rule-number {
+			font-size: 2rem;
+		}
+
+		.rule-title {
+			font-size: 1rem;
+		}
+
+		.rule-text {
+			font-size: 0.85rem;
+		}
+	}
+</style>

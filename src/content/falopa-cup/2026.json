@@ -1,0 +1,55 @@
+{
+  "year": 2026,
+  "matches": [
+    {
+      "type": "seeding",
+      "date": "2026-01-01",
+      "holderId": "coquimbo-unido",
+      "reason": "Campeón Torneo Nacional 2025"
+    },
+    {
+      "type": "match",
+      "date": "2026-01-21",
+      "competition": "Supercopa · Semifinal",
+      "holderId": "coquimbo-unido",
+      "challengerId": "deportes-limache",
+      "scoreHolder": 3,
+      "scoreChallenger": 2,
+      "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2026-01-25",
+      "competition": "Supercopa · Final",
+      "holderId": "coquimbo-unido",
+      "challengerId": "universidad-catolica",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "penalties": {
+        "holder": 8,
+        "challenger": 7
+      },
+      "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2026-01-31",
+      "competition": "Liga de Primera · Fecha 1",
+      "holderId": "coquimbo-unido",
+      "challengerId": "universidad-de-concepcion",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "universidad-de-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2026-02-06",
+      "competition": "Liga de Primera · Fecha 2",
+      "holderId": "universidad-de-concepcion",
+      "challengerId": "audax-italiano",
+      "scoreHolder": 0,
+      "scoreChallenger": 3,
+      "newHolderId": "audax-italiano"
+    }
+  ]
+}

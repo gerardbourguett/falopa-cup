@@ -7,7 +7,7 @@ import MatchCard from '../../components/MatchCard.astro';
 import Palmares from '../../components/Palmares.astro';
 import { SITE_TITLE } from '../../consts';
 
-const cupEntries = await getCollection('falopa-cup');
+const cupEntries = await getCollection('copa-pablo-milad');
 const clubsEntries = await getCollection('clubs');
 
 const clubById = new Map(clubsEntries.map((e) => [e.data.id || e.id, e.data]));
@@ -44,29 +44,29 @@ function countDefenses(matches: any[]) {
 <!doctype html>
 <html lang="es">
     <head>
-        <BaseHead title={`Falopa Cup — ${SITE_TITLE}`} description="Historial completo de la Falopa Cup, el campeonato no oficial del futbol chileno." />
+        <BaseHead title={`Copa Pablo Milad — ${SITE_TITLE}`} description="Historial de la Copa Pablo Milad, el torneo de la tina del futbol chileno." />
     </head>
     <body>
         <Header />
 
         <!-- Page Hero -->
-        <section class="page-hero pitch-bg">
+        <section class="page-hero milad-hero">
             <div class="hero-pattern"></div>
             <div class="page-hero-inner">
-                <div class="page-hero-label">Campeonato No Oficial</div>
-                <h1 class="page-hero-title">Falopa Cup</h1>
+                <div class="page-hero-label">El Juego de la Tina</div>
+                <h1 class="page-hero-title">Copa Pablo Milad</h1>
                 <p class="page-hero-desc">
-                    El titulo se defiende en cada partido oficial. Si el defensor pierde o empata de visitante, el titulo cambia de manos.
+                    Como el juego de la tina: el titulo solo cambia si el defensor <strong>pierde</strong>. Los empates no afectan al poseedor.
                 </p>
             </div>
         </section>
 
         <main>
             <!-- Palmarés -->
-            <Palmares allMatches={allMatches} clubs={clubById} accentColor="gold" />
+            <Palmares allMatches={allMatches} clubs={clubById} accentColor="burgundy" />
 
             <!-- Season Tabs -->
-            <nav class="season-nav" id="season-nav">
+            <nav class="season-nav" id="season-nav-milad">
                 {seasons.map((season) => (
                     <button
                         type="button"
@@ -84,7 +84,7 @@ function countDefenses(matches: any[]) {
                 <section
                     id={`season-${season.year}`}
                     class:list={['season-section', { hidden: season.year !== currentSeason?.year }]}
-                    data-season={season.year}
+                    data-season-milad={season.year}
                 >
                     <div class="season-header">
                         <h2 class="season-title">
@@ -112,7 +112,7 @@ function countDefenses(matches: any[]) {
 
                     <div class="matches-list">
                         {season.matches.map((match: any, index: number) => (
-                            <MatchCard match={match} clubs={clubById} index={index} />
+                            <MatchCard match={match} clubs={clubById} index={index} accentColor="burgundy" />
                         ))}
                     </div>
                 </section>
@@ -124,17 +124,17 @@ function countDefenses(matches: any[]) {
 </html>
 
 <script>
-    function initTabs() {
-        const nav = document.getElementById('season-nav');
+    function initMiladTabs() {
+        const nav = document.getElementById('season-nav-milad');
         if (!nav) return;
 
         const tabs = nav.querySelectorAll<HTMLButtonElement>('.season-tab');
-        const sections = document.querySelectorAll<HTMLElement>('.season-section');
+        const sections = document.querySelectorAll<HTMLElement>('[data-season-milad]');
 
         function showSeason(year: string) {
             tabs.forEach(t => t.classList.toggle('active', t.dataset.year === year));
             sections.forEach(s => {
-                const isTarget = s.dataset.season === year;
+                const isTarget = s.dataset.seasonMilad === year;
                 s.classList.toggle('hidden', !isTarget);
             });
             history.replaceState(null, '', `#${year}`);
@@ -148,30 +148,39 @@ function countDefenses(matches: any[]) {
 
         // Check URL hash on load
         const hash = window.location.hash.replace('#', '');
-        if (hash && document.querySelector(`[data-season="${hash}"]`)) {
+        if (hash && document.querySelector(`[data-season-milad="${hash}"]`)) {
             showSeason(hash);
         }
     }
 
-    initTabs();
-    document.addEventListener('astro:after-swap', initTabs);
+    initMiladTabs();
+    document.addEventListener('astro:after-swap', initMiladTabs);
 </script>
 
 <style>
-    /* ═══ PAGE HERO ═══ */
-    .page-hero {
-        padding: 3rem 1.5rem;
+    /* ═══ MILAD HERO ═══ */
+    .milad-hero {
+        padding: 3.5rem 1.5rem;
         text-align: center;
         position: relative;
         overflow: hidden;
+        background-color: var(--burgundy);
+        background-image:
+            repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 40px,
+                rgba(255, 255, 255, 0.03) 40px,
+                rgba(255, 255, 255, 0.03) 41px
+            );
+        color: var(--aged-cream);
     }
 
     .hero-pattern {
         position: absolute;
         inset: 0;
         background:
-            radial-gradient(circle at 50% 50%, transparent 100px, rgba(0,0,0,0.15) 101px, transparent 102px),
-            radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03) 0%, transparent 200px);
+            radial-gradient(circle at 50% 50%, transparent 80px, rgba(0,0,0,0.12) 81px, transparent 82px);
         pointer-events: none;
     }
 
@@ -188,15 +197,15 @@ function countDefenses(matches: any[]) {
         text-transform: uppercase;
         letter-spacing: 0.35em;
         color: var(--worn-gold);
-        opacity: 0.8;
-        margin-bottom: 0.3rem;
+        opacity: 0.9;
+        margin-bottom: 0.4rem;
     }
 
     .page-hero-title {
         font-size: 4.5rem;
         color: var(--faded-white);
-        text-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
-        margin-bottom: 0.5rem;
+        text-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        margin-bottom: 0.75rem;
         background: linear-gradient(180deg, #faf7f0 30%, var(--worn-gold));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
@@ -210,9 +219,10 @@ function countDefenses(matches: any[]) {
         font-size: 1rem;
         font-weight: 400;
         margin-bottom: 0;
-        max-width: 500px;
-        margin-left: auto;
-        margin-right: auto;
+    }
+
+    .page-hero-desc strong {
+        color: var(--worn-gold);
     }
 
     /* ═══ SEASON NAV ═══ */
@@ -220,7 +230,7 @@ function countDefenses(matches: any[]) {
         display: flex;
         gap: 0.5rem;
         justify-content: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
         flex-wrap: wrap;
     }
 
@@ -236,7 +246,6 @@ function countDefenses(matches: any[]) {
         color: var(--text-secondary);
         cursor: pointer;
         transition: all 0.2s ease;
-        position: relative;
     }
 
     .tab-year {
@@ -258,17 +267,17 @@ function countDefenses(matches: any[]) {
     .season-tab:hover {
         background: var(--parchment);
         color: var(--text-primary);
-        border-color: var(--worn-gold);
+        border-color: var(--burgundy);
     }
 
     .season-tab.active {
-        background: var(--pitch-green);
-        color: var(--worn-gold);
-        border-color: var(--pitch-green);
+        background: var(--burgundy);
+        color: var(--faded-white);
+        border-color: var(--burgundy);
     }
 
     .season-tab.active .tab-count {
-        color: rgba(201, 168, 76, 0.6);
+        color: rgba(245, 237, 214, 0.6);
     }
 
     /* ═══ SEASON SECTION ═══ */
@@ -308,20 +317,20 @@ function countDefenses(matches: any[]) {
     }
 
     .season-year {
-        color: var(--worn-gold);
+        color: var(--burgundy);
         font-size: 1.6rem;
     }
 
     .season-stats {
         display: flex;
-        gap: 0.75rem;
+        gap: 1.25rem;
     }
 
     .mini-stat {
         display: flex;
         flex-direction: column;
         align-items: center;
-        padding: 0.3rem 0.5rem;
+        padding: 0.3rem 0.6rem;
         background: var(--faded-white);
         border: 1px solid var(--border-vintage);
         border-radius: 3px;
@@ -330,16 +339,16 @@ function countDefenses(matches: any[]) {
     .mini-stat-num {
         font-family: var(--font-display);
         font-size: 1.4rem;
-        color: var(--worn-gold);
+        color: var(--burgundy);
         line-height: 1;
     }
 
     .mini-stat-label {
         font-family: var(--font-body);
-        font-size: 0.5rem;
+        font-size: 0.55rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.1em;
         color: var(--text-muted);
     }
 
@@ -351,7 +360,7 @@ function countDefenses(matches: any[]) {
 
     /* ═══ RESPONSIVE ═══ */
     @media (max-width: 640px) {
-        .page-hero {
+        .milad-hero {
             padding: 2rem 1rem;
         }
 

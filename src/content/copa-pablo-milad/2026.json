@@ -1,0 +1,31 @@
+{
+  "year": 2026,
+  "matches": [
+    {
+      "type": "seeding",
+      "date": "2026-01-01",
+      "holderId": "deportes-puerto-montt",
+      "reason": "Campeón Segunda División 2025 (Ascendido a Liga de Ascenso)"
+    },
+    {
+      "type": "match",
+      "date": "2026-01-31",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "deportes-puerto-montt",
+      "challengerId": "deportes-temuco",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-puerto-montt"
+    },
+    {
+      "type": "match",
+      "date": "2026-02-07",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "deportes-puerto-montt",
+      "challengerId": "deportes-temuco",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-puerto-montt"
+    }
+  ]
+}

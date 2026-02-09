@@ -1,0 +1,21 @@
+{
+  "year": 2025,
+  "matches": [
+    {
+      "type": "seeding",
+      "date": "2025-01-01",
+      "holderId": "CLUB_ID_AQUI",
+      "reason": "Razon del sembrado (ej: Campeón Torneo Nacional 2024)"
+    },
+    {
+      "type": "match",
+      "date": "2025-01-30",
+      "competition": "Copa Chile · Fase de Grupos",
+      "holderId": "CLUB_POSEEDOR",
+      "challengerId": "CLUB_RETADOR",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "CLUB_QUE_QUEDA_CON_TITULO"
+    }
+  ]
+}

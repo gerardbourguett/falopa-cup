@@ -1,0 +1,5 @@
+{
+  "enabledPlugins": {
+    "voltagent-dev-exp@voltagent-subagents": true
+  }
+}
