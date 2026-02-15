@@ -50,6 +50,26 @@
       "scoreHolder": 0,
       "scoreChallenger": 3,
       "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2026-02-15",
+      "competition": "Liga de Primera · Fecha 3",
+      "holderId": "audax-italiano",
+      "challengerId": "nublense",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "nublense"
+    },
+    {
+      "type": "match",
+      "date": "2026-02-20",
+      "competition": "Liga de Primera · Fecha 4 POR JUGAR",
+      "holderId": "nublense",
+      "challengerId": "union-la-calera",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "nublense"
     }
   ]
 }
