@@ -64,12 +64,22 @@
     {
       "type": "match",
       "date": "2026-02-20",
-      "competition": "Liga de Primera · Fecha 4 POR JUGAR",
+      "competition": "Liga de Primera · Fecha 4",
       "holderId": "nublense",
       "challengerId": "union-la-calera",
       "scoreHolder": 0,
       "scoreChallenger": 0,
       "newHolderId": "nublense"
-    }
+    },
+    {
+      "type": "match",
+      "date": "2026-02-20",
+      "competition": "Liga de Primera · Fecha 5",
+      "holderId": "nublense",
+      "challengerId": "universidad-catolica",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": ""
+    },
   ]
 }
