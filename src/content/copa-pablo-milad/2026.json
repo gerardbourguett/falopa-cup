@@ -26,6 +26,36 @@
       "scoreHolder": 1,
       "scoreChallenger": 2,
       "newHolderId": "deportes-puerto-montt"
-    }
+    },
+    {
+      "type": "match",
+      "date": "2026-02-22",
+      "competition": "Liga de Ascenso - Fecha 1",
+      "holderId": "deportes-puerto-montt",
+      "challengerId": "deportes-copiapo",
+      "scoreHolder": 2,
+      "scoreChallenger": 0,
+      "newHolderId": "deportes-copiapo"
+    },
+    {
+      "type": "match",
+      "date": "2026-02-28",
+      "competition": "Liga de Ascenso - Fecha 2",
+      "holderId": "deportes-copiapo",
+      "challengerId": "rangers",
+      "scoreHolder": 2,
+      "scoreChallenger": 0,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-02-28",
+      "competition": "Liga de Ascenso - Fecha 3",
+      "holderId": "rangers",
+      "challengerId": "san-luis",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": ""
+    },
   ]
 }
