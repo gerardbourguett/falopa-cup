@@ -3,86 +3,96 @@ const today = new Date();
 ---
 
 <footer>
-	<div class="footer-stripe"></div>
-	<div class="footer-content">
-		<div class="footer-brand">
-			<span class="footer-icon">&#9917;</span>
-			<span class="footer-title">Falopa Cup</span>
-		</div>
-		<p class="footer-tagline">El campeon no oficial del futbol chileno desde 2025</p>
-		<div class="footer-divider"></div>
-		<p class="footer-copy">&copy; {today.getFullYear()} Falopa Cup. Ningun derecho reservado.</p>
-	</div>
-	<div class="footer-stripe"></div>
+  <div class="footer-content">
+    <div class="footer-brand">
+      <div class="brand-icon">
+        <img src="/favicon.png" alt="" class="brand-logo" aria-hidden="true" />
+      </div>
+      <div class="brand-text">
+        <span class="brand-title">FALOPA CUP</span>
+        <span class="brand-subtitle">Campeonato No Oficial desde 2025</span>
+      </div>
+    </div>
+
+    <p class="footer-copy">
+      © {today.getFullYear()} Falopa Cup. Ningún derecho reservado.
+    </p>
+  </div>
 </footer>
 
 <style>
-	footer {
-		margin-top: 3rem;
-		background: var(--pitch-green-dark);
-		color: var(--aged-cream);
-		position: relative;
-	}
+  footer {
+    background: #000000;
+    border-top: 3px solid var(--color-liga-primera);
+    margin-top: 4rem;
+  }
 
-	.footer-stripe {
-		height: 4px;
-		background: repeating-linear-gradient(
-			90deg,
-			var(--worn-gold) 0px,
-			var(--worn-gold) 20px,
-			var(--pitch-green) 20px,
-			var(--pitch-green) 24px
-		);
-	}
+  .footer-content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+    text-align: center;
+  }
 
-	.footer-content {
-		max-width: 960px;
-		margin: 0 auto;
-		padding: 2.5rem 1.5rem;
-		text-align: center;
-	}
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
 
-	.footer-brand {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		margin-bottom: 0.5rem;
-	}
+  .brand-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+  }
 
-	.footer-icon {
-		font-size: 1.2rem;
-		filter: grayscale(0.3);
-	}
+  .brand-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 
-	.footer-title {
-		font-family: var(--font-display);
-		font-size: 1.1rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		color: var(--worn-gold);
-	}
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-	.footer-tagline {
-		font-size: 0.75rem;
-		color: rgba(245, 237, 214, 0.4);
-		text-transform: uppercase;
-		letter-spacing: 0.15em;
-		margin: 0;
-	}
+  .brand-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-liga-primera);
+    letter-spacing: 0.05em;
+  }
 
-	.footer-divider {
-		width: 60px;
-		height: 1px;
-		background: rgba(201, 168, 76, 0.3);
-		margin: 1.25rem auto;
-	}
+  .brand-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: #888888;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
 
-	.footer-copy {
-		font-size: 0.7rem;
-		color: rgba(245, 237, 214, 0.3);
-		margin: 0;
-		letter-spacing: 0.05em;
-	}
+  .footer-copy {
+    font-size: 0.75rem;
+    color: #666666;
+    margin: 0;
+  }
+
+  @media (max-width: 600px) {
+    .footer-brand {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .brand-text {
+      align-items: center;
+    }
+  }
 </style>

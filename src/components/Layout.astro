@@ -1,0 +1,25 @@
+---
+import BaseHead from './BaseHead.astro';
+import { Navigation } from './Navigation';
+import Footer from './Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  currentPath?: string;
+}
+
+const { title, description, currentPath = '/' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
+  <body>
+    <Navigation currentPath={currentPath} />
+    <slot />
+    <Footer />
+  </body>
+</html>

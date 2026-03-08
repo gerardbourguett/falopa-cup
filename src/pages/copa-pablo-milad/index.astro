@@ -1,14 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
-import Header from '../../components/Header.astro';
-import MatchCard from '../../components/MatchCard.astro';
-import Palmares from '../../components/Palmares.astro';
-import { SITE_TITLE } from '../../consts';
+import { getCollection } from "astro:content";
+import Layout from "../../components/Layout.astro";
+import MatchCard from "../../components/MatchCard.astro";
+import Palmares from "../../components/Palmares.astro";
+import { SITE_TITLE } from "../../consts";
 
-const cupEntries = await getCollection('copa-pablo-milad');
-const clubsEntries = await getCollection('clubs');
+const cupEntries = await getCollection("copa-pablo-milad");
+const clubsEntries = await getCollection("clubs");
 
 const clubById = new Map(clubsEntries.map((e) => [e.data.id || e.id, e.data]));
 
@@ -26,396 +24,426 @@ const seasons = cupEntries
 const currentSeason = seasons[0];
 
 // All matches for palmarés
-const allMatches = seasons.flatMap(s => s.matches);
+const allMatches = seasons.flatMap((s) => s.matches);
 
 function countTitleChanges(matches: any[]) {
-  return matches.filter(m => m.type === 'match' && m.newHolderId && m.newHolderId !== m.holderId).length;
+  return matches.filter(
+    (m) => m.type === "match" && m.newHolderId && m.newHolderId !== m.holderId,
+  ).length;
 }
 
 function countHolders(matches: any[]) {
-  return new Set(matches.filter(m => m.newHolderId).map(m => m.newHolderId)).size;
+  return new Set(matches.filter((m) => m.newHolderId).map((m) => m.newHolderId))
+    .size;
 }
 
 function countDefenses(matches: any[]) {
-  return matches.filter(m => m.type === 'match' && m.newHolderId === m.holderId).length;
+  return matches.filter(
+    (m) => m.type === "match" && m.newHolderId === m.holderId,
+  ).length;
 }
+
+function getChampionId(matches: any[]): string | undefined {
+  for (let i = matches.length - 1; i >= 0; i--) {
+    if (matches[i].newHolderId) return matches[i].newHolderId;
+    if (matches[i].holderId) return matches[i].holderId;
+  }
+  return undefined;
+}
+
+const currentHolder = currentSeason
+  ? getChampionId(currentSeason.matches)
+  : undefined;
 ---
 
 <!doctype html>
 <html lang="es">
-    <head>
-        <BaseHead title={`Copa Pablo Milad — ${SITE_TITLE}`} description="Historial de la Copa Pablo Milad, el torneo de la tina del futbol chileno." />
-    </head>
-    <body>
-        <Header />
+  <head>
+    <Layout
+      title={`Copa Pablo Milad — ${SITE_TITLE}`}
+      description="Historial de la Copa Pablo Milad, el titulo del mas malo bajo la regla de la tina."
+      currentPath="/copa-pablo-milad"
+    >
+      <!-- Page Hero -->
+      <section class="page-hero milad-hero">
+        <div class="hero-pattern"></div>
+        <div class="page-hero-inner">
+          <div class="page-hero-label">El Más Malo de los Malos</div>
+          <h1 class="page-hero-title">Copa Pablo Milad</h1>
+          <p class="page-hero-desc">
+            Una Copa que nadie quiere: este titulo premia al mas malo. Solo
+            cambia si el defensor <strong>gana</strong>; si empata o pierde, lo
+            conserva.
+          </p>
+        </div>
+      </section>
 
-        <!-- Page Hero -->
-        <section class="page-hero milad-hero">
-            <div class="hero-pattern"></div>
-            <div class="page-hero-inner">
-                <div class="page-hero-label">El Juego de la Tina</div>
-                <h1 class="page-hero-title">Copa Pablo Milad</h1>
-                <p class="page-hero-desc">
-                    Como el juego de la tina: el titulo solo cambia si el defensor <strong>gana</strong>. Los empates no afectan al poseedor.
-                </p>
-            </div>
-        </section>
+      <main class="container">
+        <!-- Palmarés -->
+        <Palmares
+          allMatches={allMatches}
+          clubs={clubById}
+          accentColor="burgundy"
+          currentHolderId={currentHolder}
+        />
 
-        <main>
-            <!-- Palmarés -->
-            <Palmares allMatches={allMatches} clubs={clubById} accentColor="burgundy" />
+        <!-- Season Tabs -->
+        <nav class="season-nav" id="season-nav-milad">
+          {
+            seasons.map((season) => (
+              <button
+                type="button"
+                class:list={[
+                  "season-tab",
+                  { active: season.year === currentSeason?.year },
+                ]}
+                data-year={season.year}
+              >
+                <span class="tab-year">{season.year}</span>
+                <span class="tab-count">{season.matches.length} P</span>
+              </button>
+            ))
+          }
+        </nav>
 
-            <!-- Season Tabs -->
-            <nav class="season-nav" id="season-nav-milad">
-                {seasons.map((season) => (
-                    <button
-                        type="button"
-                        class:list={['season-tab', { active: season.year === currentSeason?.year }]}
-                        data-year={season.year}
-                    >
-                        <span class="tab-year">{season.year}</span>
-                        <span class="tab-count">{season.matches.length} P</span>
-                    </button>
+        <!-- Seasons -->
+        {
+          seasons.map((season) => (
+            <section
+              id={`season-${season.year}`}
+              class:list={[
+                "season-section",
+                { hidden: season.year !== currentSeason?.year },
+              ]}
+              data-season-milad={season.year}
+            >
+              <div class="season-header">
+                <h2 class="season-title">
+                  <span class="season-year">Temporada {season.year}</span>
+                </h2>
+                <div class="season-stats">
+                  <div class="mini-stat">
+                    <span class="mini-stat-num">{season.matches.length}</span>
+                    <span class="mini-stat-label">Partidos</span>
+                  </div>
+                  <div class="mini-stat">
+                    <span class="mini-stat-num">
+                      {countTitleChanges(season.matches)}
+                    </span>
+                    <span class="mini-stat-label">Cambios</span>
+                  </div>
+                  <div class="mini-stat">
+                    <span class="mini-stat-num">
+                      {countDefenses(season.matches)}
+                    </span>
+                    <span class="mini-stat-label">Defensas</span>
+                  </div>
+                  <div class="mini-stat">
+                    <span class="mini-stat-num">
+                      {countHolders(season.matches)}
+                    </span>
+                    <span class="mini-stat-label">Poseedores</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="matches-list">
+                {season.matches.map((match: any, index: number) => (
+                  <MatchCard
+                    match={match}
+                    clubs={clubById}
+                    index={index}
+                    accentColor="burgundy"
+                  />
                 ))}
-            </nav>
+              </div>
+            </section>
+          ))
+        }
+      </main>
+    </Layout>
 
-            <!-- Seasons -->
-            {seasons.map((season) => (
-                <section
-                    id={`season-${season.year}`}
-                    class:list={['season-section', { hidden: season.year !== currentSeason?.year }]}
-                    data-season-milad={season.year}
-                >
-                    <div class="season-header">
-                        <h2 class="season-title">
-                            <span class="season-year">Temporada {season.year}</span>
-                        </h2>
-                        <div class="season-stats">
-                            <div class="mini-stat">
-                                <span class="mini-stat-num">{season.matches.length}</span>
-                                <span class="mini-stat-label">Partidos</span>
-                            </div>
-                            <div class="mini-stat">
-                                <span class="mini-stat-num">{countTitleChanges(season.matches)}</span>
-                                <span class="mini-stat-label">Cambios</span>
-                            </div>
-                            <div class="mini-stat">
-                                <span class="mini-stat-num">{countDefenses(season.matches)}</span>
-                                <span class="mini-stat-label">Defensas</span>
-                            </div>
-                            <div class="mini-stat">
-                                <span class="mini-stat-num">{countHolders(season.matches)}</span>
-                                <span class="mini-stat-label">Poseedores</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="matches-list">
-                        {season.matches.map((match: any, index: number) => (
-                            <MatchCard match={match} clubs={clubById} index={index} accentColor="burgundy" />
-                        ))}
-                    </div>
-                </section>
-            ))}
-        </main>
-
-        <Footer />
-    </body>
-</html>
-
-<script>
-    function initMiladTabs() {
-        const nav = document.getElementById('season-nav-milad');
+    <script>
+      function initMiladTabs() {
+        const nav = document.getElementById("season-nav-milad");
         if (!nav) return;
 
-        const tabs = nav.querySelectorAll<HTMLButtonElement>('.season-tab');
-        const sections = document.querySelectorAll<HTMLElement>('[data-season-milad]');
+        const tabs = nav.querySelectorAll<HTMLButtonElement>(".season-tab");
+        const sections = document.querySelectorAll<HTMLElement>(
+          "[data-season-milad]",
+        );
 
         function showSeason(year: string) {
-            tabs.forEach(t => t.classList.toggle('active', t.dataset.year === year));
-            sections.forEach(s => {
-                const isTarget = s.dataset.seasonMilad === year;
-                s.classList.toggle('hidden', !isTarget);
-            });
-            history.replaceState(null, '', `#${year}`);
+          tabs.forEach((t) =>
+            t.classList.toggle("active", t.dataset.year === year),
+          );
+          sections.forEach((s) => {
+            const isTarget = s.dataset.seasonMilad === year;
+            s.classList.toggle("hidden", !isTarget);
+          });
+          history.replaceState(null, "", `#${year}`);
         }
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                if (tab.dataset.year) showSeason(tab.dataset.year);
-            });
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            if (tab.dataset.year) showSeason(tab.dataset.year);
+          });
         });
 
         // Check URL hash on load
-        const hash = window.location.hash.replace('#', '');
+        const hash = window.location.hash.replace("#", "");
         if (hash && document.querySelector(`[data-season-milad="${hash}"]`)) {
-            showSeason(hash);
+          showSeason(hash);
         }
-    }
+      }
 
-    initMiladTabs();
-    document.addEventListener('astro:after-swap', initMiladTabs);
-</script>
+      initMiladTabs();
+      document.addEventListener("astro:after-swap", initMiladTabs);
+    </script>
 
-<style>
-    /* ═══ MILAD HERO ═══ */
-    .milad-hero {
+    <style>
+      /* ═══ MILAD HERO ═══ */
+      .milad-hero {
         padding: 3.5rem 1.5rem;
         text-align: center;
         position: relative;
         overflow: hidden;
-        background-color: var(--burgundy);
-        background-image:
-            repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 40px,
-                rgba(255, 255, 255, 0.03) 40px,
-                rgba(255, 255, 255, 0.03) 41px
-            );
-        color: var(--aged-cream);
-    }
+        background-color: #000000;
+        border-bottom: 3px solid var(--color-liga-ascenso);
+        color: #ffffff;
+      }
 
-    .hero-pattern {
+      .hero-pattern {
         position: absolute;
         inset: 0;
-        background:
-            radial-gradient(circle at 50% 50%, transparent 80px, rgba(0,0,0,0.12) 81px, transparent 82px);
+        background: radial-gradient(
+          circle at 50% 50%,
+          transparent 80px,
+          rgba(255, 0, 0, 0.08) 81px,
+          transparent 82px
+        );
         pointer-events: none;
-    }
+      }
 
-    .page-hero-inner {
+      .page-hero-inner {
         max-width: 700px;
         margin: 0 auto;
         position: relative;
         z-index: 1;
-    }
+      }
 
-    .page-hero-label {
+      .page-hero-label {
         font-family: var(--font-display);
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.35em;
-        color: var(--worn-gold);
+        color: var(--color-liga-ascenso);
         opacity: 0.9;
         margin-bottom: 0.4rem;
-    }
+      }
 
-    .page-hero-title {
+      .page-hero-title {
         font-size: 4.5rem;
-        color: var(--faded-white);
-        text-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+        color: #ffffff;
         margin-bottom: 0.75rem;
-        background: linear-gradient(180deg, #faf7f0 30%, var(--worn-gold));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
         letter-spacing: 0.08em;
-    }
+      }
 
-    .page-hero-desc {
-        color: rgba(245, 237, 214, 0.6);
+      .page-hero-desc {
+        color: #cccccc;
         font-family: var(--font-body);
         font-size: 1rem;
         font-weight: 400;
         margin-bottom: 0;
-    }
+      }
 
-    .page-hero-desc strong {
-        color: var(--worn-gold);
-    }
+      .page-hero-desc strong {
+        color: var(--color-liga-ascenso);
+      }
 
-    /* ═══ SEASON NAV ═══ */
-    .season-nav {
+      /* ═══ SEASON NAV ═══ */
+      .season-nav {
         display: flex;
         gap: 0.5rem;
         justify-content: center;
         margin-bottom: 2rem;
         flex-wrap: wrap;
-    }
+      }
 
-    .season-tab {
+      .season-tab {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 0;
         padding: 0.5rem 1.5rem;
-        background: var(--faded-white);
-        border: 2px solid var(--border-vintage);
-        border-radius: 3px;
-        color: var(--text-secondary);
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-bg-elevated);
+        border-radius: 8px;
+        color: var(--color-text-secondary);
         cursor: pointer;
         transition: all 0.2s ease;
-    }
+      }
 
-    .tab-year {
+      .tab-year {
         font-family: var(--font-display);
         font-size: 1.4rem;
         letter-spacing: 0.05em;
         line-height: 1;
-    }
+      }
 
-    .tab-count {
+      .tab-count {
         font-family: var(--font-body);
         font-size: 0.6rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.1em;
-        color: var(--text-muted);
-    }
+        color: var(--color-text-muted);
+      }
 
-    .season-tab:hover {
-        background: var(--parchment);
-        color: var(--text-primary);
-        border-color: var(--burgundy);
-    }
+      .season-tab:hover {
+        background: var(--color-bg-tertiary);
+        color: var(--color-text-primary);
+        border-color: var(--color-liga-ascenso);
+      }
 
-    .season-tab.active {
-        background: var(--burgundy);
-        color: var(--faded-white);
-        border-color: var(--burgundy);
-    }
+      .season-tab.active {
+        background: var(--color-bg-tertiary);
+        color: var(--color-liga-ascenso);
+        border-color: var(--color-liga-ascenso);
+      }
 
-    .season-tab.active .tab-count {
-        color: rgba(245, 237, 214, 0.6);
-    }
+      .season-tab.active .tab-count {
+        color: var(--color-liga-ascenso);
+        opacity: 0.7;
+      }
 
-    /* ═══ SEASON SECTION ═══ */
-    .season-section {
+      /* ═══ SEASON SECTION ═══ */
+      .season-section {
         margin-bottom: 3rem;
-    }
+      }
 
-    .season-section.hidden {
+      .season-section.hidden {
         display: none;
-    }
+      }
 
-    .season-header {
+      .season-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 1.25rem;
-        padding-bottom: 0.75rem;
-        border-bottom: 3px solid var(--border-vintage);
-        position: relative;
-    }
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--color-bg-elevated);
+      }
 
-    .season-header::after {
-        content: "";
-        position: absolute;
-        bottom: -6px;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: var(--border-vintage);
-    }
-
-    .season-title {
+      .season-title {
         display: flex;
         align-items: baseline;
         gap: 0.75rem;
         margin: 0;
-    }
+      }
 
-    .season-year {
-        color: var(--burgundy);
+      .season-year {
+        color: var(--color-liga-ascenso);
         font-size: 1.6rem;
-    }
+      }
 
-    .season-stats {
+      .season-stats {
         display: flex;
         gap: 1.25rem;
-    }
+      }
 
-    .mini-stat {
+      .mini-stat {
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 0.3rem 0.6rem;
-        background: var(--faded-white);
-        border: 1px solid var(--border-vintage);
+        background: var(--color-bg-secondary);
+        border: 1px solid var(--color-bg-elevated);
         border-radius: 3px;
-    }
+      }
 
-    .mini-stat-num {
+      .mini-stat-num {
         font-family: var(--font-display);
         font-size: 1.4rem;
-        color: var(--burgundy);
+        color: var(--color-liga-ascenso);
         line-height: 1;
-    }
+      }
 
-    .mini-stat-label {
+      .mini-stat-label {
         font-family: var(--font-body);
         font-size: 0.55rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.1em;
-        color: var(--text-muted);
-    }
+        color: var(--color-text-muted);
+      }
 
-    .matches-list {
+      .matches-list {
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
-    }
+      }
 
-    /* ═══ RESPONSIVE ═══ */
-    @media (max-width: 640px) {
+      /* ═══ RESPONSIVE ═══ */
+      @media (max-width: 640px) {
         .milad-hero {
-            padding: 2rem 1rem;
+          padding: 2rem 1rem;
         }
 
         .page-hero-label {
-            font-size: 0.7rem;
-            letter-spacing: 0.2em;
+          font-size: 0.7rem;
+          letter-spacing: 0.2em;
         }
 
         .page-hero-title {
-            font-size: 2.8rem;
+          font-size: 2.8rem;
         }
 
         .page-hero-desc {
-            font-size: 0.9rem;
+          font-size: 0.9rem;
         }
 
         .season-nav {
-            gap: 0.35rem;
+          gap: 0.35rem;
         }
 
         .season-tab {
-            padding: 0.4rem 1rem;
+          padding: 0.4rem 1rem;
         }
 
         .tab-year {
-            font-size: 1.2rem;
+          font-size: 1.2rem;
         }
 
         .season-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 0.5rem;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
         }
 
         .season-year {
-            font-size: 1.3rem;
+          font-size: 1.3rem;
         }
 
         .season-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 0.35rem;
-            width: 100%;
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 0.35rem;
+          width: 100%;
         }
 
         .mini-stat {
-            padding: 0.25rem 0.3rem;
+          padding: 0.25rem 0.3rem;
         }
 
         .mini-stat-num {
-            font-size: 1.1rem;
+          font-size: 1.1rem;
         }
 
         .mini-stat-label {
-            font-size: 0.45rem;
+          font-size: 0.45rem;
         }
-    }
-</style>
+      }
+    </style>
+  </head>
+</html>

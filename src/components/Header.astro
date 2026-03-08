@@ -1,259 +1,277 @@
 ---
-import { SITE_TITLE } from '../consts';
-import HeaderLink from './HeaderLink.astro';
+import { SITE_TITLE } from "../consts";
+import HeaderLink from "./HeaderLink.astro";
 ---
 
 <header>
-	<div class="header-stripe-top"></div>
-	<div class="header-top">
-		<div class="header-content">
-			<div class="brand">
-				<a href="/" class="brand-link">
-					<div class="brand-crest">
-						<span class="crest-year">EST. 2025</span>
-						<span class="crest-icon">&#9917;</span>
-					</div>
-					<div class="brand-text">
-						<span class="brand-title">{SITE_TITLE}</span>
-						<span class="brand-subtitle">El Campeon No Oficial del Futbol Chileno</span>
-					</div>
-				</a>
-			</div>
-		</div>
-	</div>
-	<nav>
-		<div class="nav-inner">
-			<div class="nav-links">
-				<HeaderLink href="/">Inicio</HeaderLink>
-				<span class="nav-dot">&bull;</span>
-				<HeaderLink href="/falopa-cup">Falopa Cup</HeaderLink>
-				<span class="nav-dot">&bull;</span>
-				<HeaderLink href="/copa-pablo-milad">Copa Milad</HeaderLink>
-				<span class="nav-dot">&bull;</span>
-				<HeaderLink href="/blog">Blog</HeaderLink>
-				<span class="nav-dot">&bull;</span>
-				<HeaderLink href="/about">Acerca</HeaderLink>
-			</div>
-		</div>
-	</nav>
-	<div class="header-stripe-bottom"></div>
+  <div class="header-stripe-top"></div>
+  <div class="header-top">
+    <div class="header-content">
+      <div class="brand">
+        <a href="/" class="brand-link">
+          <div class="brand-crest">
+            <span class="crest-icon">
+              <img
+                src="/favicon.png"
+                alt=""
+                class="crest-logo"
+                aria-hidden="true"
+              />
+            </span>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">{SITE_TITLE}</span>
+            <span class="brand-subtitle"
+              >Campeon No Oficial + Copa Del Mas Malo</span
+            >
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-links">
+        <HeaderLink href="/">Inicio</HeaderLink>
+        <span class="nav-dot">&bull;</span>
+        <HeaderLink href="/falopa-cup">Falopa Cup</HeaderLink>
+        <span class="nav-dot">&bull;</span>
+        <HeaderLink href="/copa-pablo-milad">Copa Milad</HeaderLink>
+        <span class="nav-dot">&bull;</span>
+        <HeaderLink href="/blog">Blog</HeaderLink>
+        <span class="nav-dot">&bull;</span>
+        <HeaderLink href="/about">Acerca</HeaderLink>
+      </div>
+    </div>
+  </nav>
+  <div class="header-stripe-bottom"></div>
 </header>
 
 <style>
-	header {
-		margin: 0;
-		background: var(--pitch-green-dark);
-		position: relative;
-	}
+  header {
+    margin: 0;
+    background: var(--color-bg-primary);
+    position: relative;
+  }
 
-	.header-stripe-top,
-	.header-stripe-bottom {
-		height: 6px;
-		background: repeating-linear-gradient(
-			90deg,
-			var(--worn-gold) 0px,
-			var(--worn-gold) 12px,
-			transparent 12px,
-			transparent 16px,
-			var(--worn-gold) 16px,
-			var(--worn-gold) 28px,
-			transparent 28px,
-			transparent 32px
-		);
-	}
+  .header-stripe-top,
+  .header-stripe-bottom {
+    height: 6px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--color-liga-primera) 0px,
+      var(--color-liga-primera) 12px,
+      transparent 12px,
+      transparent 16px,
+      var(--color-liga-primera) 16px,
+      var(--color-liga-primera) 28px,
+      transparent 28px,
+      transparent 32px
+    );
+  }
 
-	.header-stripe-bottom {
-		height: 3px;
-		background: var(--worn-gold);
-	}
+  .header-stripe-bottom {
+    height: 3px;
+    background: var(--color-liga-primera);
+  }
 
-	.header-top {
-		position: relative;
-		background:
-			radial-gradient(circle at 15% 50%, rgba(201, 168, 76, 0.06) 0%, transparent 50%),
-			radial-gradient(circle at 85% 50%, rgba(201, 168, 76, 0.04) 0%, transparent 50%);
-	}
+  .header-top {
+    position: relative;
+    background: #000000;
+    border-bottom: 1px solid var(--color-bg-elevated);
+  }
 
-	.header-content {
-		padding: 1.5rem;
-		max-width: 960px;
-		margin: 0 auto;
-		text-align: center;
-	}
+  .header-content {
+    padding: 1.5rem;
+    max-width: 960px;
+    margin: 0 auto;
+    text-align: center;
+  }
 
-	.brand {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
+  .brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-	.brand-link {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		text-decoration: none;
-		color: var(--aged-cream);
-	}
+  .brand-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--color-text-primary);
+  }
 
-	.brand-link:hover {
-		color: var(--worn-gold);
-	}
+  .brand-link:hover {
+    color: var(--color-liga-primera);
+  }
 
-	.brand-crest {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 0;
-		width: 48px;
-		height: 48px;
-		border: 2px solid var(--worn-gold);
-		border-radius: 50%;
-		justify-content: center;
-		flex-shrink: 0;
-		position: relative;
-	}
+  .brand-crest {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 48px;
+    height: 48px;
+    border: 2px solid var(--color-liga-primera);
+    border-radius: 50%;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+    background: var(--color-liga-primera);
+  }
 
-	.crest-year {
-		font-family: var(--font-display);
-		font-size: 0.45rem;
-		letter-spacing: 0.15em;
-		color: var(--worn-gold);
-		position: absolute;
-		top: 3px;
-	}
+  .crest-year {
+    font-family: var(--font-display);
+    font-size: 0.45rem;
+    letter-spacing: 0.15em;
+    color: var(--color-bg-primary);
+    position: absolute;
+    top: 3px;
+  }
 
-	.crest-icon {
-		font-size: 1.3rem;
-		margin-top: 2px;
-		filter: grayscale(0.3);
-	}
+  .crest-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    width: 20px;
+    height: 20px;
+  }
 
-	.brand-text {
-		display: flex;
-		flex-direction: column;
-	}
+  .crest-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: brightness(0);
+  }
 
-	.brand-title {
-		font-family: var(--font-display);
-		font-size: 2.8rem;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		line-height: 1;
-		color: var(--worn-gold);
-		text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-	}
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+  }
 
-	.brand-subtitle {
-		font-family: var(--font-body);
-		font-size: 0.7rem;
-		font-weight: 600;
-		letter-spacing: 0.25em;
-		text-transform: uppercase;
-		color: rgba(245, 237, 214, 0.45);
-		margin-top: 0.1rem;
-	}
+  .brand-title {
+    font-family: var(--font-display);
+    font-size: 2.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1;
+    color: var(--color-liga-primera);
+  }
 
-	nav {
-		background: var(--pitch-green);
-		border-top: 1px solid rgba(201, 168, 76, 0.2);
-	}
+  .brand-subtitle {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #888888;
+    margin-top: 0.1rem;
+  }
 
-	.nav-inner {
-		max-width: 960px;
-		margin: 0 auto;
-		padding: 0 1.5rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
+  nav {
+    background: #111111;
+    border-top: 2px solid var(--color-liga-primera);
+  }
 
-	.nav-links {
-		display: flex;
-		align-items: center;
-		gap: 0;
-	}
+  .nav-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-	.nav-dot {
-		color: rgba(201, 168, 76, 0.3);
-		font-size: 0.5rem;
-		padding: 0 0.2rem;
-	}
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
 
-	.nav-links :global(a) {
-		display: inline-block;
-		padding: 0.75rem 1rem;
-		color: var(--aged-cream);
-		font-family: var(--font-display);
-		font-size: 1.05rem;
-		text-transform: uppercase;
-		letter-spacing: 0.12em;
-		text-decoration: none;
-		border-bottom: 3px solid transparent;
-		transition: all 0.2s ease;
-		position: relative;
-	}
+  .nav-dot {
+    color: var(--color-text-muted);
+    font-size: 0.5rem;
+    padding: 0 0.2rem;
+  }
 
-	.nav-links :global(a:hover) {
-		color: var(--worn-gold);
-		background: rgba(255, 255, 255, 0.05);
-	}
+  .nav-links :global(a) {
+    display: inline-block;
+    padding: 0.75rem 1rem;
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    position: relative;
+  }
 
-	.nav-links :global(a.active) {
-		color: var(--worn-gold);
-		border-bottom-color: var(--worn-gold);
-		background: rgba(201, 168, 76, 0.08);
-		text-decoration: none;
-	}
+  .nav-links :global(a:hover) {
+    color: var(--color-liga-primera);
+    background: #222222;
+  }
 
-	@media (max-width: 768px) {
-		.header-content {
-			padding: 1rem;
-		}
+  .nav-links :global(a.active) {
+    color: var(--color-liga-primera);
+    border-bottom-color: var(--color-liga-primera);
+    background: #222222;
+    text-decoration: none;
+  }
 
-		.brand-title {
-			font-size: 2rem;
-		}
+  @media (max-width: 768px) {
+    .header-content {
+      padding: 1rem;
+    }
 
-		.brand-subtitle {
-			font-size: 0.55rem;
-			letter-spacing: 0.12em;
-		}
+    .brand-title {
+      font-size: 2rem;
+    }
 
-		.brand-crest {
-			width: 38px;
-			height: 38px;
-		}
+    .brand-subtitle {
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+    }
 
-		.crest-icon {
-			font-size: 1rem;
-		}
+    .brand-crest {
+      width: 38px;
+      height: 38px;
+    }
 
-		.crest-year {
-			font-size: 0.35rem;
-		}
+    .crest-icon {
+      width: 16px;
+      height: 16px;
+    }
 
-		.nav-inner {
-			padding: 0 0.5rem;
-		}
+    .crest-year {
+      font-size: 0.35rem;
+    }
 
-		.nav-links {
-			overflow-x: auto;
-			-webkit-overflow-scrolling: touch;
-			scrollbar-width: none;
-		}
+    .nav-inner {
+      padding: 0 0.5rem;
+    }
 
-		.nav-links::-webkit-scrollbar {
-			display: none;
-		}
+    .nav-links {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
 
-		.nav-links :global(a) {
-			padding: 0.6rem 0.6rem;
-			font-size: 0.85rem;
-			white-space: nowrap;
-		}
+    .nav-links::-webkit-scrollbar {
+      display: none;
+    }
 
-		.nav-dot {
-			display: none;
-		}
-	}
+    .nav-links :global(a) {
+      padding: 0.6rem 0.6rem;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .nav-dot {
+      display: none;
+    }
+  }
 </style>
