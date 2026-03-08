@@ -2,4 +2,4 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_TITLE = "Falopa Cup";
-export const SITE_DESCRIPTION = "El Campeón NO oficial del fútbol chileno";
+export const SITE_DESCRIPTION = "Campeon no oficial del futbol chileno y copa del mas malo";
