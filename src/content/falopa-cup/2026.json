@@ -73,13 +73,23 @@
     },
     {
       "type": "match",
-      "date": "2026-02-20",
+      "date": "2026-03-01",
       "competition": "Liga de Primera · Fecha 5",
       "holderId": "nublense",
       "challengerId": "universidad-catolica",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "universidad-catolica"
+    },
+    {
+      "type": "match",
+      "date": "2026-02-20",
+      "competition": "Liga de Primera · Fecha 5",
+      "holderId": "universidad-catolica",
+      "challengerId": "ohiggins",
       "scoreHolder": 0,
-      "scoreChallenger": 0,
-      "newHolderId": ""
+      "scoreChallenger": 1,
+      "newHolderId": "ohiggins"
     }
   ]
 }
