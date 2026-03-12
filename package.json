@@ -7,7 +7,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "script:next": "tsx scripts/next-match.ts"
+    "script:next": "tsx scripts/next-match.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "astro check",
+    "precheck": "vitest run"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.7",
@@ -15,7 +19,8 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "tsx": "^4.19.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
   },
   "dependencies": {
     "@ark-ui/react": "^5.34.1",

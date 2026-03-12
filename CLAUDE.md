@@ -12,8 +12,35 @@ This is an Astro-based website for tracking two unofficial Chilean football tour
 pnpm dev          # Start local dev server at localhost:4321
 pnpm build        # Build production site to ./dist/
 pnpm preview      # Preview build locally
-pnpm astro check  # Run Astro type checking
+pnpm test         # Run unit tests (Vitest)
+pnpm test:watch   # Run tests in watch mode
+pnpm check        # Run astro check (automatically runs tests first via precheck)
 ```
+
+## Pre-Push Protocol
+
+Before every `git push`, run in this order:
+
+```bash
+pnpm test         # 1. Unit tests — must be 100% green
+pnpm check        # 2. Type checking — only pre-existing errors allowed (MatchCard + Palmares ts(1002))
+```
+
+### Known pre-existing type errors (do NOT fix unless explicitly working on those components)
+- `src/components/MatchCard.astro:420` — `ts(1002)` Unterminated string literal (false positive)
+- `src/components/Palmares.astro:333` — `ts(1002)` Unterminated string literal (false positive)
+
+These errors existed before the project was set up and do not affect the build or runtime.
+
+### What each check covers
+
+| Check | Command | Covers |
+|-------|---------|--------|
+| Unit tests | `pnpm test` | `src/lib/tournament.ts` — `getCurrentHolder`, `getHolderChain`, `resolveClub` |
+| Type check | `pnpm check` | All `.astro`, `.ts`, `.tsx` files |
+
+### Test files
+- `src/lib/tournament.test.ts` — 17 tests for core tournament logic
 
 ## Architecture
 
