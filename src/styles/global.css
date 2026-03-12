@@ -72,9 +72,9 @@ a {
 
 /* ── Utility Classes ── */
 .container {
-  max-width: 900px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 2rem;
 }
 
 /* ── Selection ── */
