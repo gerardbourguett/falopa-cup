@@ -1,102 +1,140 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
+import Layout from '../components/Layout.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<'blog'>['data'] & { currentPath?: string };
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, currentPath = '/blog' } = Astro.props;
 ---
 
-<html lang="es">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2rem);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 0;
-				max-height: 400px;
-				width: 100%;
-				object-fit: cover;
-			}
-			.prose {
-				width: 720px;
-				max-width: calc(100% - 2rem);
-				margin: auto;
-				padding: 1.5rem 1rem;
-				color: var(--color-text-primary);
-			}
-			.article-header {
-				margin-bottom: 2rem;
-				padding-bottom: 1.5rem;
-				border-bottom: 3px solid var(--color-bg-elevated);
-				text-align: center;
-			}
-			.article-date {
-				font-size: 0.7rem;
-				color: var(--color-text-muted);
-				text-transform: uppercase;
-				letter-spacing: 0.15em;
-				margin-bottom: 0.5rem;
-			}
-			.article-title {
-				font-family: var(--font-display);
-				font-size: 2.5rem;
-				font-weight: 700;
-				text-transform: uppercase;
-				color: var(--color-text-primary);
-				line-height: 1.1;
-				margin: 0 0 0.5rem 0;
-			}
-			.last-updated-on {
-				font-style: italic;
-				font-size: 0.75rem;
-				color: var(--color-text-muted);
-			}
-
-			@media (max-width: 768px) {
-				.article-title {
-					font-size: 1.8rem;
-				}
-			}
-		</style>
-	</head>
-
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose">
-					<div class="article-header">
-						<div class="article-date">
-							<FormattedDate date={pubDate} />
-							{updatedDate && (
-								<div class="last-updated-on">
-									Actualizado: <FormattedDate date={updatedDate} />
-								</div>
-							)}
+<Layout title={title} description={description} currentPath={currentPath}>
+	<article>
+		<div class="hero-image">
+			{heroImage && <Image width={1280} height={480} src={heroImage} alt="" />}
+		</div>
+		<div class="prose">
+			<div class="article-header">
+				<div class="article-date">
+					<FormattedDate date={pubDate} />
+					{updatedDate && (
+						<div class="last-updated-on">
+							Actualizado: <FormattedDate date={updatedDate} />
 						</div>
-						<h1 class="article-title">{title}</h1>
-					</div>
-					<slot />
+					)}
 				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
-</html>
+				<h1 class="article-title">{title}</h1>
+			</div>
+			<slot />
+		</div>
+	</article>
+</Layout>
+
+<style>
+	.hero-image {
+		width: 100%;
+		max-height: 400px;
+		overflow: hidden;
+	}
+
+	.hero-image img {
+		display: block;
+		width: 100%;
+		max-height: 400px;
+		object-fit: cover;
+	}
+
+	.prose {
+		width: 720px;
+		max-width: calc(100% - 4rem);
+		margin: 0 auto;
+		padding: 2rem 0;
+		color: var(--color-text-primary);
+	}
+
+	.article-header {
+		margin-bottom: 2rem;
+		padding-bottom: 1.5rem;
+		border-bottom: 3px solid var(--color-bg-elevated);
+		text-align: center;
+	}
+
+	.article-date {
+		font-size: 0.7rem;
+		color: var(--color-text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.15em;
+		margin-bottom: 0.5rem;
+	}
+
+	.article-title {
+		font-family: var(--font-display);
+		font-size: 2.5rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		color: var(--color-text-primary);
+		line-height: 1.1;
+		margin: 0 0 0.5rem 0;
+	}
+
+	.last-updated-on {
+		font-style: italic;
+		font-size: 0.75rem;
+		color: var(--color-text-muted);
+	}
+
+	/* Prose typography */
+	.prose :global(p) {
+		margin: 0 0 1.25rem;
+		line-height: 1.7;
+		color: var(--color-text-secondary);
+	}
+
+	.prose :global(h2) {
+		font-size: 1.5rem;
+		margin: 2rem 0 0.75rem;
+		color: var(--color-text-primary);
+	}
+
+	.prose :global(h3) {
+		font-size: 1.2rem;
+		margin: 1.5rem 0 0.5rem;
+		color: var(--color-text-primary);
+	}
+
+	.prose :global(ul),
+	.prose :global(ol) {
+		padding-left: 1.5rem;
+		margin: 0 0 1.25rem;
+		color: var(--color-text-secondary);
+		line-height: 1.7;
+	}
+
+	.prose :global(li) {
+		margin-bottom: 0.4rem;
+	}
+
+	.prose :global(strong) {
+		color: var(--color-text-primary);
+	}
+
+	.prose :global(a) {
+		color: var(--color-liga-primera);
+		text-decoration: underline;
+	}
+
+	.prose :global(a:hover) {
+		color: var(--color-liga-ascenso);
+	}
+
+	@media (max-width: 768px) {
+		.article-title {
+			font-size: 1.8rem;
+		}
+
+		.prose {
+			max-width: calc(100% - 2rem);
+		}
+	}
+</style>
