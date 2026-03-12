@@ -2,9 +2,10 @@
 import Layout from "../components/Layout.astro";
 import { Hero } from "../components/Hero";
 import { ChampionCard } from "../components/ChampionCard";
+import HolderChain from "../components/HolderChain.astro";
 import { getCollection } from "astro:content";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
-import { getCurrentHolder } from "../lib/tournament";
+import { getCurrentHolder, getHolderChain } from "../lib/tournament";
 
 const falopaCupEntries = await getCollection("falopa-cup");
 const copaPabloMiladEntries = await getCollection("copa-pablo-milad");
@@ -34,6 +35,10 @@ const falopaClub = getClub(falopaHolder?.holderId);
 const miladClub = getClub(miladHolder?.holderId);
 const falopaYear = latestFalopa?.data.year ?? 2026;
 const miladYear = latestMilad?.data.year ?? 2026;
+
+// Holder chains for #concepto section (show last 5 entries max)
+const falopaChain = latestFalopa ? getHolderChain(latestFalopa.data.matches) : [];
+const miladChain = latestMilad ? getHolderChain(latestMilad.data.matches) : [];
 
 function formatSinceDate(match: any) {
   if (!match?.date) return "";
@@ -111,27 +116,31 @@ function formatSinceDate(match: any) {
           </p>
         </div>
 
-        <div class="concepto-chain" aria-label="Ejemplo de cadena de poseedores 2026">
-          <div class="chain-item">
-            <img src="/logos/coquimbo-unido.png" alt="Coquimbo Unido" class="chain-logo" width="48" height="48" />
-            <span class="chain-name">COQUIMBO<br/>UNIDO</span>
-            <span class="chain-date">1 ene</span>
+        <div class="concepto-chains">
+          <div class="concepto-chain-block">
+            <span class="concepto-chain-label">FALOPA CUP {falopaYear}</span>
+            <HolderChain
+              chain={falopaChain}
+              clubs={clubById}
+              accentColor="gold"
+              maxVisible={5}
+              compact={true}
+            />
           </div>
-          <div class="chain-arrow" aria-hidden="true">→</div>
-          <div class="chain-item">
-            <img src="/logos/universidad-de-concepcion.png" alt="Universidad de Concepción" class="chain-logo" width="48" height="48" />
-            <span class="chain-name">U. DE<br/>CONCEPCIÓN</span>
-            <span class="chain-date">31 ene</span>
+
+          <div class="concepto-chain-block">
+            <span class="concepto-chain-label">COPA PABLO MILAD {miladYear}</span>
+            <HolderChain
+              chain={miladChain}
+              clubs={clubById}
+              accentColor="burgundy"
+              maxVisible={5}
+              compact={true}
+            />
           </div>
-          <div class="chain-arrow" aria-hidden="true">→</div>
-          <div class="chain-item">
-            <img src="/logos/audax-italiano.png" alt="Audax Italiano" class="chain-logo" width="48" height="48" />
-            <span class="chain-name">AUDAX<br/>ITALIANO</span>
-            <span class="chain-date">6 feb</span>
-          </div>
-          <div class="chain-arrow chain-arrow-more" aria-hidden="true">···</div>
         </div>
-        <p class="concepto-caption">Cadena de poseedores · Falopa Cup 2026</p>
+
+        <p class="concepto-caption">Cadena de poseedores · temporada {falopaYear}</p>
       </div>
     </div>
   </section>
@@ -303,65 +312,31 @@ function formatSinceDate(match: any) {
     color: var(--color-liga-primera-dim);
   }
 
-  /* Chain */
-  .concepto-chain {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    padding: 1.25rem;
-    background: var(--color-bg-secondary);
-    border: 2px solid var(--color-bg-elevated);
-    border-left: 4px solid var(--color-liga-primera);
+  .concepto-chains {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
   }
 
-  .chain-item {
+  @media (max-width: 640px) {
+    .concepto-chains {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .concepto-chain-block {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 0.35rem;
-    min-width: 72px;
+    gap: 0.5rem;
   }
 
-  .chain-logo {
-    object-fit: contain;
-    background: var(--color-bg-elevated);
-    padding: 4px;
-  }
-
-  .chain-name {
+  .concepto-chain-label {
     font-family: var(--font-display);
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
-    text-align: center;
-    color: var(--color-text-primary);
-    line-height: 1.2;
-  }
-
-  .chain-date {
-    font-family: var(--font-scoreboard);
-    font-size: 0.6rem;
+    letter-spacing: 0.12em;
     color: var(--color-text-muted);
-    background: var(--color-bg-elevated);
-    padding: 0.1rem 0.35rem;
-    letter-spacing: 0.05em;
-  }
-
-  .chain-arrow {
-    font-family: var(--font-scoreboard);
-    font-size: 1.5rem;
-    color: var(--color-liga-primera);
-    flex-shrink: 0;
-    line-height: 1;
-    align-self: center;
-    margin-bottom: 1.4rem; /* visual alignment with logo row */
-  }
-
-  .chain-arrow-more {
-    font-size: 1rem;
-    letter-spacing: 0.1em;
-    color: var(--color-text-muted);
+    text-transform: uppercase;
   }
 
   .concepto-caption {
@@ -371,27 +346,5 @@ function formatSinceDate(match: any) {
     margin: -1rem 0 0 0;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-  }
-
-  @media (max-width: 480px) {
-    .concepto-chain {
-      gap: 0.5rem;
-      padding: 1rem;
-      overflow-x: auto;
-      flex-wrap: nowrap;
-    }
-
-    .chain-item {
-      min-width: 60px;
-    }
-
-    .chain-logo {
-      width: 40px;
-      height: 40px;
-    }
-
-    .chain-arrow {
-      font-size: 1.1rem;
-    }
   }
 </style>

@@ -41,6 +41,12 @@ export interface ResolvedClub {
   unresolvedName?: string;
 }
 
+export interface HolderChainEntry {
+  holderId: string;
+  since: string | Date;
+  until: string | Date | null; // null = current holder
+}
+
 // ─── Functions ───────────────────────────────────────────────────────────────
 
 /**
@@ -57,6 +63,42 @@ export function getCurrentHolder(matches: MatchEntry[]): HolderResult | null {
     if (m.type === 'seeding' && m.holderId) return { holderId: m.holderId, match: m };
   }
   return null;
+}
+
+/**
+ * Builds the ordered chain of unique consecutive holders from a list of matches.
+ * Each entry represents a "reign": who held the title, from when, until when.
+ * The last entry always has until=null (current holder).
+ *
+ * Matches are sorted chronologically. A new entry is created every time
+ * the holderId changes (i.e. newHolderId differs from the previous holder).
+ * Seeding entries establish the initial holder.
+ */
+export function getHolderChain(matches: MatchEntry[]): HolderChainEntry[] {
+  const sorted = [...matches].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  const chain: HolderChainEntry[] = [];
+
+  for (const m of sorted) {
+    const effectiveHolder = m.newHolderId || (m.type === 'seeding' ? m.holderId : undefined);
+    if (!effectiveHolder) continue;
+
+    const last = chain[chain.length - 1];
+
+    if (!last) {
+      // First entry
+      chain.push({ holderId: effectiveHolder, since: m.date, until: null });
+    } else if (last.holderId !== effectiveHolder) {
+      // Holder changed — close previous reign, open new one
+      last.until = m.date;
+      chain.push({ holderId: effectiveHolder, since: m.date, until: null });
+    }
+    // Same holder keeps reigning — no new entry needed
+  }
+
+  return chain;
 }
 
 /**

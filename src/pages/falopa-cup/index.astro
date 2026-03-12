@@ -3,7 +3,9 @@ import { getCollection } from "astro:content";
 import Layout from "../../components/Layout.astro";
 import MatchCard from "../../components/MatchCard.astro";
 import Palmares from "../../components/Palmares.astro";
+import HolderChain from "../../components/HolderChain.astro";
 import { SITE_TITLE } from "../../consts";
+import { getHolderChain } from "../../lib/tournament";
 
 const cupEntries = await getCollection("falopa-cup");
 const clubsEntries = await getCollection("clubs");
@@ -220,6 +222,21 @@ const currentHolder = currentSeason
               </div>
             </div>
           </div>
+
+          {/* Holder Chain for this season */}
+          {(() => {
+            const chain = getHolderChain(season.allUniqueMatches);
+            return chain.length > 0 ? (
+              <div class="season-chain">
+                <HolderChain
+                  chain={chain}
+                  clubs={clubById}
+                  accentColor="gold"
+                  caption={`Cadena de poseedores · Falopa Cup ${season.year}`}
+                />
+              </div>
+            ) : null;
+          })()}
 
           {season.branches ? (
             <>
@@ -550,6 +567,10 @@ const currentHolder = currentSeason
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--color-text-muted);
+  }
+
+  .season-chain {
+    margin-bottom: 1.5rem;
   }
 
   .matches-list {
