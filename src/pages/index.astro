@@ -4,6 +4,7 @@ import { Hero } from "../components/Hero";
 import { ChampionCard } from "../components/ChampionCard";
 import { getCollection } from "astro:content";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import { getCurrentHolder } from "../lib/tournament";
 
 const falopaCupEntries = await getCollection("falopa-cup");
 const copaPabloMiladEntries = await getCollection("copa-pablo-milad");
@@ -17,18 +18,6 @@ const latestFalopa = falopaCupEntries.sort(
 const latestMilad = copaPabloMiladEntries.sort(
   (a, b) => b.data.year - a.data.year,
 )[0];
-
-function getCurrentHolder(matches: any[]) {
-  const sorted = [...matches].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
-  for (const m of sorted) {
-    if (m.newHolderId) return { holderId: m.newHolderId, match: m };
-    if (m.type === "seeding" && m.holderId)
-      return { holderId: m.holderId, match: m };
-  }
-  return null;
-}
 
 const falopaHolder = latestFalopa
   ? getCurrentHolder(latestFalopa.data.matches)
@@ -102,6 +91,47 @@ function formatSinceDate(match: any) {
           accentColor="burgundy"
           href="/copa-pablo-milad"
         />
+      </div>
+    </div>
+  </section>
+
+  <!-- Concepto Section -->
+  <section id="concepto" class="concepto-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">EL CONCEPTO</span>
+      </div>
+
+      <div class="concepto-body">
+        <div class="concepto-text">
+          <h2 class="concepto-title">¿QUÉ ES UN CAMPEONATO ITINERANTE?</h2>
+          <p class="concepto-desc">
+            En el <a href="https://en.wikipedia.org/wiki/Unofficial_Football_World_Championships" target="_blank" rel="noopener" class="concepto-link">Campeonato Mundial No Oficial</a>, el título no se gana en un torneo: se toma en la cancha. El campeón lo defiende en cada partido, y si pierde, el título pasa al rival. Así el trofeo viaja de club en club a lo largo de la temporada.
+            Nosotros aplicamos el mismo principio al fútbol chileno — cada jornada, alguien tiene algo más que tres puntos en juego.
+          </p>
+        </div>
+
+        <div class="concepto-chain" aria-label="Ejemplo de cadena de poseedores 2026">
+          <div class="chain-item">
+            <img src="/logos/coquimbo-unido.png" alt="Coquimbo Unido" class="chain-logo" width="48" height="48" />
+            <span class="chain-name">COQUIMBO<br/>UNIDO</span>
+            <span class="chain-date">1 ene</span>
+          </div>
+          <div class="chain-arrow" aria-hidden="true">→</div>
+          <div class="chain-item">
+            <img src="/logos/universidad-de-concepcion.png" alt="Universidad de Concepción" class="chain-logo" width="48" height="48" />
+            <span class="chain-name">U. DE<br/>CONCEPCIÓN</span>
+            <span class="chain-date">31 ene</span>
+          </div>
+          <div class="chain-arrow" aria-hidden="true">→</div>
+          <div class="chain-item">
+            <img src="/logos/audax-italiano.png" alt="Audax Italiano" class="chain-logo" width="48" height="48" />
+            <span class="chain-name">AUDAX<br/>ITALIANO</span>
+            <span class="chain-date">6 feb</span>
+          </div>
+          <div class="chain-arrow chain-arrow-more" aria-hidden="true">···</div>
+        </div>
+        <p class="concepto-caption">Cadena de poseedores · Falopa Cup 2026</p>
       </div>
     </div>
   </section>
@@ -231,5 +261,137 @@ function formatSinceDate(match: any) {
 
   .rule-text strong {
     color: var(--color-liga-primera);
+  }
+
+  /* ── Concepto ── */
+  .concepto-section {
+    background: var(--color-bg-primary);
+    border-top: 3px solid var(--color-bg-elevated);
+    border-bottom: 3px solid var(--color-bg-elevated);
+    padding: 3rem 0;
+  }
+
+  .concepto-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .concepto-title {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--color-text-primary);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .concepto-desc {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.75;
+    margin: 0;
+    max-width: 680px;
+  }
+
+  .concepto-link {
+    color: var(--color-liga-primera);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .concepto-link:hover {
+    color: var(--color-liga-primera-dim);
+  }
+
+  /* Chain */
+  .concepto-chain {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    padding: 1.25rem;
+    background: var(--color-bg-secondary);
+    border: 2px solid var(--color-bg-elevated);
+    border-left: 4px solid var(--color-liga-primera);
+  }
+
+  .chain-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    min-width: 72px;
+  }
+
+  .chain-logo {
+    object-fit: contain;
+    background: var(--color-bg-elevated);
+    padding: 4px;
+  }
+
+  .chain-name {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-align: center;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+  }
+
+  .chain-date {
+    font-family: var(--font-scoreboard);
+    font-size: 0.6rem;
+    color: var(--color-text-muted);
+    background: var(--color-bg-elevated);
+    padding: 0.1rem 0.35rem;
+    letter-spacing: 0.05em;
+  }
+
+  .chain-arrow {
+    font-family: var(--font-scoreboard);
+    font-size: 1.5rem;
+    color: var(--color-liga-primera);
+    flex-shrink: 0;
+    line-height: 1;
+    align-self: center;
+    margin-bottom: 1.4rem; /* visual alignment with logo row */
+  }
+
+  .chain-arrow-more {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
+  }
+
+  .concepto-caption {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin: -1rem 0 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 480px) {
+    .concepto-chain {
+      gap: 0.5rem;
+      padding: 1rem;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+    }
+
+    .chain-item {
+      min-width: 60px;
+    }
+
+    .chain-logo {
+      width: 40px;
+      height: 40px;
+    }
+
+    .chain-arrow {
+      font-size: 1.1rem;
+    }
   }
 </style>

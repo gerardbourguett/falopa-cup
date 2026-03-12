@@ -25,3 +25,8 @@ pnpm-debug.log*
 
 # worktrees
 .worktrees/
+
+# stray installer files
+public/logos/*.exe
+public/logos/*.winmd
+nul
