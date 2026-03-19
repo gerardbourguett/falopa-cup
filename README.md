@@ -1,62 +1,89 @@
-# Astro Starter Kit: Blog
+# Falopa Cup
+
+Sitio web para el seguimiento de dos campeonatos no oficiales del fútbol chileno: la **Falopa Cup** y la **Copa Pablo Milad**. Basado en el concepto del [Campeonato Mundial No Oficial (UFWC)](https://en.wikipedia.org/wiki/Unofficial_Football_World_Championships).
+
+## Concepto
+
+El título no se gana en un torneo — se toma en la cancha. El poseedor lo defiende en cada partido oficial, y si lo pierde (según las reglas de cada copa), el título pasa al rival.
+
+- **Falopa Cup**: el título cambia si el defensor pierde. Los empates no transfieren.
+- **Copa Pablo Milad**: el título solo cambia si el defensor **gana**. Si pierde o empata, sigue con él (es la copa del más malo).
+
+## Comandos
 
 ```sh
-pnpm create astro@latest -- --template blog
+pnpm install      # Instala dependencias
+pnpm dev          # Servidor local en localhost:4321
+pnpm build        # Build de producción en ./dist/
+pnpm preview      # Preview del build
+pnpm astro check  # Verificación de tipos TypeScript
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Agregar un partido
 
-Features:
+En lugar de editar JSON a mano, usá el CLI interactivo:
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+```sh
+pnpm script:next
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+El CLI te guía paso a paso:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+1. Seleccioná el torneo (Falopa Cup o Copa Pablo Milad)
+2. Ingresá el nombre de la competición (ej. `Liga de Primera · Fecha 12`)
+3. Seleccioná el equipo rival de la lista de clubes
+4. Ingresá el marcador
+5. Si es empate, podés ingresar penales
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+El CLI calcula automáticamente `newHolderId` según las reglas de cada torneo e imprime el JSON listo para pegar en el archivo de la temporada.
 
-Any static assets, like images, can be placed in the `public/` directory.
+```sh
+# Con flag directo (sin prompt de torneo):
+pnpm script:next -- --tournament falopa-cup
+pnpm script:next -- -t copa-pablo-milad
+```
 
-## 🧞 Commands
+El JSON se imprime en **stdout** — nunca escribe archivos automáticamente.
 
-All commands are run from the root of the project, from a terminal:
+### ¿Dónde pego el JSON?
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+En el archivo JSON de la temporada correspondiente:
 
-## 👀 Want to learn more?
+- `src/content/falopa-cup/YYYY.json`
+- `src/content/copa-pablo-milad/YYYY.json`
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Cada archivo tiene un array `matches` — agregá el objeto al final.
 
-## Credit
+## Estructura del proyecto
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+```
+src/
+├── components/        # Componentes Astro y React
+├── content/
+│   ├── clubs/         # Info de cada club (id, nombre, logo)
+│   ├── falopa-cup/    # Datos por temporada (JSON)
+│   └── copa-pablo-milad/
+├── lib/
+│   └── tournament.ts  # Lógica pura compartida (getCurrentHolder, etc.)
+├── pages/             # Rutas del sitio
+└── styles/
+    └── global.css     # Tokens de diseño (Tailwind v4 CSS-first)
+scripts/
+└── next-match.ts      # CLI interactivo para ingresar partidos
+```
+
+## Agregar un club nuevo
+
+Creá un archivo JSON en `src/content/clubs/nombre-club.json`:
+
+```json
+{
+  "id": "nombre-club",
+  "name": "Nombre Completo del Club",
+  "shortName": "Nombre Corto",
+  "stadium": "Nombre del Estadio",
+  "logo": "/logos/nombre-club.svg"
+}
+```
+
+Y agregá el logo SVG (o PNG) en `public/logos/`.

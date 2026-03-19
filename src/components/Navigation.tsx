@@ -15,9 +15,9 @@ export function Navigation({ currentPath = '/' }: { currentPath?: string }) {
       zIndex: 100,
     }}>
       <div style={{
-        maxWidth: '900px',
+        maxWidth: '1280px',
         margin: '0 auto',
-        padding: '0.75rem 1rem',
+        padding: '0.75rem 2rem',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',

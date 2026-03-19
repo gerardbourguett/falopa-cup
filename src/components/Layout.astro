@@ -9,7 +9,7 @@ interface Props {
   currentPath?: string;
 }
 
-const { title, description, currentPath = '/' } = Astro.props;
+const { title, description = '', currentPath = '/' } = Astro.props;
 ---
 
 <!doctype html>

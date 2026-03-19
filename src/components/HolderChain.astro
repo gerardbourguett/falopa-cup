@@ -1,0 +1,238 @@
+---
+/**
+ * HolderChain — visual timeline of title holders.
+ * Used in both the homepage #concepto section and in tournament history pages.
+ *
+ * Props:
+ *  - chain: HolderChainEntry[]  (from getHolderChain())
+ *  - clubs: Map<string, ClubData>
+ *  - accentColor: 'gold' | 'burgundy'  (Falopa Cup = gold, Copa Pablo Milad = burgundy)
+ *  - caption: string  (e.g. "Cadena de poseedores · Falopa Cup 2026")
+ *  - maxVisible?: number  (truncate to N entries + "···" indicator; 0 = show all)
+ *  - compact?: boolean  (smaller logos for homepage widget vs full-page view)
+ */
+import type { HolderChainEntry, ClubData } from '../lib/tournament';
+
+interface Props {
+  chain: HolderChainEntry[];
+  clubs: Map<string, ClubData>;
+  accentColor?: 'gold' | 'burgundy';
+  caption?: string;
+  maxVisible?: number;
+  compact?: boolean;
+}
+
+const {
+  chain,
+  clubs,
+  accentColor = 'gold',
+  caption,
+  maxVisible = 0,
+  compact = false,
+} = Astro.props;
+
+const accentVar = accentColor === 'gold' ? 'var(--color-liga-primera)' : 'var(--color-liga-ascenso)';
+
+const visible = maxVisible > 0 ? chain.slice(0, maxVisible) : chain;
+const truncated = maxVisible > 0 && chain.length > maxVisible;
+
+function fmtDate(d: string | Date | null): string {
+  if (!d) return 'Hoy';
+  const date = d instanceof Date ? d : new Date(d);
+  return date.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+}
+---
+
+<div class:list={['holder-chain', { compact }]} style={`--accent: ${accentVar};`}>
+  {visible.map((entry, i) => {
+    const club = clubs.get(entry.holderId);
+    const isCurrent = entry.until === null;
+    const logoSize = compact ? 40 : 52;
+
+    return (
+      <div class:list={['chain-reign', { current: isCurrent }]}>
+        {/* Arrow between reigns (not before the first) */}
+        {i > 0 && (
+          <div class="chain-arrow" aria-hidden="true">→</div>
+        )}
+
+        <div class="reign-item">
+          <div class="reign-logo-wrap">
+            {club?.logo
+              ? <img
+                  src={club.logo}
+                  alt={club.shortName ?? club.name}
+                  class="reign-logo"
+                  width={logoSize}
+                  height={logoSize}
+                />
+              : <div class="reign-logo-placeholder">?</div>
+            }
+            {isCurrent && <span class="current-badge" aria-label="Poseedor actual">●</span>}
+          </div>
+          <span class="reign-name">{club?.shortName ?? entry.holderId}</span>
+          <span class="reign-dates">
+            {fmtDate(entry.since)}
+            {!isCurrent && ` → ${fmtDate(entry.until)}`}
+          </span>
+        </div>
+      </div>
+    );
+  })}
+
+  {truncated && (
+    <div class="chain-arrow chain-more" aria-hidden="true">···</div>
+  )}
+</div>
+
+{caption && <p class="chain-caption">{caption}</p>}
+
+<style>
+  .holder-chain {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 1.25rem;
+    background: var(--color-bg-secondary);
+    border: 2px solid var(--color-bg-elevated);
+    border-left: 4px solid var(--accent);
+    overflow-x: auto;
+  }
+
+  .holder-chain.compact {
+    padding: 1rem;
+    gap: 0.2rem;
+  }
+
+  .chain-reign {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .chain-arrow {
+    font-family: var(--font-scoreboard);
+    font-size: 1.4rem;
+    color: var(--accent);
+    flex-shrink: 0;
+    line-height: 1;
+    align-self: flex-start;
+    margin-top: 0.75rem; /* align with logo row */
+    padding: 0 0.15rem;
+  }
+
+  .chain-more {
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    color: var(--color-text-muted);
+    align-self: flex-start;
+    margin-top: 0.9rem;
+  }
+
+  .reign-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 64px;
+    max-width: 80px;
+  }
+
+  .holder-chain.compact .reign-item {
+    min-width: 56px;
+  }
+
+  .reign-logo-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .reign-logo {
+    object-fit: contain;
+    background: var(--color-bg-elevated);
+    padding: 4px;
+  }
+
+  .holder-chain.compact .reign-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .reign-logo-placeholder {
+    width: 52px;
+    height: 52px;
+    background: var(--color-bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--color-text-muted);
+  }
+
+  .current-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 0.55rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .reign-name {
+    font-family: var(--font-display);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-align: center;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .chain-reign.current .reign-name {
+    color: var(--accent);
+  }
+
+  .reign-dates {
+    font-family: var(--font-scoreboard);
+    font-size: 0.55rem;
+    color: var(--color-text-muted);
+    background: var(--color-bg-elevated);
+    padding: 0.1rem 0.3rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  .chain-caption {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin: 0.4rem 0 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 480px) {
+    .holder-chain {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 0.85rem;
+    }
+
+    .reign-item {
+      min-width: 52px;
+    }
+
+    .reign-logo {
+      width: 36px !important;
+      height: 36px !important;
+    }
+
+    .chain-arrow {
+      font-size: 1.1rem;
+    }
+  }
+</style>

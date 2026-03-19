@@ -2,8 +2,10 @@
 import Layout from "../components/Layout.astro";
 import { Hero } from "../components/Hero";
 import { ChampionCard } from "../components/ChampionCard";
+import HolderChain from "../components/HolderChain.astro";
 import { getCollection } from "astro:content";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+import { getCurrentHolder, getHolderChain } from "../lib/tournament";
 
 const falopaCupEntries = await getCollection("falopa-cup");
 const copaPabloMiladEntries = await getCollection("copa-pablo-milad");
@@ -17,18 +19,6 @@ const latestFalopa = falopaCupEntries.sort(
 const latestMilad = copaPabloMiladEntries.sort(
   (a, b) => b.data.year - a.data.year,
 )[0];
-
-function getCurrentHolder(matches: any[]) {
-  const sorted = [...matches].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
-  for (const m of sorted) {
-    if (m.newHolderId) return { holderId: m.newHolderId, match: m };
-    if (m.type === "seeding" && m.holderId)
-      return { holderId: m.holderId, match: m };
-  }
-  return null;
-}
 
 const falopaHolder = latestFalopa
   ? getCurrentHolder(latestFalopa.data.matches)
@@ -45,6 +35,10 @@ const falopaClub = getClub(falopaHolder?.holderId);
 const miladClub = getClub(miladHolder?.holderId);
 const falopaYear = latestFalopa?.data.year ?? 2026;
 const miladYear = latestMilad?.data.year ?? 2026;
+
+// Holder chains for #concepto section (show last 5 entries max)
+const falopaChain = latestFalopa ? getHolderChain(latestFalopa.data.matches) : [];
+const miladChain = latestMilad ? getHolderChain(latestMilad.data.matches) : [];
 
 function formatSinceDate(match: any) {
   if (!match?.date) return "";
@@ -102,6 +96,51 @@ function formatSinceDate(match: any) {
           accentColor="burgundy"
           href="/copa-pablo-milad"
         />
+      </div>
+    </div>
+  </section>
+
+  <!-- Concepto Section -->
+  <section id="concepto" class="concepto-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-label">EL CONCEPTO</span>
+      </div>
+
+      <div class="concepto-body">
+        <div class="concepto-text">
+          <h2 class="concepto-title">¿QUÉ ES UN CAMPEONATO ITINERANTE?</h2>
+          <p class="concepto-desc">
+            En el <a href="https://en.wikipedia.org/wiki/Unofficial_Football_World_Championships" target="_blank" rel="noopener" class="concepto-link">Campeonato Mundial No Oficial</a>, el título no se gana en un torneo: se toma en la cancha. El campeón lo defiende en cada partido, y si pierde, el título pasa al rival. Así el trofeo viaja de club en club a lo largo de la temporada.
+            Nosotros aplicamos el mismo principio al fútbol chileno — cada jornada, alguien tiene algo más que tres puntos en juego.
+          </p>
+        </div>
+
+        <div class="concepto-chains">
+          <div class="concepto-chain-block">
+            <span class="concepto-chain-label">FALOPA CUP {falopaYear}</span>
+            <HolderChain
+              chain={falopaChain}
+              clubs={clubById}
+              accentColor="gold"
+              maxVisible={5}
+              compact={true}
+            />
+          </div>
+
+          <div class="concepto-chain-block">
+            <span class="concepto-chain-label">COPA PABLO MILAD {miladYear}</span>
+            <HolderChain
+              chain={miladChain}
+              clubs={clubById}
+              accentColor="burgundy"
+              maxVisible={5}
+              compact={true}
+            />
+          </div>
+        </div>
+
+        <p class="concepto-caption">Cadena de poseedores · temporada {falopaYear}</p>
       </div>
     </div>
   </section>
@@ -231,5 +270,81 @@ function formatSinceDate(match: any) {
 
   .rule-text strong {
     color: var(--color-liga-primera);
+  }
+
+  /* ── Concepto ── */
+  .concepto-section {
+    background: var(--color-bg-primary);
+    border-top: 3px solid var(--color-bg-elevated);
+    border-bottom: 3px solid var(--color-bg-elevated);
+    padding: 3rem 0;
+  }
+
+  .concepto-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .concepto-title {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: var(--color-text-primary);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .concepto-desc {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    line-height: 1.75;
+    margin: 0;
+    max-width: 680px;
+  }
+
+  .concepto-link {
+    color: var(--color-liga-primera);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .concepto-link:hover {
+    color: var(--color-liga-primera-dim);
+  }
+
+  .concepto-chains {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .concepto-chains {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .concepto-chain-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .concepto-chain-label {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .concepto-caption {
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    margin: -1rem 0 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
   }
 </style>
