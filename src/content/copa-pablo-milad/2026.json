@@ -49,13 +49,33 @@
     },
     {
       "type": "match",
-      "date": "2026-02-28",
+      "date": "2026-03-07",
       "competition": "Liga de Ascenso - Fecha 3",
       "holderId": "rangers",
       "challengerId": "san-luis-de-quillota",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-03-15",
+      "competition": "Liga de Ascenso - Fecha 3",
+      "holderId": "rangers",
+      "challengerId": "curico-unido",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-03-22",
+      "competition": "Liga de Ascenso - Fecha 4",
+      "holderId": "rangers",
+      "challengerId": "deportes-recoleta",
       "scoreHolder": 0,
       "scoreChallenger": 0,
-      "newHolderId": ""
+      "newHolderId": "rangers"
     }
   ]
 }

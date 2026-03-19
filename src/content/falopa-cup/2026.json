@@ -84,11 +84,31 @@
     {
       "type": "match",
       "date": "2026-03-07",
-      "competition": "Liga de Primera · Fecha 5",
+      "competition": "Liga de Primera · Fecha 6",
       "holderId": "universidad-catolica",
       "challengerId": "ohiggins",
       "scoreHolder": 0,
       "scoreChallenger": 1,
+      "newHolderId": "ohiggins"
+    },
+    {
+      "type": "match",
+      "date": "2026-03-16",
+      "competition": "Liga de Primera · Fecha 7",
+      "holderId": "ohiggins",
+      "challengerId": "union-la-calera",
+      "scoreHolder": 3,
+      "scoreChallenger": 3,
+      "newHolderId": "ohiggins"
+    },
+    {
+      "type": "match",
+      "date": "2026-03-22",
+      "competition": "Copa de La Liga · Fecha 1",
+      "holderId": "ohiggins",
+      "challengerId": "deportes-limache",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
       "newHolderId": "ohiggins"
     }
   ]
