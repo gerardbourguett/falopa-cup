@@ -73,8 +73,18 @@
       "competition": "Liga de Ascenso - Fecha 4",
       "holderId": "rangers",
       "challengerId": "deportes-recoleta",
-      "scoreHolder": 0,
-      "scoreChallenger": 0,
+      "scoreHolder": 2,
+      "scoreChallenger": 4,
+      "newHolderId": "rangers"
+    },
+{
+      "type": "match",
+      "date": "2026-03-30",
+      "competition": "Liga de Ascenso - Fecha 5",
+      "holderId": "rangers",
+      "challengerId": "magallanes",
+      "scoreHolder": 2,
+      "scoreChallenger": 3,
       "newHolderId": "rangers"
     }
   ]
