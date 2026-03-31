@@ -107,7 +107,27 @@
       "competition": "Copa de La Liga · Fecha 1",
       "holderId": "ohiggins",
       "challengerId": "deportes-limache",
-      "scoreHolder": 0,
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "ohiggins"
+    },
+{
+      "type": "match",
+      "date": "2026-03-27",
+      "competition": "Copa de La Liga · Fecha 2",
+      "holderId": "ohiggins",
+      "challengerId": "everton",
+      "scoreHolder": 2,
+      "scoreChallenger": 0,
+      "newHolderId": "ohiggins"
+    },
+{
+      "type": "match",
+      "date": "2026-03-30",
+      "competition": "Copa de La Liga · Fecha 3",
+      "holderId": "ohiggins",
+      "challengerId": "palestino",
+      "scoreHolder": 1,
       "scoreChallenger": 0,
       "newHolderId": "ohiggins"
     }
