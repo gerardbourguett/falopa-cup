@@ -1,0 +1,255 @@
+.matchCard {
+  opacity: 0;
+  transform: translateY(10px);
+  border: 1px solid var(--color-bg-elevated);
+  border-left: 4px solid transparent;
+  background: var(--color-bg-secondary);
+  animation: fadeIn 0.3s ease-out forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.titleChange {
+  border-left-color: var(--color-liga-ascenso);
+}
+
+.seedingCard {
+  border-left-color: var(--color-liga-primera);
+}
+
+.seedingHeader,
+.matchHeader {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: 1px solid var(--color-bg-elevated);
+  background: var(--color-bg-tertiary);
+}
+
+.seedingHeader {
+  justify-content: space-between;
+}
+
+.seedingBadge,
+.matchCompetition,
+.statusBadge {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.seedingBadge {
+  color: var(--color-liga-primera);
+}
+
+.matchDate {
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.matchCompetition {
+  color: var(--comp-color);
+}
+
+.statusBadge {
+  margin-left: auto;
+  padding: 0.2rem var(--space-xs);
+}
+
+.changeBadge {
+  background: var(--color-liga-ascenso);
+  color: #fff;
+}
+
+.retainBadge {
+  background: var(--color-liga-primera);
+  color: #000;
+}
+
+.drawBadge {
+  background: #444;
+  color: #fff;
+}
+
+.seedingBody {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  padding: var(--space-sm);
+}
+
+.seedingTeam,
+.team {
+  display: flex;
+  align-items: center;
+}
+
+.seedingTeam {
+  gap: var(--space-xs);
+}
+
+.seedingReason {
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.matchBody {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+}
+
+.team {
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.teamHome {
+  justify-content: flex-start;
+}
+
+.teamAway {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.teamLogo,
+.teamLogoSm {
+  flex-shrink: 0;
+  border: 1px solid var(--color-bg-elevated);
+}
+
+.teamName,
+.teamNameShort,
+.newHolderName {
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.teamName {
+  font-size: 1rem;
+}
+
+.teamNameShort {
+  display: none;
+  font-size: 0.9rem;
+}
+
+.winner .teamName,
+.winner .teamNameShort {
+  color: var(--color-liga-primera);
+}
+
+.scoreBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  flex-shrink: 0;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.scoreboard,
+.scoreDash {
+  font-family: var(--font-scoreboard);
+  font-weight: 700;
+}
+
+.scoreboard {
+  min-width: 2.2rem;
+  padding: 0.15rem 0.6rem;
+  border: 2px solid #000;
+  background: #111;
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.scoreDash {
+  color: var(--color-text-primary);
+  font-size: 1.2rem;
+}
+
+.penalties {
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.55rem;
+}
+
+.newHolder {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: var(--space-xs) var(--space-sm);
+  border-top: 2px solid var(--color-bg-elevated);
+  background: var(--color-bg-tertiary);
+}
+
+.newHolderLabel {
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.newHolderName {
+  color: var(--comp-color, var(--color-liga-primera));
+  font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+  .matchBody {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .team {
+    justify-content: center !important;
+  }
+
+  .teamName {
+    display: none;
+  }
+
+  .teamNameShort {
+    display: inline;
+  }
+
+  .scoreBlock {
+    order: -1;
+  }
+
+  .seedingBody {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -28,6 +28,12 @@ export interface HolderResult {
   match: MatchEntry;
 }
 
+export interface CurrentReignResult {
+  holderId: string;
+  since: string | Date;
+  match: MatchEntry;
+}
+
 export interface ClubData {
   id: string;
   name: string;
@@ -63,6 +69,25 @@ export function getCurrentHolder(matches: MatchEntry[]): HolderResult | null {
     if (m.type === 'seeding' && m.holderId) return { holderId: m.holderId, match: m };
   }
   return null;
+}
+
+/**
+ * Returns the current holder and the exact date when the current reign began.
+ * Uses the holder chain so retained defenses do not overwrite the reign start.
+ */
+export function getCurrentReign(matches: MatchEntry[]): CurrentReignResult | null {
+  const currentHolder = getCurrentHolder(matches);
+  if (!currentHolder) return null;
+
+  const chain = getHolderChain(matches);
+  const currentReign = chain[chain.length - 1];
+  if (!currentReign) return null;
+
+  return {
+    holderId: currentReign.holderId,
+    since: currentReign.since,
+    match: currentHolder.match,
+  };
 }
 
 /**

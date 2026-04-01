@@ -1,4 +1,6 @@
 ---
+import styles from './MatchCard.module.css';
+
 interface Club {
   id: string;
   name: string;
@@ -37,11 +39,16 @@ const newHolder = getClub(match.newHolderId);
 const holderWon = match.newHolderId === match.holderId;
 const challengerWon = match.newHolderId !== match.holderId && match.newHolderId === match.challengerId;
 const isDraw = match.scoreHolder === match.scoreChallenger && !match.penalties;
+const defaultAccentColor = accentColor === 'gold' ? 'var(--color-liga-primera)' : 'var(--color-liga-ascenso)';
 
 // Detect competition type
 const isLigaPrimera = match.competition?.includes('Liga de Primera');
 const isLigaAscenso = match.competition?.includes('Liga de Ascenso');
-const compColor = isLigaPrimera ? 'var(--color-liga-primera)' : isLigaAscenso ? 'var(--color-liga-ascenso)' : 'var(--color-text-muted)';
+const compColor = isLigaPrimera
+  ? 'var(--color-liga-primera)'
+  : isLigaAscenso
+    ? 'var(--color-liga-ascenso)'
+    : defaultAccentColor;
 
 const dateStr = match.date.toLocaleDateString('es-CL', {
   day: 'numeric',
@@ -51,373 +58,85 @@ const dateStr = match.date.toLocaleDateString('es-CL', {
 
 <article
   class:list={[
-    'match-card',
-    { 'title-change': challengerWon, 'seeding-card': match.type === 'seeding' },
+    styles.matchCard,
+    { [styles.titleChange]: challengerWon, [styles.seedingCard]: match.type === 'seeding' },
   ]}
   style={`--comp-color: ${compColor}; --delay: ${index * 0.02}s`}
 >
   {match.type === 'seeding' ? (
-    <div class="seeding">
-      <div class="seeding-header">
-        <span class="seeding-badge">SEMBRADO</span>
-        <time class="match-date">{dateStr}</time>
+    <div>
+      <div class={styles.seedingHeader}>
+        <span class={styles.seedingBadge}>SEMBRADO</span>
+        <time class={styles.matchDate}>{dateStr}</time>
       </div>
-      <div class="seeding-body">
-        <div class="seeding-team">
+      <div class={styles.seedingBody}>
+        <div class={styles.seedingTeam}>
           {holder?.logo && (
-            <img src={holder.logo} alt={holder.name} class="team-logo" width="32" height="32" />
+            <img src={holder.logo} alt={holder.name} class={styles.teamLogo} width="32" height="32" />
           )}
-          <span class="team-name">{holder?.name || match.holderId}</span>
+          <span class={styles.teamName}>{holder?.name || match.holderId}</span>
         </div>
-        {match.reason && <span class="seeding-reason">{match.reason}</span>}
+        {match.reason && <span class={styles.seedingReason}>{match.reason}</span>}
       </div>
     </div>
   ) : (
-    <div class="match">
-      <div class="match-header">
-        <time class="match-date">{dateStr}</time>
+    <div>
+      <div class={styles.matchHeader}>
+        <time class={styles.matchDate}>{dateStr}</time>
         {match.competition && (
-          <span class="match-competition" style={`color: ${compColor}`}>
+          <span class={styles.matchCompetition}>
             {match.competition.toUpperCase()}
           </span>
         )}
         {challengerWon && (
-          <span class="change-badge">CAMBIO</span>
+          <span class:list={[styles.statusBadge, styles.changeBadge]}>CAMBIO</span>
         )}
         {holderWon && !isDraw && !challengerWon && (
-          <span class="retain-badge">DEFENDE</span>
+          <span class:list={[styles.statusBadge, styles.retainBadge]}>DEFENDE</span>
         )}
         {isDraw && (
-          <span class="draw-badge">EMPATE</span>
+          <span class:list={[styles.statusBadge, styles.drawBadge]}>EMPATE</span>
         )}
       </div>
 
-      <div class="match-body">
-        <div class:list={['team', 'team-home', { winner: holderWon && !isDraw }]}>
+      <div class={styles.matchBody}>
+        <div class:list={[styles.team, styles.teamHome, { [styles.winner]: holderWon && !isDraw }]}> 
           {holder?.logo && (
-            <img src={holder.logo} alt={holder.name} class="team-logo" width="32" height="32" />
+            <img src={holder.logo} alt={holder.name} class={styles.teamLogo} width="32" height="32" />
           )}
-          <span class="team-name">{holder?.name || match.holderId}</span>
-          <span class="team-name-short">{holder?.shortName || holder?.name || match.holderId}</span>
+          <span class={styles.teamName}>{holder?.name || match.holderId}</span>
+          <span class={styles.teamNameShort}>{holder?.shortName || holder?.name || match.holderId}</span>
         </div>
 
-        <div class="score-block">
-          <div class="score-row">
-            <span class="scoreboard">{match.scoreHolder}</span>
-            <span class="score-dash">-</span>
-            <span class="scoreboard">{match.scoreChallenger}</span>
+        <div class={styles.scoreBlock}>
+          <div class={styles.scoreRow}>
+            <span class={styles.scoreboard}>{match.scoreHolder}</span>
+            <span class={styles.scoreDash}>-</span>
+            <span class={styles.scoreboard}>{match.scoreChallenger}</span>
           </div>
           {match.penalties && (
-            <span class="penalties">({match.penalties.holder}-{match.penalties.challenger} pen)</span>
+            <span class={styles.penalties}>({match.penalties.holder}-{match.penalties.challenger} pen)</span>
           )}
         </div>
 
-        <div class:list={['team', 'team-away', { winner: challengerWon }]}>
-          <span class="team-name">{challenger?.name || match.challengerId}</span>
-          <span class="team-name-short">{challenger?.shortName || challenger?.name || match.challengerId}</span>
+        <div class:list={[styles.team, styles.teamAway, { [styles.winner]: challengerWon }]}> 
+          <span class={styles.teamName}>{challenger?.name || match.challengerId}</span>
+          <span class={styles.teamNameShort}>{challenger?.shortName || challenger?.name || match.challengerId}</span>
           {challenger?.logo && (
-            <img src={challenger.logo} alt={challenger.name} class="team-logo" width="32" height="32" />
+            <img src={challenger.logo} alt={challenger.name} class={styles.teamLogo} width="32" height="32" />
           )}
         </div>
       </div>
 
       {challengerWon && newHolder && (
-        <div class="new-holder">
-          <span class="new-holder-label">Nuevo Campeón:</span>
+        <div class={styles.newHolder}>
+          <span class={styles.newHolderLabel}>Nuevo Campeón:</span>
           {newHolder.logo && (
-            <img src={newHolder.logo} alt="" width="20" height="20" class="team-logo-sm" />
+            <img src={newHolder.logo} alt="" width="20" height="20" class={styles.teamLogoSm} />
           )}
-          <span class="new-holder-name">{newHolder.name}</span>
+          <span class={styles.newHolderName}>{newHolder.name}</span>
         </div>
       )}
     </div>
   )}
 </article>
-
-<style define:vars({ 'comp-color': compColor })}>
-  .match-card {
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--color-bg-elevated);
-    border-left: 4px solid transparent;
-    transition: none;
-    opacity: 0;
-    transform: translateY(10px);
-    animation: fadeIn 0.3s ease-out forwards;
-    animation-delay: var(--delay);
-  }
-
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Title change = red left border */
-  .match-card.title-change {
-    border-left: 4px solid var(--color-liga-ascenso);
-  }
-
-  .match-card.seeding-card {
-    border-left: 4px solid var(--color-liga-primera);
-  }
-
-  /* Seeding */
-  .seeding-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
-    background: var(--color-bg-tertiary);
-    border-bottom: 1px solid var(--color-bg-elevated);
-  }
-
-  .seeding-badge {
-    font-family: var(--font-display);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--color-liga-primera);
-  }
-
-  .seeding-body {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    flex-wrap: wrap;
-  }
-
-  .seeding-team {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .seeding-reason {
-    font-family: var(--font-body);
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    font-style: italic;
-  }
-
-  /* Match */
-  .match-header {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-    padding: 0.4rem 0.75rem;
-    background: var(--color-bg-tertiary);
-    border-bottom: 1px solid var(--color-bg-elevated);
-  }
-
-  .match-date {
-    color: var(--color-text-muted);
-    font-family: var(--font-body);
-    font-size: 0.7rem;
-    font-weight: 600;
-  }
-
-  .match-competition {
-    font-family: var(--font-display);
-    font-size: 0.65rem;
-    font-weight: 700;
-  }
-
-  .change-badge {
-    padding: 0.2rem 0.5rem;
-    background: var(--color-liga-ascenso);
-    color: #ffffff;
-    font-family: var(--font-display);
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    margin-left: auto;
-  }
-
-  .retain-badge {
-    padding: 0.2rem 0.5rem;
-    background: var(--color-liga-primera);
-    color: #000000;
-    font-family: var(--font-display);
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    margin-left: auto;
-  }
-
-  .draw-badge {
-    padding: 0.2rem 0.5rem;
-    background: #444444;
-    color: #ffffff;
-    font-family: var(--font-display);
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    margin-left: auto;
-  }
-
-  .match-body {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    padding: 0.75rem;
-  }
-
-  .team {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex: 1;
-  }
-
-  .team-home {
-    justify-content: flex-start;
-  }
-
-  .team-away {
-    justify-content: flex-end;
-    text-align: right;
-  }
-
-  .team-logo {
-    border: 1px solid var(--color-bg-elevated);
-    flex-shrink: 0;
-  }
-
-  .team-name {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--color-text-primary);
-    letter-spacing: 0.03em;
-  }
-
-  .team-name-short {
-    display: none;
-  }
-
-  .team.winner .team-name {
-    color: var(--color-liga-primera);
-  }
-
-  .team.winner .team-name-short {
-    color: var(--color-liga-primera);
-  }
-
-  .score-block {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.1rem;
-    flex-shrink: 0;
-  }
-
-  .score-row {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .scoreboard {
-    font-family: var(--font-scoreboard);
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: #111111;
-    color: #ffffff;
-    padding: 0.15rem 0.6rem;
-    border: 2px solid #000000;
-    min-width: 2.2rem;
-    text-align: center;
-    line-height: 1;
-  }
-
-  .score-dash {
-    font-family: var(--font-scoreboard);
-    color: var(--color-text-primary);
-    font-size: 1.2rem;
-    font-weight: 700;
-  }
-
-  .penalties {
-    font-family: var(--font-body);
-    font-size: 0.55rem;
-    color: var(--color-text-muted);
-  }
-
-  .new-holder {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 0.75rem;
-    border-top: 2px solid var(--color-bg-elevated);
-    background: var(--color-bg-tertiary);
-  }
-
-  .new-holder-label {
-    font-family: var(--font-body);
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--color-text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .new-holder-name {
-    font-family: var(--font-display);
-    font-size: 0.9rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: var(--comp-color, var(--color-liga-primera));
-  }
-
-  .team-logo-sm {
-    border: 1px solid var(--color-bg-elevated);
-  }
-
-  /* Desktop: show full name, hide short name */
-  @media (min-width: 601px) {
-    .team-name-short {
-      display: none;
-    }
-  }
-
-  /* Mobile: show short name, hide full name */
-  @media (max-width: 600px) {
-    .match-body {
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .team {
-      justify-content: center !important;
-    }
-
-    .team-name {
-      display: none;
-    }
-
-    .team-name-short {
-      display: inline;
-      font-family: var(--font-display);
-      font-size: 0.9rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      color: var(--color-text-primary);
-      letter-spacing: 0.03em;
-    }
-
-    .score-block {
-      order: -1;
-    }
-
-    .seeding-body {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
-</style>

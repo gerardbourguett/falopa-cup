@@ -1,98 +1,22 @@
 ---
 const today = new Date();
+import styles from "./Footer.module.css";
 ---
 
-<footer>
-  <div class="footer-content">
-    <div class="footer-brand">
-      <div class="brand-icon">
-        <img src="/favicon.png" alt="" class="brand-logo" aria-hidden="true" />
+<footer class={styles.footer}>
+  <div class={styles.content}>
+    <div class={styles.brand}>
+      <div class={styles.brandIcon}>
+        <img src="/favicon.png" alt="" class={styles.brandLogo} aria-hidden="true" />
       </div>
-      <div class="brand-text">
-        <span class="brand-title">FALOPA CUP</span>
-        <span class="brand-subtitle">Campeonato No Oficial desde 2025</span>
+      <div class={styles.brandText}>
+        <span class={styles.brandTitle}>FALOPA CUP</span>
+        <span class={styles.brandSubtitle}>Campeonato No Oficial desde 2025</span>
       </div>
     </div>
 
-    <p class="footer-copy">
+    <p class={styles.copy}>
       © {today.getFullYear()} Falopa Cup. Ningún derecho reservado.
     </p>
   </div>
 </footer>
-
-<style>
-  footer {
-    background: #000000;
-    border-top: 3px solid var(--color-liga-primera);
-    margin-top: 4rem;
-  }
-
-  .footer-content {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 3rem 1rem;
-    text-align: center;
-  }
-
-  .footer-brand {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .brand-icon {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 6px;
-  }
-
-  .brand-logo {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  .brand-text {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .brand-title {
-    font-family: var(--font-display);
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: var(--color-liga-primera);
-    letter-spacing: 0.05em;
-  }
-
-  .brand-subtitle {
-    font-family: var(--font-body);
-    font-size: 0.7rem;
-    color: #888888;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .footer-copy {
-    font-size: 0.75rem;
-    color: #666666;
-    margin: 0;
-  }
-
-  @media (max-width: 600px) {
-    .footer-brand {
-      flex-direction: column;
-      text-align: center;
-    }
-
-    .brand-text {
-      align-items: center;
-    }
-  }
-</style>

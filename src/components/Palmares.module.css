@@ -1,0 +1,184 @@
+.palmares {
+  margin: var(--space-xl) 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--accent);
+  color: var(--color-text-primary);
+}
+
+.label,
+.count,
+.table th,
+.position,
+.clubName,
+.holderBadge,
+.number {
+  font-family: var(--font-display);
+}
+
+.label {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.count {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid var(--accent);
+  background: var(--color-bg-secondary);
+}
+
+.table thead {
+  background: var(--color-bg-primary);
+}
+
+.table th {
+  padding: 0.6rem var(--space-sm);
+  border-bottom: 2px solid var(--accent);
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: var(--space-xs) var(--space-sm);
+  border-bottom: 1px solid var(--color-bg-elevated);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background: var(--color-bg-tertiary);
+}
+
+.positionHeader,
+.numberHeader,
+.number {
+  text-align: center;
+}
+
+.positionHeader {
+  width: 40px;
+}
+
+.topRow {
+  background: var(--color-bg-tertiary);
+}
+
+.currentHolder {
+  border-left: 4px solid var(--color-holder);
+  background: var(--color-holder-bg) !important;
+}
+
+.currentHolder td {
+  border-color: var(--color-holder);
+}
+
+.position {
+  color: var(--color-text-muted);
+  font-weight: 700;
+  text-align: center;
+}
+
+.topRow .position {
+  color: var(--accent);
+  font-size: 1rem;
+}
+
+.currentHolder .position {
+  color: var(--color-holder);
+}
+
+.clubCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.clubLogo {
+  flex-shrink: 0;
+  border: 1px solid var(--color-bg-elevated);
+}
+
+.clubName {
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.holderBadge {
+  margin-left: var(--space-xs);
+  padding: 0.1rem 0.3rem;
+  border: 1px solid var(--color-holder);
+  color: var(--color-holder);
+  font-size: 0.55rem;
+  font-weight: 700;
+}
+
+.number {
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.reigns {
+  color: var(--color-text-primary);
+  font-weight: 700;
+}
+
+.topRow .reigns {
+  color: var(--accent);
+}
+
+.currentHolder .reigns {
+  color: var(--color-holder);
+}
+
+@media (max-width: 600px) {
+  .header {
+    flex-direction: column;
+    gap: var(--space-xs);
+    text-align: center;
+  }
+
+  .table th {
+    padding: 0.4rem;
+    font-size: 0.6rem;
+  }
+
+  .table td {
+    padding: 0.4rem;
+    font-size: 0.75rem;
+  }
+
+  .clubLogo {
+    width: 16px;
+    height: 16px;
+  }
+
+  .holderBadge {
+    display: none;
+  }
+}

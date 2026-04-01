@@ -1,4 +1,6 @@
 ---
+import styles from './Palmares.module.css';
+
 interface Club {
   id: string;
   name: string;
@@ -82,25 +84,25 @@ const accent = isGold
   : "var(--color-liga-ascenso)";
 ---
 
-<section class="palmares">
-  <div class="palmares-header">
-    <div class="palmares-label">PALMARES</div>
-    <div class="palmares-count">
+<section class={styles.palmares} style={`--accent: ${accent}`}>
+  <div class={styles.header}>
+    <div class={styles.label}>PALMARES</div>
+    <div class={styles.count}>
       {ranked.length} EQUIPOS
     </div>
   </div>
 
-  <div class="table-wrapper">
-    <table class="palmares-table">
+  <div class={styles.tableWrapper}>
+    <table class={styles.table}>
       <thead>
         <tr>
-          <th class="th-pos">#</th>
-          <th class="th-club">EQUIPO</th>
-          <th class="th-num">TITULOS</th>
-          <th class="th-num">CONQUISTAS</th>
-          <th class="th-num">DEFENSAS</th>
-          <th class="th-num">PERDIDAS</th>
-          <th class="th-num">PJ</th>
+          <th class={styles.positionHeader}>#</th>
+          <th>EQUIPO</th>
+          <th class={styles.numberHeader}>TITULOS</th>
+          <th class={styles.numberHeader}>CONQUISTAS</th>
+          <th class={styles.numberHeader}>DEFENSAS</th>
+          <th class={styles.numberHeader}>PERDIDAS</th>
+          <th class={styles.numberHeader}>PJ</th>
         </tr>
       </thead>
       <tbody>
@@ -111,31 +113,31 @@ const accent = isGold
             return (
               <tr
                 class:list={{
-                  "row-top": i === 0,
-                  "current-holder": isCurrentHolder,
+                  [styles.topRow]: i === 0,
+                  [styles.currentHolder]: isCurrentHolder,
                 }}
               >
-                <td class="td-pos">{i + 1}</td>
-                <td class="td-club">
+                <td class={styles.position}>{i + 1}</td>
+                <td class={styles.clubCell}>
                   {club?.logo && (
                     <img
                       src={club.logo}
                       alt=""
                       width="20"
                       height="20"
-                      class="club-logo"
+                      class={styles.clubLogo}
                     />
                   )}
-                  <span class="club-name">
+                  <span class={styles.clubName}>
                     {club?.shortName || club?.name || stat.id}
                   </span>
-                  {isCurrentHolder && <span class="holder-badge">CAMPEON</span>}
+                  {isCurrentHolder && <span class={styles.holderBadge}>CAMPEON</span>}
                 </td>
-                <td class="td-num td-reigns">{stat.reigns}</td>
-                <td class="td-num">{stat.conquests}</td>
-                <td class="td-num">{stat.defenses}</td>
-                <td class="td-num">{stat.losses}</td>
-                <td class="td-num">{stat.matchesAsHolder}</td>
+                <td class:list={[styles.number, styles.reigns]}>{stat.reigns}</td>
+                <td class={styles.number}>{stat.conquests}</td>
+                <td class={styles.number}>{stat.defenses}</td>
+                <td class={styles.number}>{stat.losses}</td>
+                <td class={styles.number}>{stat.matchesAsHolder}</td>
               </tr>
             );
           })
@@ -144,190 +146,3 @@ const accent = isGold
     </table>
   </div>
 </section>
-
-<style {accent: accent }}>
-  .palmares {
-    margin: 2rem 0;
-  }
-
-  .palmares-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
-    background: var(--accent);
-    color: var(--color-text-primary);
-  }
-
-  .palmares-label {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    color: var(--color-text-primary);
-  }
-
-  .palmares-count {
-    font-family: var(--font-display);
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--color-text-primary);
-  }
-
-  .table-wrapper {
-    overflow-x: auto;
-  }
-
-  .palmares-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: var(--color-bg-secondary);
-    border: 2px solid var(--accent);
-  }
-
-  .palmares-table thead {
-    background: var(--color-bg-primary);
-  }
-
-  .palmares-table th {
-    font-family: var(--font-display);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-text-muted);
-    padding: 0.6rem 0.75rem;
-    text-align: left;
-    border-bottom: 2px solid var(--accent);
-    white-space: nowrap;
-  }
-
-  .th-num {
-    text-align: center !important;
-  }
-
-  .th-pos {
-    width: 40px;
-    text-align: center !important;
-  }
-
-  .palmares-table td {
-    padding: 0.5rem 0.75rem;
-    border-bottom: 1px solid var(--color-bg-elevated);
-    font-family: var(--font-body);
-    font-size: 0.85rem;
-  }
-
-  .palmares-table tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  .palmares-table tbody tr:hover {
-    background: var(--color-bg-tertiary);
-  }
-
-  .row-top {
-    background: var(--color-bg-tertiary);
-  }
-
-  /* Current holder highlight */
-  .current-holder {
-    background: var(--color-holder-bg) !important;
-    border-left: 4px solid var(--color-holder);
-  }
-
-  .current-holder td {
-    border-color: var(--color-holder);
-  }
-
-  .td-pos {
-    text-align: center;
-    font-family: var(--font-display);
-    font-weight: 700;
-    color: var(--color-text-muted);
-  }
-
-  .row-top .td-pos {
-    color: var(--accent);
-    font-size: 1rem;
-  }
-
-  .current-holder .td-pos {
-    color: var(--color-holder);
-  }
-
-  .td-club {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .club-logo {
-    border: 1px solid var(--color-bg-elevated);
-    flex-shrink: 0;
-  }
-
-  .club-name {
-    font-family: var(--font-display);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  .holder-badge {
-    font-family: var(--font-display);
-    font-size: 0.55rem;
-    font-weight: 700;
-    color: var(--color-holder);
-    border: 1px solid var(--color-holder);
-    padding: 0.1rem 0.3rem;
-    margin-left: 0.5rem;
-  }
-
-  .td-num {
-    text-align: center;
-    font-family: var(--font-display);
-    font-weight: 600;
-    color: var(--color-text-secondary);
-  }
-
-  .td-reigns {
-    color: var(--color-text-primary);
-    font-weight: 700;
-  }
-
-  .row-top .td-reigns {
-    color: var(--accent);
-  }
-
-  .current-holder .td-reigns {
-    color: var(--color-holder);
-  }
-
-  @media (max-width: 600px) {
-    .palmares-header {
-      flex-direction: column;
-      gap: 0.5rem;
-      text-align: center;
-    }
-
-    .palmares-table th {
-      font-size: 0.6rem;
-      padding: 0.4rem;
-    }
-
-    .palmares-table td {
-      padding: 0.4rem;
-      font-size: 0.75rem;
-    }
-
-    .club-logo {
-      width: 16px;
-      height: 16px;
-    }
-
-    .holder-badge {
-      display: none;
-    }
-  }
-</style>

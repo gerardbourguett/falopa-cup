@@ -1,0 +1,149 @@
+.sectionHeader {
+  margin-bottom: var(--space-lg);
+}
+
+.sectionLabel {
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.championsSection {
+  padding: var(--space-2xl) 0;
+  background: var(--color-bg-primary);
+}
+
+.championsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+.conceptSection {
+  padding: var(--space-2xl) 0;
+  border-top: 3px solid var(--color-bg-elevated);
+  border-bottom: 3px solid var(--color-bg-elevated);
+  background: var(--color-bg-primary);
+}
+
+.conceptBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.conceptTitle {
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary);
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  letter-spacing: 0.05em;
+}
+
+.conceptDesc {
+  max-width: 680px;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.conceptLink {
+  color: var(--color-liga-primera);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.conceptLink:hover {
+  color: var(--color-liga-primera-dim);
+}
+
+.conceptChains {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.conceptChainBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.conceptChainLabel {
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.conceptCaption {
+  margin: calc(var(--space-md) * -1) 0 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.rulesSection {
+  padding: var(--space-2xl) 0;
+  border-top: 3px solid var(--color-bg-elevated);
+  background: var(--color-bg-secondary);
+}
+
+.rulesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.ruleCard {
+  padding: 1.25rem;
+  border: var(--border-strong);
+  background: var(--color-bg-primary);
+}
+
+.ruleNumber {
+  margin-bottom: var(--space-sm);
+  color: var(--color-liga-primera);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.ruleTitle {
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-primary);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+}
+
+.ruleText {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+.ruleText strong {
+  color: var(--color-liga-primera);
+}
+
+@media (max-width: 768px) {
+  .championsGrid,
+  .rulesGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .conceptChains {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
+  getCurrentReign,
   getCurrentHolder,
   getHolderChain,
   resolveClub,
@@ -78,6 +79,40 @@ describe('getCurrentHolder', () => {
       match('coqu', 'udec', 2, 0, 'coqu', '2025-03-01'),
     ];
     expect(getCurrentHolder(matches)?.holderId).toBe('coqu');
+  });
+});
+
+// ─── getCurrentReign ──────────────────────────────────────────────────────────
+
+describe('getCurrentReign', () => {
+  it('returns null for empty list', () => {
+    expect(getCurrentReign([])).toBeNull();
+  });
+
+  it('keeps the original reign start when current holder defended later', () => {
+    const matches: MatchEntry[] = [
+      seeding('coqu', '2025-01-01'),
+      match('coqu', 'udec', 0, 1, 'udec', '2025-02-01'),
+      match('udec', 'nuble', 2, 1, 'udec', '2025-03-30'),
+    ];
+
+    const reign = getCurrentReign(matches);
+
+    expect(reign?.holderId).toBe('udec');
+    expect(reign?.since).toBe('2025-02-01');
+    expect(reign?.match.date).toBe('2025-03-30');
+  });
+
+  it('uses seeding date when no title change happened', () => {
+    const matches: MatchEntry[] = [
+      seeding('coqu', '2025-01-01'),
+      match('coqu', 'udec', 2, 0, 'coqu', '2025-03-01'),
+    ];
+
+    const reign = getCurrentReign(matches);
+
+    expect(reign?.holderId).toBe('coqu');
+    expect(reign?.since).toBe('2025-01-01');
   });
 });
 
