@@ -48,6 +48,7 @@ function ensure(id: string): ClubStats {
 }
 
 for (const m of allMatches) {
+  if (m.status === "pending") continue;
   if (m.type === "seeding" && m.holderId) {
     const s = ensure(m.holderId);
     s.reigns++;

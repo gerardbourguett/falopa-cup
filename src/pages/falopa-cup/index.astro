@@ -93,23 +93,23 @@ const allMatches = seasons.flatMap((s) => s.allUniqueMatches);
 
 function countTitleChanges(matches: any[]) {
   return matches.filter(
-    (m) => m.type === "match" && m.newHolderId && m.newHolderId !== m.holderId,
+    (m) => m.status !== "pending" && m.type === "match" && m.newHolderId && m.newHolderId !== m.holderId,
   ).length;
 }
 
 function countHolders(matches: any[]) {
-  return new Set(matches.filter((m) => m.newHolderId).map((m) => m.newHolderId))
+  return new Set(matches.filter((m) => m.status !== "pending" && m.newHolderId).map((m) => m.newHolderId))
     .size;
 }
 
 function countDefenses(matches: any[]) {
   return matches.filter(
-    (m) => m.type === "match" && m.newHolderId === m.holderId,
+    (m) => m.status !== "pending" && m.type === "match" && m.newHolderId === m.holderId,
   ).length;
 }
 
 function seasonMatchCount(s: Season): number {
-  return s.allUniqueMatches.length;
+  return s.allUniqueMatches.filter((m) => m.status !== "pending").length;
 }
 
 function getBranchMatches(s: Season, branchIdx: number): any[] {
@@ -123,6 +123,7 @@ function getBranchMatches(s: Season, branchIdx: number): any[] {
 
 function getChampionId(matches: any[]): string | undefined {
   for (let i = matches.length - 1; i >= 0; i--) {
+    if (matches[i].status === "pending") continue;
     if (matches[i].newHolderId) return matches[i].newHolderId;
     if (matches[i].holderId) return matches[i].holderId;
   }

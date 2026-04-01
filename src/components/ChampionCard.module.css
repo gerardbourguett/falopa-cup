@@ -119,6 +119,16 @@
   text-transform: uppercase;
 }
 
+.nextDuel {
+  margin-top: var(--space-xs);
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .footer {
   padding: var(--space-xs) var(--space-md);
   border-top: 2px solid var(--card-accent);

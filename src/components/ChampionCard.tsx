@@ -11,6 +11,7 @@ interface ChampionCardProps {
   tournament: string;
   year: number;
   sinceDate: string;
+  nextDuel?: string;
   accentColor: 'gold' | 'burgundy';
   href: string;
 }
@@ -20,6 +21,7 @@ export function ChampionCard({
   tournament,
   year,
   sinceDate,
+  nextDuel,
   accentColor,
   href,
 }: ChampionCardProps) {
@@ -66,6 +68,11 @@ export function ChampionCard({
             <div className={styles.sinceDate}>
               Desde {sinceDate}
             </div>
+            {nextDuel && (
+              <div className={styles.nextDuel}>
+                Siguiente duelo: {nextDuel}
+              </div>
+            )}
           </div>
         </div>
 

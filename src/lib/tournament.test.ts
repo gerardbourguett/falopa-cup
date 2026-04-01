@@ -37,6 +37,20 @@ const match = (
   competition,
 });
 
+const pendingMatch = (
+  holderId: string,
+  challengerId: string,
+  date = '2025-06-08',
+  competition = 'Liga de Primera · Fecha 2'
+): MatchEntry => ({
+  type: 'match',
+  status: 'pending',
+  date,
+  holderId,
+  challengerId,
+  competition,
+});
+
 const clubs: ClubData[] = [
   { id: 'coqu', name: 'Coquimbo Unido', shortName: 'CQU', stadium: 'La Punta', logo: '' },
   { id: 'udec', name: 'Universidad de Concepción', shortName: 'UDC', stadium: 'Ester Roa', logo: '' },
@@ -79,6 +93,16 @@ describe('getCurrentHolder', () => {
       match('coqu', 'udec', 2, 0, 'coqu', '2025-03-01'),
     ];
     expect(getCurrentHolder(matches)?.holderId).toBe('coqu');
+  });
+
+  it('ignores pending matches when determining the current holder', () => {
+    const matches: MatchEntry[] = [
+      seeding('coqu', '2025-01-01'),
+      match('coqu', 'udec', 0, 1, 'udec', '2025-03-01'),
+      pendingMatch('udec', 'nuble', '2025-03-08'),
+    ];
+
+    expect(getCurrentHolder(matches)?.holderId).toBe('udec');
   });
 });
 
@@ -178,6 +202,20 @@ describe('getHolderChain', () => {
     const chain = getHolderChain(matches);
     expect(chain).toHaveLength(1);
     expect(chain[0].holderId).toBe('coqu');
+  });
+
+  it('ignores pending matches when building the holder chain', () => {
+    const matches: MatchEntry[] = [
+      seeding('coqu', '2025-01-01'),
+      match('coqu', 'udec', 0, 1, 'udec', '2025-02-01'),
+      pendingMatch('udec', 'nuble', '2025-02-08'),
+    ];
+
+    const chain = getHolderChain(matches);
+
+    expect(chain).toHaveLength(2);
+    expect(chain[1].holderId).toBe('udec');
+    expect(chain[1].until).toBeNull();
   });
 });
 

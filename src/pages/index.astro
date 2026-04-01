@@ -47,6 +47,31 @@ const miladYear = latestMilad?.data.year ?? 2026;
 const falopaChain = latestFalopa ? getHolderChain(latestFalopa.data.matches) : [];
 const miladChain = latestMilad ? getHolderChain(latestMilad.data.matches) : [];
 
+function getNextPendingMatch(matches: any[]) {
+  return [...matches]
+    .filter((match) => match.type === "match" && match.status === "pending")
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())[0];
+}
+
+function formatUpcomingDuel(match: any) {
+  if (!match) return "";
+  const challenger = getClub(match.challengerId);
+  const d = match.date instanceof Date ? match.date : new Date(match.date);
+  const dateLabel = d.toLocaleDateString("es-CL", {
+    day: "numeric",
+    month: "short",
+  });
+
+  return `vs ${challenger?.name || match.challengerId} · ${dateLabel}`;
+}
+
+const falopaNextMatch = latestFalopa
+  ? getNextPendingMatch(latestFalopa.data.matches)
+  : null;
+const miladNextMatch = latestMilad
+  ? getNextPendingMatch(latestMilad.data.matches)
+  : null;
+
 function formatSinceDate(value?: string | Date | null) {
   if (!value) return "";
   const d = value instanceof Date ? value : new Date(value);
@@ -86,6 +111,7 @@ function formatSinceDate(value?: string | Date | null) {
           tournament="FALOPA CUP"
           year={falopaYear}
           sinceDate={formatSinceDate(falopaReign?.since)}
+          nextDuel={formatUpcomingDuel(falopaNextMatch)}
           accentColor="gold"
           href="/falopa-cup"
         />
@@ -100,6 +126,7 @@ function formatSinceDate(value?: string | Date | null) {
           tournament="COPA PABLO MILAD"
           year={miladYear}
           sinceDate={formatSinceDate(miladReign?.since)}
+          nextDuel={formatUpcomingDuel(miladNextMatch)}
           accentColor="burgundy"
           href="/copa-pablo-milad"
         />

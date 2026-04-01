@@ -11,6 +11,7 @@ interface Club {
 interface Props {
   match: {
     type: 'seeding' | 'match';
+    status?: 'played' | 'pending';
     date: Date;
     competition?: string;
     reason?: string;
@@ -38,7 +39,8 @@ const newHolder = getClub(match.newHolderId);
 
 const holderWon = match.newHolderId === match.holderId;
 const challengerWon = match.newHolderId !== match.holderId && match.newHolderId === match.challengerId;
-const isDraw = match.scoreHolder === match.scoreChallenger && !match.penalties;
+const isPending = match.status === 'pending';
+const isDraw = !isPending && match.scoreHolder === match.scoreChallenger && !match.penalties;
 const defaultAccentColor = accentColor === 'gold' ? 'var(--color-liga-primera)' : 'var(--color-liga-ascenso)';
 
 // Detect competition type
@@ -88,6 +90,9 @@ const dateStr = match.date.toLocaleDateString('es-CL', {
             {match.competition.toUpperCase()}
           </span>
         )}
+        {isPending && (
+          <span class:list={[styles.statusBadge, styles.pendingBadge]}>PENDIENTE</span>
+        )}
         {challengerWon && (
           <span class:list={[styles.statusBadge, styles.changeBadge]}>CAMBIO</span>
         )}
@@ -110,11 +115,22 @@ const dateStr = match.date.toLocaleDateString('es-CL', {
 
         <div class={styles.scoreBlock}>
           <div class={styles.scoreRow}>
-            <span class={styles.scoreboard}>{match.scoreHolder}</span>
-            <span class={styles.scoreDash}>-</span>
-            <span class={styles.scoreboard}>{match.scoreChallenger}</span>
+            {isPending ? (
+              <>
+                <span class={styles.pendingScore}>VS</span>
+              </>
+            ) : (
+              <>
+                <span class={styles.scoreboard}>{match.scoreHolder}</span>
+                <span class={styles.scoreDash}>-</span>
+                <span class={styles.scoreboard}>{match.scoreChallenger}</span>
+              </>
+            )}
           </div>
-          {match.penalties && (
+          {isPending && (
+            <span class={styles.penalties}>Por jugar</span>
+          )}
+          {match.penalties && !isPending && (
             <span class={styles.penalties}>({match.penalties.holder}-{match.penalties.challenger} pen)</span>
           )}
         </div>
@@ -128,7 +144,7 @@ const dateStr = match.date.toLocaleDateString('es-CL', {
         </div>
       </div>
 
-      {challengerWon && newHolder && (
+      {challengerWon && newHolder && !isPending && (
         <div class={styles.newHolder}>
           <span class={styles.newHolderLabel}>Nuevo Campeón:</span>
           {newHolder.logo && (

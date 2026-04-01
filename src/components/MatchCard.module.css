@@ -83,6 +83,11 @@
   color: #fff;
 }
 
+.pendingBadge {
+  background: var(--comp-color);
+  color: #fff;
+}
+
 .seedingBody {
   display: flex;
   align-items: center;
@@ -176,7 +181,8 @@
 }
 
 .scoreboard,
-.scoreDash {
+.scoreDash,
+.pendingScore {
   font-family: var(--font-scoreboard);
   font-weight: 700;
 }
@@ -195,6 +201,14 @@
 .scoreDash {
   color: var(--color-text-primary);
   font-size: 1.2rem;
+}
+
+.pendingScore {
+  padding: 0.15rem 0.6rem;
+  border: 2px dashed var(--comp-color);
+  color: var(--comp-color);
+  font-size: 1rem;
+  line-height: 1.1;
 }
 
 .penalties {
