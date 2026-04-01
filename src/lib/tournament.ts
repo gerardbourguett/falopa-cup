@@ -12,6 +12,7 @@ export interface PenaltyScore {
 
 export interface MatchEntry {
   type: 'seeding' | 'match';
+  status?: 'played' | 'pending';
   date: string | Date;
   competition?: string;
   reason?: string;
@@ -25,6 +26,12 @@ export interface MatchEntry {
 
 export interface HolderResult {
   holderId: string;
+  match: MatchEntry;
+}
+
+export interface CurrentReignResult {
+  holderId: string;
+  since: string | Date;
   match: MatchEntry;
 }
 
@@ -59,10 +66,30 @@ export function getCurrentHolder(matches: MatchEntry[]): HolderResult | null {
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
   for (const m of sorted) {
+    if (m.status === 'pending') continue;
     if (m.newHolderId) return { holderId: m.newHolderId, match: m };
     if (m.type === 'seeding' && m.holderId) return { holderId: m.holderId, match: m };
   }
   return null;
+}
+
+/**
+ * Returns the current holder and the exact date when the current reign began.
+ * Uses the holder chain so retained defenses do not overwrite the reign start.
+ */
+export function getCurrentReign(matches: MatchEntry[]): CurrentReignResult | null {
+  const currentHolder = getCurrentHolder(matches);
+  if (!currentHolder) return null;
+
+  const chain = getHolderChain(matches);
+  const currentReign = chain[chain.length - 1];
+  if (!currentReign) return null;
+
+  return {
+    holderId: currentReign.holderId,
+    since: currentReign.since,
+    match: currentHolder.match,
+  };
 }
 
 /**
@@ -82,6 +109,7 @@ export function getHolderChain(matches: MatchEntry[]): HolderChainEntry[] {
   const chain: HolderChainEntry[] = [];
 
   for (const m of sorted) {
+    if (m.status === 'pending') continue;
     const effectiveHolder = m.newHolderId || (m.type === 'seeding' ? m.holderId : undefined);
     if (!effectiveHolder) continue;
 

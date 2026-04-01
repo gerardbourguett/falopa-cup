@@ -21,7 +21,7 @@ pnpm astro check  # Verificación de tipos TypeScript
 
 ## Agregar un partido
 
-En lugar de editar JSON a mano, usá el CLI interactivo:
+En lugar de editar JSON a mano, usa el CLI interactivo:
 
 ```sh
 pnpm script:next
@@ -33,7 +33,7 @@ El CLI te guía paso a paso:
 2. Ingresá el nombre de la competición (ej. `Liga de Primera · Fecha 12`)
 3. Seleccioná el equipo rival de la lista de clubes
 4. Ingresá el marcador
-5. Si es empate, podés ingresar penales
+5. Si es empate, puedes ingresar penales
 
 El CLI calcula automáticamente `newHolderId` según las reglas de cada torneo e imprime el JSON listo para pegar en el archivo de la temporada.
 
@@ -52,7 +52,7 @@ En el archivo JSON de la temporada correspondiente:
 - `src/content/falopa-cup/YYYY.json`
 - `src/content/copa-pablo-milad/YYYY.json`
 
-Cada archivo tiene un array `matches` — agregá el objeto al final.
+Cada archivo tiene un array `matches` — agrega el objeto al final.
 
 ## Estructura del proyecto
 
@@ -74,7 +74,7 @@ scripts/
 
 ## Agregar un club nuevo
 
-Creá un archivo JSON en `src/content/clubs/nombre-club.json`:
+Crea un archivo JSON en `src/content/clubs/nombre-club.json`:
 
 ```json
 {
@@ -86,4 +86,4 @@ Creá un archivo JSON en `src/content/clubs/nombre-club.json`:
 }
 ```
 
-Y agregá el logo SVG (o PNG) en `public/logos/`.
+Y agrega el logo SVG (o PNG) en `public/logos/`.

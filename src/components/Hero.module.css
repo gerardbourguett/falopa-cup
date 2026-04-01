@@ -1,0 +1,94 @@
+.hero {
+  position: relative;
+  padding: var(--space-3xl) var(--space-md);
+  background: var(--color-bg-primary);
+  border-bottom: 3px solid var(--color-bg-elevated);
+  overflow: clip;
+}
+
+.seasonBadge,
+.leagueBadge {
+  position: absolute;
+  top: var(--space-md);
+  font-family: var(--font-scoreboard);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.seasonBadge {
+  left: var(--space-md);
+  padding: var(--space-xs) var(--space-md);
+  background: var(--color-liga-primera);
+  color: var(--color-bg-primary);
+}
+
+.leagueBadge {
+  right: var(--space-md);
+  padding: var(--space-xs) var(--space-sm);
+  border: 2px solid var(--color-liga-ascenso);
+  background: var(--color-bg-secondary);
+  color: var(--color-liga-ascenso);
+  text-align: center;
+}
+
+.content {
+  max-width: 700px;
+  margin: 0 auto;
+  padding-top: var(--space-md);
+  text-align: center;
+}
+
+.title {
+  margin-bottom: var(--space-xs);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.subtitle {
+  margin-bottom: var(--space-lg);
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.descriptionPanel {
+  margin-bottom: var(--space-xl);
+  padding: 1.25rem;
+  border: var(--border-soft);
+  background: var(--color-bg-secondary);
+  text-align: left;
+  box-shadow: var(--shadow-card);
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-top: calc(var(--space-3xl) + var(--space-xl));
+  }
+
+  .seasonBadge,
+  .leagueBadge {
+    position: static;
+    display: inline-block;
+    margin-bottom: var(--space-md);
+  }
+
+  .seasonBadge {
+    margin-right: var(--space-sm);
+  }
+}

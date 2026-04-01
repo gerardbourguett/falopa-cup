@@ -111,7 +111,7 @@
       "scoreChallenger": 1,
       "newHolderId": "ohiggins"
     },
-{
+    {
       "type": "match",
       "date": "2026-03-27",
       "competition": "Copa de La Liga · Fecha 2",
@@ -121,15 +121,23 @@
       "scoreChallenger": 0,
       "newHolderId": "ohiggins"
     },
-{
+    {
       "type": "match",
       "date": "2026-03-30",
       "competition": "Copa de La Liga · Fecha 3",
       "holderId": "ohiggins",
       "challengerId": "palestino",
-      "scoreHolder": 1,
-      "scoreChallenger": 0,
+      "scoreHolder": 3,
+      "scoreChallenger": 1,
       "newHolderId": "ohiggins"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-04-03",
+      "competition": "Copa de La Liga · Fecha 4",
+      "holderId": "ohiggins",
+      "challengerId": "audax-italiano"
     }
   ]
 }

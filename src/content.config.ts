@@ -15,6 +15,7 @@ const blog = defineCollection({
 
 const matchSchema = z.object({
     type: z.enum(['seeding', 'match']),
+    status: z.enum(['played', 'pending']).optional(),
     date: z.coerce.date(),
     competition: z.string().optional(),
     reason: z.string().optional(),

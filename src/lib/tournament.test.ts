@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
+  getCurrentReign,
   getCurrentHolder,
   getHolderChain,
   resolveClub,
@@ -33,6 +34,20 @@ const match = (
   scoreHolder,
   scoreChallenger,
   newHolderId,
+  competition,
+});
+
+const pendingMatch = (
+  holderId: string,
+  challengerId: string,
+  date = '2025-06-08',
+  competition = 'Liga de Primera · Fecha 2'
+): MatchEntry => ({
+  type: 'match',
+  status: 'pending',
+  date,
+  holderId,
+  challengerId,
   competition,
 });
 
@@ -78,6 +93,50 @@ describe('getCurrentHolder', () => {
       match('coqu', 'udec', 2, 0, 'coqu', '2025-03-01'),
     ];
     expect(getCurrentHolder(matches)?.holderId).toBe('coqu');
+  });
+
+  it('ignores pending matches when determining the current holder', () => {
+    const matches: MatchEntry[] = [
+      seeding('coqu', '2025-01-01'),
+      match('coqu', 'udec', 0, 1, 'udec', '2025-03-01'),
+      pendingMatch('udec', 'nuble', '2025-03-08'),
+    ];
+
+    expect(getCurrentHolder(matches)?.holderId).toBe('udec');
+  });
+});
+
+// ─── getCurrentReign ──────────────────────────────────────────────────────────
+
+describe('getCurrentReign', () => {
+  it('returns null for empty list', () => {
+    expect(getCurrentReign([])).toBeNull();
+  });
+
+  it('keeps the original reign start when current holder defended later', () => {
+    const matches: MatchEntry[] = [
+      seeding('coqu', '2025-01-01'),
+      match('coqu', 'udec', 0, 1, 'udec', '2025-02-01'),
+      match('udec', 'nuble', 2, 1, 'udec', '2025-03-30'),
+    ];
+
+    const reign = getCurrentReign(matches);
+
+    expect(reign?.holderId).toBe('udec');
+    expect(reign?.since).toBe('2025-02-01');
+    expect(reign?.match.date).toBe('2025-03-30');
+  });
+
+  it('uses seeding date when no title change happened', () => {
+    const matches: MatchEntry[] = [
+      seeding('coqu', '2025-01-01'),
+      match('coqu', 'udec', 2, 0, 'coqu', '2025-03-01'),
+    ];
+
+    const reign = getCurrentReign(matches);
+
+    expect(reign?.holderId).toBe('coqu');
+    expect(reign?.since).toBe('2025-01-01');
   });
 });
 
@@ -143,6 +202,20 @@ describe('getHolderChain', () => {
     const chain = getHolderChain(matches);
     expect(chain).toHaveLength(1);
     expect(chain[0].holderId).toBe('coqu');
+  });
+
+  it('ignores pending matches when building the holder chain', () => {
+    const matches: MatchEntry[] = [
+      seeding('coqu', '2025-01-01'),
+      match('coqu', 'udec', 0, 1, 'udec', '2025-02-01'),
+      pendingMatch('udec', 'nuble', '2025-02-08'),
+    ];
+
+    const chain = getHolderChain(matches);
+
+    expect(chain).toHaveLength(2);
+    expect(chain[1].holderId).toBe('udec');
+    expect(chain[1].until).toBeNull();
   });
 });
 
