@@ -133,11 +133,21 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-04-03",
       "competition": "Copa de La Liga · Fecha 4",
       "holderId": "ohiggins",
-      "challengerId": "audax-italiano"
+      "challengerId": "audax-italiano",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "ohiggins"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-04-10",
+      "competition": "Liga de Primera · Fecha 9",
+      "holderId": "ohiggins",
+      "challengerId": "huachipato"
     }
   ]
 }

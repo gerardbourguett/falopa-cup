@@ -8,10 +8,12 @@
     "preview": "astro preview",
     "astro": "astro",
     "script:next": "tsx scripts/next-match.ts",
-    "test": "vitest run",
+    "script:conference-window": "tsx scripts/conference-window.ts",
+    "validate:content": "tsx scripts/validate-content.ts",
+    "test": "pnpm validate:content && vitest run",
     "test:watch": "vitest",
     "check": "astro check",
-    "precheck": "vitest run"
+    "precheck": "pnpm validate:content && vitest run"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.7",
@@ -31,6 +33,7 @@
     "@tailwindcss/vite": "^4.1.17",
     "astro": "^5.15.5",
     "clsx": "^2.1.1",
+    "flag-icons": "^7.5.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "sharp": "^0.34.3",

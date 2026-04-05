@@ -151,6 +151,16 @@
     },
     {
       "type": "match",
+      "date": "2025-04-25",
+      "competition": "Copa Chile · Cuartos de Final",
+      "holderId": "coquimbo-unido",
+      "challengerId": "deportes-limache",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-limache"
+    },
+    {
+      "type": "match",
       "date": "2025-05-11",
       "competition": "Copa Chile · Fase de Grupos",
       "holderId": "union-la-calera",
@@ -231,16 +241,6 @@
     },
     {
       "type": "match",
-      "date": "2025-04-25",
-      "competition": "Copa Chile · Cuartos de Final",
-      "holderId": "coquimbo-unido",
-      "challengerId": "deportes-limache",
-      "scoreHolder": 1,
-      "scoreChallenger": 2,
-      "newHolderId": "deportes-limache"
-    },
-    {
-      "type": "match",
       "date": "2025-07-10",
       "competition": "Liga de Primera",
       "holderId": "deportes-limache",
@@ -304,7 +304,7 @@
       "date": "2025-08-24",
       "competition": "Liga de Primera",
       "holderId": "nublense",
-      "challengerId": "iquique",
+      "challengerId": "deportes-iquique",
       "scoreHolder": 2,
       "scoreChallenger": 0,
       "newHolderId": "nublense"

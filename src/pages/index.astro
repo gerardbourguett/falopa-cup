@@ -10,6 +10,7 @@ import { getCurrentHolder, getCurrentReign, getHolderChain } from "../lib/tourna
 
 const falopaCupEntries = await getCollection("falopa-cup");
 const copaPabloMiladEntries = await getCollection("copa-pablo-milad");
+const conferenceEntries = await getCollection("conference-league-sudamericana");
 const clubsEntries = await getCollection("clubs");
 
 const clubById = new Map(clubsEntries.map((e) => [e.data.id || e.id, e.data]));
@@ -72,6 +73,9 @@ const miladNextMatch = latestMilad
   ? getNextPendingMatch(latestMilad.data.matches)
   : null;
 
+const conferenceClubs = conferenceEntries.find((entry) => entry.data.kind === "clubs")?.data as any;
+const conferenceStage = conferenceEntries.find((entry) => entry.data.kind === "stage")?.data as any;
+
 function formatSinceDate(value?: string | Date | null) {
   if (!value) return "";
   const d = value instanceof Date ? value : new Date(value);
@@ -130,6 +134,18 @@ function formatSinceDate(value?: string | Date | null) {
           accentColor="burgundy"
           href="/copa-pablo-milad"
         />
+      </div>
+
+      <div class={styles.conferenceCta}>
+        <div class={styles.conferenceHeader}>NUEVO TORNEO</div>
+        <h3>Conference League Sudamericana 2026</h3>
+        <p>
+          Torneo continental fantasy por ventanas. Participan {conferenceClubs?.seeds?.length ?? 0} clubes,
+          con transición {conferenceClubs?.seeds?.length ?? 0} → {conferenceStage?.mainStageQualifiedIds?.length ?? 0}.
+        </p>
+        <a href="/conference-league-sudamericana" class={styles.conferenceLink}>
+          Ver Conference League Sudamericana →
+        </a>
       </div>
     </div>
   </section>

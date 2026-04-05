@@ -1,301 +1,176 @@
 # Conference League Sudamericana 2026
 
-## 1. Objetivo del documento
+## 1. Criterio editorial cerrado
 
-Este archivo deja registrada la primera edición conceptual de la **Conference League Sudamericana 2026** dentro del universo Falopa Cup.
+La edición 2026 queda fijada con **53 clubes** y una baja inicial de **53 → 32** mediante:
 
-Su función es servir como referencia editorial y técnica para:
-
-- la nómina de clubes,
-- la vía de clasificación,
-- los clubes con pase directo,
-- y la fase previa de 21 llaves que baja de 53 a 32 equipos.
+- **11 clasificados directos**
+- **42 clubes en fase previa**
+- **21 llaves de previa**
 
 ---
 
-## 2. Nómina oficial de 53 clubes
+## 2. Regla de clasificación
 
-### Argentina
-- Independiente *(cupo base)*
-- Argentinos Juniors *(eliminado Libertadores Fase 2)*
+### 2.1. Directos por cupo país
+Se reserva **1 clasificado directo por liga representada** en la edición base (sin Argentina ni Brasil en este bloque).
 
-### Bolivia
-- GV San José *(cupo base)*
-- Aurora *(cupo base)*
-- Real Tomayapo *(cupo base)*
-- The Strongest *(eliminado Libertadores Fase 1)*
-- Guabirá *(eliminado Sudamericana Fase 1)*
-- San Antonio Bulo Bulo *(eliminado Sudamericana Fase 1)*
+Directos por cupo país:
 
-### Brasil
-- Vitória *(cupo base)*
-- Bahia *(eliminado Libertadores Fase 2)*
+1. Colo-Colo (Chile) — 3366.5
+2. Once Caldas (Colombia) — 1047.0
+3. Sportivo Ameliano (Paraguay) — 386.1
+4. Los Chankas (Perú) — SR
+5. Cerro Largo (Uruguay) — 324.5
+6. GV San José (Bolivia) — 147.0
+7. Anzoátegui (Venezuela) — 16.5
+8. Aucas (Ecuador) — 360.1
 
-### Chile
-- Colo-Colo *(cupo base)*
-- Ñublense *(cupo base)*
-- Deportes Limache *(cupo base)*
-- Huachipato *(eliminado Libertadores Fase 2)*
-- Universidad de Chile *(eliminado Sudamericana Fase 1)*
-- Cobresal *(eliminado Sudamericana Fase 1)*
+### 2.2. Directos por coeficiente
+Luego se agregan **3 directos por mejor coeficiente CONMEBOL** entre los clubes restantes, aunque repitan país.
 
-### Colombia
-- Once Caldas *(cupo base)*
-- Alianza *(cupo base)*
-- Fortaleza *(cupo base)*
-- Atlético Nacional *(eliminado Sudamericana Fase 1)*
-- Atlético Bucaramanga *(eliminado Sudamericana Fase 1)*
-
-### Ecuador
-- Aucas *(cupo base)*
-- Emelec *(cupo base)*
-- Delfín *(cupo base)*
-- Universidad Católica *(eliminado Libertadores Fase 1)*
-- Libertad *(eliminado Sudamericana Fase 1)*
-- Orense *(eliminado Sudamericana Fase 1)*
-
-### Paraguay
-- Sportivo Ameliano *(cupo base)*
-- Sportivo Luqueño *(cupo base)*
-- General Caballero (JLM) *(cupo base)*
-- 2 de Mayo *(eliminado Libertadores Fase 2)*
-- Guaraní *(eliminado Libertadores Fase 2)*
-- Nacional *(eliminado Sudamericana Fase 1)*
-- Sportivo Trinidense *(eliminado Sudamericana Fase 1)*
-
-### Perú
-- Los Chankas *(cupo base)*
-- ADT *(cupo base)*
-- Sport Huancayo *(cupo base)*
-- Alianza Lima *(eliminado Libertadores Fase 1)*
-- Deportivo Garcilaso *(eliminado Sudamericana Fase 1)*
-- Melgar *(eliminado Sudamericana Fase 1)*
-
-### Uruguay
-- Cerro Largo *(cupo base)*
-- Cerro *(cupo base)*
-- Danubio *(cupo base)*
-- Liverpool *(eliminado Libertadores Fase 2)*
-- Nacional *(eliminado Sudamericana Fase 1)*
-- Defensor Sporting *(eliminado Sudamericana Fase 1)*
-- Racing Club *(eliminado Sudamericana Fase 1)*
-
-### Venezuela
-- Anzoátegui *(cupo base)*
-- Zamora *(cupo base)*
-- Rayo Zuliano *(cupo base)*
-- Deportivo Táchira *(eliminado Libertadores Fase 2)*
-- Monagas *(eliminado Sudamericana Fase 1)*
-- Metropolitanos *(eliminado Sudamericana Fase 1)*
+9. Nacional (Uruguay) — 5521.0
+10. Atlético Nacional (Colombia) — 2855.4
+11. Universidad de Chile (Chile) — 1885.6
 
 ---
 
-## 3. Clubes clasificados directo a fase principal
+## 3. Regla de bombos de previa
 
-Los 11 clubes que avanzan directo a los 32 por mejor coeficiente CONMEBOL son:
+Los **42 clubes restantes** disputan la previa.
 
-1. Nacional (Uruguay)
-2. Libertad (Paraguay)
-3. Independiente
-4. Colo-Colo
-5. Atlético Nacional
-6. Universidad de Chile
-7. Alianza Lima
-8. The Strongest
-9. Emelec
-10. Guaraní
-11. Argentinos Juniors
+- **Bombo 1** = los **21 mejores coeficientes** entre esos 42 clubes.
+- **Bombo 2** = los otros 21 clubes.
+- Los clubes con **SR** se ordenan debajo de todos los que sí tienen coeficiente confirmado.
 
-Estos clubes no juegan la fase previa.
+### Bombo 1
+1. Independiente (Argentina) — 3404.4
+2. Alianza Lima (Perú) — 1879.8
+3. The Strongest (Bolivia) — 1865.3
+4. Emelec (Ecuador) — 1849.2
+5. Guaraní (Paraguay) — 1524.8
+6. Argentinos Juniors (Argentina) — 1343.1
+7. Melgar (Perú) — 1309.2
+8. Deportivo Táchira (Venezuela) — 1298.0
+9. Universidad Católica (Ecuador) — 953.8
+10. Bahia (Brasil) — 831.8
+11. Huachipato (Chile) — 630.1
+12. Danubio (Uruguay) — 547.6
+13. Delfín (Ecuador) — 539.6
+14. Defensor Sporting (Uruguay) — 538.6
+15. Racing Club (Uruguay) — 460.5
+16. Liverpool (Uruguay) — 456.0
+17. Atlético Bucaramanga (Colombia) — 450.5
+18. Nacional (Paraguay) — 430.8
+19. Metropolitanos (Venezuela) — 410.2
+20. Ñublense (Chile) — 387.5
+21. Monagas (Venezuela) — 320.5
 
----
-
-## 4. Clubes que disputan la fase previa
-
-Los 42 clubes restantes juegan la fase previa:
-
-- GV San José
-- Aurora
-- Real Tomayapo
-- Guabirá
-- San Antonio Bulo Bulo
-- Vitória
-- Bahia
-- Ñublense
-- Deportes Limache
-- Huachipato
-- Cobresal
-- Once Caldas
-- Alianza
-- Fortaleza
-- Atlético Bucaramanga
-- Aucas
-- Delfín
-- Universidad Católica
-- Orense
-- Sportivo Ameliano
-- Sportivo Luqueño
-- General Caballero (JLM)
-- 2 de Mayo
-- Sportivo Trinidense
-- Los Chankas
-- ADT
-- Sport Huancayo
-- Deportivo Garcilaso
-- Melgar
-- Cerro Largo
-- Cerro
-- Danubio
-- Liverpool
-- Defensor Sporting
-- Racing Club
-- Anzoátegui
-- Zamora
-- Rayo Zuliano
-- Deportivo Táchira
-- Monagas
-- Metropolitanos
-- Libertad *(Ecuador)*
+### Bombo 2
+1. San Antonio Bulo Bulo (Bolivia) — 320.0
+2. Sportivo Luqueño (Paraguay) — 303.4
+3. Cobresal (Chile) — 193.0
+4. Vitória (Brasil) — 186.3
+5. Deportivo Garcilaso (Perú) — 175.5
+6. Zamora (Venezuela) — 169.5
+7. Sport Huancayo (Perú) — 157.4
+8. Alianza (Colombia) — 153.9
+9. Sportivo Trinidense (Paraguay) — 119.7
+10. General Caballero (JLM) (Paraguay) — 114.9
+11. Guabirá (Bolivia) — 98.0
+12. Real Tomayapo (Bolivia) — 89.1
+13. Rayo Zuliano (Venezuela) — 89.1
+14. Cerro (Uruguay) — 51.5
+15. Aurora (Bolivia) — 46.3
+16. ADT (Perú) — 28.5
+17. Orense (Ecuador) — 15.0
+18. 2 de Mayo (Paraguay) — 15.0
+19. Deportes Limache (Chile) — SR
+20. Fortaleza (Colombia) — SR
+21. Libertad (Ecuador) — SR
 
 ---
 
-## 5. Formato de la fase previa
+## 4. Regla oficial del sorteo de previa
 
-- 42 clubes
-- 21 llaves
-- 1 ventana por llave
-- 1 partido oficial contable por club
-- gana el club que obtenga mejor puntaje fantasy en la ventana
+El sorteo de las 21 llaves se hace con esta regla cerrada:
 
-### Regla de puntaje base
-- victoria = 3
-- empate = 1
-- derrota = 0
-- +1 por ganar de visitante
-- +1 por ganar por 2 o más goles
-- -1 por perder de local
+1. **Bombo 1 vs Bombo 2**
+2. El club de **Bombo 1** queda como cabeza de llave.
+3. **No se permiten cruces entre clubes del mismo país**.
+4. Si una extracción deja el cuadro sin solución, se rehace automáticamente la asignación conflictiva.
 
-### Desempates
-1. diferencia de gol del partido contable
-2. goles convertidos
-3. mejor resultado como visitante
-4. sorteo administrativo
+Esta regla es viable con la distribución actual de países y quedó validada editorialmente para 2026.
 
 ---
 
-## 6. Propuesta inicial de 21 llaves
+## 5. Sorteo oficial de la fase previa
 
-La lógica usada aquí es mezclar competitividad con algo de equilibrio geográfico y de coeficiente.
+### PT-01
+- Independiente vs Aurora
 
-### Llave 1
-- Bahia vs Deportes Limache
+### PT-02
+- Alianza Lima vs Deportes Limache
 
-### Llave 2
-- Once Caldas vs Rayo Zuliano
+### PT-03
+- The Strongest vs Libertad (Ecuador)
 
-### Llave 3
-- Ñublense vs Anzoátegui
+### PT-04
+- Emelec vs Fortaleza
 
-### Llave 4
-- Huachipato vs Monagas
+### PT-05
+- Guaraní vs Orense
 
-### Llave 5
-- Atlético Bucaramanga vs Metropolitanos
+### PT-06
+- Argentinos Juniors vs 2 de Mayo
 
-### Llave 6
-- Aucas vs Aurora
+### PT-07
+- Melgar vs Cerro
 
-### Llave 7
-- Delfín vs Real Tomayapo
+### PT-08
+- Deportivo Táchira vs ADT
 
-### Llave 8
-- Universidad Católica (Ecuador) vs ADT
+### PT-09
+- Universidad Católica (Ecuador) vs Guabirá
 
-### Llave 9
-- Orense vs Sport Huancayo
+### PT-10
+- Bahia vs Rayo Zuliano
 
-### Llave 10
-- Sportivo Ameliano vs Cobresal
+### PT-11
+- Huachipato vs Real Tomayapo
 
-### Llave 11
-- Sportivo Luqueño vs Los Chankas
+### PT-12
+- Danubio vs General Caballero (JLM)
 
-### Llave 12
-- General Caballero (JLM) vs Zamora
+### PT-13
+- Delfín vs Sportivo Trinidense
 
-### Llave 13
-- 2 de Mayo vs Fortaleza
+### PT-14
+- Defensor Sporting vs Alianza
 
-### Llave 14
-- Sportivo Trinidense vs Alianza
+### PT-15
+- Racing Club (Uruguay) vs Sport Huancayo
 
-### Llave 15
-- Deportivo Garcilaso vs Guabirá
+### PT-16
+- Liverpool (Uruguay) vs Vitória
 
-### Llave 16
-- Melgar vs San Antonio Bulo Bulo
+### PT-17
+- Atlético Bucaramanga vs Zamora
 
-### Llave 17
-- Cerro Largo vs Libertad (Ecuador)
+### PT-18
+- Nacional (Paraguay) vs Deportivo Garcilaso
 
-### Llave 18
-- Danubio vs GV San José
+### PT-19
+- Metropolitanos vs Cobresal
 
-### Llave 19
-- Defensor Sporting vs Vitória
+### PT-20
+- Ñublense vs Sportivo Luqueño
 
-### Llave 20
-- Racing Club (Uruguay) vs Deportivo Táchira
-
-### Llave 21
-- Liverpool (Uruguay) vs Cerro
+### PT-21
+- Monagas vs San Antonio Bulo Bulo
 
 ---
 
-## 7. Resultado esperado de la fase previa
+## 6. Nota editorial sobre SR
 
-- 21 ganadores avanzan
-- se suman a los 11 clasificados directos
-- se completa una fase principal de 32 equipos
-
----
-
-## 8. Fase principal propuesta
-
-### Grupos
-- 8 grupos de 4 equipos
-- 6 fechas por grupo
-- cada fecha se resuelve por comparación de rendimiento en ventana
-
-### Clasificación
-- avanzan los 2 mejores de cada grupo
-
-### Eliminación directa
-- octavos de final
-- cuartos de final
-- semifinales
-- final
-
----
-
-## 9. Pendientes editoriales
-
-Antes de congelar esta edición se recomienda validar:
-
-- ids exactos de clubes según `src/content/clubs/`
-- naming consistente para Racing Club (Uruguay)
-- naming consistente para General Caballero (JLM)
-- naming consistente para Universidad Católica (Ecuador)
-- naming consistente para Libertad de Ecuador vs Libertad de Paraguay
-
----
-
-## 10. Uso esperado por Codex
-
-Codex debe usar este archivo como referencia para:
-
-- poblar `2026-clubs.json`
-- poblar `2026-stage.json`
-- construir la fase previa
-- distinguir clasificados directos y clubes de previa
-- generar estructuras de grupos y eliminatorias en pasos posteriores
+Los clubes marcados como **SR** no fueron inventados en el orden final: simplemente quedan por debajo de todos los equipos con coeficiente confirmado. Si luego aparece un coeficiente oficial verificable, se reubican en su posición real.
