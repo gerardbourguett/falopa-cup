@@ -11,9 +11,13 @@ const entries = await getCollection('conference-league-sudamericana');
 
 const clubsDoc = entries.find((e) => e.data.kind === 'clubs')?.data as any;
 const stageDoc = entries.find((e) => e.data.kind === 'stage')?.data as any;
+const groupsDoc = entries.find((e) => e.data.kind === 'groups')?.data as any;
 const windowCutDoc = entries.find((e) => e.data.kind === 'window-cut')?.data as any;
 
 const seeds: any[] = clubsDoc?.seeds || [];
+const groups: any[] = groupsDoc?.groups || [];
+const roundWindows: any[] = groupsDoc?.roundWindows || [];
+const seedByIdWiki = new Map<string, any>(seeds.map((s: any) => [s.clubId, s]));
 const preliminaryTies: any[] = stageDoc?.preliminaryTies || [];
 
 const countryNames: Record<string, string> = {
@@ -487,58 +491,88 @@ function scoreBreakdownText(wc: any): string {
     <section class="block" id="grupos">
       <h2>Fase de grupos</h2>
       <p class="criterion-note">
-        32 clubes clasificados (11 directos + 21 ganadores de previa) son distribuidos en
-        <strong>8 grupos de 4 equipos</strong>. Cada grupo se disputa a lo largo de
-        <strong>3 jornadas</strong>, una por ventana de puntuación, usando el mismo sistema
-        fantasy: mejor partido real en la ventana del período.
+        32 clubes (11 directos + 21 ganadores de previa) en <strong>8 grupos de 4</strong>.
+        El puntaje es <strong>acumulación pura</strong>: cada fecha abre una ventana de ~14 días
+        en la que cada club juega <strong>2 partidos reales</strong> de su agenda local.
+        Ambos suman al total fantasy — sin enfrentamiento directo entre clubes del grupo.
       </p>
 
-      <div class="rule-grid">
-        <div class="rule-card">
-          <h3>Sorteo</h3>
-          <p>
-            Los clubes se dividen en 4 bombos según coeficiente CONMEBOL acumulado.
-            El sorteo garantiza que cada grupo tenga exactamente un club de cada bombo.
-            Restricciones geográficas evitan que equipos del mismo país coincidan en el
-            mismo grupo (excepto cuando la cantidad lo hace inevitable).
-          </p>
+      <!-- FECHAS TEMPLATE -->
+      <h3 class="subsection-title">Calendario de fechas</h3>
+      <div class="fechas-grid">
+        {roundWindows.map((rw: any, i: number) => (
+          <div class="fecha-card">
+            <div class="fecha-label">F{i + 1}</div>
+            <div class="fecha-body">
+              <strong>{rw.roundId}</strong>
+              <span class="fecha-range">
+                {new Date(rw.windowStart).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}
+                {' – '}
+                {new Date(rw.windowEnd).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}
+              </span>
+              <small class="fecha-ext">ext. hasta {new Date(rw.extendedWindowEnd).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}</small>
+              <span class:list={['fecha-status', rw.fantasyScores?.length > 0 ? 'status-done' : 'status-pending']}>
+                {rw.fantasyScores?.length > 0 ? 'Jugada' : 'Pendiente'}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- CLASIFICACIÓN -->
+      <h3 class="subsection-title">Clasificación</h3>
+      <div class="class-table">
+        <div class="class-row class-direct">
+          <span class="class-pos">1° y 2°</span>
+          <span class="class-desc">Avanzan directamente a la fase eliminatoria</span>
         </div>
-        <div class="rule-card">
-          <h3>Formato de jornada</h3>
-          <p>
-            Cada jornada abre una <strong>ventana de puntuación</strong> de ~14 días.
-            Durante ese período, cada club toma su mejor partido real (liga local o copa
-            nacional). El resultado se convierte en puntos fantasy: victoria 3, empate 1,
-            derrota 0, con bonos por arco en cero y victoria amplia, y penalizaciones
-            por tarjetas y derrotas amplias.
-          </p>
+        <div class="class-row class-playoff">
+          <span class="class-pos">3°</span>
+          <span class="class-desc">
+            Playoff de repechaje vs. tercero de grupo de Copa Sudamericana
+            <span class="tbd-badge">Copa Sud TBD</span>
+          </span>
         </div>
-        <div class="rule-card">
-          <h3>Clasificación de grupo</h3>
-          <p>
-            Se acumulan los puntos fantasy de las 3 jornadas. El orden de desempate en
-            tabla es: puntos → diferencia fantasy → victorias → diferencia de gol.
-            Los <strong>2 primeros de cada grupo</strong> (16 en total) avanzan al cuadro
-            de eliminación directa.
-          </p>
-        </div>
-        <div class="rule-card">
-          <h3>Fase eliminatoria</h3>
-          <p>
-            Octavos → Cuartos → Semifinales → Final. Llaves a un solo partido en ventana
-            asignada. En caso de empate en total fantasy: tarjetas → goles → condición
-            visita (el equipo sembrado más bajo) → coeficiente CONMEBOL → sorteo administrativo.
-          </p>
+        <div class="class-row class-out">
+          <span class="class-pos">4°</span>
+          <span class="class-desc">Eliminado del torneo</span>
         </div>
       </div>
 
-      <div class="groups-pending-notice">
-        <span>⏳</span>
-        <p>
-          El sorteo de grupos se realizará una vez cerrada la fase previa.
-          Los grupos serán publicados en esta misma página.
-        </p>
+      <!-- SORTEO -->
+      <h3 class="subsection-title">Sorteo oficial 2026</h3>
+      <p class="criterion-note">
+        Sorteo dirigido sin clubes del mismo país en el mismo grupo. Danubio*
+        provisional pendiente cierre de la llave PT-12.
+      </p>
+      <div class="groups-draw-grid">
+        {groups.map((group: any) => (
+          <article class="group-draw-card">
+            <h4 class="group-draw-title">Grupo {group.group}</h4>
+            <ul class="group-draw-list">
+              {group.clubIds.map((id: string) => {
+                const s = seedByIdWiki.get(id);
+                const name = s?.name || id;
+                const country = s?.country || '--';
+                const accent = getClubAccentColor(id);
+                const isProvisional = id === 'uy-danubio';
+                return (
+                  <li class:list={['group-draw-club', 'club-accent', isProvisional && 'provisional']} style={`--club-accent:${accent}`}>
+                    <span class:list={['club-flag-icon', flag(country)]} aria-hidden="true"></span>
+                    <span>{name}</span>
+                    {isProvisional && <span class="prov-star" title="Provisional — PT-12 pendiente">*</span>}
+                  </li>
+                );
+              })}
+            </ul>
+          </article>
+        ))}
       </div>
+
+      <p class="criterion-note footnote">
+        * Danubio lidera PT-12 (5 pts vs General Caballero TBD). El grupo F se actualiza si el resultado cambia el ganador. ·
+        Los 8 cupos de Copa Sudamericana para el playoff de 3ros se conocerán al finalizar esa fase de grupos.
+      </p>
     </section>
 
   </main>
@@ -1018,26 +1052,176 @@ function scoreBreakdownText(wc: any): string {
     line-height: 1.55;
   }
 
-  .groups-pending-notice {
+  /* Fechas */
+  .fechas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .fecha-card {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+  }
+
+  .fecha-label {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--color-liga-primera-dim);
+    line-height: 1;
+    min-width: 2.2rem;
+    padding-top: 0.1rem;
+  }
+
+  .fecha-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .fecha-body strong {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+  }
+
+  .fecha-range {
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+  }
+
+  .fecha-ext {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+  }
+
+  .fecha-status {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+    width: fit-content;
+    margin-top: 0.2rem;
+  }
+
+  .status-done { background: color-mix(in srgb, #5cb85c 20%, transparent); color: #5cb85c; }
+  .status-pending { background: var(--color-bg-elevated); color: var(--color-text-muted); }
+
+  /* Clasificación */
+  .class-table {
+    display: grid;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .class-row {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-bg-elevated);
     background: var(--color-bg-primary);
-    border: 1px dashed var(--color-bg-elevated);
+    font-size: 0.88rem;
+  }
+
+  .class-pos {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    min-width: 4rem;
+    font-weight: 600;
+  }
+
+  .class-direct { border-left: 3px solid #5cb85c; }
+  .class-direct .class-pos { color: #5cb85c; }
+  .class-playoff { border-left: 3px solid #f0a500; }
+  .class-playoff .class-pos { color: #f0a500; }
+  .class-out { border-left: 3px solid var(--color-text-muted); }
+  .class-out .class-pos { color: var(--color-text-muted); }
+
+  .class-desc { color: var(--color-text-secondary); }
+
+  .tbd-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: color-mix(in srgb, #f0a500 15%, transparent);
+    color: #f0a500;
+    border-radius: 999px;
+    padding: 0.1rem 0.45rem;
+    margin-left: 0.35rem;
+  }
+
+  /* Groups draw */
+  .groups-draw-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.65rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .group-draw-card {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-elevated);
     border-radius: 10px;
-    padding: 1rem 1.25rem;
-    margin-top: 0.5rem;
-    color: var(--color-text-secondary);
-    font-size: 0.85rem;
+    padding: 0.85rem;
   }
 
-  .groups-pending-notice p {
+  .group-draw-title {
+    margin: 0 0 0.6rem;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+  }
+
+  .group-draw-list {
+    list-style: none;
     margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
   }
 
-  .groups-pending-notice span {
-    font-size: 1.4rem;
-    flex-shrink: 0;
+  .group-draw-club {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    padding: 0.3rem 0.45rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-bg-elevated);
+    background: var(--color-bg-secondary);
+    border-left: 3px solid var(--club-accent, var(--color-bg-elevated));
+  }
+
+  .group-draw-club.provisional {
+    border-left-color: #f0a500;
+    opacity: 0.85;
+  }
+
+  .prov-star {
+    margin-left: auto;
+    color: #f0a500;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .footnote {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-top: 0.25rem !important;
   }
 
   /* Scoring system */
