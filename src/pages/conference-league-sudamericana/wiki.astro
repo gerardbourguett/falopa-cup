@@ -1,0 +1,1283 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../components/Layout.astro';
+import { SITE_TITLE } from '../../consts';
+import {
+  getClubAccentColor,
+  getEntryTypeSportLabel,
+} from '../../lib/tournaments/conference-league-sudamericana/club-visuals';
+
+const entries = await getCollection('conference-league-sudamericana');
+
+const clubsDoc = entries.find((e) => e.data.kind === 'clubs')?.data as any;
+const stageDoc = entries.find((e) => e.data.kind === 'stage')?.data as any;
+const groupsDoc = entries.find((e) => e.data.kind === 'groups')?.data as any;
+const windowCutDoc = entries.find((e) => e.data.kind === 'window-cut')?.data as any;
+
+const seeds: any[] = clubsDoc?.seeds || [];
+const groups: any[] = groupsDoc?.groups || [];
+const roundWindows: any[] = groupsDoc?.roundWindows || [];
+const seedByIdWiki = new Map<string, any>(seeds.map((s: any) => [s.clubId, s]));
+const preliminaryTies: any[] = stageDoc?.preliminaryTies || [];
+
+const countryNames: Record<string, string> = {
+  AR: 'Argentina',
+  BO: 'Bolivia',
+  BR: 'Brasil',
+  CL: 'Chile',
+  CO: 'Colombia',
+  EC: 'Ecuador',
+  PY: 'Paraguay',
+  PE: 'Perú',
+  UY: 'Uruguay',
+  VE: 'Venezuela',
+};
+
+const countryOrder = ['AR', 'BO', 'BR', 'CL', 'CO', 'EC', 'PE', 'PY', 'UY', 'VE'];
+
+function flag(country: string) {
+  return `fi fi-${String(country || '').toLowerCase()}`;
+}
+
+function entryLabel(type: string) {
+  switch (type) {
+    case 'libertadores-f2': return 'Lib. F2';
+    case 'libertadores-f1': return 'Lib. F1';
+    case 'sudamericana-f1': return 'Sud. F1';
+    default: return 'Base';
+  }
+}
+
+function entryLabelLong(type: string) {
+  switch (type) {
+    case 'libertadores-f2': return 'Eliminado Copa Libertadores (Fase 2)';
+    case 'libertadores-f1': return 'Eliminado Copa Libertadores (Fase 1)';
+    case 'sudamericana-f1': return 'Eliminado Copa Sudamericana (Fase 1)';
+    default: return 'Cupo base de liga nacional';
+  }
+}
+
+function resolvedByLabel(r: string) {
+  switch (r) {
+    case 'fantasy-score': return 'Diferencia fantasy';
+    case 'card-deductions': return 'Menos tarjetas';
+    case 'goals-for': return 'Más goles marcados';
+    case 'away-condition': return 'Condición visita';
+    case 'conmebol-rank': return 'Coeficiente CONMEBOL';
+    case 'administrative': return 'Sorteo administrativo';
+    default: return r;
+  }
+}
+
+// By country breakdown
+const byCountry: Record<string, { base: number; libF1: number; libF2: number; sudF1: number; clubs: any[] }> = {};
+for (const s of seeds) {
+  if (!byCountry[s.country]) byCountry[s.country] = { base: 0, libF1: 0, libF2: 0, sudF1: 0, clubs: [] };
+  byCountry[s.country].clubs.push(s);
+  if (s.entryType === 'base') byCountry[s.country].base++;
+  else if (s.entryType === 'libertadores-f1') byCountry[s.country].libF1++;
+  else if (s.entryType === 'libertadores-f2') byCountry[s.country].libF2++;
+  else if (s.entryType === 'sudamericana-f1') byCountry[s.country].sudF1++;
+}
+
+// Direct qualifiers
+const leagueDirect = seeds.filter((s) => s.allocationCategory === 'league-direct').sort((a, b) => a.conmebolRank - b.conmebolRank);
+const coeffDirect = seeds.filter((s) => s.allocationCategory === 'coefficient-direct').sort((a, b) => (b.conmebolCoefficient ?? 0) - (a.conmebolCoefficient ?? 0));
+
+// Preliminary pots
+const pot1 = seeds.filter((s) => s.allocationCategory === 'preliminary-pot-1').sort((a, b) => a.conmebolRank - b.conmebolRank);
+const pot2 = seeds.filter((s) => s.allocationCategory === 'preliminary-pot-2').sort((a, b) => a.conmebolRank - b.conmebolRank);
+
+// Window-cut lookup
+const wcByClub = new Map<string, any>(
+  (windowCutDoc?.entries || []).map((e: any) => [e.clubId, e] as [string, any])
+);
+
+// Build enriched ties
+const enrichedTies = preliminaryTies.map((tie: any) => {
+  const seedA = seeds.find((s) => s.clubId === tie.clubAId);
+  const seedB = seeds.find((s) => s.clubId === tie.clubBId);
+  const wcA = wcByClub.get(tie.clubAId);
+  const wcB = wcByClub.get(tie.clubBId);
+  const isWinnerA = tie.winnerClubId === tie.clubAId;
+  const isWinnerB = tie.winnerClubId === tie.clubBId;
+  return { tie, seedA, seedB, wcA, wcB, isWinnerA, isWinnerB };
+});
+
+function scoreBreakdownText(wc: any): string {
+  if (!wc || wc.status !== 'ok') return 'sin partido en ventana → 0';
+  const gf = Number(wc.goalsFor ?? 0);
+  const ga = Number(wc.goalsAgainst ?? 0);
+  const isWin = gf > ga;
+  const isDraw = gf === ga;
+  const isLoss = gf < ga;
+  const base = isWin ? 3 : isDraw ? 1 : 0;
+  const cleanSheet = ga === 0 ? 1 : 0;
+  const margin = isWin ? Math.max(0, (gf - ga) - 1) : 0;
+  const wideLoss = isLoss && ga - gf >= 3 ? -1 : 0;
+  const yellowPenalty = -(Number(wc.yellowCards ?? 0) * 0.25);
+  const redPenalty = -(Number(wc.redCards ?? 0));
+  const total = base + cleanSheet + margin + wideLoss + yellowPenalty + redPenalty;
+  const parts: string[] = [`base ${base}`];
+  if (cleanSheet) parts.push('+1 arco en cero');
+  if (margin > 0) parts.push(`+${margin} margen (${gf - ga} goles)`);
+  if (wideLoss) parts.push('-1 derrota amplia');
+  if (yellowPenalty < 0) parts.push(`${yellowPenalty} amarillas`);
+  if (redPenalty < 0) parts.push(`${redPenalty} rojas`);
+  parts.push(`= ${total}`);
+  return parts.join(' · ');
+}
+---
+
+<Layout
+  title={`Wiki — Conference League Sudamericana 2026 — ${SITE_TITLE}`}
+  description="Historia, participantes, clasificados, fase previa y formato de grupos — edición 2026"
+  currentPath="/conference-league-sudamericana/wiki"
+>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Conference League Sudamericana · Edición 2026</p>
+      <h1>Wiki del torneo</h1>
+      <p>Historia, estructura, participantes y resultados de la fase previa.</p>
+    </div>
+  </section>
+
+  <div class="container page-nav-strip">
+    <a href="/conference-league-sudamericana/wiki" class="page-nav-tab active" aria-current="page">Wiki</a>
+    <a href="/conference-league-sudamericana" class="page-nav-tab">Resultados</a>
+  </div>
+
+  <main class="container page-main">
+
+    <!-- HISTORIA -->
+    <section class="block" id="historia">
+      <h2>Historia del torneo</h2>
+      <div class="prose-block">
+        <p>
+          El <strong>14 de noviembre de 2025</strong>, en una sesión extraordinaria del Consejo Superior
+          de CONMEBOL celebrada en Luque, Paraguay, nació oficialmente el tercer torneo continental
+          sudamericano: la <strong>Conference League Sudamericana</strong>. La votación fue
+          unánime: diez federaciones, diez manos levantadas, una sola certeza — el fútbol del continente
+          necesitaba expandirse.
+        </p>
+        <p>
+          La idea había madurado durante años en los pasillos de la burocracia futbolística. Bolivia
+          presentó el primer anteproyecto en 2023, argumentando que la mitad de los campeones nacionales
+          sudamericanos jamás disputaban una fase de grupos continental. Ecuador y Paraguay respaldaron
+          la propuesta. Argentina y Brasil, inicialmente escépticos ante la posible dilución de la
+          marca Libertadores, terminaron cediendo cuando se garantizó que el nuevo torneo no
+          solaparía fechas ni afectaría el ingreso televisivo de las competencias principales.
+        </p>
+        <p>
+          La <strong>novedad disruptiva</strong> fue el formato <em>fantasy por ventanas</em>.
+          En lugar de viajes, estadios neutrales y logística imposible para clubes pequeños, cada
+          equipo compite usando sus resultados reales en ligas locales dentro de períodos
+          definidos. Un partido en Cochabamba, otro en Asunción, otro en Montevideo — todos
+          transformados en puntos bajo la misma tabla: victoria tres puntos, empate uno, y bonos
+          que premia la contundencia defensiva y ofensiva. El fútbol cotidiano, elevado a escenario continental.
+        </p>
+        <p>
+          La primera edición, <strong>2026</strong>, reunió a <strong>53 clubes</strong>
+          de diez países. Ídolos históricos como Colo-Colo, Atlético Nacional y Nacional de
+          Uruguay comparten competencia con recién llegados al escenario internacional como
+          Los Chankas de Perú, Sportivo Ameliano de Paraguay o GV San José de Bolivia.
+          Una igualdad de condiciones que el viejo fútbol continental jamás había conocido.
+        </p>
+        <p>
+          Quedará en los libros como el año en que el fútbol sudamericano se democratizó.
+        </p>
+      </div>
+    </section>
+
+    <!-- SISTEMA DE PUNTUACIÓN -->
+    <section class="block" id="puntuacion">
+      <h2>Sistema de puntuación</h2>
+      <p class="criterion-note">
+        Cada club usa <strong>un partido real</strong> en la ventana asignada (liga local o copa nacional).
+        Ese resultado se convierte en puntos fantasy según estas reglas:
+      </p>
+      <div class="scoring-grid">
+        <div class="score-group">
+          <h3>Resultado base</h3>
+          <ul class="score-rule-list">
+            <li><span class="score-badge win">+3</span> Victoria</li>
+            <li><span class="score-badge draw">+1</span> Empate</li>
+            <li><span class="score-badge loss">0</span> Derrota</li>
+          </ul>
+        </div>
+        <div class="score-group">
+          <h3>Bonificaciones</h3>
+          <ul class="score-rule-list">
+            <li><span class="score-badge bonus">+1</span> Arco en cero (goalsAgainst = 0)</li>
+            <li><span class="score-badge bonus">+1</span> Victoria por 2 goles de diferencia</li>
+            <li><span class="score-badge bonus">+2</span> Victoria por 3 goles de diferencia</li>
+            <li><span class="score-badge bonus">+N−1</span> Victoria por N goles de diferencia (progresivo)</li>
+          </ul>
+        </div>
+        <div class="score-group">
+          <h3>Penalizaciones</h3>
+          <ul class="score-rule-list">
+            <li><span class="score-badge penalty">−1</span> Derrota por 3+ goles de diferencia</li>
+            <li><span class="score-badge penalty">−0.25</span> Por cada tarjeta amarilla</li>
+            <li><span class="score-badge penalty">−1</span> Por cada tarjeta roja</li>
+          </ul>
+        </div>
+        <div class="score-group">
+          <h3>Caso especial</h3>
+          <ul class="score-rule-list">
+            <li><span class="score-badge nomatch">0</span> Sin partido en ventana (no-match)</li>
+          </ul>
+        </div>
+      </div>
+      <p class="criterion-note" style="margin-top: 0.75rem;">
+        <strong>Desempate entre clubes con igual total:</strong>
+        menos tarjetas acumuladas → más goles marcados → condición visita → menor coeficiente CONMEBOL → sorteo administrativo.
+      </p>
+    </section>
+
+    <!-- PARTICIPANTES POR PAÍS -->
+    <section class="block" id="participantes">
+      <h2>Participantes por país</h2>
+      <p class="criterion-note">
+        53 clubes de 10 países. Cada asociación recibe cupos según su posición en el
+        <strong>ranking CONMEBOL</strong>. Los clubes eliminados tempranamente de Libertadores
+        y Sudamericana son redirigidos a esta competencia.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>País</th>
+              <th>Total</th>
+              <th>Base</th>
+              <th>Lib. F1</th>
+              <th>Lib. F2</th>
+              <th>Sud. F1</th>
+              <th>Clubes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {countryOrder.map((cc) => {
+              const row = byCountry[cc];
+              if (!row) return null;
+              return (
+                <tr>
+                  <td>
+                    <span class="inline-club">
+                      <span class:list={['club-flag-icon', flag(cc)]} aria-hidden="true"></span>
+                      <strong>{countryNames[cc]}</strong>
+                    </span>
+                  </td>
+                  <td><strong>{row.clubs.length}</strong></td>
+                  <td>{row.base || '—'}</td>
+                  <td>{row.libF1 || '—'}</td>
+                  <td>{row.libF2 || '—'}</td>
+                  <td>{row.sudF1 || '—'}</td>
+                  <td>
+                    <span class="club-tags">
+                      {row.clubs.sort((a: any, b: any) => a.conmebolRank - b.conmebolRank).map((s: any) => (
+                        <span
+                          class="club-tag"
+                          title={`${s.name} · ${entryLabelLong(s.entryType)} · Rank #${s.conmebolRank}`}
+                          style={`--accent: ${getClubAccentColor(s.clubId)}`}
+                        >
+                          {s.name}
+                        </span>
+                      ))}
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="entry-legend">
+        <span><strong>Base</strong>: mejor clasificado de liga nacional</span>
+        <span><strong>Lib. F1/F2</strong>: eliminado en fase 1 o 2 de Copa Libertadores</span>
+        <span><strong>Sud. F1</strong>: eliminado en fase 1 de Copa Sudamericana</span>
+      </div>
+    </section>
+
+    <!-- CLASIFICADOS DIRECTOS -->
+    <section class="block" id="directos">
+      <h2>Clasificados directos a fase principal</h2>
+      <p class="criterion-note">
+        Once clubes acceden directamente a la fase de grupos sin pasar por la previa.
+        Ninguno es campeón de liga —  esos puestos clasifican a Libertadores o Sudamericana.
+        Son los equipos que <strong>obtuvieron la mejor posición de liga disponible para Conference League</strong>:
+        el cupo que queda libre después de asignar los lugares de Libertadores y Sudamericana.
+        <br /><br />
+        <strong>8 por cupo de liga</strong>: la mejor ubicación de su asociación que no los clasifica
+        a ninguna otra copa. · <strong>3 por coeficiente CONMEBOL</strong>: los tres con mayor coeficiente
+        histórico del grupo de participantes sin acceso directo de liga (transferidos de Libertadores/Sudamericana).
+      </p>
+
+      <div class="direct-grid">
+        <div class="direct-group">
+          <h3>Por cupo de liga <span class="badge badge-green">8 clubes</span></h3>
+          <ul class="club-list">
+            {leagueDirect.map((s: any) => (
+              <li class="club-row club-accent" style={`--club-accent: ${getClubAccentColor(s.clubId)}`}>
+                <span class:list={['club-flag-icon', flag(s.country)]} aria-hidden="true"></span>
+                <span class="club-name-main">{s.name}</span>
+                <span class="club-country-tag">{countryNames[s.country]}</span>
+                <small>Rank #{s.conmebolRank}</small>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="direct-group">
+          <h3>Por coeficiente CONMEBOL <span class="badge badge-gold">3 clubes</span></h3>
+          <ul class="club-list">
+            {coeffDirect.map((s: any) => (
+              <li class="club-row club-accent" style={`--club-accent: ${getClubAccentColor(s.clubId)}`}>
+                <span class:list={['club-flag-icon', flag(s.country)]} aria-hidden="true"></span>
+                <span class="club-name-main">{s.name}</span>
+                <span class="club-country-tag">{countryNames[s.country]}</span>
+                <small>{s.coefficientLabel} pts · {getEntryTypeSportLabel(s.entryType)}</small>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FASE PREVIA -->
+    <section class="block" id="fase-previa">
+      <h2>Fase previa</h2>
+      <p class="criterion-note">
+        42 clubes disputan 21 llaves (Bombo 1 vs Bombo 2). El ganador de cada llave avanza
+        a la fase principal junto con los 11 clasificados directos, completando los 32 equipos
+        de la fase de grupos.
+      </p>
+      <p class="criterion-note">
+        La clasificación se determina por el <strong>puntaje fantasy de ventana</strong>:
+        cada club usa su mejor partido real en la ventana definida. En caso de empate: tarjetas
+        acumuladas → goles marcados → condición visita → coeficiente CONMEBOL → sorteo administrativo.
+      </p>
+
+      <!-- BOMBOS -->
+      <div class="pots-section" id="bombos">
+        <div class="pots-grid">
+          <div class="pot-card block-inner">
+            <h3>Bombo 1 <span class="badge badge-blue">21 clubes</span></h3>
+            <p class="criterion-note">Clubes con mayor coeficiente CONMEBOL del grupo de previa.</p>
+            <ul class="club-list">
+              {pot1.map((s: any) => (
+                <li class="club-row club-accent" style={`--club-accent: ${getClubAccentColor(s.clubId)}`}>
+                  <span class:list={['club-flag-icon', flag(s.country)]} aria-hidden="true"></span>
+                  <div class="club-row-body">
+                    <span class="club-name-main">{s.name}</span>
+                    <span class="club-meta-line">{entryLabel(s.entryType)} · {s.coefficientLabel} pts</span>
+                  </div>
+                  <small>#{s.conmebolRank}</small>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="pot-card block-inner">
+            <h3>Bombo 2 <span class="badge badge-gray">21 clubes</span></h3>
+            <p class="criterion-note">Clubes con menor coeficiente CONMEBOL del grupo de previa.</p>
+            <ul class="club-list">
+              {pot2.map((s: any) => (
+                <li class="club-row club-accent" style={`--club-accent: ${getClubAccentColor(s.clubId)}`}>
+                  <span class:list={['club-flag-icon', flag(s.country)]} aria-hidden="true"></span>
+                  <div class="club-row-body">
+                    <span class="club-name-main">{s.name}</span>
+                    <span class="club-meta-line">{entryLabel(s.entryType)} · {s.coefficientLabel} pts</span>
+                  </div>
+                  <small>#{s.conmebolRank}</small>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- EMPAREJAMIENTOS -->
+      <h3 class="subsection-title" id="emparejamientos">Emparejamientos y resultados</h3>
+      <p class="criterion-note">
+        Ventana de puntuación: <strong>{windowCutDoc?.windowStart || '—'}</strong> —
+        <strong>{windowCutDoc?.windowEnd || '—'}</strong>.
+        Cada club usa el partido real que cayó en esa ventana para calcular su total fantasy.
+      </p>
+
+      <div class="ties-list">
+        {enrichedTies.map(({ tie, seedA, seedB, wcA, wcB, isWinnerA, isWinnerB }: any) => (
+          <article class="tie-article">
+            <header class="tie-article-header">
+              <span class="tie-id">{tie.id}</span>
+              <span class="tie-resolved-badge">{resolvedByLabel(tie.resolvedBy)}</span>
+            </header>
+
+            <!-- Club A -->
+            <div class:list={['tie-club-row', isWinnerA && 'winner']}>
+              <div class="tie-club-identity">
+                <span class:list={['club-flag-icon', flag(seedA?.country)]} aria-hidden="true"></span>
+                <span class="tie-club-name">{seedA?.name || tie.clubAId}</span>
+                <span class="tie-entry-badge">{entryLabel(seedA?.entryType || 'base')}</span>
+              </div>
+              <div class="tie-club-match">
+                {wcA?.status === 'ok' ? (
+                  <span class="tie-match-detail">
+                    {wcA.goalsFor}-{wcA.goalsAgainst}
+                    <span class="tie-ha">{wcA.homeAway === 'home' ? 'LOCAL' : 'VISITA'}</span>
+                    vs {wcA.opponent}
+                    <span class="tie-match-comp">{wcA.competition} · {wcA.sourceDate}</span>
+                    {(wcA.yellowCards !== null && wcA.yellowCards !== undefined) && (
+                      <span class="tie-cards">
+                        {wcA.yellowCards > 0 && <span class="card card-yellow" title="Amarillas">🟨 {wcA.yellowCards}</span>}
+                        {wcA.redCards > 0 && <span class="card card-red" title="Rojas">🟥 {wcA.redCards}</span>}
+                      </span>
+                    )}
+                  </span>
+                ) : (
+                  <span class="tie-no-match">sin partido en ventana</span>
+                )}
+              </div>
+              <div class="tie-breakdown">{scoreBreakdownText(wcA)}</div>
+              <div class="tie-score-chip" data-winner={isWinnerA ? 'true' : 'false'}>
+                {tie.scoreA}
+              </div>
+            </div>
+
+            <!-- Club B -->
+            <div class:list={['tie-club-row', isWinnerB && 'winner']}>
+              <div class="tie-club-identity">
+                <span class:list={['club-flag-icon', flag(seedB?.country)]} aria-hidden="true"></span>
+                <span class="tie-club-name">{seedB?.name || tie.clubBId}</span>
+                <span class="tie-entry-badge">{entryLabel(seedB?.entryType || 'base')}</span>
+              </div>
+              <div class="tie-club-match">
+                {wcB?.status === 'ok' ? (
+                  <span class="tie-match-detail">
+                    {wcB.goalsFor}-{wcB.goalsAgainst}
+                    <span class="tie-ha">{wcB.homeAway === 'home' ? 'LOCAL' : 'VISITA'}</span>
+                    vs {wcB.opponent}
+                    <span class="tie-match-comp">{wcB.competition} · {wcB.sourceDate}</span>
+                    {(wcB.yellowCards !== null && wcB.yellowCards !== undefined) && (
+                      <span class="tie-cards">
+                        {wcB.yellowCards > 0 && <span class="card card-yellow" title="Amarillas">🟨 {wcB.yellowCards}</span>}
+                        {wcB.redCards > 0 && <span class="card card-red" title="Rojas">🟥 {wcB.redCards}</span>}
+                      </span>
+                    )}
+                  </span>
+                ) : (
+                  <span class="tie-no-match">sin partido en ventana</span>
+                )}
+              </div>
+              <div class="tie-breakdown">{scoreBreakdownText(wcB)}</div>
+              <div class="tie-score-chip" data-winner={isWinnerB ? 'true' : 'false'}>
+                {tie.scoreB}
+              </div>
+            </div>
+
+            <footer class="tie-article-footer">
+              Clasifica: <strong>
+                {tie.winnerClubId === tie.clubAId ? (seedA?.name || tie.clubAId) : (seedB?.name || tie.clubBId)}
+              </strong>
+            </footer>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- FASE DE GRUPOS -->
+    <section class="block" id="grupos">
+      <h2>Fase de grupos</h2>
+      <p class="criterion-note">
+        32 clubes (11 directos + 21 ganadores de previa) en <strong>8 grupos de 4</strong>.
+        El puntaje es <strong>acumulación pura</strong>: cada fecha abre una ventana de ~14 días
+        en la que cada club juega <strong>2 partidos reales</strong> de su agenda local.
+        Ambos suman al total fantasy — sin enfrentamiento directo entre clubes del grupo.
+      </p>
+
+      <!-- FECHAS TEMPLATE -->
+      <h3 class="subsection-title">Calendario de fechas</h3>
+      <div class="fechas-grid">
+        {roundWindows.map((rw: any, i: number) => (
+          <div class="fecha-card">
+            <div class="fecha-label">F{i + 1}</div>
+            <div class="fecha-body">
+              <strong>{rw.roundId}</strong>
+              <span class="fecha-range">
+                {new Date(rw.windowStart).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}
+                {' – '}
+                {new Date(rw.windowEnd).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}
+              </span>
+              <small class="fecha-ext">ext. hasta {new Date(rw.extendedWindowEnd).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}</small>
+              <span class:list={['fecha-status', rw.fantasyScores?.length > 0 ? 'status-done' : 'status-pending']}>
+                {rw.fantasyScores?.length > 0 ? 'Jugada' : 'Pendiente'}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- CLASIFICACIÓN -->
+      <h3 class="subsection-title">Clasificación</h3>
+      <div class="class-table">
+        <div class="class-row class-direct">
+          <span class="class-pos">1° y 2°</span>
+          <span class="class-desc">Avanzan directamente a la fase eliminatoria</span>
+        </div>
+        <div class="class-row class-playoff">
+          <span class="class-pos">3°</span>
+          <span class="class-desc">
+            Playoff de repechaje vs. tercero de grupo de Copa Sudamericana
+            <span class="tbd-badge">Copa Sud TBD</span>
+          </span>
+        </div>
+        <div class="class-row class-out">
+          <span class="class-pos">4°</span>
+          <span class="class-desc">Eliminado del torneo</span>
+        </div>
+      </div>
+
+      <!-- SORTEO -->
+      <h3 class="subsection-title">Sorteo oficial 2026</h3>
+      <p class="criterion-note">
+        Sorteo dirigido sin clubes del mismo país en el mismo grupo. Danubio*
+        provisional pendiente cierre de la llave PT-12.
+      </p>
+      <div class="groups-draw-grid">
+        {groups.map((group: any) => (
+          <article class="group-draw-card">
+            <h4 class="group-draw-title">Grupo {group.group}</h4>
+            <ul class="group-draw-list">
+              {group.clubIds.map((id: string) => {
+                const s = seedByIdWiki.get(id);
+                const name = s?.name || id;
+                const country = s?.country || '--';
+                const accent = getClubAccentColor(id);
+                const isProvisional = id === 'uy-danubio';
+                return (
+                  <li class:list={['group-draw-club', 'club-accent', isProvisional && 'provisional']} style={`--club-accent:${accent}`}>
+                    <span class:list={['club-flag-icon', flag(country)]} aria-hidden="true"></span>
+                    <span>{name}</span>
+                    {isProvisional && <span class="prov-star" title="Provisional — PT-12 pendiente">*</span>}
+                  </li>
+                );
+              })}
+            </ul>
+          </article>
+        ))}
+      </div>
+
+      <p class="criterion-note footnote">
+        * Danubio lidera PT-12 (5 pts vs General Caballero TBD). El grupo F se actualiza si el resultado cambia el ganador. ·
+        Los 8 cupos de Copa Sudamericana para el playoff de 3ros se conocerán al finalizar esa fase de grupos.
+      </p>
+    </section>
+
+  </main>
+</Layout>
+
+<style>
+  .page-hero {
+    background: var(--color-bg-elevated);
+    padding: 2.5rem 0 2rem;
+    border-bottom: 1px solid var(--color-bg-tertiary);
+  }
+
+  .eyebrow {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin: 0 0 0.4rem;
+  }
+
+  .page-hero h1 {
+    margin: 0 0 0.5rem;
+  }
+
+  .page-hero p {
+    margin: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .page-nav-strip {
+    display: flex;
+    gap: 0.25rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0;
+    border-bottom: 1px solid var(--color-bg-elevated);
+  }
+
+  .page-nav-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .page-nav-tab:hover {
+    color: var(--color-text-primary);
+  }
+
+  .page-nav-tab.active {
+    color: var(--color-text-primary);
+    border-bottom-color: var(--color-liga-primera);
+  }
+
+  .page-main {
+    padding-top: 1.5rem;
+    padding-bottom: 3rem;
+    display: grid;
+    gap: 2rem;
+  }
+
+  .block {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .block h2 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+    font-size: 1.15rem;
+  }
+
+  .block-inner {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+  }
+
+  .block-inner h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .prose-block p {
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+  }
+
+  .prose-block p strong {
+    color: var(--color-text-primary);
+  }
+
+  .prose-block p:last-child {
+    margin-bottom: 0;
+  }
+
+  .criterion-note {
+    margin-top: 0;
+    margin-bottom: 0.9rem;
+    color: var(--color-text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  /* Country table */
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  th {
+    text-align: left;
+    padding: 0.45rem 0.6rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--color-bg-elevated);
+  }
+
+  td {
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--color-bg-elevated);
+    vertical-align: top;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .club-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .club-tag {
+    font-size: 0.72rem;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    border-left: 2px solid var(--accent, #64748b);
+    background: var(--color-bg-elevated);
+    white-space: nowrap;
+  }
+
+  .entry-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Direct qualifiers */
+  .direct-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .direct-group h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 0.1rem 0.45rem;
+    border-radius: 99px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+
+  .badge-green { background: #14532d; color: #bbf7d0; }
+  .badge-gold { background: #78350f; color: #fde68a; }
+  .badge-blue { background: #1e3a5f; color: #bfdbfe; }
+  .badge-gray { background: #1e293b; color: #94a3b8; }
+
+  /* Club lists */
+  .club-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .club-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-bg-elevated);
+    background: var(--color-bg-primary);
+    font-size: 0.82rem;
+  }
+
+  .club-accent {
+    border-left: 3px solid var(--club-accent, #64748b);
+  }
+
+  .club-name-main {
+    flex: 1;
+    font-weight: 500;
+  }
+
+  .club-country-tag {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  .club-row small {
+    color: var(--color-text-muted);
+    font-size: 0.72rem;
+    white-space: nowrap;
+  }
+
+  .club-row-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+  }
+
+  .club-meta-line {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  /* Pots section */
+  .pots-section {
+    margin-bottom: 1.5rem;
+  }
+
+  .pots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .pot-card {
+    max-height: 420px;
+    overflow-y: auto;
+  }
+
+  .pot-card .club-list {
+    max-height: none;
+  }
+
+  .subsection-title {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  /* Inline club with flag */
+  .inline-club {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .club-flag-icon {
+    width: 1.1em;
+    height: 0.85em;
+    flex-shrink: 0;
+    border-radius: 2px;
+  }
+
+  /* Ties list */
+  .ties-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 0.85rem;
+  }
+
+  .tie-article {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 0.82rem;
+  }
+
+  .tie-article-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-bg-elevated);
+    border-bottom: 1px solid var(--color-bg-tertiary, #1e293b);
+  }
+
+  .tie-id {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .tie-resolved-badge {
+    font-size: 0.68rem;
+    color: var(--color-text-muted);
+    background: var(--color-bg-secondary);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+  }
+
+  .tie-club-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto auto;
+    gap: 0.2rem 0.5rem;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--color-bg-elevated);
+  }
+
+  .tie-club-row.winner {
+    background: rgba(212, 168, 83, 0.06);
+    border-left: 3px solid var(--color-liga-primera, #d4a853);
+  }
+
+  .tie-club-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .tie-club-name {
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .tie-entry-badge {
+    font-size: 0.65rem;
+    padding: 0.08rem 0.3rem;
+    border-radius: 3px;
+    background: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .tie-club-match {
+    grid-column: 1;
+    grid-row: 2;
+    color: var(--color-text-secondary);
+    font-size: 0.78rem;
+  }
+
+  .tie-match-detail {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .tie-ha {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 0.05rem 0.3rem;
+    border-radius: 3px;
+    background: var(--color-bg-elevated);
+    color: var(--color-text-muted);
+  }
+
+  .tie-match-comp {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    flex-basis: 100%;
+  }
+
+  .tie-cards {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+  }
+
+  .card {
+    font-size: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.1rem;
+  }
+
+  .tie-no-match {
+    font-style: italic;
+    color: var(--color-text-muted);
+  }
+
+  .tie-breakdown {
+    grid-column: 1;
+    grid-row: 3;
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .tie-score-chip {
+    grid-column: 2;
+    grid-row: 1 / 4;
+    align-self: center;
+    font-family: var(--font-display, monospace);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+    min-width: 2rem;
+    text-align: right;
+  }
+
+  .tie-score-chip[data-winner="true"] {
+    color: var(--color-liga-primera, #d4a853);
+  }
+
+  .tie-article-footer {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    background: var(--color-bg-elevated);
+  }
+
+  .tie-article-footer strong {
+    color: var(--color-text-primary);
+  }
+
+  /* Rules grid */
+  .rule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .rule-card {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+  }
+
+  .rule-card h3 {
+    margin-top: 0;
+    margin-bottom: 0.4rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .rule-card p {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+    line-height: 1.55;
+  }
+
+  /* Fechas */
+  .fechas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .fecha-card {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+  }
+
+  .fecha-label {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--color-liga-primera-dim);
+    line-height: 1;
+    min-width: 2.2rem;
+    padding-top: 0.1rem;
+  }
+
+  .fecha-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .fecha-body strong {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+  }
+
+  .fecha-range {
+    font-size: 0.9rem;
+    color: var(--color-text-primary);
+  }
+
+  .fecha-ext {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+  }
+
+  .fecha-status {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+    width: fit-content;
+    margin-top: 0.2rem;
+  }
+
+  .status-done { background: color-mix(in srgb, #5cb85c 20%, transparent); color: #5cb85c; }
+  .status-pending { background: var(--color-bg-elevated); color: var(--color-text-muted); }
+
+  /* Clasificación */
+  .class-table {
+    display: grid;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .class-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-bg-elevated);
+    background: var(--color-bg-primary);
+    font-size: 0.88rem;
+  }
+
+  .class-pos {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    min-width: 4rem;
+    font-weight: 600;
+  }
+
+  .class-direct { border-left: 3px solid #5cb85c; }
+  .class-direct .class-pos { color: #5cb85c; }
+  .class-playoff { border-left: 3px solid #f0a500; }
+  .class-playoff .class-pos { color: #f0a500; }
+  .class-out { border-left: 3px solid var(--color-text-muted); }
+  .class-out .class-pos { color: var(--color-text-muted); }
+
+  .class-desc { color: var(--color-text-secondary); }
+
+  .tbd-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: color-mix(in srgb, #f0a500 15%, transparent);
+    color: #f0a500;
+    border-radius: 999px;
+    padding: 0.1rem 0.45rem;
+    margin-left: 0.35rem;
+  }
+
+  /* Groups draw */
+  .groups-draw-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.65rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .group-draw-card {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    padding: 0.85rem;
+  }
+
+  .group-draw-title {
+    margin: 0 0 0.6rem;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+  }
+
+  .group-draw-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .group-draw-club {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    padding: 0.3rem 0.45rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-bg-elevated);
+    background: var(--color-bg-secondary);
+    border-left: 3px solid var(--club-accent, var(--color-bg-elevated));
+  }
+
+  .group-draw-club.provisional {
+    border-left-color: #f0a500;
+    opacity: 0.85;
+  }
+
+  .prov-star {
+    margin-left: auto;
+    color: #f0a500;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .footnote {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin-top: 0.25rem !important;
+  }
+
+  /* Scoring system */
+  .scoring-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .score-group {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+  }
+
+  .score-group h3 {
+    margin: 0 0 0.5rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .score-rule-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .score-rule-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+  }
+
+  .score-badge {
+    display: inline-block;
+    min-width: 2.4rem;
+    text-align: center;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.78rem;
+    flex-shrink: 0;
+  }
+
+  .score-badge.win { background: #14532d; color: #bbf7d0; }
+  .score-badge.draw { background: #1e3a5f; color: #bfdbfe; }
+  .score-badge.loss { background: #1e293b; color: #94a3b8; }
+  .score-badge.bonus { background: #78350f; color: #fde68a; }
+  .score-badge.penalty { background: #7f1d1d; color: #fca5a5; }
+  .score-badge.nomatch { background: #1e293b; color: #64748b; }
+</style>

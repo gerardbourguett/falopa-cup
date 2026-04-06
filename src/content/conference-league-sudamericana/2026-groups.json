@@ -1,0 +1,64 @@
+{
+  "kind": "groups",
+  "edition": 2026,
+  "groups": [
+    {
+      "group": "A",
+      "clubIds": ["cl-colo-colo", "co-once-caldas", "py-sportivo-ameliano", "pe-los-chankas"]
+    },
+    {
+      "group": "B",
+      "clubIds": ["uy-cerro-largo", "bo-gv-san-jose", "ve-anzoategui", "ec-aucas"]
+    },
+    {
+      "group": "C",
+      "clubIds": ["uy-nacional", "co-atletico-nacional", "cl-universidad-de-chile", "ar-independiente"]
+    },
+    {
+      "group": "D",
+      "clubIds": ["cl-deportes-limache", "bo-the-strongest", "ec-emelec", "py-guarani"]
+    },
+    {
+      "group": "E",
+      "clubIds": ["ar-argentinos-juniors", "uy-cerro", "pe-adt", "ec-universidad-catolica"]
+    },
+    {
+      "group": "F",
+      "clubIds": ["br-bahia", "cl-huachipato", "uy-danubio", "py-sportivo-trinidense"]
+    },
+    {
+      "group": "G",
+      "clubIds": ["co-alianza", "uy-racing-club", "br-vitoria", "bo-san-antonio-bulo-bulo"]
+    },
+    {
+      "group": "H",
+      "clubIds": ["pe-deportivo-garcilaso", "ve-metropolitanos", "py-sportivo-luqueno", "co-atletico-bucaramanga"]
+    }
+  ],
+  "roundWindows": [
+    {
+      "roundId": "GS-F1",
+      "windowStart": "2026-04-07",
+      "windowEnd": "2026-04-20",
+      "extendedWindowEnd": "2026-04-23",
+      "windowMatchSources": [],
+      "fantasyScores": []
+    },
+    {
+      "roundId": "GS-F2",
+      "windowStart": "2026-04-21",
+      "windowEnd": "2026-05-04",
+      "extendedWindowEnd": "2026-05-07",
+      "windowMatchSources": [],
+      "fantasyScores": []
+    },
+    {
+      "roundId": "GS-F3",
+      "windowStart": "2026-05-05",
+      "windowEnd": "2026-05-18",
+      "extendedWindowEnd": "2026-05-21",
+      "windowMatchSources": [],
+      "fantasyScores": []
+    }
+  ]
+}

@@ -21,6 +21,44 @@
   gap: var(--space-lg);
 }
 
+.conferenceCta {
+  margin-top: var(--space-lg);
+  padding: 1rem 1.25rem;
+  border: var(--border-strong);
+  background: var(--color-bg-secondary);
+}
+
+.conferenceHeader {
+  margin-bottom: 0.25rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.conferenceCta h3 {
+  margin: 0.2rem 0 0.5rem;
+  color: var(--color-text-primary);
+}
+
+.conferenceCta p {
+  margin: 0 0 0.75rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.conferenceLink {
+  color: var(--color-liga-primera);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.conferenceLink:hover {
+  text-decoration: underline;
+}
+
 .conceptSection {
   padding: var(--space-2xl) 0;
   border-top: 3px solid var(--color-bg-elevated);
