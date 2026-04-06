@@ -40,7 +40,6 @@
 - Victoria: +3
 - Empate: +1
 - Derrota: +0
-- Bono ganar de visita: +1
 - Bono ganar por 2+ goles: +1
 - Penalización perder de local: -1
 
@@ -48,9 +47,9 @@
 
 ### Llaves
 1. Total fantasy
-2. Diferencia de gol del partido contado
-3. Goles a favor
-4. Condición de victoria visitante
+2. Fair play (menos castigo disciplinario: amarilla=1, roja=3)
+3. Diferencia de gol del partido contado
+4. Goles a favor
 5. Criterio administrativo
 
 ### Grupos
@@ -58,4 +57,4 @@
 2. Diferencia fantasy
 3. Victorias
 4. Diferencia de gol
-5. Victorias con bono visitante
+5. Criterio administrativo

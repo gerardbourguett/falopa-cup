@@ -370,7 +370,6 @@ Regla sugerida para primera implementación:
 - victoria = 3
 - empate = 1
 - derrota = 0
-- +1 por ganar de visitante
 - +1 por ganar por 2 o más goles
 - -1 por perder de local
 

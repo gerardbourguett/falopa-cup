@@ -38,6 +38,8 @@ export interface OfficialMatchSource {
   goalsAgainst: number;
   isHome: boolean;
   counted: boolean;
+  yellowCards?: number | null;
+  redCards?: number | null;
 }
 
 export interface FantasyScoreResult {
@@ -61,16 +63,20 @@ export interface KnockoutTieInput {
   total: number;
   goalsFor: number;
   goalsAgainst: number;
-  wonAway: boolean;
+  playedAway?: boolean;
+  yellowCards?: number | null;
+  redCards?: number | null;
+  conmebolRank?: number | null;
 }
 
 export interface KnockoutTieResult {
   winnerClubId: string;
   tiebreakReason:
     | 'fantasy-total'
-    | 'goal-difference'
+    | 'card-deductions'
     | 'goals-for'
-    | 'away-win-condition'
+    | 'away-condition'
+    | 'conmebol-rank'
     | 'administrative-draw';
 }
 
@@ -146,9 +152,11 @@ export function computeFantasyScore(match: OfficialMatchSource): Omit<FantasySco
   if (isWin) basePoints = 3;
   if (isDraw) basePoints = 1;
 
-  if (isWin && !match.isHome) bonusPoints += 1;
-  if (isWin && match.goalsFor - match.goalsAgainst >= 2) bonusPoints += 1;
-  if (isLoss && match.isHome) penaltyPoints -= 1;
+  if (isWin) bonusPoints += Math.max(0, (match.goalsFor - match.goalsAgainst) - 1);
+  if (match.goalsAgainst === 0) bonusPoints += 1;
+  if (isLoss && match.goalsAgainst - match.goalsFor >= 3) penaltyPoints -= 1;
+  penaltyPoints -= (match.yellowCards ?? 0) * 0.25;
+  penaltyPoints -= (match.redCards ?? 0) * 1;
 
   const total = basePoints + bonusPoints + penaltyPoints;
   const explanation = `base=${basePoints} bonus=${bonusPoints} penalty=${penaltyPoints}`;
@@ -164,8 +172,10 @@ export function computeFantasyScore(match: OfficialMatchSource): Omit<FantasySco
   };
 }
 
-function goalDiff(entry: Pick<KnockoutTieInput, 'goalsFor' | 'goalsAgainst'>): number {
-  return entry.goalsFor - entry.goalsAgainst;
+function cardDeductions(entry: Pick<KnockoutTieInput, 'yellowCards' | 'redCards'>): number | null {
+  if (entry.yellowCards === undefined || entry.yellowCards === null) return null;
+  if (entry.redCards === undefined || entry.redCards === null) return null;
+  return (entry.yellowCards * 0.25) + (entry.redCards * 1);
 }
 
 export function resolveKnockoutTie(
@@ -179,12 +189,12 @@ export function resolveKnockoutTie(
     };
   }
 
-  const diffA = goalDiff(clubA);
-  const diffB = goalDiff(clubB);
-  if (diffA !== diffB) {
+  const deductA = cardDeductions(clubA);
+  const deductB = cardDeductions(clubB);
+  if (deductA !== null && deductB !== null && deductA !== deductB) {
     return {
-      winnerClubId: diffA > diffB ? clubA.clubId : clubB.clubId,
-      tiebreakReason: 'goal-difference',
+      winnerClubId: deductA < deductB ? clubA.clubId : clubB.clubId,
+      tiebreakReason: 'card-deductions',
     };
   }
 
@@ -195,10 +205,21 @@ export function resolveKnockoutTie(
     };
   }
 
-  if (clubA.wonAway !== clubB.wonAway) {
+  const awayA = clubA.playedAway ?? false;
+  const awayB = clubB.playedAway ?? false;
+  if (awayA !== awayB) {
     return {
-      winnerClubId: clubA.wonAway ? clubA.clubId : clubB.clubId,
-      tiebreakReason: 'away-win-condition',
+      winnerClubId: awayA ? clubA.clubId : clubB.clubId,
+      tiebreakReason: 'away-condition',
+    };
+  }
+
+  const rankA = clubA.conmebolRank ?? null;
+  const rankB = clubB.conmebolRank ?? null;
+  if (rankA !== null && rankB !== null && rankA !== rankB) {
+    return {
+      winnerClubId: rankA < rankB ? clubA.clubId : clubB.clubId,
+      tiebreakReason: 'conmebol-rank',
     };
   }
 
@@ -217,8 +238,6 @@ export function rankGroupStandings(entries: GroupStandingEntry[]): GroupStanding
     const goalDiffA = a.goalsFor - a.goalsAgainst;
     const goalDiffB = b.goalsFor - b.goalsAgainst;
     if (goalDiffB !== goalDiffA) return goalDiffB - goalDiffA;
-
-    if (b.awayBonusWins !== a.awayBonusWins) return b.awayBonusWins - a.awayBonusWins;
 
     return a.clubId.localeCompare(b.clubId);
   });

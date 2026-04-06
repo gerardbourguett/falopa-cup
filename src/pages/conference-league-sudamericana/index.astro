@@ -41,16 +41,11 @@ function getSeed(clubId: string) {
 
 function allocationLabel(category?: string) {
   switch (category) {
-    case 'league-direct':
-      return 'Directo por cupo país';
-    case 'coefficient-direct':
-      return 'Directo por coeficiente';
-    case 'preliminary-pot-1':
-      return 'Bombo 1 por coeficiente';
-    case 'preliminary-pot-2':
-      return 'Bombo 2 por coeficiente';
-    default:
-      return 'Sin categoría editorial';
+    case 'league-direct': return 'Directo por cupo país';
+    case 'coefficient-direct': return 'Directo por coeficiente';
+    case 'preliminary-pot-1': return 'Bombo 1 por coeficiente';
+    case 'preliminary-pot-2': return 'Bombo 2 por coeficiente';
+    default: return 'Sin categoría editorial';
   }
 }
 
@@ -72,20 +67,18 @@ function clubMeta(clubId: string) {
   };
 }
 
-const directQualified = (stageDoc?.directQualifiedIds || []).map((clubId: string) => clubMeta(clubId));
 const preliminaryTies = stageDoc?.preliminaryTies || [];
 
 const preliminaryPotAIds = stageDoc?.preliminaryPot1Ids || [];
 const preliminaryPotBIds = stageDoc?.preliminaryPot2Ids || [];
-
 const preliminaryPotA = preliminaryPotAIds.map((clubId: string) => clubMeta(clubId));
 const preliminaryPotB = preliminaryPotBIds.map((clubId: string) => clubMeta(clubId));
 const potASet = new Set(preliminaryPotA.map((club: any) => club.clubId));
 const potBSet = new Set(preliminaryPotB.map((club: any) => club.clubId));
 
 function potLabel(clubId: string) {
-  if (potASet.has(clubId)) return 'Bombo 1';
-  if (potBSet.has(clubId)) return 'Bombo 2';
+  if (potASet.has(clubId)) return 'B1';
+  if (potBSet.has(clubId)) return 'B2';
   return '—';
 }
 
@@ -94,11 +87,9 @@ const tieCards = preliminaryTies.map((tie: any) => {
   const clubB = clubMeta(tie.clubBId);
   const hasScore = Number.isFinite(tie.scoreA) && Number.isFinite(tie.scoreB);
   const winnerName =
-    tie.winnerClubId === tie.clubAId
-      ? clubA.name
-      : tie.winnerClubId === tie.clubBId
-        ? clubB.name
-        : null;
+    tie.winnerClubId === tie.clubAId ? clubA.name
+    : tie.winnerClubId === tie.clubBId ? clubB.name
+    : null;
   return {
     ...tie,
     clubA,
@@ -106,32 +97,48 @@ const tieCards = preliminaryTies.map((tie: any) => {
     potA: potLabel(tie.clubAId),
     potB: potLabel(tie.clubBId),
     hasScore,
-    scoreLabel: hasScore ? `${tie.scoreA}-${tie.scoreB}` : 'por jugar',
+    scoreLabel: hasScore ? `${tie.scoreA}–${tie.scoreB}` : '—',
     winnerName,
   };
 });
 
-const firstRound = groupsDoc?.roundWindows?.[0];
-const firstRoundScores = (firstRound?.fantasyScores || [])
-  .map((score: any) => {
-    const club = clubMeta(score.clubId);
-    return {
-      ...score,
-      ...club,
-    };
-  })
-  .sort((a: any, b: any) => b.total - a.total)
-  .slice(0, 10);
-
+// Groups data
 const groups = groupsDoc?.groups || [];
+const roundWindows: any[] = groupsDoc?.roundWindows || [];
+const standingsRaw: any[] = groupsDoc?.standings || [];
 
-const windowCutRows = (windowCutDoc?.entries || []).map((entry: any) => {
-  const club = clubMeta(entry.clubId);
-  return {
-    ...entry,
-    ...club,
-  };
-});
+// Build standings by group, sorted
+const standingsByGroup = new Map<string, any[]>();
+for (const s of standingsRaw) {
+  if (!standingsByGroup.has(s.group)) standingsByGroup.set(s.group, []);
+  standingsByGroup.get(s.group)!.push({ ...s, ...clubMeta(s.clubId) });
+}
+for (const [, arr] of standingsByGroup) {
+  arr.sort((a: any, b: any) => {
+    if (b.points !== a.points) return b.points - a.points;
+    if (b.fantasyDiff !== a.fantasyDiff) return b.fantasyDiff - a.fantasyDiff;
+    if (b.wins !== a.wins) return b.wins - a.wins;
+    const gdA = (a.goalsFor ?? 0) - (a.goalsAgainst ?? 0);
+    const gdB = (b.goalsFor ?? 0) - (b.goalsAgainst ?? 0);
+    return gdB - gdA;
+  });
+}
+
+// Fantasy score lookup: roundId -> clubId -> score entry
+const roundScoreMap = new Map<string, Map<string, any>>();
+for (const rw of roundWindows) {
+  const m = new Map<string, any>();
+  for (const fs of (rw.fantasyScores || [])) {
+    m.set(fs.clubId, fs);
+  }
+  roundScoreMap.set(rw.roundId, m);
+}
+
+// Audit data
+const windowCutRows = (windowCutDoc?.entries || []).map((entry: any) => ({
+  ...entry,
+  ...clubMeta(entry.clubId),
+}));
 
 const windowCutRanking = [...windowCutRows]
   .filter((entry: any) => entry.status === 'ok')
@@ -143,6 +150,70 @@ const windowCutRanking = [...windowCutRows]
   });
 
 const windowCutNoMatch = windowCutRows.filter((entry: any) => entry.status === 'no-match');
+
+function fantasyBreakdown(entry: any) {
+  if (entry.status !== 'ok') return { base: 0, bonus: 0, penalty: 0, total: 0, text: 'Sin partido oficial (no-match) ⇒ 0' };
+  const goalsFor = Number(entry.goalsFor ?? 0);
+  const goalsAgainst = Number(entry.goalsAgainst ?? 0);
+  const isWin = goalsFor > goalsAgainst;
+  const isDraw = goalsFor === goalsAgainst;
+  const isLoss = goalsFor < goalsAgainst;
+  const base = isWin ? 3 : isDraw ? 1 : 0;
+  const cleanSheet = goalsAgainst === 0 ? 1 : 0;
+  const margin = isWin ? Math.max(0, (goalsFor - goalsAgainst) - 1) : 0;
+  const bonus = cleanSheet + margin;
+  const wideLoss = isLoss && goalsAgainst - goalsFor >= 3 ? -1 : 0;
+  const yellowPenalty = -(Number(entry.yellowCards ?? 0) * 0.25);
+  const redPenalty = -(Number(entry.redCards ?? 0));
+  const penalty = wideLoss + yellowPenalty + redPenalty;
+  const total = base + bonus + penalty;
+  const chunks: string[] = [`base ${base} (${isWin ? 'victoria' : isDraw ? 'empate' : 'derrota'})`];
+  if (cleanSheet) chunks.push('+1 arco en cero');
+  if (margin) chunks.push(`+${margin} margen`);
+  if (wideLoss) chunks.push('-1 derrota amplia');
+  if (yellowPenalty < 0) chunks.push(`${yellowPenalty} amarillas`);
+  if (redPenalty < 0) chunks.push(`${redPenalty} rojas`);
+  chunks.push(`= ${total}`);
+  return { base, bonus, penalty, total, text: chunks.join(' · ') };
+}
+
+function cardDeductions(entry: any): number | null {
+  if (entry?.yellowCards === null || entry?.yellowCards === undefined) return null;
+  if (entry?.redCards === null || entry?.redCards === undefined) return null;
+  return Number(entry.yellowCards) * 0.25 + Number(entry.redCards);
+}
+
+const windowCutWithFantasy = windowCutRows.map((entry: any) => ({ ...entry, fantasy: fantasyBreakdown(entry) }));
+const windowCutByClubId = new Map<string, any>(
+  windowCutWithFantasy.map((entry: any) => [entry.clubId, entry] as [string, any])
+);
+
+function tieResolutionDetail(tie: any) {
+  const a = windowCutByClubId.get(tie.clubAId);
+  const b = windowCutByClubId.get(tie.clubBId);
+  if (!a || !b) return 'Sin datos de ventana';
+  if (a.total !== b.total) return 'Desempate: total fantasy';
+  const deductA = cardDeductions(a);
+  const deductB = cardDeductions(b);
+  if (deductA !== null && deductB !== null && deductA !== deductB) return 'Desempate: menos tarjetas';
+  if ((a.gf ?? -999) !== (b.gf ?? -999)) return 'Desempate: goles marcados';
+  const awayA = a.homeAway === 'away';
+  const awayB = b.homeAway === 'away';
+  if (awayA !== awayB) return 'Desempate: condición visita';
+  return 'Desempate: criterio administrativo';
+}
+
+const preliminaryWikiRows = tieCards.map((tie: any) => ({
+  ...tie,
+  sourceA: windowCutByClubId.get(tie.clubAId),
+  sourceB: windowCutByClubId.get(tie.clubBId),
+  resolutionDetail: tieResolutionDetail(tie),
+}));
+
+const reviewNoMatch = windowCutWithFantasy.filter((e: any) => e.status === 'no-match');
+const reviewNonEspn = windowCutWithFantasy.filter((e: any) => e.status === 'ok' && e.sourceUrl && !String(e.sourceUrl).includes('espn.com'));
+const reviewAdministrativeTies = preliminaryWikiRows.filter((t: any) => t.resolvedBy === 'administrative');
+const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 'ok' && (e.yellowCards === null || e.yellowCards === undefined || e.redCards === null || e.redCards === undefined));
 ---
 
 <Layout
@@ -160,47 +231,171 @@ const windowCutNoMatch = windowCutRows.filter((entry: any) => entry.status === '
     </div>
   </section>
 
+  <div class="container page-nav-strip">
+    <a href="/conference-league-sudamericana/wiki" class="page-nav-tab">Wiki</a>
+    <a href="/conference-league-sudamericana" class="page-nav-tab active" aria-current="page">Resultados</a>
+  </div>
+
   <main class="container page-main">
+
+    <!-- Summary metrics -->
     <section class="summary-grid">
       <article class="summary-card">
         <h2>Participantes</h2>
         <p class="metric">{clubsDoc?.seeds?.length || 0}</p>
       </article>
       <article class="summary-card">
-        <h2>Directos a fase principal</h2>
+        <h2>Directos</h2>
         <p class="metric">{stageDoc?.directQualifiedIds?.length || 0}</p>
       </article>
       <article class="summary-card">
-        <h2>Llaves de previa</h2>
+        <h2>Llaves previa</h2>
         <p class="metric">{stageDoc?.preliminaryTies?.length || 0}</p>
       </article>
       <article class="summary-card">
-        <h2>Clasificados fase principal</h2>
+        <h2>Clasificados</h2>
         <p class="metric">{stageDoc?.mainStageQualifiedIds?.length || 0}</p>
       </article>
     </section>
 
+    <!-- ===== FASE DE GRUPOS ===== -->
     <section class="block">
-      <h2>Corte operativo para sorteo de grupos</h2>
-      <p class="criterion-note">
-        Ventana usada: <strong>{windowCutDoc?.windowStart || '—'}</strong> a <strong>{windowCutDoc?.windowEnd || '—'}</strong>.
-        Se toma el mejor partido fantasy por club dentro de la ventana.
-      </p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Bombo</th>
-              <th>Club</th>
-              <th>Total</th>
-              <th>Partido elegido</th>
-              <th>Fuente</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              windowCutRanking.map((row: any, index: number) => (
+      <div class="section-header">
+        <h2>Fase de Grupos</h2>
+        <span class="section-badge">
+          {roundWindows.length > 0 ? `${roundWindows.length} ronda${roundWindows.length > 1 ? 's' : ''} jugada${roundWindows.length > 1 ? 's' : ''}` : 'Pendiente de inicio'}
+        </span>
+      </div>
+
+      {roundWindows.length > 0 && (
+        <div class="round-tabs">
+          {roundWindows.map((rw: any) => (
+            <span class="round-tab active">{rw.roundId} · {rw.windowStart} – {rw.windowEnd}</span>
+          ))}
+        </div>
+      )}
+
+      <div class="groups-grid">
+        {groups.map((group: any) => {
+          const standings = standingsByGroup.get(group.group) || group.clubIds.map((id: string) => ({ ...clubMeta(id), played: 0, wins: 0, draws: 0, losses: 0, points: 0, fantasyDiff: 0 }));
+          return (
+            <article class="group-card">
+              <h3 class="group-title">Grupo {group.group}</h3>
+              <table class="standings-table">
+                <thead>
+                  <tr>
+                    <th class="col-pos">#</th>
+                    <th class="col-club">Club</th>
+                    <th title="Jugados">PJ</th>
+                    <th title="Ganados">G</th>
+                    <th title="Empates">E</th>
+                    <th title="Perdidos">P</th>
+                    <th title="Puntos" class="col-pts">Pts</th>
+                    <th title="Fantasy acumulado" class="col-fx">FX</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {standings.map((row: any, idx: number) => {
+                    const isLeader = idx === 0 && row.played > 0;
+                    const roundScores = roundWindows.map((rw: any) => {
+                      const fs = roundScoreMap.get(rw.roundId)?.get(row.clubId);
+                      return fs ? fs.total : null;
+                    });
+                    return (
+                      <tr class:list={[isLeader && 'row-leader']}>
+                        <td class="col-pos">{idx + 1}</td>
+                        <td class="col-club">
+                          <span class="inline-club club-accent" style={`--club-accent:${row.accent}`}>
+                            <span class:list={['club-flag-icon', flagClass(row.country)]} aria-hidden="true"></span>
+                            <span class="club-name-text">{row.name}</span>
+                          </span>
+                          {roundScores.length > 0 && (
+                            <span class="round-score-chips">
+                              {roundScores.map((sc: number | null, ri: number) => (
+                                <span
+                                  class:list={['score-chip', sc === null ? 'chip-pending' : sc >= 3 ? 'chip-win' : sc === 1 ? 'chip-draw' : 'chip-loss']}
+                                  title={`R${ri + 1}: ${sc ?? '—'}`}
+                                >
+                                  {sc !== null ? sc : '?'}
+                                </span>
+                              ))}
+                            </span>
+                          )}
+                        </td>
+                        <td>{row.played ?? 0}</td>
+                        <td>{row.wins ?? 0}</td>
+                        <td>{row.draws ?? 0}</td>
+                        <td>{row.losses ?? 0}</td>
+                        <td class="col-pts"><strong>{row.points ?? 0}</strong></td>
+                        <td class:list={['col-fx', (row.fantasyDiff ?? 0) > 0 ? 'fx-pos' : (row.fantasyDiff ?? 0) < 0 ? 'fx-neg' : '']}>{row.fantasyDiff ?? 0}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- ===== FASE PREVIA — RESULTADOS ===== -->
+    <section class="block">
+      <div class="section-header">
+        <h2>Fase Previa — Resultados</h2>
+        <span class="section-badge">{tieCards.filter((t: any) => t.hasScore).length}/{tieCards.length} resueltas</span>
+      </div>
+      <div class="ties-grid">
+        {tieCards.map((tie: any) => (
+          <article class="tie-card">
+            <header class="tie-header">
+              <span class="tie-id">{tie.id}</span>
+              <div class="tie-result">
+                {tie.hasScore ? (
+                  <>
+                    <span class="tie-score">{tie.scoreLabel}</span>
+                    <small class="tie-winner">{tie.winnerName ? `→ ${tie.winnerName}` : ''}</small>
+                  </>
+                ) : <span class="tie-pending">pendiente</span>}
+              </div>
+            </header>
+
+            <div class:list={['tie-club', 'club-accent', tie.winnerClubId === tie.clubAId && 'winner']} style={`--club-accent:${tie.clubA.accent}`}>
+              <div class="tie-club-main">
+                <span class:list={['club-flag-icon', flagClass(tie.clubA.country)]} aria-hidden="true"></span>
+                <span>{tie.clubA.name}</span>
+              </div>
+              <small>{tie.potA} · {tie.clubA.coefficientLabel}</small>
+            </div>
+
+            <div class:list={['tie-club', 'club-accent', tie.winnerClubId === tie.clubBId && 'winner']} style={`--club-accent:${tie.clubB.accent}`}>
+              <div class="tie-club-main">
+                <span class:list={['club-flag-icon', flagClass(tie.clubB.country)]} aria-hidden="true"></span>
+                <span>{tie.clubB.name}</span>
+              </div>
+              <small>{tie.potB} · {tie.clubB.coefficientLabel}</small>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- ===== AUDITORÍA (colapsada) ===== -->
+    <details class="audit-block">
+      <summary>Auditoría — Ventana de corte para sorteo de grupos</summary>
+      <div class="audit-body">
+        <p class="criterion-note">
+          Ventana: <strong>{windowCutDoc?.windowStart || '—'}</strong> a <strong>{windowCutDoc?.windowEnd || '—'}</strong>.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Bombo</th><th>Club</th><th>Total</th><th>Partido</th><th>Src</th>
+              </tr>
+            </thead>
+            <tbody>
+              {windowCutRanking.map((row: any, index: number) => (
                 <tr>
                   <td>{index + 1}</td>
                   <td>{row.pot}</td>
@@ -212,330 +407,117 @@ const windowCutNoMatch = windowCutRows.filter((entry: any) => entry.status === '
                   </td>
                   <td>{row.total}</td>
                   <td>
-                    {row.goalsFor}-{row.goalsAgainst} ({row.homeAway === 'home' ? 'local' : 'visita'}) vs {row.opponent}
-                    <br />
-                    <small>{row.competition} · {row.sourceDate}</small>
+                    {row.goalsFor}-{row.goalsAgainst} ({row.homeAway === 'home' ? 'L' : 'V'}) vs {row.opponent}
+                    <br /><small>{row.competition} · {row.sourceDate}</small>
                   </td>
-                  <td>
-                    {
-                      row.sourceUrl ? (
-                        <a href={row.sourceUrl} target="_blank" rel="noreferrer">link</a>
-                      ) : '—'
-                    }
-                  </td>
+                  <td>{row.sourceUrl ? <a href={row.sourceUrl} target="_blank" rel="noreferrer">link</a> : '—'}</td>
                 </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
-      {
-        windowCutNoMatch.length > 0 && (
-          <>
-            <h3 class="subsection-title">Sin partido en ventana (no-match)</h3>
-            <ul class="club-pill-list">
-              {windowCutNoMatch.map((entry: any) => (
-                <li class="club-pill club-accent" style={`--club-accent:${entry.accent}`}>
-                  <span class:list={['club-flag-icon', flagClass(entry.country)]} aria-hidden="true"></span>
-                  <span class="club-name">{entry.name}</span>
-                  <span class="club-country">{entry.pot}</span>
-                </li>
               ))}
-            </ul>
-          </>
-        )
-      }
-    </section>
-
-    <section class="block">
-      <h2>Regla oficial de clasificación</h2>
-      <div class="rule-grid">
-        <article class="rule-card">
-          <h3>Directos</h3>
-          <p>
-            Se reservan <strong>8 cupos directos</strong>: uno por cada liga no argentina/brasileña representada en la edición.
+            </tbody>
+          </table>
+        </div>
+        {windowCutNoMatch.length > 0 && (
+          <p class="criterion-note" style="margin-top:0.75rem">
+            <strong>Sin partido en ventana:</strong> {windowCutNoMatch.map((e: any) => e.name).join(', ')}
           </p>
-          <p>
-            Luego se suman <strong>3 directos por coeficiente CONMEBOL</strong> entre los clubes restantes, aunque repitan país.
-          </p>
-        </article>
-        <article class="rule-card">
-          <h3>Bombos de previa</h3>
-          <p>
-            Los <strong>42 clubes restantes</strong> van a previa. Los <strong>21 mejores coeficientes</strong> quedan en Bombo 1 y los otros 21 en Bombo 2.
-          </p>
-          <p>
-            Los clubes con <strong>SR</strong> se ubican debajo de todos los que sí tienen coeficiente confirmado.
-          </p>
-        </article>
+        )}
       </div>
-    </section>
+    </details>
 
-    <section class="block">
-      <h2>Listado oficial final 2026</h2>
-      <div class="final-lists-grid">
-        <article class="pot-card">
-          <h3>Directos (11)</h3>
-          <ol class="ranking-list">
-            {
-              directQualified.map((club: any) => (
-                <li class="club-accent" style={`--club-accent:${club.accent}`} title={`Coeficiente CONMEBOL: ${club.coefficientLabel}`}>
-                  <span class:list={['club-flag-icon', flagClass(club.country)]} aria-hidden="true"></span>
-                  <span class="ranked-club-copy">
-                    <strong>{club.name}</strong>
-                    <span>{club.allocationLabel}</span>
-                  </span>
-                  <small>{club.coefficientLabel} · {club.countryName}</small>
-                </li>
-              ))
-            }
-          </ol>
-        </article>
-        <article class="pot-card">
-          <h3>Bombo 1 (21)</h3>
-          <ol class="ranking-list">
-            {
-              preliminaryPotA.map((club: any) => (
-                <li class="club-accent" style={`--club-accent:${club.accent}`} title={`Coeficiente CONMEBOL: ${club.coefficientLabel}`}>
-                  <span class:list={['club-flag-icon', flagClass(club.country)]} aria-hidden="true"></span>
-                  <span class="ranked-club-copy">
-                    <strong>{club.name}</strong>
-                    <span>{club.allocationLabel}</span>
-                  </span>
-                  <small>{club.coefficientLabel} · {club.countryName}</small>
-                </li>
-              ))
-            }
-          </ol>
-        </article>
-        <article class="pot-card">
-          <h3>Bombo 2 (21)</h3>
-          <ol class="ranking-list">
-            {
-              preliminaryPotB.map((club: any) => (
-                <li class="club-accent" style={`--club-accent:${club.accent}`} title={`Coeficiente CONMEBOL: ${club.coefficientLabel}`}>
-                  <span class:list={['club-flag-icon', flagClass(club.country)]} aria-hidden="true"></span>
-                  <span class="ranked-club-copy">
-                    <strong>{club.name}</strong>
-                    <span>{club.allocationLabel}</span>
-                  </span>
-                  <small>{club.coefficientLabel} · {club.countryName}</small>
-                </li>
-              ))
-            }
-          </ol>
-        </article>
+    <details class="audit-block">
+      <summary>Auditoría — Acta fantasy por club (previa)</summary>
+      <div class="audit-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Club</th><th>B</th><th>Partido fuente</th><th>Tarjetas</th><th>Desglose</th><th>Total</th><th>Src</th>
+              </tr>
+            </thead>
+            <tbody>
+              {windowCutWithFantasy
+                .sort((a: any, b: any) => a.name.localeCompare(b.name))
+                .map((row: any) => (
+                  <tr>
+                    <td>
+                      <span class="inline-club">
+                        <span class:list={['club-flag-icon', flagClass(row.country)]} aria-hidden="true"></span>
+                        <span>{row.name}</span>
+                      </span>
+                    </td>
+                    <td>{row.pot}</td>
+                    <td>
+                      {row.status === 'ok' ? (
+                        <>
+                          {row.goalsFor}-{row.goalsAgainst} ({row.homeAway === 'home' ? 'L' : 'V'}) vs {row.opponent}
+                          <br /><small>{row.competition} · {row.sourceDate}</small>
+                        </>
+                      ) : 'Sin partido'}
+                    </td>
+                    <td>
+                      {row.status === 'ok' ? (
+                        row.yellowCards === null || row.yellowCards === undefined
+                          ? 'Pendiente'
+                          : `A:${row.yellowCards} R:${row.redCards}`
+                      ) : '—'}
+                    </td>
+                    <td><small>{row.fantasy.text}</small></td>
+                    <td><strong>{row.fantasy.total}</strong></td>
+                    <td>{row.sourceUrl ? <a href={row.sourceUrl} target="_blank" rel="noreferrer">link</a> : '—'}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </section>
+    </details>
 
-    <section class="block">
-      <h2>Clasificados directos</h2>
-      <ul class="club-pill-list">
-        {
-          directQualified.map((club: any) => (
-            <li class="club-pill club-accent" style={`--club-accent:${club.accent}`}>
-              <span class:list={['club-flag-icon', flagClass(club.country)]} aria-hidden="true"></span>
-              <span class="club-name">{club.name}</span>
-              <span class="club-country">{club.countryName}</span>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <section class="block">
-      <h2>Regla oficial del sorteo de previa</h2>
-      <p class="criterion-note">
-        Sorteo dirigido: <strong>Bombo 1 vs Bombo 2</strong>, con cabeza de llave para Bombo 1 y
-        <strong> prohibición de cruces entre clubes del mismo país</strong>. Si una extracción bloquea el resto del cuadro,
-        se rehace automáticamente esa asignación.
-      </p>
-      <p class="criterion-note">
-        Bajo esa regla, el cuadro 2026 ya quedó cerrado y documentado abajo como <strong>sorteo oficial</strong>.
-      </p>
-
-      <div class="pots-grid">
-        <article class="pot-card">
-          <h3>Bombo 1 (mejor perfil deportivo)</h3>
-          <ul class="club-list">
-            {
-              preliminaryPotA.map((club: any) => (
-                <li class="club-row club-accent" style={`--club-accent:${club.accent}`} title={`Coeficiente CONMEBOL: ${club.coefficientLabel}`}>
-                  <span class:list={['club-flag-icon', flagClass(club.country)]} aria-hidden="true"></span>
-                  <span>{club.name}</span>
-                  <small>{club.entryTypeLabel} · {club.coefficientLabel} · {club.countryName}</small>
-                </li>
-              ))
-            }
-          </ul>
-        </article>
-
-        <article class="pot-card">
-          <h3>Bombo 2</h3>
-          <ul class="club-list">
-            {
-              preliminaryPotB.map((club: any) => (
-                <li class="club-row club-accent" style={`--club-accent:${club.accent}`} title={`Coeficiente CONMEBOL: ${club.coefficientLabel}`}>
-                  <span class:list={['club-flag-icon', flagClass(club.country)]} aria-hidden="true"></span>
-                  <span>{club.name}</span>
-                  <small>{club.entryTypeLabel} · {club.coefficientLabel} · {club.countryName}</small>
-                </li>
-              ))
-            }
-          </ul>
-        </article>
-      </div>
-
-      <h3 class="subsection-title">Llaves sorteadas (21)</h3>
-      <div class="ties-grid">
-        {
-          tieCards.map((tie: any) => (
-            <article class="tie-card">
-              <header class="tie-header">
-                <strong>{tie.id}</strong>
-                <div class="tie-header-copy">
-                  <span class="tie-score">{tie.scoreLabel}</span>
-                  <small>{tie.winnerName ? `Gana ${tie.winnerName}` : 'Pendiente'}</small>
-                </div>
-              </header>
-
-              <div class:list={["tie-club", "club-accent", tie.winnerClubId === tie.clubAId && "winner"]} style={`--club-accent:${tie.clubA.accent}`}>
-                <div class="tie-club-main">
-                  <span class:list={['club-flag-icon', flagClass(tie.clubA.country)]} aria-hidden="true"></span>
-                  <span>{tie.clubA.name}</span>
-                </div>
-                <small>{tie.potA} · {tie.clubA.entryTypeLabel} · {tie.clubA.coefficientLabel}</small>
-              </div>
-
-              <div class:list={["tie-club", "club-accent", tie.winnerClubId === tie.clubBId && "winner"]} style={`--club-accent:${tie.clubB.accent}`}>
-                <div class="tie-club-main">
-                  <span class:list={['club-flag-icon', flagClass(tie.clubB.country)]} aria-hidden="true"></span>
-                  <span>{tie.clubB.name}</span>
-                </div>
-                <small>{tie.potB} · {tie.clubB.entryTypeLabel} · {tie.clubB.coefficientLabel}</small>
-              </div>
-            </article>
-          ))
-        }
-      </div>
-
-      <h3 class="subsection-title">Cuadro oficial de cruces</h3>
-      <div class="table-wrap">
-        <table class="bracket-table">
-          <thead>
-            <tr>
-              <th>Llave</th>
-              <th>Bombo 1</th>
-              <th>Bombo 2</th>
-              <th>Marcador</th>
-              <th>Ganador</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              tieCards.map((tie: any) => (
+    <details class="audit-block">
+      <summary>Auditoría — Acta de llaves (resolución fantasy)</summary>
+      <div class="audit-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Llave</th><th>Club A</th><th>Club B</th><th>Marcador</th><th>Tarjetas A/B</th><th>Resolución</th><th>Ganador</th>
+              </tr>
+            </thead>
+            <tbody>
+              {preliminaryWikiRows.map((tie: any) => (
                 <tr>
+                  <td>{tie.id}</td>
                   <td>
-                    <strong>{tie.id}</strong>
+                    <strong>{tie.clubA.name}</strong>
+                    <br /><small>{tie.sourceA?.fantasy?.text || 'Sin datos'}</small>
                   </td>
                   <td>
-                    <div class="bracket-team club-accent" style={`--club-accent:${tie.clubA.accent}`}>
-                      <span class:list={['club-flag-icon', flagClass(tie.clubA.country)]} aria-hidden="true"></span>
-                      <span>{tie.clubA.name}</span>
-                      <small>{tie.clubA.coefficientLabel} · {tie.clubA.countryName}</small>
-                    </div>
+                    <strong>{tie.clubB.name}</strong>
+                    <br /><small>{tie.sourceB?.fantasy?.text || 'Sin datos'}</small>
                   </td>
-                  <td>
-                    <div class="bracket-team club-accent" style={`--club-accent:${tie.clubB.accent}`}>
-                      <span class:list={['club-flag-icon', flagClass(tie.clubB.country)]} aria-hidden="true"></span>
-                      <span>{tie.clubB.name}</span>
-                      <small>{tie.clubB.coefficientLabel} · {tie.clubB.countryName}</small>
-                    </div>
-                  </td>
-                  <td>
-                    <strong>{tie.scoreLabel}</strong>
-                  </td>
-                  <td>
-                    {
-                      tie.winnerName ? (
-                        <div class="bracket-winner">
-                          <span class="winner-badge">Winner</span>
-                          <span>{tie.winnerName}</span>
-                        </div>
-                      ) : '—'
-                    }
-                  </td>
+                  <td><strong>{tie.scoreLabel}</strong></td>
+                  <td>{cardDeductions(tie.sourceA) ?? '—'} / {cardDeductions(tie.sourceB) ?? '—'}</td>
+                  <td>{tie.resolutionDetail}</td>
+                  <td>{tie.winnerName || '—'}</td>
                 </tr>
-              ))
-            }
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </section>
+    </details>
 
-    <section class="block">
-      <h2>Grupos</h2>
-      <p class="criterion-note">
-        Vista editorial MVP: la fase principal seguirá ajustándose cuando la previa quede resuelta con resultados reales.
-      </p>
-      <div class="groups-grid">
-        {
-          groups.map((group: any) => (
-            <article class="group-card">
-              <h3>Grupo {group.group}</h3>
-              <ul class="group-club-list">
-                {group.clubIds.map((id: string) => {
-                  const club = clubMeta(id);
-                  return (
-                    <li class="club-accent" style={`--club-accent:${club.accent}`}>
-                      <span class:list={['club-flag-icon', flagClass(club.country)]} aria-hidden="true"></span>
-                      <span>{club.name}</span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </article>
-          ))
-        }
+    <details class="audit-block">
+      <summary>Auditoría — Pendientes de revisión manual</summary>
+      <div class="audit-body">
+        <ul class="audit-list">
+          <li><strong>Sin partido en ventana:</strong> {reviewNoMatch.length ? reviewNoMatch.map((e: any) => e.name).join(', ') : 'ninguno'}</li>
+          <li><strong>Fuentes fuera de ESPN:</strong> {reviewNonEspn.length ? reviewNonEspn.map((e: any) => e.name).join(', ') : 'ninguna'}</li>
+          <li><strong>Llaves en criterio administrativo:</strong> {reviewAdministrativeTies.length ? reviewAdministrativeTies.map((t: any) => t.id).join(', ') : 'ninguna'}</li>
+          <li><strong>Clubes sin tarjetas cargadas:</strong> {reviewMissingCards.length ? reviewMissingCards.map((e: any) => e.name).join(', ') : 'ninguno'}</li>
+        </ul>
       </div>
-    </section>
+    </details>
 
-    <section class="block">
-      <h2>Ventana activa — {firstRound?.roundId || 'N/A'}</h2>
-      <p>
-        Ventana base: {firstRound?.windowStart || '—'} a {firstRound?.windowEnd || '—'} ·
-        extensión: hasta {firstRound?.extendedWindowEnd || '—'}.
-      </p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Club</th>
-              <th>País</th>
-              <th>Total fantasy</th>
-              <th>Detalle</th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              firstRoundScores.map((score: any) => (
-                <tr>
-                  <td>
-                    <span class="inline-club">
-                      <span class:list={['club-flag-icon', flagClass(score.country)]} aria-hidden="true"></span>
-                      <span>{score.name}</span>
-                    </span>
-                  </td>
-                  <td>{score.countryName}</td>
-                  <td>{score.total}</td>
-                  <td>{score.explanation}</td>
-                </tr>
-              ))
-            }
-          </tbody>
-        </table>
-      </div>
-    </section>
   </main>
 </Layout>
 
@@ -552,6 +534,31 @@ const windowCutNoMatch = windowCutRows.filter((entry: any) => entry.status === '
     font-size: 0.8rem;
   }
 
+  .page-nav-strip {
+    display: flex;
+    gap: 0.25rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0;
+    border-bottom: 1px solid var(--color-bg-elevated);
+  }
+
+  .page-nav-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .page-nav-tab:hover { color: var(--color-text-primary); }
+
+  .page-nav-tab.active {
+    color: var(--color-text-primary);
+    border-bottom-color: var(--color-liga-primera);
+  }
+
   .page-main {
     padding: 2rem 0 3rem;
     display: flex;
@@ -559,21 +566,27 @@ const windowCutNoMatch = windowCutRows.filter((entry: any) => entry.status === '
     gap: 1.5rem;
   }
 
+  /* Summary */
   .summary-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 0.75rem;
   }
 
-  .summary-card,
-  .block,
-  .group-card,
-  .pot-card,
-  .tie-card {
+  .summary-card {
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-bg-elevated);
     border-radius: 10px;
     padding: 1rem;
+  }
+
+  .summary-card h2 {
+    margin: 0;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+    font-weight: 500;
   }
 
   .metric {
@@ -583,290 +596,370 @@ const windowCutNoMatch = windowCutRows.filter((entry: any) => entry.status === '
     font-family: var(--font-display);
   }
 
-  .club-pill-list {
+  /* Blocks */
+  .block {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .block h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .section-header h2 {
+    margin: 0;
+  }
+
+  .section-badge {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+    background: var(--color-bg-elevated);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    white-space: nowrap;
+  }
+
+  .round-tabs {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.55rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
   }
 
-  .club-pill {
+  .round-tab {
+    font-size: 0.75rem;
+    background: var(--color-bg-elevated);
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    color: var(--color-text-secondary);
+  }
+
+  .round-tab.active {
+    background: color-mix(in srgb, var(--color-liga-primera) 15%, transparent);
+    color: var(--color-liga-primera-dim);
+  }
+
+  /* Groups grid */
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .group-card {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    padding: 0.85rem;
+    overflow: hidden;
+  }
+
+  .group-title {
+    margin: 0 0 0.6rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-secondary);
+  }
+
+  .standings-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+  }
+
+  .standings-table th {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 0.2rem 0.3rem;
+    border-bottom: 1px solid var(--color-bg-elevated);
+  }
+
+  .standings-table th.col-club {
+    text-align: left;
+  }
+
+  .standings-table td {
+    padding: 0.35rem 0.3rem;
+    text-align: center;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-bg-elevated) 50%, transparent);
+  }
+
+  .standings-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .standings-table td.col-club {
+    text-align: left;
+  }
+
+  .standings-table td.col-pos {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    width: 1.4rem;
+  }
+
+  .standings-table td.col-pts strong {
+    color: var(--color-liga-primera-dim);
+  }
+
+  .standings-table td.col-fx {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+  }
+
+  .standings-table td.fx-pos { color: #5cb85c; }
+  .standings-table td.fx-neg { color: #c0392b; }
+
+  .standings-table tr.row-leader td {
+    background: color-mix(in srgb, var(--color-liga-primera) 6%, transparent);
+  }
+
+  .inline-club {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    border: 1px solid var(--color-bg-elevated);
-    border-radius: 999px;
-    padding: 0.35rem 0.75rem;
-    font-size: 0.85rem;
-    background: var(--color-bg-primary);
+    gap: 0.35rem;
   }
 
-  .club-accent {
-    border-left: 3px solid var(--club-accent, var(--color-bg-elevated));
+  .inline-club.club-accent {
+    border-left: 2px solid var(--club-accent, var(--color-bg-elevated));
+    padding-left: 0.35rem;
   }
 
+  .club-name-text {
+    font-size: 0.82rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .round-score-chips {
+    display: inline-flex;
+    gap: 0.2rem;
+    margin-left: 0.35rem;
+  }
+
+  .score-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    font-family: var(--font-display);
+    cursor: default;
+  }
+
+  .chip-win    { background: color-mix(in srgb, #5cb85c 20%, transparent); color: #5cb85c; }
+  .chip-draw   { background: color-mix(in srgb, #f0a500 20%, transparent); color: #f0a500; }
+  .chip-loss   { background: color-mix(in srgb, #c0392b 20%, transparent); color: #c0392b; }
+  .chip-pending { background: var(--color-bg-elevated); color: var(--color-text-muted); }
+
+  /* Club flag icon */
   .club-flag-icon {
-    width: 1.05rem;
-    height: 0.78rem;
+    width: 1rem;
+    height: 0.75rem;
     border-radius: 2px;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
     flex-shrink: 0;
   }
 
-  .club-country {
-    color: var(--color-text-muted);
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  .pots-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-  }
-
-  .rule-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 0.75rem;
-  }
-
-  .rule-card {
-    border: 1px solid var(--color-bg-elevated);
-    border-radius: 10px;
-    padding: 0.9rem 1rem;
-    background: var(--color-bg-primary);
-  }
-
-  .rule-card h3 {
-    margin-top: 0;
-    margin-bottom: 0.45rem;
-  }
-
-  .final-lists-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 0.75rem;
-  }
-
-  .ranking-list {
-    margin: 0;
-    padding-left: 1.1rem;
-    display: grid;
-    gap: 0.35rem;
-    max-height: 440px;
-    overflow: auto;
-  }
-
-  .ranking-list li {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    border: 1px solid var(--color-bg-elevated);
-    border-radius: 8px;
-    background: var(--color-bg-primary);
-    padding: 0.35rem 0.45rem;
-  }
-
-  .ranked-club-copy {
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-  }
-
-  .ranked-club-copy span {
-    color: var(--color-text-muted);
-    font-size: 0.72rem;
-  }
-
-  .ranking-list li small {
-    margin-left: auto;
-    color: var(--color-text-muted);
-  }
-
-  .pot-card h3,
-  .subsection-title {
-    margin-top: 0;
-  }
-
-  .criterion-note {
-    margin-top: 0;
-    margin-bottom: 0.9rem;
-    color: var(--color-text-secondary);
-    font-size: 0.88rem;
-    line-height: 1.5;
-  }
-
-  .club-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 0.35rem;
-    max-height: 420px;
-    overflow: auto;
-  }
-
-  .club-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.45rem;
-    border-radius: 8px;
-    border: 1px solid var(--color-bg-elevated);
-    background: var(--color-bg-primary);
-  }
-
-  .club-row small {
-    margin-left: auto;
-    color: var(--color-text-muted);
-  }
-
+  /* Preliminary ties */
   .ties-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 0.7rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0.65rem;
+  }
+
+  .tie-card {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    padding: 0.75rem;
   }
 
   .tie-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.55rem;
   }
 
-  .tie-header-copy {
+  .tie-id {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-muted);
+  }
+
+  .tie-result {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 0.15rem;
-  }
-
-  .tie-header-copy small {
-    color: var(--color-text-muted);
-    font-size: 0.72rem;
+    gap: 0.1rem;
   }
 
   .tie-score {
     font-family: var(--font-display);
+    font-size: 0.9rem;
     color: var(--color-liga-primera-dim);
   }
 
+  .tie-winner {
+    font-size: 0.68rem;
+    color: var(--color-text-muted);
+  }
+
+  .tie-pending {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
   .tie-club {
-    padding: 0.45rem 0.55rem;
+    padding: 0.4rem 0.5rem;
     border: 1px solid var(--color-bg-elevated);
-    border-radius: 8px;
-    margin-bottom: 0.45rem;
-    background: var(--color-bg-primary);
+    border-radius: 7px;
+    margin-bottom: 0.4rem;
+    background: var(--color-bg-secondary);
+    border-left: 3px solid var(--club-accent, var(--color-bg-elevated));
+  }
+
+  .tie-club:last-child {
+    margin-bottom: 0;
   }
 
   .tie-club-main {
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.4rem;
+    font-size: 0.84rem;
   }
 
   .tie-club small {
+    display: block;
     color: var(--color-text-muted);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
+    margin-top: 0.15rem;
+    padding-left: 1.4rem;
   }
 
   .tie-club.winner {
-    border-color: var(--color-liga-primera);
-    box-shadow: inset 0 0 0 1px rgba(212, 168, 83, 0.3);
+    border-left-color: var(--color-liga-primera);
+    background: color-mix(in srgb, var(--color-liga-primera) 8%, var(--color-bg-secondary));
   }
 
-  .groups-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 0.75rem;
+  /* Audit collapsible */
+  .audit-block {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 10px;
+    overflow: hidden;
   }
 
-  .group-card h3 {
-    margin-top: 0;
+  .audit-block summary {
+    padding: 0.85rem 1.25rem;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    user-select: none;
   }
 
-  .group-club-list {
+  .audit-block summary::-webkit-details-marker { display: none; }
+
+  .audit-block summary::before {
+    content: '▶';
+    font-size: 0.6rem;
+    transition: transform 0.15s;
+    color: var(--color-text-muted);
+  }
+
+  .audit-block[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  .audit-block summary:hover {
+    color: var(--color-text-secondary);
+    background: var(--color-bg-elevated);
+  }
+
+  .audit-body {
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--color-bg-elevated);
+  }
+
+  .criterion-note {
+    margin: 0.75rem 0;
+    color: var(--color-text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .audit-list {
     margin: 0;
-    padding-left: 0;
+    padding-left: 1.2rem;
     display: grid;
     gap: 0.35rem;
-    list-style: none;
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
   }
 
-  .group-club-list li {
-    display: flex;
-    gap: 0.4rem;
-    align-items: center;
-    padding: 0.2rem 0;
-  }
-
-  .bracket-table td {
-    vertical-align: top;
-  }
-
-  .bracket-team,
-  .bracket-winner {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    border: 1px solid var(--color-bg-elevated);
-    border-radius: 8px;
-    background: var(--color-bg-primary);
-    padding: 0.45rem 0.55rem;
-  }
-
-  .bracket-team small,
-  .bracket-winner small {
-    margin-left: auto;
-    color: var(--color-text-muted);
-  }
-
-  .winner-badge {
-    font-family: var(--font-display);
-    font-size: 0.66rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-  }
-
+  /* Tables (audit) */
   .table-wrap {
     overflow-x: auto;
-  }
-
-  .inline-club {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
   }
 
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
-  th,
-  td {
+  th, td {
     text-align: left;
     border-bottom: 1px solid var(--color-bg-elevated);
-    padding: 0.55rem;
+    padding: 0.5rem 0.5rem;
   }
 
   th {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--color-text-muted);
   }
 
-  @media (max-width: 900px) {
-    .pots-grid {
+  @media (max-width: 640px) {
+    .groups-grid {
       grid-template-columns: 1fr;
+    }
+
+    .club-name-text {
+      max-width: 90px;
     }
   }
 </style>

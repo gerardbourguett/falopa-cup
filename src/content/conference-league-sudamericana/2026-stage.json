@@ -21,7 +21,7 @@
       "clubBId": "bo-aurora",
       "winnerClubId": "ar-independiente",
       "scoreA": 4,
-      "scoreB": 1,
+      "scoreB": 2,
       "resolvedBy": "fantasy-score"
     },
     {
@@ -29,7 +29,7 @@
       "clubAId": "pe-alianza-lima",
       "clubBId": "cl-deportes-limache",
       "winnerClubId": "cl-deportes-limache",
-      "scoreA": 4,
+      "scoreA": 4.75,
       "scoreB": 5,
       "resolvedBy": "fantasy-score"
     },
@@ -37,9 +37,9 @@
       "id": "PT-03",
       "clubAId": "bo-the-strongest",
       "clubBId": "ec-libertad",
-      "winnerClubId": "ec-libertad",
-      "scoreA": 0,
-      "scoreB": 1,
+      "winnerClubId": "bo-the-strongest",
+      "scoreA": 3,
+      "scoreB": 2,
       "resolvedBy": "fantasy-score"
     },
     {
@@ -47,8 +47,8 @@
       "clubAId": "ec-emelec",
       "clubBId": "co-fortaleza",
       "winnerClubId": "ec-emelec",
-      "scoreA": 4,
-      "scoreB": 1,
+      "scoreA": 5,
+      "scoreB": -0.25,
       "resolvedBy": "fantasy-score"
     },
     {
@@ -65,26 +65,26 @@
       "clubAId": "ar-argentinos-juniors",
       "clubBId": "py-2-de-mayo",
       "winnerClubId": "ar-argentinos-juniors",
-      "scoreA": 5,
-      "scoreB": 5,
-      "resolvedBy": "administrative"
+      "scoreA": 4.5,
+      "scoreB": 4,
+      "resolvedBy": "fantasy-score"
     },
     {
       "id": "PT-07",
       "clubAId": "pe-melgar",
       "clubBId": "uy-cerro",
       "winnerClubId": "uy-cerro",
-      "scoreA": 1,
-      "scoreB": 3,
+      "scoreA": 0.5,
+      "scoreB": 4,
       "resolvedBy": "fantasy-score"
     },
     {
       "id": "PT-08",
       "clubAId": "ve-deportivo-tachira",
       "clubBId": "pe-adt",
-      "winnerClubId": "ve-deportivo-tachira",
-      "scoreA": 4,
-      "scoreB": 4,
+      "winnerClubId": "pe-adt",
+      "scoreA": 3,
+      "scoreB": 3.25,
       "resolvedBy": "fantasy-score"
     },
     {
@@ -92,8 +92,8 @@
       "clubAId": "ec-universidad-catolica",
       "clubBId": "bo-guabira",
       "winnerClubId": "ec-universidad-catolica",
-      "scoreA": 4,
-      "scoreB": 0,
+      "scoreA": 5,
+      "scoreB": -1,
       "resolvedBy": "fantasy-score"
     },
     {
@@ -101,7 +101,7 @@
       "clubAId": "br-bahia",
       "clubBId": "ve-rayo-zuliano",
       "winnerClubId": "br-bahia",
-      "scoreA": 4,
+      "scoreA": 5.5,
       "scoreB": 4,
       "resolvedBy": "fantasy-score"
     },
@@ -110,8 +110,8 @@
       "clubAId": "cl-huachipato",
       "clubBId": "bo-real-tomayapo",
       "winnerClubId": "cl-huachipato",
-      "scoreA": 0,
-      "scoreB": 0,
+      "scoreA": -0.5,
+      "scoreB": -1,
       "resolvedBy": "fantasy-score"
     },
     {
@@ -119,7 +119,7 @@
       "clubAId": "uy-danubio",
       "clubBId": "py-general-caballero",
       "winnerClubId": "uy-danubio",
-      "scoreA": 4,
+      "scoreA": 5,
       "scoreB": 0,
       "resolvedBy": "fantasy-score"
     },
@@ -128,7 +128,7 @@
       "clubAId": "ec-delfin",
       "clubBId": "py-sportivo-trinidense",
       "winnerClubId": "py-sportivo-trinidense",
-      "scoreA": 1,
+      "scoreA": 2,
       "scoreB": 3,
       "resolvedBy": "fantasy-score"
     },
@@ -136,9 +136,9 @@
       "id": "PT-14",
       "clubAId": "uy-defensor-sporting",
       "clubBId": "co-alianza",
-      "winnerClubId": "uy-defensor-sporting",
+      "winnerClubId": "co-alianza",
       "scoreA": 3,
-      "scoreB": 3,
+      "scoreB": 3.25,
       "resolvedBy": "fantasy-score"
     },
     {
@@ -146,8 +146,8 @@
       "clubAId": "uy-racing-club",
       "clubBId": "pe-sport-huancayo",
       "winnerClubId": "uy-racing-club",
-      "scoreA": 4,
-      "scoreB": 0,
+      "scoreA": 3,
+      "scoreB": -1.75,
       "resolvedBy": "fantasy-score"
     },
     {
@@ -156,16 +156,16 @@
       "clubBId": "br-vitoria",
       "winnerClubId": "br-vitoria",
       "scoreA": 1,
-      "scoreB": 5,
+      "scoreB": 4,
       "resolvedBy": "fantasy-score"
     },
     {
       "id": "PT-17",
       "clubAId": "co-atletico-bucaramanga",
       "clubBId": "ve-zamora",
-      "winnerClubId": "ve-zamora",
-      "scoreA": 4,
-      "scoreB": 5,
+      "winnerClubId": "co-atletico-bucaramanga",
+      "scoreA": 5.5,
+      "scoreB": 4.5,
       "resolvedBy": "fantasy-score"
     },
     {
@@ -173,8 +173,8 @@
       "clubAId": "py-nacional",
       "clubBId": "pe-deportivo-garcilaso",
       "winnerClubId": "pe-deportivo-garcilaso",
-      "scoreA": 3,
-      "scoreB": 3,
+      "scoreA": 2.75,
+      "scoreB": 2.75,
       "resolvedBy": "administrative"
     },
     {
@@ -182,7 +182,7 @@
       "clubAId": "ve-metropolitanos",
       "clubBId": "cl-cobresal",
       "winnerClubId": "ve-metropolitanos",
-      "scoreA": 4,
+      "scoreA": 5,
       "scoreB": 0,
       "resolvedBy": "fantasy-score"
     },
@@ -190,8 +190,8 @@
       "id": "PT-20",
       "clubAId": "cl-nublense",
       "clubBId": "py-sportivo-luqueno",
-      "winnerClubId": "cl-nublense",
-      "scoreA": 1,
+      "winnerClubId": "py-sportivo-luqueno",
+      "scoreA": 0.25,
       "scoreB": 1,
       "resolvedBy": "fantasy-score"
     },
@@ -200,8 +200,8 @@
       "clubAId": "ve-monagas",
       "clubBId": "bo-san-antonio-bulo-bulo",
       "winnerClubId": "bo-san-antonio-bulo-bulo",
-      "scoreA": 3,
-      "scoreB": 4,
+      "scoreA": 4,
+      "scoreB": 5,
       "resolvedBy": "fantasy-score"
     }
   ],
@@ -219,24 +219,24 @@
     "cl-universidad-de-chile",
     "ar-independiente",
     "cl-deportes-limache",
-    "ec-libertad",
+    "bo-the-strongest",
     "ec-emelec",
     "py-guarani",
     "ar-argentinos-juniors",
     "uy-cerro",
-    "ve-deportivo-tachira",
+    "pe-adt",
     "ec-universidad-catolica",
     "br-bahia",
     "cl-huachipato",
     "uy-danubio",
     "py-sportivo-trinidense",
-    "uy-defensor-sporting",
+    "co-alianza",
     "uy-racing-club",
     "br-vitoria",
-    "ve-zamora",
+    "co-atletico-bucaramanga",
     "pe-deportivo-garcilaso",
     "ve-metropolitanos",
-    "cl-nublense",
+    "py-sportivo-luqueno",
     "bo-san-antonio-bulo-bulo"
   ],
   "preliminaryPot1Ids": [

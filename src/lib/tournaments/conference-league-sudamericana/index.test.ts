@@ -23,6 +23,8 @@ const mk = (overrides: Partial<OfficialMatchSource>): OfficialMatchSource => ({
   goalsAgainst: 0,
   isHome: true,
   counted: true,
+  yellowCards: 0,
+  redCards: 0,
   ...overrides,
 });
 
@@ -59,42 +61,183 @@ describe('selectCountedMatch', () => {
 });
 
 describe('computeFantasyScore', () => {
-  it('applies win + away bonus + margin bonus', () => {
+  it('bonus de margen es progresivo: ganar por 2 da +1', () => {
     const score = computeFantasyScore(
-      mk({ goalsFor: 3, goalsAgainst: 1, isHome: false })
+      mk({ goalsFor: 3, goalsAgainst: 1, isHome: false, yellowCards: 0, redCards: 0 })
     );
-
     expect(score.basePoints).toBe(3);
-    expect(score.bonusPoints).toBe(2);
+    expect(score.bonusPoints).toBe(1); // diff=2 → margin=1
+    expect(score.penaltyPoints).toBe(0);
+    expect(score.total).toBe(4);
+  });
+
+  it('bonus de margen es progresivo: ganar por 3 da +2', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 5, goalsAgainst: 2, isHome: false, yellowCards: 0, redCards: 0 })
+    );
+    expect(score.basePoints).toBe(3);
+    expect(score.bonusPoints).toBe(2); // diff=3 → margin=2
     expect(score.penaltyPoints).toBe(0);
     expect(score.total).toBe(5);
   });
 
-  it('applies -1 on home loss', () => {
+  it('bonus de margen es progresivo: ganar por 4 da +3', () => {
     const score = computeFantasyScore(
-      mk({ goalsFor: 0, goalsAgainst: 1, isHome: true })
+      mk({ goalsFor: 4, goalsAgainst: 0, isHome: true, yellowCards: 0, redCards: 0 })
     );
+    expect(score.basePoints).toBe(3);
+    expect(score.bonusPoints).toBe(4); // diff=4 → margin=3, CS=1
+    expect(score.penaltyPoints).toBe(0);
+    expect(score.total).toBe(7);
+  });
 
+  it('ganar por 1 no da bonus de margen', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 2, goalsAgainst: 1, isHome: false, yellowCards: 0, redCards: 0 })
+    );
+    expect(score.bonusPoints).toBe(0);
+    expect(score.total).toBe(3);
+  });
+
+  it('aplica clean sheet (+1 bonus) cuando goalsAgainst === 0', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 1, goalsAgainst: 0, isHome: false, yellowCards: 0, redCards: 0 })
+    );
+    expect(score.basePoints).toBe(3);
+    expect(score.bonusPoints).toBe(1); // clean sheet
+    expect(score.penaltyPoints).toBe(0);
+    expect(score.total).toBe(4);
+  });
+
+  it('acumula margin (+1 por diff=2) + clean sheet al ganar 2-0', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 2, goalsAgainst: 0, isHome: true, yellowCards: 0, redCards: 0 })
+    );
+    expect(score.basePoints).toBe(3);
+    expect(score.bonusPoints).toBe(2); // margin=1 (diff=2) + clean sheet=1
+    expect(score.penaltyPoints).toBe(0);
+    expect(score.total).toBe(5);
+  });
+
+  it('aplica -1 penalty por derrota amplia (3+ goles de diferencia)', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 0, goalsAgainst: 3, isHome: false, yellowCards: 0, redCards: 0 })
+    );
     expect(score.basePoints).toBe(0);
+    expect(score.bonusPoints).toBe(0);
     expect(score.penaltyPoints).toBe(-1);
     expect(score.total).toBe(-1);
+  });
+
+  it('no aplica penalty si la derrota es de menos de 3 goles', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 0, goalsAgainst: 2, isHome: true, yellowCards: 0, redCards: 0 })
+    );
+    expect(score.penaltyPoints).toBe(0);
+    expect(score.total).toBe(0);
+  });
+
+  it('no aplica penalty por perder de local (regla eliminada)', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 0, goalsAgainst: 1, isHome: true, yellowCards: 0, redCards: 0 })
+    );
+    expect(score.penaltyPoints).toBe(0);
+    expect(score.total).toBe(0);
+  });
+
+  it('descuenta -0.25 por tarjeta amarilla', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 2, goalsAgainst: 0, isHome: true, yellowCards: 2, redCards: 0 })
+    );
+    expect(score.basePoints).toBe(3);
+    expect(score.bonusPoints).toBe(2); // margin + clean sheet
+    expect(score.penaltyPoints).toBeCloseTo(-0.5);
+    expect(score.total).toBeCloseTo(4.5);
+  });
+
+  it('descuenta -1 por tarjeta roja', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 2, goalsAgainst: 0, isHome: false, yellowCards: 0, redCards: 1 })
+    );
+    expect(score.penaltyPoints).toBe(-1);
+    expect(score.total).toBe(4); // 3+2-1
+  });
+
+  it('acumula penalty de derrota amplia + tarjetas', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 0, goalsAgainst: 3, isHome: false, yellowCards: 3, redCards: 0 })
+    );
+    expect(score.penaltyPoints).toBeCloseTo(-1.75); // -1 wide + 3*-0.25
+    expect(score.total).toBeCloseTo(-1.75);
+  });
+
+  it('trata yellowCards null como 0', () => {
+    const score = computeFantasyScore(
+      mk({ goalsFor: 1, goalsAgainst: 0, isHome: true, yellowCards: null, redCards: null })
+    );
+    expect(score.penaltyPoints).toBe(0);
+    expect(score.total).toBe(4); // 3 + 1 CS
   });
 });
 
 describe('resolveKnockoutTie', () => {
-  it('uses tiebreak order: goal diff, goals for, away condition', () => {
+  it('resuelve por fantasy-total cuando los puntajes difieren', () => {
     const winner = resolveKnockoutTie(
-      { clubId: 'a', total: 3, goalsFor: 2, goalsAgainst: 1, wonAway: false },
-      { clubId: 'b', total: 3, goalsFor: 2, goalsAgainst: 1, wonAway: true }
+      { clubId: 'a', total: 4.5, goalsFor: 2, goalsAgainst: 0, yellowCards: 2, redCards: 0 },
+      { clubId: 'b', total: 4, goalsFor: 2, goalsAgainst: 0, yellowCards: 0, redCards: 1 }
     );
+    expect(winner.winnerClubId).toBe('a');
+    expect(winner.tiebreakReason).toBe('fantasy-total');
+  });
 
+  it('desempata por card-deductions cuando totales iguales y tarjetas difieren', () => {
+    const winner = resolveKnockoutTie(
+      { clubId: 'a', total: 3, goalsFor: 2, goalsAgainst: 1, yellowCards: 1, redCards: 0 },
+      { clubId: 'b', total: 3, goalsFor: 2, goalsAgainst: 1, yellowCards: 3, redCards: 0 }
+    );
+    expect(winner.winnerClubId).toBe('a'); // menos tarjetas
+    expect(winner.tiebreakReason).toBe('card-deductions');
+  });
+
+  it('desempata por goals-for cuando totales y tarjetas iguales', () => {
+    const winner = resolveKnockoutTie(
+      { clubId: 'a', total: 3, goalsFor: 3, goalsAgainst: 1, yellowCards: 1, redCards: 0 },
+      { clubId: 'b', total: 3, goalsFor: 2, goalsAgainst: 0, yellowCards: 1, redCards: 0 }
+    );
+    expect(winner.winnerClubId).toBe('a');
+    expect(winner.tiebreakReason).toBe('goals-for');
+  });
+
+  it('desempata por away-condition cuando el visitante tiene ventaja', () => {
+    const winner = resolveKnockoutTie(
+      { clubId: 'a', total: 3, goalsFor: 2, goalsAgainst: 1, yellowCards: 1, redCards: 0, playedAway: false },
+      { clubId: 'b', total: 3, goalsFor: 2, goalsAgainst: 1, yellowCards: 1, redCards: 0, playedAway: true }
+    );
     expect(winner.winnerClubId).toBe('b');
-    expect(winner.tiebreakReason).toBe('away-win-condition');
+    expect(winner.tiebreakReason).toBe('away-condition');
+  });
+
+  it('desempata por conmebol-rank cuando coeficiente menor gana', () => {
+    const winner = resolveKnockoutTie(
+      { clubId: 'a', total: 3, goalsFor: 2, goalsAgainst: 1, yellowCards: 1, redCards: 0, playedAway: false, conmebolRank: 5 },
+      { clubId: 'b', total: 3, goalsFor: 2, goalsAgainst: 1, yellowCards: 1, redCards: 0, playedAway: false, conmebolRank: 12 }
+    );
+    expect(winner.winnerClubId).toBe('a');
+    expect(winner.tiebreakReason).toBe('conmebol-rank');
+  });
+
+  it('cae a administrative-draw cuando todos los criterios deportivos son iguales', () => {
+    const winner = resolveKnockoutTie(
+      { clubId: 'a', total: 3, goalsFor: 2, goalsAgainst: 1 },
+      { clubId: 'b', total: 3, goalsFor: 2, goalsAgainst: 1 }
+    );
+    expect(winner.winnerClubId).toBe('a');
+    expect(winner.tiebreakReason).toBe('administrative-draw');
   });
 });
 
 describe('rankGroupStandings', () => {
-  it('orders by points, fantasy diff, wins, goal diff and away points', () => {
+  it('orders by points, fantasy diff, wins, goal diff y criterio administrativo', () => {
     const standings: GroupStandingEntry[] = [
       { group: 'A', clubId: 'a', played: 1, wins: 1, draws: 0, losses: 0, points: 3, fantasyFor: 5, fantasyAgainst: 4, fantasyDiff: 1, goalsFor: 2, goalsAgainst: 1, awayBonusWins: 0 },
       { group: 'A', clubId: 'b', played: 1, wins: 1, draws: 0, losses: 0, points: 3, fantasyFor: 6, fantasyAgainst: 4, fantasyDiff: 2, goalsFor: 1, goalsAgainst: 0, awayBonusWins: 0 },
@@ -102,6 +245,6 @@ describe('rankGroupStandings', () => {
     ];
 
     const ranked = rankGroupStandings(standings);
-    expect(ranked.map((s) => s.clubId)).toEqual(['c', 'b', 'a']);
+    expect(ranked.map((s) => s.clubId)).toEqual(['b', 'c', 'a']);
   });
 });

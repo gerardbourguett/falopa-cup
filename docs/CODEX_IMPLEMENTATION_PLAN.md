@@ -137,7 +137,6 @@ La lógica inicial debe ser:
 - victoria = 3
 - empate = 1
 - derrota = 0
-- +1 por ganar de visitante
 - +1 por ganar por 2 o más goles
 - -1 por perder de local
 
@@ -288,7 +287,6 @@ Codex debe agregar pruebas para:
 
 ### scoring
 - victoria local
-- victoria visitante
 - victoria por 2+ goles
 - empate
 - derrota local

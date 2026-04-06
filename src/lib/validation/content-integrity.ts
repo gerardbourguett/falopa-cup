@@ -35,7 +35,7 @@ export interface ConferencePreliminaryTie {
   winnerClubId: string;
   scoreA: number;
   scoreB: number;
-  resolvedBy: 'fantasy-score' | 'administrative';
+  resolvedBy: 'fantasy-score' | 'card-deductions' | 'goals-for' | 'away-condition' | 'conmebol-rank' | 'administrative';
 }
 
 export interface ConferenceStageDocument {
@@ -96,6 +96,8 @@ export interface ConferenceWindowCutDocument {
     homeAway?: 'home' | 'away' | null;
     goalsFor?: number | null;
     goalsAgainst?: number | null;
+    yellowCards?: number | null;
+    redCards?: number | null;
     sourceUrl?: string | null;
   }>;
 }

@@ -130,7 +130,6 @@ Para cada partido contable:
 - victoria = 3 puntos
 - empate = 1 punto
 - derrota = 0 puntos
-- +1 por ganar de visitante
 - +1 por ganar por 2 o más goles
 - -1 por perder de local
 
