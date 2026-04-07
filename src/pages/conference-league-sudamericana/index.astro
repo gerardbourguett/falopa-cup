@@ -105,23 +105,29 @@ const tieCards = preliminaryTies.map((tie: any) => {
 // Groups data
 const groups = groupsDoc?.groups || [];
 const roundWindows: any[] = groupsDoc?.roundWindows || [];
-const standingsRaw: any[] = groupsDoc?.standings || [];
-
-// Build standings by group, sorted
-const standingsByGroup = new Map<string, any[]>();
-for (const s of standingsRaw) {
-  if (!standingsByGroup.has(s.group)) standingsByGroup.set(s.group, []);
-  standingsByGroup.get(s.group)!.push({ ...s, ...clubMeta(s.clubId) });
+// Build fantasy breakdown per club from all round scores
+const fantasyByClub = new Map<string, { played: number; base: number; bonus: number; penalty: number; total: number }>();
+for (const rw of roundWindows) {
+  for (const fs of (rw.fantasyScores || [])) {
+    const prev = fantasyByClub.get(fs.clubId) || { played: 0, base: 0, bonus: 0, penalty: 0, total: 0 };
+    prev.played++;
+    prev.base += fs.basePoints;
+    prev.bonus += fs.bonusPoints;
+    prev.penalty += fs.penaltyPoints;
+    prev.total += fs.total;
+    fantasyByClub.set(fs.clubId, prev);
+  }
 }
-for (const [, arr] of standingsByGroup) {
-  arr.sort((a: any, b: any) => {
-    if (b.points !== a.points) return b.points - a.points;
-    if (b.fantasyDiff !== a.fantasyDiff) return b.fantasyDiff - a.fantasyDiff;
-    if (b.wins !== a.wins) return b.wins - a.wins;
-    const gdA = (a.goalsFor ?? 0) - (a.goalsAgainst ?? 0);
-    const gdB = (b.goalsFor ?? 0) - (b.goalsAgainst ?? 0);
-    return gdB - gdA;
+
+// Build fantasy standings by group, sorted by total desc
+const fantasyStandingsByGroup = new Map<string, any[]>();
+for (const group of groups) {
+  const rows = group.clubIds.map((id: string) => {
+    const fb = fantasyByClub.get(id) || { played: 0, base: 0, bonus: 0, penalty: 0, total: 0 };
+    return { ...clubMeta(id), clubId: id, ...fb };
   });
+  rows.sort((a: any, b: any) => b.total - a.total || b.bonus - a.bonus || b.base - a.base);
+  fantasyStandingsByGroup.set(group.group, rows);
 }
 
 // Fantasy score lookup: roundId -> clubId -> score entry
@@ -274,7 +280,7 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
 
       <div class="groups-grid">
         {groups.map((group: any) => {
-          const standings = standingsByGroup.get(group.group) || group.clubIds.map((id: string) => ({ ...clubMeta(id), played: 0, wins: 0, draws: 0, losses: 0, points: 0, fantasyDiff: 0 }));
+          const standings = fantasyStandingsByGroup.get(group.group) || group.clubIds.map((id: string) => ({ ...clubMeta(id), clubId: id, played: 0, base: 0, bonus: 0, penalty: 0, total: 0 }));
           return (
             <article class="group-card" data-group={group.group}>
               <h3 class="group-title">Grupo {group.group}</h3>
@@ -283,21 +289,16 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
                   <tr>
                     <th class="col-pos">#</th>
                     <th class="col-club">Club</th>
-                    <th title="Jugados">PJ</th>
-                    <th title="Ganados">G</th>
-                    <th title="Empates">E</th>
-                    <th title="Perdidos">P</th>
-                    <th title="Puntos" class="col-pts">Pts</th>
-                    <th title="Fantasy acumulado" class="col-fx">FX</th>
+                    <th title="Partidos jugados">PJ</th>
+                    <th title="Base: V(3) E(1) D(0)">Base</th>
+                    <th title="Bonus: Arco en cero + Margen progresivo" class="col-bonus">+B</th>
+                    <th title="Penal: Derrota amplia + Tarjetas" class="col-penal">−P</th>
+                    <th title="Fantasy total acumulado" class="col-fx">FX</th>
                   </tr>
                 </thead>
                 <tbody>
                   {standings.map((row: any, idx: number) => {
                     const isLeader = idx === 0 && row.played > 0;
-                    const roundScores = roundWindows.map((rw: any) => {
-                      const fs = roundScoreMap.get(rw.roundId)?.get(row.clubId);
-                      return fs ? fs.total : null;
-                    });
                     return (
                       <tr class:list={[isLeader && 'row-leader']}>
                         <td class="col-pos">{idx + 1}</td>
@@ -306,30 +307,22 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
                             <span class:list={['club-flag-icon', flagClass(row.country)]} aria-hidden="true"></span>
                             <span class="club-name-text">{row.name}</span>
                           </span>
-                          {roundScores.length > 0 && (
-                            <span class="round-score-chips">
-                              {roundScores.map((sc: number | null, ri: number) => (
-                                <span
-                                  class:list={['score-chip', sc === null ? 'chip-pending' : sc >= 3 ? 'chip-win' : sc === 1 ? 'chip-draw' : 'chip-loss']}
-                                  title={`R${ri + 1}: ${sc ?? '—'}`}
-                                >
-                                  {sc !== null ? sc : '?'}
-                                </span>
-                              ))}
-                            </span>
-                          )}
                         </td>
-                        <td>{row.played ?? 0}</td>
-                        <td>{row.wins ?? 0}</td>
-                        <td>{row.draws ?? 0}</td>
-                        <td>{row.losses ?? 0}</td>
-                        <td class="col-pts"><strong>{row.points ?? 0}</strong></td>
-                        <td class:list={['col-fx', (row.fantasyDiff ?? 0) > 0 ? 'fx-pos' : (row.fantasyDiff ?? 0) < 0 ? 'fx-neg' : '']}>{row.fantasyDiff ?? 0}</td>
+                        <td>{row.played}</td>
+                        <td>{row.base}</td>
+                        <td class="col-bonus">{row.bonus > 0 ? `+${row.bonus}` : row.bonus}</td>
+                        <td class="col-penal">{row.penalty < 0 ? row.penalty : row.penalty}</td>
+                        <td class:list={['col-fx', row.total > 0 ? 'fx-pos' : row.total < 0 ? 'fx-neg' : '']}>{row.total}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
+              <div class="standings-legend">
+                <span title="Victoria 3 · Empate 1 · Derrota 0">Base: V3 E1 D0</span>
+                <span title="Arco en cero (+1) + Margen progresivo (+N−1)">+B: AEC + Margen</span>
+                <span title="Derrota amplia (−1) + Amarillas (−0.25) + Rojas (−1)">−P: DA + Tarj</span>
+              </div>
               {roundWindows.length > 0 && (
                 <div class="match-sources">
                   {standings.map((row: any) => {
@@ -902,8 +895,11 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     color: var(--color-text-muted);
   }
 
-  .standings-table td.fx-pos { color: var(--color-conference); }
-  .standings-table td.fx-neg { color: #e05252; }
+  .standings-table td.col-bonus { color: var(--color-conference); }
+  .standings-table td.col-penal { color: #e05252; }
+
+  .standings-table td.fx-pos { color: var(--color-conference); font-weight: 700; }
+  .standings-table td.fx-neg { color: #e05252; font-weight: 700; }
 
   .standings-table tr.row-leader {
     background: var(--color-conference-tint);
@@ -1144,6 +1140,23 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--color-text-muted);
+  }
+
+  /* ── Standings legend ── */
+  .standings-legend {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+    padding-top: 0.35rem;
+    flex-wrap: wrap;
+  }
+
+  .standings-legend span {
+    font-size: 0.58rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+    cursor: help;
+    white-space: nowrap;
   }
 
   /* ── Match sources per club ── */

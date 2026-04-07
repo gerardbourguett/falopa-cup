@@ -523,6 +523,29 @@ function scoreBreakdownText(wc: any): string {
         ))}
       </div>
 
+      <!-- TABLA DE POSICIONES -->
+      <h3 class="subsection-title">Tabla de posiciones</h3>
+      <p class="criterion-note">
+        La tabla muestra el desglose fantasy acumulado por club, no el formato G/E/P tradicional:
+      </p>
+      <div class="table-wrap">
+        <table class="wiki-scoring-table">
+          <thead>
+            <tr><th>Columna</th><th>Significado</th><th>Cálculo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>PJ</strong></td><td>Partidos jugados</td><td>Máximo 6 (2 por fecha × 3 fechas)</td></tr>
+            <tr><td><strong>Base</strong></td><td>Puntos base acumulados</td><td>Victoria +3 · Empate +1 · Derrota +0</td></tr>
+            <tr><td><strong>+B</strong></td><td>Bonus acumulado</td><td>Arco en cero (+1) + Margen progresivo (+N−1 goles de diff.)</td></tr>
+            <tr><td><strong>−P</strong></td><td>Penalizaciones acumuladas</td><td>Derrota amplia (−1 si diff. ≥3) + Amarilla (−0.25) + Roja (−1)</td></tr>
+            <tr><td><strong>FX</strong></td><td>Fantasy total</td><td>Base + Bonus + Penalizaciones = puntaje acumulado</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="criterion-note">
+        El ranking del grupo se determina por <strong>FX total</strong>. Desempate: bonus acumulado → base acumulada → sorteo administrativo.
+      </p>
+
       <!-- CLASIFICACIÓN -->
       <h3 class="subsection-title">Clasificación</h3>
       <div class="class-table">
@@ -1055,6 +1078,18 @@ function scoreBreakdownText(wc: any): string {
     font-size: 0.82rem;
     color: var(--color-text-secondary);
     line-height: 1.55;
+  }
+
+  /* Wiki scoring table */
+  .wiki-scoring-table {
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .wiki-scoring-table td:first-child {
+    font-family: var(--font-display);
+    text-align: center;
+    width: 4rem;
   }
 
   /* Fechas */
