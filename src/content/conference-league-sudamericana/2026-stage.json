@@ -118,9 +118,9 @@
       "id": "PT-12",
       "clubAId": "uy-danubio",
       "clubBId": "py-general-caballero",
-      "winnerClubId": "uy-danubio",
+      "winnerClubId": "py-general-caballero",
       "scoreA": 5,
-      "scoreB": 0,
+      "scoreB": 6,
       "resolvedBy": "fantasy-score"
     },
     {
@@ -228,7 +228,7 @@
     "ec-universidad-catolica",
     "br-bahia",
     "cl-huachipato",
-    "uy-danubio",
+    "py-general-caballero",
     "py-sportivo-trinidense",
     "co-alianza",
     "uy-racing-club",

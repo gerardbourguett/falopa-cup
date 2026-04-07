@@ -542,8 +542,7 @@ function scoreBreakdownText(wc: any): string {
       <!-- SORTEO -->
       <h3 class="subsection-title">Sorteo oficial 2026</h3>
       <p class="criterion-note">
-        Sorteo dirigido sin clubes del mismo país en el mismo grupo. Danubio*
-        provisional pendiente cierre de la llave PT-12.
+        Sorteo dirigido sin clubes del mismo país en el mismo grupo.
       </p>
       <div class="groups-draw-grid">
         {groups.map((group: any) => (
@@ -555,12 +554,10 @@ function scoreBreakdownText(wc: any): string {
                 const name = s?.name || id;
                 const country = s?.country || '--';
                 const accent = getClubAccentColor(id);
-                const isProvisional = id === 'uy-danubio';
                 return (
-                  <li class:list={['group-draw-club', 'club-accent', isProvisional && 'provisional']} style={`--club-accent:${accent}`}>
+                  <li class="group-draw-club club-accent" style={`--club-accent:${accent}`}>
                     <span class:list={['club-flag-icon', flag(country)]} aria-hidden="true"></span>
                     <span>{name}</span>
-                    {isProvisional && <span class="prov-star" title="Provisional — PT-12 pendiente">*</span>}
                   </li>
                 );
               })}
@@ -570,7 +567,6 @@ function scoreBreakdownText(wc: any): string {
       </div>
 
       <p class="criterion-note footnote">
-        * Danubio lidera PT-12 (5 pts vs General Caballero TBD). El grupo F se actualiza si el resultado cambia el ganador. ·
         Los 8 cupos de Copa Sudamericana para el playoff de 3ros se conocerán al finalizar esa fase de grupos.
       </p>
     </section>
