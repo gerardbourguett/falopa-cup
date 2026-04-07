@@ -4,6 +4,7 @@ export const CLUB_ACCENT_COLORS: Record<string, string> = {
   'bo-aurora': '#44b8f3',
   'bo-guabira': '#1f8a4c',
   'bo-gv-san-jose': '#1b4fa2',
+  'bo-nacional-potosi': '#e4002b',
   'bo-real-tomayapo': '#2a9d5b',
   'bo-san-antonio-bulo-bulo': '#d99a1f',
   'bo-the-strongest': '#f4b400',

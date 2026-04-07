@@ -4,35 +4,75 @@
   "groups": [
     {
       "group": "A",
-      "clubIds": ["cl-colo-colo", "co-once-caldas", "py-sportivo-ameliano", "pe-los-chankas"]
+      "clubIds": [
+        "cl-colo-colo",
+        "co-atletico-nacional",
+        "pe-alianza-lima",
+        "bo-the-strongest"
+      ]
     },
     {
       "group": "B",
-      "clubIds": ["uy-cerro-largo", "bo-gv-san-jose", "ve-anzoategui", "py-general-caballero"]
+      "clubIds": [
+        "cl-universidad-de-chile",
+        "ec-emelec",
+        "py-guarani",
+        "ar-argentinos-juniors"
+      ]
     },
     {
       "group": "C",
-      "clubIds": ["uy-nacional", "co-atletico-nacional", "cl-universidad-de-chile", "ar-independiente"]
+      "clubIds": [
+        "ve-deportivo-tachira",
+        "co-once-caldas",
+        "ec-universidad-catolica",
+        "br-bahia"
+      ]
     },
     {
       "group": "D",
-      "clubIds": ["cl-deportes-limache", "bo-the-strongest", "ec-emelec", "py-guarani"]
+      "clubIds": [
+        "uy-danubio",
+        "ec-delfin",
+        "co-atletico-bucaramanga",
+        "bo-nacional-potosi"
+      ]
     },
     {
       "group": "E",
-      "clubIds": ["ar-argentinos-juniors", "uy-cerro", "pe-adt", "ec-universidad-catolica"]
+      "clubIds": [
+        "uy-racing-club",
+        "ve-metropolitanos",
+        "cl-nublense",
+        "py-sportivo-ameliano"
+      ]
     },
     {
       "group": "F",
-      "clubIds": ["br-bahia", "cl-huachipato", "ec-aucas", "py-sportivo-trinidense"]
+      "clubIds": [
+        "ec-aucas",
+        "uy-cerro-largo",
+        "bo-san-antonio-bulo-bulo",
+        "ve-zamora"
+      ]
     },
     {
       "group": "G",
-      "clubIds": ["co-alianza", "uy-racing-club", "br-vitoria", "bo-san-antonio-bulo-bulo"]
+      "clubIds": [
+        "bo-gv-san-jose",
+        "py-general-caballero",
+        "ve-rayo-zuliano",
+        "pe-adt"
+      ]
     },
     {
       "group": "H",
-      "clubIds": ["pe-deportivo-garcilaso", "ve-metropolitanos", "py-sportivo-luqueno", "co-atletico-bucaramanga"]
+      "clubIds": [
+        "ve-anzoategui",
+        "ec-orense",
+        "pe-los-chankas",
+        "cl-deportes-limache"
+      ]
     }
   ],
   "roundWindows": [

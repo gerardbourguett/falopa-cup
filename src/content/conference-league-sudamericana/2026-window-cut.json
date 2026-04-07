@@ -7,7 +7,7 @@
   "entries": [
     {
       "clubId": "ar-independiente",
-      "pot": "Bombo 1",
+      "pot": "Bombo 2",
       "status": "ok",
       "total": 4,
       "gd": 2,
@@ -21,23 +21,6 @@
       "sourceUrl": "https://www.espn.com/soccer/match/_/gameId/401846945/sportivo-atenas-independiente",
       "yellowCards": null,
       "redCards": null
-    },
-    {
-      "clubId": "pe-alianza-lima",
-      "pot": "Bombo 1",
-      "status": "ok",
-      "total": 4.75,
-      "gd": 2,
-      "gf": 2,
-      "sourceDate": "2026-03-21",
-      "competition": "Peruvian Liga 1",
-      "opponent": "Juan Pablo II",
-      "homeAway": "home",
-      "goalsFor": 2,
-      "goalsAgainst": 0,
-      "sourceUrl": "https://www.espn.com/soccer/match/_/gameId/401857434/juan-pablo-ii-alianza-lima",
-      "yellowCards": 1,
-      "redCards": 0
     },
     {
       "clubId": "bo-the-strongest",
@@ -364,7 +347,7 @@
     },
     {
       "clubId": "bo-san-antonio-bulo-bulo",
-      "pot": "Bombo 2",
+      "pot": "Bombo 1",
       "status": "ok",
       "total": 5,
       "gd": 2,
@@ -716,6 +699,23 @@
       "goalsFor": 0,
       "goalsAgainst": 0,
       "sourceUrl": "https://www.espn.com/soccer/match/_/gameId/401859520/barcelona-sc-libertad-ecuador",
+      "yellowCards": null,
+      "redCards": null
+    },
+    {
+      "clubId": "bo-nacional-potosi",
+      "pot": "Bombo 1",
+      "status": "ok",
+      "total": 6,
+      "gd": 3,
+      "gf": 3,
+      "sourceDate": "2026-04-03",
+      "competition": "Liga Profesional Boliviana · Fecha 1",
+      "opponent": "Independiente Petrolero",
+      "homeAway": "away",
+      "goalsFor": 3,
+      "goalsAgainst": 0,
+      "sourceUrl": null,
       "yellowCards": null,
       "redCards": null
     }
