@@ -105,23 +105,29 @@ const tieCards = preliminaryTies.map((tie: any) => {
 // Groups data
 const groups = groupsDoc?.groups || [];
 const roundWindows: any[] = groupsDoc?.roundWindows || [];
-const standingsRaw: any[] = groupsDoc?.standings || [];
-
-// Build standings by group, sorted
-const standingsByGroup = new Map<string, any[]>();
-for (const s of standingsRaw) {
-  if (!standingsByGroup.has(s.group)) standingsByGroup.set(s.group, []);
-  standingsByGroup.get(s.group)!.push({ ...s, ...clubMeta(s.clubId) });
+// Build fantasy breakdown per club from all round scores
+const fantasyByClub = new Map<string, { played: number; base: number; bonus: number; penalty: number; total: number }>();
+for (const rw of roundWindows) {
+  for (const fs of (rw.fantasyScores || [])) {
+    const prev = fantasyByClub.get(fs.clubId) || { played: 0, base: 0, bonus: 0, penalty: 0, total: 0 };
+    prev.played++;
+    prev.base += fs.basePoints;
+    prev.bonus += fs.bonusPoints;
+    prev.penalty += fs.penaltyPoints;
+    prev.total += fs.total;
+    fantasyByClub.set(fs.clubId, prev);
+  }
 }
-for (const [, arr] of standingsByGroup) {
-  arr.sort((a: any, b: any) => {
-    if (b.points !== a.points) return b.points - a.points;
-    if (b.fantasyDiff !== a.fantasyDiff) return b.fantasyDiff - a.fantasyDiff;
-    if (b.wins !== a.wins) return b.wins - a.wins;
-    const gdA = (a.goalsFor ?? 0) - (a.goalsAgainst ?? 0);
-    const gdB = (b.goalsFor ?? 0) - (b.goalsAgainst ?? 0);
-    return gdB - gdA;
+
+// Build fantasy standings by group, sorted by total desc
+const fantasyStandingsByGroup = new Map<string, any[]>();
+for (const group of groups) {
+  const rows = group.clubIds.map((id: string) => {
+    const fb = fantasyByClub.get(id) || { played: 0, base: 0, bonus: 0, penalty: 0, total: 0 };
+    return { ...clubMeta(id), clubId: id, ...fb };
   });
+  rows.sort((a: any, b: any) => b.total - a.total || b.bonus - a.bonus || b.base - a.base);
+  fantasyStandingsByGroup.set(group.group, rows);
 }
 
 // Fantasy score lookup: roundId -> clubId -> score entry
@@ -132,6 +138,17 @@ for (const rw of roundWindows) {
     m.set(fs.clubId, fs);
   }
   roundScoreMap.set(rw.roundId, m);
+}
+
+// Match sources lookup: roundId -> clubId -> match source entries
+const matchSourceMap = new Map<string, Map<string, any[]>>();
+for (const rw of roundWindows) {
+  const m = new Map<string, any[]>();
+  for (const ms of (rw.windowMatchSources || [])) {
+    if (!m.has(ms.clubId)) m.set(ms.clubId, []);
+    m.get(ms.clubId)!.push(ms);
+  }
+  matchSourceMap.set(rw.roundId, m);
 }
 
 // Audit data
@@ -222,12 +239,18 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   currentPath="/conference-league-sudamericana"
 >
   <section class="page-hero">
-    <div class="container">
-      <p class="eyebrow">Nuevo torneo continental (fantasy por ventanas)</p>
-      <h1>Conference League Sudamericana 2026</h1>
-      <p>
-        Formato aditivo al proyecto: 53 clubes, fase previa, fase principal de 32 equipos, grupos y llave final.
-      </p>
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <p class="eyebrow">Conference League Sudamericana</p>
+        <h1>Fase de Grupos <span class="hero-year">2026</span></h1>
+        <p class="hero-sub">32 clubes · 8 grupos · 3 fechas fantasy · Acumulación pura</p>
+      </div>
+      <div class="hero-stat-bar">
+        <div class="hero-stat"><span class="hero-stat-num">{clubsDoc?.seeds?.length || 0}</span><span class="hero-stat-label">Participantes</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">{stageDoc?.mainStageQualifiedIds?.length || 0}</span><span class="hero-stat-label">Clasificados</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">3</span><span class="hero-stat-label">Fechas</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">6</span><span class="hero-stat-label">Partidos/club</span></div>
+      </div>
     </div>
   </section>
 
@@ -238,28 +261,8 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
 
   <main class="container page-main">
 
-    <!-- Summary metrics -->
-    <section class="summary-grid">
-      <article class="summary-card">
-        <h2>Participantes</h2>
-        <p class="metric">{clubsDoc?.seeds?.length || 0}</p>
-      </article>
-      <article class="summary-card">
-        <h2>Directos</h2>
-        <p class="metric">{stageDoc?.directQualifiedIds?.length || 0}</p>
-      </article>
-      <article class="summary-card">
-        <h2>Llaves previa</h2>
-        <p class="metric">{stageDoc?.preliminaryTies?.length || 0}</p>
-      </article>
-      <article class="summary-card">
-        <h2>Clasificados</h2>
-        <p class="metric">{stageDoc?.mainStageQualifiedIds?.length || 0}</p>
-      </article>
-    </section>
-
     <!-- ===== FASE DE GRUPOS ===== -->
-    <section class="block">
+    <section class="block block-groups">
       <div class="section-header">
         <h2>Fase de Grupos</h2>
         <span class="section-badge">
@@ -277,30 +280,25 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
 
       <div class="groups-grid">
         {groups.map((group: any) => {
-          const standings = standingsByGroup.get(group.group) || group.clubIds.map((id: string) => ({ ...clubMeta(id), played: 0, wins: 0, draws: 0, losses: 0, points: 0, fantasyDiff: 0 }));
+          const standings = fantasyStandingsByGroup.get(group.group) || group.clubIds.map((id: string) => ({ ...clubMeta(id), clubId: id, played: 0, base: 0, bonus: 0, penalty: 0, total: 0 }));
           return (
-            <article class="group-card">
+            <article class="group-card" data-group={group.group}>
               <h3 class="group-title">Grupo {group.group}</h3>
               <table class="standings-table">
                 <thead>
                   <tr>
                     <th class="col-pos">#</th>
                     <th class="col-club">Club</th>
-                    <th title="Jugados">PJ</th>
-                    <th title="Ganados">G</th>
-                    <th title="Empates">E</th>
-                    <th title="Perdidos">P</th>
-                    <th title="Puntos" class="col-pts">Pts</th>
-                    <th title="Fantasy acumulado" class="col-fx">FX</th>
+                    <th title="Partidos jugados">PJ</th>
+                    <th title="Base: V(3) E(1) D(0)">Base</th>
+                    <th title="Bonus: Arco en cero + Margen progresivo" class="col-bonus">+B</th>
+                    <th title="Penal: Derrota amplia + Tarjetas" class="col-penal">−P</th>
+                    <th title="Fantasy total acumulado" class="col-fx">FX</th>
                   </tr>
                 </thead>
                 <tbody>
                   {standings.map((row: any, idx: number) => {
                     const isLeader = idx === 0 && row.played > 0;
-                    const roundScores = roundWindows.map((rw: any) => {
-                      const fs = roundScoreMap.get(rw.roundId)?.get(row.clubId);
-                      return fs ? fs.total : null;
-                    });
                     return (
                       <tr class:list={[isLeader && 'row-leader']}>
                         <td class="col-pos">{idx + 1}</td>
@@ -309,76 +307,142 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
                             <span class:list={['club-flag-icon', flagClass(row.country)]} aria-hidden="true"></span>
                             <span class="club-name-text">{row.name}</span>
                           </span>
-                          {roundScores.length > 0 && (
-                            <span class="round-score-chips">
-                              {roundScores.map((sc: number | null, ri: number) => (
-                                <span
-                                  class:list={['score-chip', sc === null ? 'chip-pending' : sc >= 3 ? 'chip-win' : sc === 1 ? 'chip-draw' : 'chip-loss']}
-                                  title={`R${ri + 1}: ${sc ?? '—'}`}
-                                >
-                                  {sc !== null ? sc : '?'}
-                                </span>
-                              ))}
-                            </span>
-                          )}
                         </td>
-                        <td>{row.played ?? 0}</td>
-                        <td>{row.wins ?? 0}</td>
-                        <td>{row.draws ?? 0}</td>
-                        <td>{row.losses ?? 0}</td>
-                        <td class="col-pts"><strong>{row.points ?? 0}</strong></td>
-                        <td class:list={['col-fx', (row.fantasyDiff ?? 0) > 0 ? 'fx-pos' : (row.fantasyDiff ?? 0) < 0 ? 'fx-neg' : '']}>{row.fantasyDiff ?? 0}</td>
+                        <td>{row.played}</td>
+                        <td>{row.base}</td>
+                        <td class="col-bonus">{row.bonus > 0 ? `+${row.bonus}` : row.bonus}</td>
+                        <td class="col-penal">{row.penalty < 0 ? row.penalty : row.penalty}</td>
+                        <td class:list={['col-fx', row.total > 0 ? 'fx-pos' : row.total < 0 ? 'fx-neg' : '']}>{row.total}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
+              <div class="standings-legend">
+                <span title="Victoria 3 · Empate 1 · Derrota 0">Base: V3 E1 D0</span>
+                <span title="Arco en cero (+1) + Margen progresivo (+N−1)">+B: AEC + Margen</span>
+                <span title="Derrota amplia (−1) + Amarillas (−0.25) + Rojas (−1)">−P: DA + Tarj</span>
+              </div>
             </article>
           );
         })}
       </div>
     </section>
 
-    <!-- ===== FASE PREVIA — RESULTADOS ===== -->
+    <!-- ===== FECHA 1 — DETALLE ===== -->
     <section class="block">
       <div class="section-header">
-        <h2>Fase Previa — Resultados</h2>
-        <span class="section-badge">{tieCards.filter((t: any) => t.hasScore).length}/{tieCards.length} resueltas</span>
+        <h2>Fecha 1 — Partidos</h2>
+        <span class="section-badge">
+          {roundWindows[0]?.windowMatchSources?.length || 0} registrados · 7–20 abril
+        </span>
       </div>
-      <div class="ties-grid">
-        {tieCards.map((tie: any) => (
-          <article class="tie-card">
-            <header class="tie-header">
-              <span class="tie-id">{tie.id}</span>
-              <div class="tie-result">
-                {tie.hasScore ? (
-                  <>
-                    <span class="tie-score">{tie.scoreLabel}</span>
-                    <small class="tie-winner">{tie.winnerName ? `→ ${tie.winnerName}` : ''}</small>
-                  </>
-                ) : <span class="tie-pending">pendiente</span>}
-              </div>
-            </header>
 
-            <div class:list={['tie-club', 'club-accent', tie.winnerClubId === tie.clubAId && 'winner']} style={`--club-accent:${tie.clubA.accent}`}>
-              <div class="tie-club-main">
-                <span class:list={['club-flag-icon', flagClass(tie.clubA.country)]} aria-hidden="true"></span>
-                <span>{tie.clubA.name}</span>
+      <div class="f1-groups">
+        {groups.map((group: any) => {
+          const clubIds = group.clubIds as string[];
+          return (
+            <div class="f1-group">
+              <h3 class="f1-group-title">Grupo {group.group}</h3>
+              <div class="f1-club-list">
+                {clubIds.map((id: string) => {
+                  const club = clubMeta(id);
+                  const matches = matchSourceMap.get('GS-F1')?.get(id) || [];
+                  const allMs = matches.map((ms: any) => {
+                    const fx = (roundWindows[0]?.fantasyScores || []).find((fs: any) => fs.sourceMatchId === ms.id);
+                    return { ...ms, fx };
+                  });
+                  const clubTotal = allMs.reduce((sum: number, s: any) => sum + (s.fx?.total || 0), 0);
+                  const isPlayed = (ms: any) => ms.status === 'played' || (ms.goalsFor != null && ms.goalsAgainst != null);
+                  return (
+                    <div class="f1-club">
+                      <div class="f1-club-header">
+                        <span class="inline-club club-accent" style={`--club-accent:${club.accent}`}>
+                          <span class:list={['club-flag-icon', flagClass(club.country)]} aria-hidden="true"></span>
+                          <strong>{club.name}</strong>
+                        </span>
+                        <span class:list={['f1-club-total', clubTotal > 0 ? 'fx-pos' : clubTotal < 0 ? 'fx-neg' : '']}>{clubTotal} pts</span>
+                      </div>
+                      <div class="f1-matches">
+                        {allMs.map((s: any) => (
+                          <div class:list={['f1-match', !isPlayed(s) && 'f1-match-scheduled']}>
+                            {isPlayed(s) ? (
+                              <>
+                                <span class="f1-match-score">{s.goalsFor}–{s.goalsAgainst}</span>
+                                <span class="f1-match-cond">{s.isHome ? 'L' : 'V'}</span>
+                                <span class="f1-match-vs">vs {s.isHome ? s.awayClub : s.homeClub}</span>
+                                <span class="f1-match-comp">
+                                  {s.sourceCompetition} · {new Date(s.sourceDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}
+                                  {s.yellowCards != null && s.yellowCards > 0 && <span class="f1-cards"> · TA:{s.yellowCards}</span>}
+                                  {s.redCards != null && s.redCards > 0 && <span class="f1-cards f1-cards-red"> · TR:{s.redCards}</span>}
+                                </span>
+                                {s.fx && (
+                                  <span class:list={['f1-match-fx', s.fx.total >= 3 ? 'fx-pos' : s.fx.total < 0 ? 'fx-neg' : '']}>
+                                    {s.fx.total >= 0 ? '+' : ''}{s.fx.total}
+                                  </span>
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                <span class="f1-match-date">{new Date(s.sourceDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}</span>
+                                <span class="f1-match-cond">{s.isHome ? 'L' : 'V'}</span>
+                                <span class="f1-match-vs">vs {s.isHome ? s.awayClub : s.homeClub}</span>
+                                <span class="f1-match-comp">{s.sourceCompetition}</span>
+                                <span class="f1-match-pending">{s.status === 'tbd' ? 'TBD' : 'por jugar'}</span>
+                              </>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <small>{tie.potA} · {tie.clubA.coefficientLabel}</small>
             </div>
-
-            <div class:list={['tie-club', 'club-accent', tie.winnerClubId === tie.clubBId && 'winner']} style={`--club-accent:${tie.clubB.accent}`}>
-              <div class="tie-club-main">
-                <span class:list={['club-flag-icon', flagClass(tie.clubB.country)]} aria-hidden="true"></span>
-                <span>{tie.clubB.name}</span>
-              </div>
-              <small>{tie.potB} · {tie.clubB.coefficientLabel}</small>
-            </div>
-          </article>
-        ))}
+          );
+        })}
       </div>
     </section>
+
+    <!-- ===== FASE PREVIA (colapsada) ===== -->
+    <details class="audit-block">
+      <summary>Fase Previa — Resultados ({tieCards.filter((t: any) => t.hasScore).length}/{tieCards.length} resueltas)</summary>
+      <div class="audit-body">
+        <div class="ties-grid">
+          {tieCards.map((tie: any) => (
+            <article class="tie-card">
+              <header class="tie-header">
+                <span class="tie-id">{tie.id}</span>
+                <div class="tie-result">
+                  {tie.hasScore ? (
+                    <>
+                      <span class="tie-score">{tie.scoreLabel}</span>
+                      <small class="tie-winner">{tie.winnerName ? `→ ${tie.winnerName}` : ''}</small>
+                    </>
+                  ) : <span class="tie-pending">pendiente</span>}
+                </div>
+              </header>
+
+              <div class:list={['tie-club', 'club-accent', tie.winnerClubId === tie.clubAId && 'winner']} style={`--club-accent:${tie.clubA.accent}`}>
+                <div class="tie-club-main">
+                  <span class:list={['club-flag-icon', flagClass(tie.clubA.country)]} aria-hidden="true"></span>
+                  <span>{tie.clubA.name}</span>
+                </div>
+                <small>{tie.potA} · {tie.clubA.coefficientLabel}</small>
+              </div>
+
+              <div class:list={['tie-club', 'club-accent', tie.winnerClubId === tie.clubBId && 'winner']} style={`--club-accent:${tie.clubB.accent}`}>
+                <div class="tie-club-main">
+                  <span class:list={['club-flag-icon', flagClass(tie.clubB.country)]} aria-hidden="true"></span>
+                  <span>{tie.clubB.name}</span>
+                </div>
+                <small>{tie.potB} · {tie.clubB.coefficientLabel}</small>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </details>
 
     <!-- ===== AUDITORÍA (colapsada) ===== -->
     <details class="audit-block">
@@ -522,86 +586,186 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
 </Layout>
 
 <style>
+  /* ═══════════════════════════════════════════
+     CONFERENCE LEAGUE · BROADCAST EDITORIAL
+     ═══════════════════════════════════════════ */
+
+  /* ── Hero: broadcast lower-third style ── */
   .page-hero {
-    padding: 3rem 0 2rem;
-    border-bottom: 1px solid var(--color-bg-elevated);
+    background: #000;
+    padding: 0;
+    border-bottom: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(29, 185, 84, 0.03) 1px,
+        rgba(29, 185, 84, 0.03) 2px
+      );
+    pointer-events: none;
+  }
+
+  .page-hero::after {
+    content: 'CLS';
+    position: absolute;
+    right: -0.5rem;
+    bottom: -1.2rem;
+    font-family: var(--font-display);
+    font-size: clamp(8rem, 18vw, 14rem);
+    font-weight: 700;
+    color: rgba(29, 185, 84, 0.06);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .hero-inner {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-content {
+    flex: 1;
+    padding: 2.5rem 0;
+    border-left: 4px solid var(--color-conference);
+    padding-left: 1.5rem;
   }
 
   .eyebrow {
     text-transform: uppercase;
-    letter-spacing: 0.12em;
-    color: var(--color-text-muted);
-    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    color: var(--color-conference);
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem;
   }
 
+  .page-hero h1 {
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+    margin: 0 0 0.6rem;
+  }
+
+  .hero-year {
+    color: var(--color-conference-bright);
+  }
+
+  .hero-sub {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+
+  .hero-stat-bar {
+    display: flex;
+    border-left: 1px solid rgba(29, 185, 84, 0.2);
+    margin-left: auto;
+  }
+
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1.5rem;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    min-width: 5.5rem;
+  }
+
+  .hero-stat:last-child { border-right: none; }
+
+  .hero-stat-num {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+  }
+
+  .hero-stat-label {
+    font-size: 0.62rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 0.3rem;
+  }
+
+  /* ── Nav strip ── */
   .page-nav-strip {
     display: flex;
-    gap: 0.25rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0;
-    border-bottom: 1px solid var(--color-bg-elevated);
+    gap: 0;
+    padding: 0;
+    border-bottom: 2px solid var(--color-bg-elevated);
+    background: var(--color-bg-secondary);
   }
 
   .page-nav-tab {
-    padding: 0.5rem 1rem;
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--color-text-secondary);
+    padding: 0.65rem 1.25rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-text-muted);
     text-decoration: none;
-    border-bottom: 2px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.12s, border-color 0.12s;
   }
 
   .page-nav-tab:hover { color: var(--color-text-primary); }
 
   .page-nav-tab.active {
-    color: var(--color-text-primary);
-    border-bottom-color: var(--color-liga-primera);
+    color: var(--color-conference);
+    border-bottom-color: var(--color-conference);
   }
 
   .page-main {
-    padding: 2rem 0 3rem;
+    padding: 1.5rem 0 3rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
-  /* Summary */
-  .summary-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 0.75rem;
-  }
-
-  .summary-card {
-    background: var(--color-bg-secondary);
-    border: 1px solid var(--color-bg-elevated);
-    border-radius: 10px;
-    padding: 1rem;
-  }
-
-  .summary-card h2 {
-    margin: 0;
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--color-text-muted);
-    font-weight: 500;
-  }
-
-  .metric {
-    font-size: 2rem;
-    margin: 0.25rem 0 0;
-    color: var(--color-liga-primera-dim);
-    font-family: var(--font-display);
-  }
-
-  /* Blocks */
+  /* ── Blocks ── */
   .block {
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-bg-elevated);
-    border-radius: 10px;
+    border-radius: 2px;
     padding: 1.25rem;
+  }
+
+  .block-groups {
+    background: transparent;
+    border: none;
+    padding: 0;
+    /* Break out of container on wide screens */
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    margin-left: -50vw;
+    padding-left: max(2rem, calc((100vw - 1600px) / 2));
+    padding-right: max(2rem, calc((100vw - 1600px) / 2));
+    box-sizing: border-box;
   }
 
   .block h2 {
@@ -614,120 +778,183 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1rem;
+    padding-left: 0.75rem;
+    border-left: 4px solid var(--color-conference);
   }
 
   .section-header h2 {
     margin: 0;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 1.1rem;
   }
 
   .section-badge {
-    font-size: 0.72rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--color-text-muted);
-    background: var(--color-bg-elevated);
-    border-radius: 999px;
-    padding: 0.2rem 0.6rem;
+    letter-spacing: 0.08em;
+    color: var(--color-conference);
+    background: transparent;
+    border: 1px solid var(--color-conference);
+    border-radius: 2px;
+    padding: 0.15rem 0.5rem;
     white-space: nowrap;
+    font-weight: 600;
+    font-family: var(--font-display);
   }
 
   .round-tabs {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem;
+    gap: 0.35rem;
     margin-bottom: 1rem;
   }
 
   .round-tab {
-    font-size: 0.75rem;
-    background: var(--color-bg-elevated);
-    border-radius: 6px;
+    font-size: 0.72rem;
+    font-family: var(--font-display);
+    background: transparent;
+    border: 1px solid var(--color-bg-elevated);
+    border-radius: 2px;
     padding: 0.25rem 0.6rem;
-    color: var(--color-text-secondary);
+    color: var(--color-text-muted);
   }
 
   .round-tab.active {
-    background: color-mix(in srgb, var(--color-liga-primera) 15%, transparent);
-    color: var(--color-liga-primera-dim);
+    background: var(--color-conference);
+    border-color: var(--color-conference);
+    color: #000;
+    font-weight: 600;
   }
 
-  /* Groups grid */
+  /* ── Groups grid: broadcast panels ── */
   .groups-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-bg-elevated);
   }
 
+  @media (min-width: 1100px) {
+    .groups-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+
   .group-card {
-    background: var(--color-bg-primary);
-    border: 1px solid var(--color-bg-elevated);
-    border-radius: 10px;
-    padding: 0.85rem;
+    background: var(--color-bg-secondary);
+    padding: 0.9rem;
     overflow: hidden;
+    position: relative;
+    border-radius: 0;
+    border: none;
+    transition: background 0.15s;
+  }
+
+  .group-card::before {
+    content: attr(data-group);
+    position: absolute;
+    right: 0.3rem;
+    top: -0.3rem;
+    font-family: var(--font-display);
+    font-size: 5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-conference);
+    opacity: 0.06;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .group-card:hover {
+    background: color-mix(in srgb, var(--color-bg-secondary) 95%, var(--color-conference));
   }
 
   .group-title {
-    margin: 0 0 0.6rem;
-    font-size: 0.9rem;
+    margin: 0 0 0.5rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--color-text-secondary);
+    letter-spacing: 0.12em;
+    color: var(--color-conference);
+    font-weight: 700;
+    font-family: var(--font-display);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
+  .group-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-bg-elevated);
+  }
+
+  /* ── Standings table ── */
   .standings-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.82rem;
+    font-size: 0.8rem;
+    position: relative;
   }
 
   .standings-table th {
-    font-size: 0.68rem;
+    font-size: 0.6rem;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
+    letter-spacing: 0.08em;
     color: var(--color-text-muted);
     text-align: center;
-    padding: 0.2rem 0.3rem;
+    padding: 0.25rem 0.15rem;
     border-bottom: 1px solid var(--color-bg-elevated);
+    font-weight: 400;
   }
 
-  .standings-table th.col-club {
-    text-align: left;
-  }
+  .standings-table th.col-club { text-align: left; }
 
   .standings-table td {
-    padding: 0.35rem 0.3rem;
+    padding: 0.4rem 0.15rem;
     text-align: center;
     border-bottom: 1px solid color-mix(in srgb, var(--color-bg-elevated) 50%, transparent);
+    font-variant-numeric: tabular-nums;
   }
 
-  .standings-table tr:last-child td {
-    border-bottom: none;
-  }
-
-  .standings-table td.col-club {
-    text-align: left;
-  }
+  .standings-table tr:last-child td { border-bottom: none; }
+  .standings-table td.col-club { text-align: left; }
 
   .standings-table td.col-pos {
     color: var(--color-text-muted);
-    font-size: 0.75rem;
-    width: 1.4rem;
+    font-size: 0.68rem;
+    font-family: var(--font-display);
+    width: 1.2rem;
   }
 
-  .standings-table td.col-pts strong {
-    color: var(--color-liga-primera-dim);
+  .standings-table td.col-pts {
+    font-family: var(--font-display);
+    font-size: 0.88rem;
   }
+
+  .standings-table td.col-pts strong { color: var(--color-text-primary); }
 
   .standings-table td.col-fx {
-    font-size: 0.78rem;
+    font-size: 0.75rem;
+    font-family: var(--font-display);
     color: var(--color-text-muted);
   }
 
-  .standings-table td.fx-pos { color: #5cb85c; }
-  .standings-table td.fx-neg { color: #c0392b; }
+  .standings-table td.col-bonus { color: var(--color-conference); }
+  .standings-table td.col-penal { color: #e05252; }
 
-  .standings-table tr.row-leader td {
-    background: color-mix(in srgb, var(--color-liga-primera) 6%, transparent);
+  .standings-table td.fx-pos { color: var(--color-conference); font-weight: 700; }
+  .standings-table td.fx-neg { color: #e05252; font-weight: 700; }
+
+  .standings-table tr.row-leader {
+    background: var(--color-conference-tint);
+  }
+
+  .standings-table tr.row-leader td.col-pos {
+    color: var(--color-conference);
+    font-weight: 700;
   }
 
   .inline-club {
@@ -737,78 +964,79 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   }
 
   .inline-club.club-accent {
-    border-left: 2px solid var(--club-accent, var(--color-bg-elevated));
-    padding-left: 0.35rem;
+    border-left: 2px solid var(--club-accent, var(--color-text-muted));
+    padding-left: 0.3rem;
   }
 
   .club-name-text {
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 130px;
+    max-width: 110px;
     display: inline-block;
     vertical-align: middle;
   }
 
   .round-score-chips {
     display: inline-flex;
-    gap: 0.2rem;
-    margin-left: 0.35rem;
+    gap: 2px;
+    margin-left: 0.25rem;
   }
 
   .score-chip {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.4rem;
-    height: 1.4rem;
-    border-radius: 4px;
-    font-size: 0.7rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 2px;
+    font-size: 0.65rem;
     font-weight: 600;
     font-family: var(--font-display);
     cursor: default;
   }
 
-  .chip-win    { background: color-mix(in srgb, #5cb85c 20%, transparent); color: #5cb85c; }
-  .chip-draw   { background: color-mix(in srgb, #f0a500 20%, transparent); color: #f0a500; }
-  .chip-loss   { background: color-mix(in srgb, #c0392b 20%, transparent); color: #c0392b; }
+  .chip-win    { background: var(--color-conference); color: #000; }
+  .chip-draw   { background: #c9a800; color: #000; }
+  .chip-loss   { background: #e05252; color: #000; }
   .chip-pending { background: var(--color-bg-elevated); color: var(--color-text-muted); }
 
-  /* Club flag icon */
+  /* ── Club flag ── */
   .club-flag-icon {
     width: 1rem;
     height: 0.75rem;
-    border-radius: 2px;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+    border-radius: 1px;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
     flex-shrink: 0;
   }
 
-  /* Preliminary ties */
+  /* ── Preliminary ties ── */
   .ties-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 0.65rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 2px;
+    background: var(--color-bg-elevated);
   }
 
   .tie-card {
-    background: var(--color-bg-primary);
-    border: 1px solid var(--color-bg-elevated);
-    border-radius: 10px;
-    padding: 0.75rem;
+    background: var(--color-bg-secondary);
+    padding: 0.7rem 0.8rem;
+    border-radius: 0;
   }
 
   .tie-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 0.55rem;
+    margin-bottom: 0.45rem;
   }
 
   .tie-id {
-    font-size: 0.72rem;
+    font-size: 0.65rem;
+    font-family: var(--font-display);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
     color: var(--color-text-muted);
   }
 
@@ -821,8 +1049,9 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
 
   .tie-score {
     font-family: var(--font-display);
-    font-size: 0.9rem;
-    color: var(--color-liga-primera-dim);
+    font-size: 0.88rem;
+    color: var(--color-text-primary);
+    letter-spacing: 0.02em;
   }
 
   .tie-winner {
@@ -837,12 +1066,12 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   }
 
   .tie-club {
-    padding: 0.4rem 0.5rem;
-    border: 1px solid var(--color-bg-elevated);
-    border-radius: 7px;
-    margin-bottom: 0.4rem;
-    background: var(--color-bg-secondary);
-    border-left: 3px solid var(--club-accent, var(--color-bg-elevated));
+    padding: 0.35rem 0.45rem;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 2px;
+    background: var(--color-bg-primary);
+    border-left: 3px solid var(--club-accent, var(--color-text-muted));
   }
 
   .tie-club:last-child {
@@ -865,23 +1094,27 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   }
 
   .tie-club.winner {
-    border-left-color: var(--color-liga-primera);
-    background: color-mix(in srgb, var(--color-liga-primera) 8%, var(--color-bg-secondary));
+    border-left-color: var(--color-conference);
+    background: var(--color-conference-tint);
   }
 
   /* Audit collapsible */
   .audit-block {
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-bg-elevated);
-    border-radius: 10px;
+    border-radius: 0;
     overflow: hidden;
+    border-left: 2px solid var(--color-bg-elevated);
   }
 
   .audit-block summary {
-    padding: 0.85rem 1.25rem;
+    padding: 0.7rem 1rem;
     cursor: pointer;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
     color: var(--color-text-muted);
     list-style: none;
     display: flex;
@@ -893,9 +1126,9 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   .audit-block summary::-webkit-details-marker { display: none; }
 
   .audit-block summary::before {
-    content: '▶';
-    font-size: 0.6rem;
-    transition: transform 0.15s;
+    content: '▸';
+    font-size: 0.75rem;
+    transition: transform 0.12s;
     color: var(--color-text-muted);
   }
 
@@ -903,9 +1136,12 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     transform: rotate(90deg);
   }
 
+  .audit-block[open] {
+    border-left-color: var(--color-conference);
+  }
+
   .audit-block summary:hover {
     color: var(--color-text-secondary);
-    background: var(--color-bg-elevated);
   }
 
   .audit-body {
@@ -953,13 +1189,258 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     color: var(--color-text-muted);
   }
 
-  @media (max-width: 640px) {
-    .groups-grid {
-      grid-template-columns: 1fr;
-    }
+  /* ── Fecha 1 detail ── */
+  .f1-groups {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-bg-elevated);
+  }
 
-    .club-name-text {
-      max-width: 90px;
-    }
+  @media (max-width: 900px) {
+    .f1-groups { grid-template-columns: 1fr; }
+  }
+
+  .f1-group {
+    background: var(--color-bg-secondary);
+    padding: 0.9rem;
+  }
+
+  .f1-group-title {
+    margin: 0 0 0.6rem;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-conference);
+    font-family: var(--font-display);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .f1-group-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-bg-elevated);
+  }
+
+  .f1-club-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .f1-club {
+    border-left: 2px solid var(--color-bg-elevated);
+    padding-left: 0.6rem;
+  }
+
+  .f1-club-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.3rem;
+  }
+
+  .f1-club-header strong {
+    font-size: 0.82rem;
+  }
+
+  .f1-club-total {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  .f1-club-total.fx-pos { color: var(--color-conference); }
+  .f1-club-total.fx-neg { color: #e05252; }
+
+  .f1-matches {
+    display: grid;
+    gap: 2px;
+  }
+
+  .f1-match {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.45rem;
+    background: var(--color-bg-primary);
+    border-radius: 2px;
+  }
+
+  .f1-match-score {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 700;
+    min-width: 2rem;
+  }
+
+  .f1-match-cond {
+    font-family: var(--font-display);
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    background: var(--color-bg-elevated);
+    padding: 0.1rem 0.3rem;
+    border-radius: 2px;
+    min-width: 1.2rem;
+    text-align: center;
+  }
+
+  .f1-match-vs {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .f1-match-comp {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .f1-match-fx {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-width: 2rem;
+    text-align: right;
+  }
+
+  .f1-match-fx.fx-pos { color: var(--color-conference); }
+  .f1-match-fx.fx-neg { color: #e05252; }
+
+  .f1-match-scheduled {
+    opacity: 0.6;
+    border-left: 2px dashed var(--color-bg-elevated);
+    background: transparent;
+  }
+
+  .f1-match-date {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    min-width: 2rem;
+    color: var(--color-text-muted);
+  }
+
+  .f1-match-pending {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    font-family: var(--font-display);
+    margin-left: auto;
+  }
+
+  .f1-cards {
+    color: #c9a800;
+    font-weight: 600;
+  }
+
+  .f1-cards-red {
+    color: #e05252;
+  }
+
+  /* ── Standings legend ── */
+  .standings-legend {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+    padding-top: 0.35rem;
+    flex-wrap: wrap;
+  }
+
+  .standings-legend span {
+    font-size: 0.58rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+    cursor: help;
+    white-space: nowrap;
+  }
+
+  /* ── Match sources per club ── */
+  .match-sources {
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-bg-elevated);
+    display: grid;
+    gap: 0.3rem;
+  }
+
+  .ms-club-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .ms-club-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--color-text-secondary);
+    font-size: 0.72rem;
+    width: 8rem;
+  }
+
+  .ms-matches {
+    display: flex;
+    gap: 0.3rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ms-match {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    padding: 0.15rem 0.4rem;
+    border-left: 2px solid var(--color-conference);
+    background: var(--color-conference-tint);
+  }
+
+  .ms-match small {
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .ms-not-counted {
+    opacity: 0.5;
+    border-left-color: var(--color-text-muted);
+    background: transparent;
+  }
+
+  .ms-pending {
+    font-size: 0.68rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  @media (max-width: 640px) {
+    .groups-grid { grid-template-columns: 1fr; }
+    .club-name-text { max-width: 90px; }
+    .block-groups { padding-left: 1rem; padding-right: 1rem; }
+    .hero-inner { flex-direction: column; }
+    .hero-stat-bar { border-left: none; border-top: 1px solid rgba(29, 185, 84, 0.15); margin-left: 0; }
+    .hero-stat { padding: 0.8rem 1rem; }
+    .hero-content { padding: 2rem 0 1.5rem; }
+    .ms-club-name { width: 5.5rem; font-size: 0.65rem; }
   }
 </style>

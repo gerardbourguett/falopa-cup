@@ -112,10 +112,13 @@ const conferenceOfficialMatchSourceSchema = z.object({
     sourceDate: z.coerce.date(),
     homeClub: z.string(),
     awayClub: z.string(),
-    goalsFor: z.number(),
-    goalsAgainst: z.number(),
+    goalsFor: z.number().nullable().optional(),
+    goalsAgainst: z.number().nullable().optional(),
+    yellowCards: z.number().int().nonnegative().nullable().optional(),
+    redCards: z.number().int().nonnegative().nullable().optional(),
     isHome: z.boolean(),
     counted: z.boolean(),
+    status: z.enum(['played', 'scheduled', 'tbd']).optional(),
 });
 
 const conferenceGroupsSchema = z.object({
