@@ -134,6 +134,17 @@ for (const rw of roundWindows) {
   roundScoreMap.set(rw.roundId, m);
 }
 
+// Match sources lookup: roundId -> clubId -> match source entries
+const matchSourceMap = new Map<string, Map<string, any[]>>();
+for (const rw of roundWindows) {
+  const m = new Map<string, any[]>();
+  for (const ms of (rw.windowMatchSources || [])) {
+    if (!m.has(ms.clubId)) m.set(ms.clubId, []);
+    m.get(ms.clubId)!.push(ms);
+  }
+  matchSourceMap.set(rw.roundId, m);
+}
+
 // Audit data
 const windowCutRows = (windowCutDoc?.entries || []).map((entry: any) => ({
   ...entry,
@@ -319,6 +330,33 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
                   })}
                 </tbody>
               </table>
+              {roundWindows.length > 0 && (
+                <div class="match-sources">
+                  {standings.map((row: any) => {
+                    const allMatches = roundWindows.flatMap((rw: any) =>
+                      (matchSourceMap.get(rw.roundId)?.get(row.clubId) || []).map((ms: any) => ({ ...ms, roundLabel: rw.roundId.replace('GS-', '') }))
+                    );
+                    return (
+                      <div class="ms-club-row">
+                        <span class="ms-club-name">
+                          <span class:list={['club-flag-icon', flagClass(row.country)]} aria-hidden="true"></span>
+                          {row.name}
+                        </span>
+                        <div class="ms-matches">
+                          {allMatches.length > 0 ? allMatches.map((ms: any) => (
+                            <span class:list={['ms-match', ms.counted ? 'ms-counted' : 'ms-not-counted']}>
+                              {ms.goalsFor}–{ms.goalsAgainst}
+                              <small>{ms.isHome ? 'L' : 'V'} · {ms.roundLabel}</small>
+                            </span>
+                          )) : (
+                            <span class="ms-pending">sin partidos cargados</span>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </article>
           );
         })}
@@ -680,6 +718,14 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     background: transparent;
     border: none;
     padding: 0;
+    /* Break out of container on wide screens */
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    margin-left: -50vw;
+    padding-left: max(2rem, calc((100vw - 1600px) / 2));
+    padding-right: max(2rem, calc((100vw - 1600px) / 2));
+    box-sizing: border-box;
   }
 
   .block h2 {
@@ -755,18 +801,6 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     .groups-grid { grid-template-columns: repeat(4, 1fr); }
   }
 
-  @media (max-width: 640px) {
-    .groups-grid { grid-template-columns: 1fr; }
-
-    .hero-inner { flex-direction: column; }
-    .hero-stat-bar {
-      border-left: none;
-      border-top: 1px solid rgba(29, 185, 84, 0.15);
-      margin-left: 0;
-    }
-    .hero-stat { padding: 0.8rem 1rem; }
-    .hero-content { padding: 2rem 0 1.5rem; }
-  }
 
   .group-card {
     background: var(--color-bg-secondary);
@@ -1112,13 +1146,81 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     color: var(--color-text-muted);
   }
 
-  @media (max-width: 640px) {
-    .groups-grid {
-      grid-template-columns: 1fr;
-    }
+  /* ── Match sources per club ── */
+  .match-sources {
+    margin-top: 0.6rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-bg-elevated);
+    display: grid;
+    gap: 0.3rem;
+  }
 
-    .club-name-text {
-      max-width: 90px;
-    }
+  .ms-club-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .ms-club-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: var(--color-text-secondary);
+    font-size: 0.72rem;
+    width: 8rem;
+  }
+
+  .ms-matches {
+    display: flex;
+    gap: 0.3rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .ms-match {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: var(--font-display);
+    font-size: 0.72rem;
+    padding: 0.15rem 0.4rem;
+    border-left: 2px solid var(--color-conference);
+    background: var(--color-conference-tint);
+  }
+
+  .ms-match small {
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+  }
+
+  .ms-not-counted {
+    opacity: 0.5;
+    border-left-color: var(--color-text-muted);
+    background: transparent;
+  }
+
+  .ms-pending {
+    font-size: 0.68rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  @media (max-width: 640px) {
+    .groups-grid { grid-template-columns: 1fr; }
+    .club-name-text { max-width: 90px; }
+    .block-groups { padding-left: 1rem; padding-right: 1rem; }
+    .hero-inner { flex-direction: column; }
+    .hero-stat-bar { border-left: none; border-top: 1px solid rgba(29, 185, 84, 0.15); margin-left: 0; }
+    .hero-stat { padding: 0.8rem 1rem; }
+    .hero-content { padding: 2rem 0 1.5rem; }
+    .ms-club-name { width: 5.5rem; font-size: 0.65rem; }
   }
 </style>

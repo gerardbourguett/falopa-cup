@@ -193,8 +193,9 @@ function scoreBreakdownText(wc: any): string {
     <section class="block" id="puntuacion">
       <h2>Sistema de puntuación</h2>
       <p class="criterion-note">
-        Cada club usa <strong>un partido real</strong> en la ventana asignada (liga local o copa nacional).
-        Ese resultado se convierte en puntos fantasy según estas reglas:
+        Cada resultado real se convierte en puntos fantasy según estas reglas.
+        En <strong>fase previa</strong>, cada club usa <strong>1 partido</strong> de la ventana.
+        En <strong>fase de grupos</strong>, cada club usa <strong>2 partidos por fecha</strong> (ambos suman).
       </p>
       <div class="scoring-grid">
         <div class="score-group">
@@ -493,8 +494,11 @@ function scoreBreakdownText(wc: any): string {
       <p class="criterion-note">
         32 clubes (11 directos + 21 ganadores de previa) en <strong>8 grupos de 4</strong>.
         El puntaje es <strong>acumulación pura</strong>: cada fecha abre una ventana de ~14 días
-        en la que cada club juega <strong>2 partidos reales</strong> de su agenda local.
-        Ambos suman al total fantasy — sin enfrentamiento directo entre clubes del grupo.
+        en la que cada club toma <strong>2 partidos reales</strong> de su calendario local (liga o copa).
+        Cada partido se puntúa individualmente con el sistema fantasy y ambos scores suman al total
+        acumulado del club. No hay enfrentamiento directo entre clubes del grupo — cada equipo compite
+        contra sus propios resultados. Al final de las 3 fechas, el ranking del grupo se determina
+        por total fantasy acumulado (6 partidos por club).
       </p>
 
       <!-- FECHAS TEMPLATE -->
