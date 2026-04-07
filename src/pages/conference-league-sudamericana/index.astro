@@ -348,11 +348,12 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
                 {clubIds.map((id: string) => {
                   const club = clubMeta(id);
                   const matches = matchSourceMap.get('GS-F1')?.get(id) || [];
-                  const scores = matches.map((ms: any) => {
+                  const allMs = matches.map((ms: any) => {
                     const fx = (roundWindows[0]?.fantasyScores || []).find((fs: any) => fs.sourceMatchId === ms.id);
                     return { ...ms, fx };
                   });
-                  const clubTotal = scores.reduce((sum: number, s: any) => sum + (s.fx?.total || 0), 0);
+                  const clubTotal = allMs.reduce((sum: number, s: any) => sum + (s.fx?.total || 0), 0);
+                  const isPlayed = (ms: any) => ms.status === 'played' || (ms.goalsFor != null && ms.goalsAgainst != null);
                   return (
                     <div class="f1-club">
                       <div class="f1-club-header">
@@ -363,24 +364,35 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
                         <span class:list={['f1-club-total', clubTotal > 0 ? 'fx-pos' : clubTotal < 0 ? 'fx-neg' : '']}>{clubTotal} pts</span>
                       </div>
                       <div class="f1-matches">
-                        {scores.length > 0 ? scores.map((s: any) => (
-                          <div class="f1-match">
-                            <span class="f1-match-score">{s.goalsFor}–{s.goalsAgainst}</span>
-                            <span class="f1-match-cond">{s.isHome ? 'L' : 'V'}</span>
-                            <span class="f1-match-vs">vs {s.isHome ? s.awayClub : s.homeClub}</span>
-                            <span class="f1-match-comp">{s.sourceCompetition} · {new Date(s.sourceDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}</span>
-                            {s.fx && (
-                              <span class:list={['f1-match-fx', s.fx.total >= 3 ? 'fx-pos' : s.fx.total < 0 ? 'fx-neg' : '']}>
-                                {s.fx.total >= 0 ? '+' : ''}{s.fx.total}
-                              </span>
+                        {allMs.map((s: any) => (
+                          <div class:list={['f1-match', !isPlayed(s) && 'f1-match-scheduled']}>
+                            {isPlayed(s) ? (
+                              <>
+                                <span class="f1-match-score">{s.goalsFor}–{s.goalsAgainst}</span>
+                                <span class="f1-match-cond">{s.isHome ? 'L' : 'V'}</span>
+                                <span class="f1-match-vs">vs {s.isHome ? s.awayClub : s.homeClub}</span>
+                                <span class="f1-match-comp">
+                                  {s.sourceCompetition} · {new Date(s.sourceDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}
+                                  {s.yellowCards != null && s.yellowCards > 0 && <span class="f1-cards"> · TA:{s.yellowCards}</span>}
+                                  {s.redCards != null && s.redCards > 0 && <span class="f1-cards f1-cards-red"> · TR:{s.redCards}</span>}
+                                </span>
+                                {s.fx && (
+                                  <span class:list={['f1-match-fx', s.fx.total >= 3 ? 'fx-pos' : s.fx.total < 0 ? 'fx-neg' : '']}>
+                                    {s.fx.total >= 0 ? '+' : ''}{s.fx.total}
+                                  </span>
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                <span class="f1-match-date">{new Date(s.sourceDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}</span>
+                                <span class="f1-match-cond">{s.isHome ? 'L' : 'V'}</span>
+                                <span class="f1-match-vs">vs {s.isHome ? s.awayClub : s.homeClub}</span>
+                                <span class="f1-match-comp">{s.sourceCompetition}</span>
+                                <span class="f1-match-pending">{s.status === 'tbd' ? 'TBD' : 'por jugar'}</span>
+                              </>
                             )}
                           </div>
-                        )) : (
-                          <div class="f1-match f1-match-empty">sin partidos registrados aún</div>
-                        )}
-                        {scores.length === 1 && (
-                          <div class="f1-match f1-match-empty">2do partido pendiente</div>
-                        )}
+                        ))}
                       </div>
                     </div>
                   );
@@ -1306,12 +1318,35 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   .f1-match-fx.fx-pos { color: var(--color-conference); }
   .f1-match-fx.fx-neg { color: #e05252; }
 
-  .f1-match-empty {
-    color: var(--color-text-muted);
-    font-style: italic;
-    font-size: 0.72rem;
+  .f1-match-scheduled {
+    opacity: 0.6;
     border-left: 2px dashed var(--color-bg-elevated);
     background: transparent;
+  }
+
+  .f1-match-date {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    min-width: 2rem;
+    color: var(--color-text-muted);
+  }
+
+  .f1-match-pending {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-text-muted);
+    font-family: var(--font-display);
+    margin-left: auto;
+  }
+
+  .f1-cards {
+    color: #c9a800;
+    font-weight: 600;
+  }
+
+  .f1-cards-red {
+    color: #e05252;
   }
 
   /* ── Standings legend ── */
