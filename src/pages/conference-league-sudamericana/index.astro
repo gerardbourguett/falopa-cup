@@ -522,18 +522,24 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
 </Layout>
 
 <style>
+  /* ── Hero ── */
   .page-hero {
-    padding: 3rem 0 2rem;
-    border-bottom: 1px solid var(--color-bg-elevated);
+    background: linear-gradient(135deg, var(--color-conference-dim) 0%, #0a0a0a 100%);
+    padding: 3.5rem 0 2.5rem;
+    border-bottom: 3px solid var(--color-conference);
   }
+
+  .page-hero h1 { color: #fff; }
+  .page-hero p { color: rgba(255, 255, 255, 0.8); }
 
   .eyebrow {
     text-transform: uppercase;
     letter-spacing: 0.12em;
-    color: var(--color-text-muted);
+    color: var(--color-conference-bright);
     font-size: 0.8rem;
   }
 
+  /* ── Nav tabs ── */
   .page-nav-strip {
     display: flex;
     gap: 0.25rem;
@@ -552,11 +558,11 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     transition: color 0.15s, border-color 0.15s;
   }
 
-  .page-nav-tab:hover { color: var(--color-text-primary); }
+  .page-nav-tab:hover { color: var(--color-conference); }
 
   .page-nav-tab.active {
-    color: var(--color-text-primary);
-    border-bottom-color: var(--color-liga-primera);
+    color: var(--color-conference);
+    border-bottom-color: var(--color-conference);
   }
 
   .page-main {
@@ -566,41 +572,42 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     gap: 1.5rem;
   }
 
-  /* Summary */
+  /* ── Summary ── */
   .summary-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 0.75rem;
   }
 
   .summary-card {
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-bg-elevated);
+    border-top: 3px solid var(--color-conference);
     border-radius: 10px;
     padding: 1rem;
   }
 
   .summary-card h2 {
     margin: 0;
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    color: var(--color-text-muted);
-    font-weight: 500;
+    color: var(--color-conference);
+    font-weight: 600;
   }
 
   .metric {
     font-size: 2rem;
     margin: 0.25rem 0 0;
-    color: var(--color-liga-primera-dim);
+    color: var(--color-conference);
     font-family: var(--font-display);
   }
 
-  /* Blocks */
+  /* ── Blocks ── */
   .block {
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-bg-elevated);
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 1.25rem;
   }
 
@@ -616,19 +623,18 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     margin-bottom: 1rem;
   }
 
-  .section-header h2 {
-    margin: 0;
-  }
+  .section-header h2 { margin: 0; }
 
   .section-badge {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    color: var(--color-text-muted);
-    background: var(--color-bg-elevated);
+    color: var(--color-conference);
+    background: var(--color-conference-tint);
     border-radius: 999px;
-    padding: 0.2rem 0.6rem;
+    padding: 0.2rem 0.65rem;
     white-space: nowrap;
+    font-weight: 600;
   }
 
   .round-tabs {
@@ -647,31 +653,48 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   }
 
   .round-tab.active {
-    background: color-mix(in srgb, var(--color-liga-primera) 15%, transparent);
-    color: var(--color-liga-primera-dim);
+    background: var(--color-conference-tint);
+    color: var(--color-conference);
+    font-weight: 600;
   }
 
-  /* Groups grid */
+  /* ── Groups grid ── */
   .groups-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 1280px) {
+    .groups-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  @media (max-width: 768px) {
+    .groups-grid { grid-template-columns: 1fr; }
   }
 
   .group-card {
     background: var(--color-bg-primary);
     border: 1px solid var(--color-bg-elevated);
-    border-radius: 10px;
-    padding: 0.85rem;
+    border-top: 3px solid var(--color-conference);
+    border-radius: 12px;
+    padding: 1rem;
     overflow: hidden;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .group-card:hover {
+    box-shadow: 0 4px 16px rgba(29, 185, 84, 0.1);
+    transform: translateY(-1px);
   }
 
   .group-title {
-    margin: 0 0 0.6rem;
-    font-size: 0.9rem;
+    margin: 0 0 0.7rem;
+    font-size: 0.85rem;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--color-text-secondary);
+    letter-spacing: 0.08em;
+    color: var(--color-conference);
+    font-weight: 700;
   }
 
   .standings-table {
@@ -681,53 +704,45 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   }
 
   .standings-table th {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--color-text-muted);
+    letter-spacing: 0.06em;
+    color: var(--color-conference);
     text-align: center;
-    padding: 0.2rem 0.3rem;
-    border-bottom: 1px solid var(--color-bg-elevated);
+    padding: 0.3rem 0.25rem;
+    border-bottom: 2px solid var(--color-conference-tint);
+    background: var(--color-conference-tint);
   }
 
-  .standings-table th.col-club {
-    text-align: left;
-  }
+  .standings-table th.col-club { text-align: left; }
 
   .standings-table td {
-    padding: 0.35rem 0.3rem;
+    padding: 0.4rem 0.25rem;
     text-align: center;
-    border-bottom: 1px solid color-mix(in srgb, var(--color-bg-elevated) 50%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-bg-elevated) 60%, transparent);
   }
 
-  .standings-table tr:last-child td {
-    border-bottom: none;
-  }
-
-  .standings-table td.col-club {
-    text-align: left;
-  }
+  .standings-table tr:last-child td { border-bottom: none; }
+  .standings-table td.col-club { text-align: left; }
 
   .standings-table td.col-pos {
     color: var(--color-text-muted);
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     width: 1.4rem;
   }
 
-  .standings-table td.col-pts strong {
-    color: var(--color-liga-primera-dim);
-  }
+  .standings-table td.col-pts strong { color: var(--color-conference); }
 
   .standings-table td.col-fx {
     font-size: 0.78rem;
     color: var(--color-text-muted);
   }
 
-  .standings-table td.fx-pos { color: #5cb85c; }
+  .standings-table td.fx-pos { color: var(--color-conference); font-weight: 600; }
   .standings-table td.fx-neg { color: #c0392b; }
 
   .standings-table tr.row-leader td {
-    background: color-mix(in srgb, var(--color-liga-primera) 6%, transparent);
+    background: var(--color-conference-tint);
   }
 
   .inline-club {
@@ -737,16 +752,16 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   }
 
   .inline-club.club-accent {
-    border-left: 2px solid var(--club-accent, var(--color-bg-elevated));
+    border-left: 2px solid var(--club-accent, var(--color-conference));
     padding-left: 0.35rem;
   }
 
   .club-name-text {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 130px;
+    max-width: 120px;
     display: inline-block;
     vertical-align: middle;
   }
@@ -754,28 +769,28 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   .round-score-chips {
     display: inline-flex;
     gap: 0.2rem;
-    margin-left: 0.35rem;
+    margin-left: 0.3rem;
   }
 
   .score-chip {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 1.4rem;
-    height: 1.4rem;
+    width: 1.35rem;
+    height: 1.35rem;
     border-radius: 4px;
-    font-size: 0.7rem;
+    font-size: 0.68rem;
     font-weight: 600;
     font-family: var(--font-display);
     cursor: default;
   }
 
-  .chip-win    { background: color-mix(in srgb, #5cb85c 20%, transparent); color: #5cb85c; }
+  .chip-win    { background: var(--color-conference-tint-hover); color: var(--color-conference); }
   .chip-draw   { background: color-mix(in srgb, #f0a500 20%, transparent); color: #f0a500; }
-  .chip-loss   { background: color-mix(in srgb, #c0392b 20%, transparent); color: #c0392b; }
+  .chip-loss   { background: color-mix(in srgb, #c0392b 15%, transparent); color: #c0392b; }
   .chip-pending { background: var(--color-bg-elevated); color: var(--color-text-muted); }
 
-  /* Club flag icon */
+  /* ── Club flag ── */
   .club-flag-icon {
     width: 1rem;
     height: 0.75rem;
@@ -784,11 +799,11 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     flex-shrink: 0;
   }
 
-  /* Preliminary ties */
+  /* ── Preliminary ties ── */
   .ties-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 0.65rem;
+    gap: 0.75rem;
   }
 
   .tie-card {
@@ -796,6 +811,11 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     border: 1px solid var(--color-bg-elevated);
     border-radius: 10px;
     padding: 0.75rem;
+    transition: box-shadow 0.2s;
+  }
+
+  .tie-card:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
   .tie-header {
@@ -822,7 +842,7 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   .tie-score {
     font-family: var(--font-display);
     font-size: 0.9rem;
-    color: var(--color-liga-primera-dim);
+    color: var(--color-conference);
   }
 
   .tie-winner {
@@ -865,8 +885,8 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
   }
 
   .tie-club.winner {
-    border-left-color: var(--color-liga-primera);
-    background: color-mix(in srgb, var(--color-liga-primera) 8%, var(--color-bg-secondary));
+    border-left-color: var(--color-conference);
+    background: color-mix(in srgb, var(--color-conference) 8%, var(--color-bg-secondary));
   }
 
   /* Audit collapsible */

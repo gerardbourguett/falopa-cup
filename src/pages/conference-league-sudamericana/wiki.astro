@@ -576,21 +576,26 @@ function scoreBreakdownText(wc: any): string {
 
 <style>
   .page-hero {
-    background: var(--color-bg-elevated);
-    padding: 2.5rem 0 2rem;
-    border-bottom: 1px solid var(--color-bg-tertiary);
+    background: linear-gradient(135deg, var(--color-conference-dim) 0%, #0a0a0a 100%);
+    padding: 3rem 0 2.5rem;
+    border-bottom: 3px solid var(--color-conference);
   }
 
   .eyebrow {
     font-size: 0.78rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--color-conference-bright);
     margin: 0 0 0.4rem;
   }
 
   .page-hero h1 {
     margin: 0 0 0.5rem;
+    color: #fff;
+  }
+
+  .page-hero p {
+    color: rgba(255, 255, 255, 0.8);
   }
 
   .page-hero p {
@@ -622,7 +627,7 @@ function scoreBreakdownText(wc: any): string {
 
   .page-nav-tab.active {
     color: var(--color-text-primary);
-    border-bottom-color: var(--color-liga-primera);
+    border-bottom-color: var(--color-conference);
   }
 
   .page-main {
@@ -911,7 +916,7 @@ function scoreBreakdownText(wc: any): string {
 
   .tie-club-row.winner {
     background: rgba(212, 168, 83, 0.06);
-    border-left: 3px solid var(--color-liga-primera, #d4a853);
+    border-left: 3px solid var(--color-conference);
   }
 
   .tie-club-identity {
@@ -1005,7 +1010,7 @@ function scoreBreakdownText(wc: any): string {
   }
 
   .tie-score-chip[data-winner="true"] {
-    color: var(--color-liga-primera, #d4a853);
+    color: var(--color-conference);
   }
 
   .tie-article-footer {
@@ -1069,7 +1074,7 @@ function scoreBreakdownText(wc: any): string {
   .fecha-label {
     font-family: var(--font-display);
     font-size: 1.4rem;
-    color: var(--color-liga-primera-dim);
+    color: var(--color-conference);
     line-height: 1;
     min-width: 2.2rem;
     padding-top: 0.1rem;
@@ -1162,24 +1167,40 @@ function scoreBreakdownText(wc: any): string {
   /* Groups draw */
   .groups-draw-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0.65rem;
-    margin-bottom: 0.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  @media (min-width: 1280px) {
+    .groups-draw-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .groups-draw-grid { grid-template-columns: 1fr; }
   }
 
   .group-draw-card {
     background: var(--color-bg-primary);
     border: 1px solid var(--color-bg-elevated);
-    border-radius: 10px;
-    padding: 0.85rem;
+    border-top: 3px solid var(--color-conference);
+    border-radius: 12px;
+    padding: 0.9rem;
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+
+  .group-draw-card:hover {
+    box-shadow: 0 4px 16px rgba(29, 185, 84, 0.1);
+    transform: translateY(-1px);
   }
 
   .group-draw-title {
-    margin: 0 0 0.6rem;
-    font-size: 0.78rem;
+    margin: 0 0 0.65rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: var(--color-text-muted);
+    color: var(--color-conference);
+    font-weight: 700;
   }
 
   .group-draw-list {
@@ -1194,12 +1215,12 @@ function scoreBreakdownText(wc: any): string {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.85rem;
-    padding: 0.3rem 0.45rem;
-    border-radius: 6px;
+    font-size: 0.84rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 8px;
     border: 1px solid var(--color-bg-elevated);
     background: var(--color-bg-secondary);
-    border-left: 3px solid var(--club-accent, var(--color-bg-elevated));
+    border-left: 3px solid var(--club-accent, var(--color-conference));
   }
 
   .group-draw-club.provisional {

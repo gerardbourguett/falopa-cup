@@ -23,6 +23,13 @@
   --color-liga-ascenso: #e71d36;
   --color-liga-ascenso-dim: #ae1529;
 
+  /* ── Conference League ── */
+  --color-conference: #1DB954;
+  --color-conference-bright: #00FF87;
+  --color-conference-dim: #0f8a3a;
+  --color-conference-tint: rgba(29, 185, 84, 0.07);
+  --color-conference-tint-hover: rgba(29, 185, 84, 0.14);
+
   /* ── Holder Highlight ── */
   --color-holder: #c5d86d;
   --color-holder-bg: rgba(197, 216, 109, 0.2);
