@@ -8,7 +8,7 @@
     },
     {
       "group": "B",
-      "clubIds": ["uy-cerro-largo", "bo-gv-san-jose", "ve-anzoategui", "ec-aucas"]
+      "clubIds": ["uy-cerro-largo", "bo-gv-san-jose", "ve-anzoategui", "py-general-caballero"]
     },
     {
       "group": "C",
@@ -24,7 +24,7 @@
     },
     {
       "group": "F",
-      "clubIds": ["br-bahia", "cl-huachipato", "uy-danubio", "py-sportivo-trinidense"]
+      "clubIds": ["br-bahia", "cl-huachipato", "ec-aucas", "py-sportivo-trinidense"]
     },
     {
       "group": "G",
