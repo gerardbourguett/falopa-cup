@@ -323,79 +323,114 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
                 <span title="Arco en cero (+1) + Margen progresivo (+N−1)">+B: AEC + Margen</span>
                 <span title="Derrota amplia (−1) + Amarillas (−0.25) + Rojas (−1)">−P: DA + Tarj</span>
               </div>
-              {roundWindows.length > 0 && (
-                <div class="match-sources">
-                  {standings.map((row: any) => {
-                    const allMatches = roundWindows.flatMap((rw: any) =>
-                      (matchSourceMap.get(rw.roundId)?.get(row.clubId) || []).map((ms: any) => ({ ...ms, roundLabel: rw.roundId.replace('GS-', '') }))
-                    );
-                    return (
-                      <div class="ms-club-row">
-                        <span class="ms-club-name">
-                          <span class:list={['club-flag-icon', flagClass(row.country)]} aria-hidden="true"></span>
-                          {row.name}
-                        </span>
-                        <div class="ms-matches">
-                          {allMatches.length > 0 ? allMatches.map((ms: any) => (
-                            <span class:list={['ms-match', ms.counted ? 'ms-counted' : 'ms-not-counted']}>
-                              {ms.goalsFor}–{ms.goalsAgainst}
-                              <small>{ms.isHome ? 'L' : 'V'} · {ms.roundLabel}</small>
-                            </span>
-                          )) : (
-                            <span class="ms-pending">sin partidos cargados</span>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
             </article>
           );
         })}
       </div>
     </section>
 
-    <!-- ===== FASE PREVIA — RESULTADOS ===== -->
+    <!-- ===== FECHA 1 — DETALLE ===== -->
     <section class="block">
       <div class="section-header">
-        <h2>Fase Previa — Resultados</h2>
-        <span class="section-badge">{tieCards.filter((t: any) => t.hasScore).length}/{tieCards.length} resueltas</span>
+        <h2>Fecha 1 — Partidos</h2>
+        <span class="section-badge">
+          {roundWindows[0]?.windowMatchSources?.length || 0} registrados · 7–20 abril
+        </span>
       </div>
-      <div class="ties-grid">
-        {tieCards.map((tie: any) => (
-          <article class="tie-card">
-            <header class="tie-header">
-              <span class="tie-id">{tie.id}</span>
-              <div class="tie-result">
-                {tie.hasScore ? (
-                  <>
-                    <span class="tie-score">{tie.scoreLabel}</span>
-                    <small class="tie-winner">{tie.winnerName ? `→ ${tie.winnerName}` : ''}</small>
-                  </>
-                ) : <span class="tie-pending">pendiente</span>}
-              </div>
-            </header>
 
-            <div class:list={['tie-club', 'club-accent', tie.winnerClubId === tie.clubAId && 'winner']} style={`--club-accent:${tie.clubA.accent}`}>
-              <div class="tie-club-main">
-                <span class:list={['club-flag-icon', flagClass(tie.clubA.country)]} aria-hidden="true"></span>
-                <span>{tie.clubA.name}</span>
+      <div class="f1-groups">
+        {groups.map((group: any) => {
+          const clubIds = group.clubIds as string[];
+          return (
+            <div class="f1-group">
+              <h3 class="f1-group-title">Grupo {group.group}</h3>
+              <div class="f1-club-list">
+                {clubIds.map((id: string) => {
+                  const club = clubMeta(id);
+                  const matches = matchSourceMap.get('GS-F1')?.get(id) || [];
+                  const scores = matches.map((ms: any) => {
+                    const fx = (roundWindows[0]?.fantasyScores || []).find((fs: any) => fs.sourceMatchId === ms.id);
+                    return { ...ms, fx };
+                  });
+                  const clubTotal = scores.reduce((sum: number, s: any) => sum + (s.fx?.total || 0), 0);
+                  return (
+                    <div class="f1-club">
+                      <div class="f1-club-header">
+                        <span class="inline-club club-accent" style={`--club-accent:${club.accent}`}>
+                          <span class:list={['club-flag-icon', flagClass(club.country)]} aria-hidden="true"></span>
+                          <strong>{club.name}</strong>
+                        </span>
+                        <span class:list={['f1-club-total', clubTotal > 0 ? 'fx-pos' : clubTotal < 0 ? 'fx-neg' : '']}>{clubTotal} pts</span>
+                      </div>
+                      <div class="f1-matches">
+                        {scores.length > 0 ? scores.map((s: any) => (
+                          <div class="f1-match">
+                            <span class="f1-match-score">{s.goalsFor}–{s.goalsAgainst}</span>
+                            <span class="f1-match-cond">{s.isHome ? 'L' : 'V'}</span>
+                            <span class="f1-match-vs">vs {s.isHome ? s.awayClub : s.homeClub}</span>
+                            <span class="f1-match-comp">{s.sourceCompetition} · {new Date(s.sourceDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}</span>
+                            {s.fx && (
+                              <span class:list={['f1-match-fx', s.fx.total >= 3 ? 'fx-pos' : s.fx.total < 0 ? 'fx-neg' : '']}>
+                                {s.fx.total >= 0 ? '+' : ''}{s.fx.total}
+                              </span>
+                            )}
+                          </div>
+                        )) : (
+                          <div class="f1-match f1-match-empty">sin partidos registrados aún</div>
+                        )}
+                        {scores.length === 1 && (
+                          <div class="f1-match f1-match-empty">2do partido pendiente</div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <small>{tie.potA} · {tie.clubA.coefficientLabel}</small>
             </div>
-
-            <div class:list={['tie-club', 'club-accent', tie.winnerClubId === tie.clubBId && 'winner']} style={`--club-accent:${tie.clubB.accent}`}>
-              <div class="tie-club-main">
-                <span class:list={['club-flag-icon', flagClass(tie.clubB.country)]} aria-hidden="true"></span>
-                <span>{tie.clubB.name}</span>
-              </div>
-              <small>{tie.potB} · {tie.clubB.coefficientLabel}</small>
-            </div>
-          </article>
-        ))}
+          );
+        })}
       </div>
     </section>
+
+    <!-- ===== FASE PREVIA (colapsada) ===== -->
+    <details class="audit-block">
+      <summary>Fase Previa — Resultados ({tieCards.filter((t: any) => t.hasScore).length}/{tieCards.length} resueltas)</summary>
+      <div class="audit-body">
+        <div class="ties-grid">
+          {tieCards.map((tie: any) => (
+            <article class="tie-card">
+              <header class="tie-header">
+                <span class="tie-id">{tie.id}</span>
+                <div class="tie-result">
+                  {tie.hasScore ? (
+                    <>
+                      <span class="tie-score">{tie.scoreLabel}</span>
+                      <small class="tie-winner">{tie.winnerName ? `→ ${tie.winnerName}` : ''}</small>
+                    </>
+                  ) : <span class="tie-pending">pendiente</span>}
+                </div>
+              </header>
+
+              <div class:list={['tie-club', 'club-accent', tie.winnerClubId === tie.clubAId && 'winner']} style={`--club-accent:${tie.clubA.accent}`}>
+                <div class="tie-club-main">
+                  <span class:list={['club-flag-icon', flagClass(tie.clubA.country)]} aria-hidden="true"></span>
+                  <span>{tie.clubA.name}</span>
+                </div>
+                <small>{tie.potA} · {tie.clubA.coefficientLabel}</small>
+              </div>
+
+              <div class:list={['tie-club', 'club-accent', tie.winnerClubId === tie.clubBId && 'winner']} style={`--club-accent:${tie.clubB.accent}`}>
+                <div class="tie-club-main">
+                  <span class:list={['club-flag-icon', flagClass(tie.clubB.country)]} aria-hidden="true"></span>
+                  <span>{tie.clubB.name}</span>
+                </div>
+                <small>{tie.potB} · {tie.clubB.coefficientLabel}</small>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </details>
 
     <!-- ===== AUDITORÍA (colapsada) ===== -->
     <details class="audit-block">
@@ -1140,6 +1175,143 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--color-text-muted);
+  }
+
+  /* ── Fecha 1 detail ── */
+  .f1-groups {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-bg-elevated);
+  }
+
+  @media (max-width: 900px) {
+    .f1-groups { grid-template-columns: 1fr; }
+  }
+
+  .f1-group {
+    background: var(--color-bg-secondary);
+    padding: 0.9rem;
+  }
+
+  .f1-group-title {
+    margin: 0 0 0.6rem;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-conference);
+    font-family: var(--font-display);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .f1-group-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-bg-elevated);
+  }
+
+  .f1-club-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .f1-club {
+    border-left: 2px solid var(--color-bg-elevated);
+    padding-left: 0.6rem;
+  }
+
+  .f1-club-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.3rem;
+  }
+
+  .f1-club-header strong {
+    font-size: 0.82rem;
+  }
+
+  .f1-club-total {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  .f1-club-total.fx-pos { color: var(--color-conference); }
+  .f1-club-total.fx-neg { color: #e05252; }
+
+  .f1-matches {
+    display: grid;
+    gap: 2px;
+  }
+
+  .f1-match {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.45rem;
+    background: var(--color-bg-primary);
+    border-radius: 2px;
+  }
+
+  .f1-match-score {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 700;
+    min-width: 2rem;
+  }
+
+  .f1-match-cond {
+    font-family: var(--font-display);
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    background: var(--color-bg-elevated);
+    padding: 0.1rem 0.3rem;
+    border-radius: 2px;
+    min-width: 1.2rem;
+    text-align: center;
+  }
+
+  .f1-match-vs {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .f1-match-comp {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .f1-match-fx {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    font-weight: 700;
+    min-width: 2rem;
+    text-align: right;
+  }
+
+  .f1-match-fx.fx-pos { color: var(--color-conference); }
+  .f1-match-fx.fx-neg { color: #e05252; }
+
+  .f1-match-empty {
+    color: var(--color-text-muted);
+    font-style: italic;
+    font-size: 0.72rem;
+    border-left: 2px dashed var(--color-bg-elevated);
+    background: transparent;
   }
 
   /* ── Standings legend ── */
