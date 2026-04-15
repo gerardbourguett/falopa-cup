@@ -136,7 +136,7 @@
           "yellowCards": null,
           "redCards": null,
           "isHome": true,
-          "counted": true,
+          "counted": false,
           "status": "played"
         },
         {
@@ -150,13 +150,13 @@
           "sourceDate": "2026-04-11",
           "homeClub": "Independiente Medellín",
           "awayClub": "Atlético Nacional",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 3,
+          "goalsAgainst": 2,
+          "yellowCards": 2,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-pe-alianza-lima-2026-04-14",
@@ -169,13 +169,13 @@
           "sourceDate": "2026-04-14",
           "homeClub": "ADT",
           "awayClub": "Alianza Lima",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "yellowCards": 2,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-pe-alianza-lima-2026-04-18",
@@ -226,13 +226,13 @@
           "sourceDate": "2026-04-12",
           "homeClub": "The Strongest",
           "awayClub": "San Antonio Bulo Bulo",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 3,
+          "goalsAgainst": 2,
+          "yellowCards": 2,
+          "redCards": 0,
           "isHome": true,
           "counted": false,
-          "status": "scheduled"
+          "status": "played"
         },
         {
           "id": "GS-F1-cl-universidad-de-chile-2026-04-12",
@@ -245,13 +245,13 @@
           "sourceDate": "2026-04-12",
           "homeClub": "Ñublense",
           "awayClub": "U. de Chile",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "yellowCards": 3,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-cl-universidad-de-chile-2026-04-18",
@@ -283,13 +283,13 @@
           "sourceDate": "2026-04-08",
           "homeClub": "U. Católica",
           "awayClub": "Emelec",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "yellowCards": 1,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ec-emelec-2026-04-12",
@@ -302,13 +302,13 @@
           "sourceDate": "2026-04-12",
           "homeClub": "Aucas",
           "awayClub": "Emelec",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 2,
+          "yellowCards": 0,
+          "redCards": 1,
           "isHome": false,
           "counted": false,
-          "status": "scheduled"
+          "status": "played"
         },
         {
           "id": "GS-F1-py-guarani-2026-04-10",
@@ -321,13 +321,13 @@
           "sourceDate": "2026-04-10",
           "homeClub": "CS San Lorenzo",
           "awayClub": "Guaraní",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "yellowCards": 2,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-py-guarani-2026-04-18",
@@ -359,13 +359,13 @@
           "sourceDate": "2026-04-11",
           "homeClub": "Ind. Rivadavia",
           "awayClub": "Argentinos Juniors",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 1,
+          "goalsAgainst": 3,
+          "yellowCards": 4,
+          "redCards": 1,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ar-argentinos-juniors-2026-04-18",
@@ -397,13 +397,13 @@
           "sourceDate": "2026-04-11",
           "homeClub": "Deportivo Táchira",
           "awayClub": "La Guaira",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 2,
+          "goalsAgainst": 3,
+          "yellowCards": 4,
+          "redCards": 1,
           "isHome": true,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ve-deportivo-tachira-2026-04-18",
@@ -454,13 +454,13 @@
           "sourceDate": "2026-04-10",
           "homeClub": "Dep. Pereira",
           "awayClub": "Once Caldas",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "yellowCards": 1,
+          "redCards": 1,
           "isHome": false,
           "counted": false,
-          "status": "scheduled"
+          "status": "played"
         },
         {
           "id": "GS-F1-ec-universidad-catolica-2026-04-08",
@@ -473,13 +473,13 @@
           "sourceDate": "2026-04-08",
           "homeClub": "U. Católica",
           "awayClub": "Emelec",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "yellowCards": 1,
+          "redCards": 0,
           "isHome": true,
           "counted": false,
-          "status": "scheduled"
+          "status": "played"
         },
         {
           "id": "GS-F1-ec-universidad-catolica-2026-04-12",
@@ -492,13 +492,13 @@
           "sourceDate": "2026-04-12",
           "homeClub": "Técnico Universitario",
           "awayClub": "U. Católica",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 2,
+          "goalsAgainst": 0,
+          "yellowCards": 1,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-br-bahia-2026-04-11",
@@ -568,13 +568,13 @@
           "sourceDate": "2026-04-12",
           "homeClub": "Central Español",
           "awayClub": "Danubio",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "yellowCards": 3,
+          "redCards": 0,
           "isHome": false,
           "counted": false,
-          "status": "scheduled"
+          "status": "played"
         },
         {
           "id": "GS-F1-ec-delfin-2026-04-10",
@@ -587,13 +587,13 @@
           "sourceDate": "2026-04-10",
           "homeClub": "Delfín",
           "awayClub": "LDU Quito",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "yellowCards": 5,
+          "redCards": 1,
           "isHome": true,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ec-delfin-2026-04-19",
@@ -625,13 +625,13 @@
           "sourceDate": "2026-04-07",
           "homeClub": "Águilas Doradas",
           "awayClub": "Atlético Bucaramanga",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "yellowCards": 2,
+          "redCards": 0,
           "isHome": false,
           "counted": false,
-          "status": "scheduled"
+          "status": "played"
         },
         {
           "id": "GS-F1-co-atletico-bucaramanga-2026-04-12",
@@ -644,32 +644,32 @@
           "sourceDate": "2026-04-12",
           "homeClub": "Atlético Bucaramanga",
           "awayClub": "Boyacá Chicó",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 5,
+          "goalsAgainst": 0,
+          "yellowCards": 3,
+          "redCards": 0,
           "isHome": true,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
-          "id": "GS-F1-bo-nacional-potosi-2026-04-12",
+          "id": "GS-F1-bo-nacional-potosi-2026-04-11",
           "clubId": "bo-nacional-potosi",
           "roundId": "GS-F1",
           "windowStart": "2026-04-07",
           "windowEnd": "2026-04-20",
           "sourceCompetitionType": "local-league",
           "sourceCompetition": "Liga Profesional · F2",
-          "sourceDate": "2026-04-12",
-          "homeClub": "TBD",
+          "sourceDate": "2026-04-11",
+          "homeClub": "U de Vinto",
           "awayClub": "Nacional Potosí",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "yellowCards": 3,
+          "redCards": 0,
           "isHome": false,
           "counted": false,
-          "status": "tbd"
+          "status": "played"
         },
         {
           "id": "GS-F1-uy-racing-club-2026-04-04",
@@ -687,7 +687,7 @@
           "yellowCards": 4,
           "redCards": 0,
           "isHome": true,
-          "counted": true,
+          "counted": false,
           "status": "played"
         },
         {
@@ -701,13 +701,13 @@
           "sourceDate": "2026-04-12",
           "homeClub": "Montevideo Wanderers",
           "awayClub": "Racing Club",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "yellowCards": 0,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ve-metropolitanos-2026-04-11",
@@ -720,13 +720,13 @@
           "sourceDate": "2026-04-11",
           "homeClub": "Metropolitanos",
           "awayClub": "Zamora",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "yellowCards": 3,
+          "redCards": 0,
           "isHome": true,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ve-metropolitanos-2026-04-18",
@@ -758,13 +758,13 @@
           "sourceDate": "2026-04-12",
           "homeClub": "Ñublense",
           "awayClub": "U. de Chile",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "yellowCards": 4,
+          "redCards": 0,
           "isHome": true,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-cl-nublense-2026-04-19",
@@ -801,7 +801,7 @@
           "yellowCards": null,
           "redCards": null,
           "isHome": true,
-          "counted": true,
+          "counted": false,
           "status": "played"
         },
         {
@@ -815,13 +815,13 @@
           "sourceDate": "2026-04-10",
           "homeClub": "2 de Mayo",
           "awayClub": "Sportivo Ameliano",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "yellowCards": 2,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ec-aucas-2026-04-12",
@@ -834,13 +834,13 @@
           "sourceDate": "2026-04-12",
           "homeClub": "Aucas",
           "awayClub": "Emelec",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 2,
+          "goalsAgainst": 0,
+          "yellowCards": 5,
+          "redCards": 0,
           "isHome": true,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ec-aucas-2026-04-19",
@@ -891,13 +891,13 @@
           "sourceDate": "2026-04-10",
           "homeClub": "Cerro Largo",
           "awayClub": "Cerro",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "yellowCards": 2,
+          "redCards": 0,
           "isHome": true,
           "counted": false,
-          "status": "scheduled"
+          "status": "played"
         },
         {
           "id": "GS-F1-bo-san-antonio-bulo-bulo-2026-04-04",
@@ -929,13 +929,13 @@
           "sourceDate": "2026-04-12",
           "homeClub": "The Strongest",
           "awayClub": "San Antonio Bulo Bulo",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 2,
+          "goalsAgainst": 3,
+          "yellowCards": 3,
+          "redCards": 0,
           "isHome": false,
           "counted": false,
-          "status": "scheduled"
+          "status": "played"
         },
         {
           "id": "GS-F1-ve-zamora-2026-04-11",
@@ -948,13 +948,13 @@
           "sourceDate": "2026-04-11",
           "homeClub": "Metropolitanos",
           "awayClub": "Zamora",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "yellowCards": 4,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ve-zamora-2026-04-18",
@@ -1005,13 +1005,13 @@
           "sourceDate": "2026-04-12",
           "homeClub": "Oriente Petrolero",
           "awayClub": "GV San José",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "yellowCards": 4,
+          "redCards": 0,
           "isHome": false,
           "counted": false,
-          "status": "scheduled"
+          "status": "played"
         },
         {
           "id": "GS-F1-py-general-caballero-2026-04-11",
@@ -1024,13 +1024,13 @@
           "sourceDate": "2026-04-11",
           "homeClub": "Benjamín Aceval",
           "awayClub": "General Caballero JLM",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 0,
+          "yellowCards": 1,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-py-general-caballero-2026-04-25",
@@ -1062,13 +1062,13 @@
           "sourceDate": "2026-04-11",
           "homeClub": "Monagas",
           "awayClub": "Rayo Zuliano",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 3,
+          "yellowCards": 5,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ve-rayo-zuliano-2026-04-18",
@@ -1100,13 +1100,13 @@
           "sourceDate": "2026-04-14",
           "homeClub": "ADT",
           "awayClub": "Alianza Lima",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "yellowCards": 2,
+          "redCards": 0,
           "isHome": true,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-pe-adt-2026-04-18",
@@ -1138,13 +1138,13 @@
           "sourceDate": "2026-04-11",
           "homeClub": "Caracas",
           "awayClub": "Anzoátegui",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "yellowCards": 4,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ve-anzoategui-2026-04-18",
@@ -1176,13 +1176,13 @@
           "sourceDate": "2026-04-11",
           "homeClub": "Orense",
           "awayClub": "Libertad",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 2,
+          "goalsAgainst": 1,
+          "yellowCards": 2,
+          "redCards": 0,
           "isHome": true,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-ec-orense-2026-04-19",
@@ -1252,13 +1252,13 @@
           "sourceDate": "2026-04-11",
           "homeClub": "Palestino",
           "awayClub": "Deportes Limache",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "yellowCards": 1,
+          "redCards": 0,
           "isHome": false,
-          "counted": false,
-          "status": "scheduled"
+          "counted": true,
+          "status": "played"
         },
         {
           "id": "GS-F1-cl-deportes-limache-2026-04-17",
@@ -1278,6 +1278,25 @@
           "isHome": true,
           "counted": false,
           "status": "scheduled"
+        },
+        {
+          "id": "GS-F1-bo-nacional-potosi-2026-04-03",
+          "clubId": "bo-nacional-potosi",
+          "roundId": "GS-F1",
+          "windowStart": "2026-04-07",
+          "windowEnd": "2026-04-20",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga Profesional · F1",
+          "sourceDate": "2026-04-03",
+          "homeClub": "Independiente",
+          "awayClub": "Nacional Potosí",
+          "goalsFor": 3,
+          "goalsAgainst": 0,
+          "yellowCards": 2,
+          "redCards": 0,
+          "isHome": false,
+          "counted": true,
+          "status": "played"
         }
       ],
       "fantasyScores": [
@@ -1294,12 +1313,12 @@
         {
           "clubId": "co-atletico-nacional",
           "roundId": "GS-F1",
-          "sourceMatchId": "GS-F1-co-atletico-nacional-2026-04-05",
-          "basePoints": 1,
+          "sourceMatchId": "GS-F1-co-atletico-nacional-2026-04-11",
+          "basePoints": 3,
           "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1 bonus=0 penalty=0"
+          "penaltyPoints": -0.5,
+          "total": 2.5,
+          "explanation": "base=3 bonus=0 penalty=-0.5"
         },
         {
           "clubId": "bo-the-strongest",
@@ -1334,22 +1353,22 @@
         {
           "clubId": "uy-racing-club",
           "roundId": "GS-F1",
-          "sourceMatchId": "GS-F1-uy-racing-club-2026-04-04",
+          "sourceMatchId": "GS-F1-uy-racing-club-2026-04-12",
           "basePoints": 3,
           "bonusPoints": 0,
-          "penaltyPoints": -1,
-          "total": 2,
-          "explanation": "base=3 bonus=0 penalty=-1"
+          "penaltyPoints": -0.0,
+          "total": 3.0,
+          "explanation": "base=3 bonus=0 penalty=-0.0"
         },
         {
           "clubId": "py-sportivo-ameliano",
           "roundId": "GS-F1",
-          "sourceMatchId": "GS-F1-py-sportivo-ameliano-2026-04-05",
-          "basePoints": 1,
+          "sourceMatchId": "GS-F1-py-sportivo-ameliano-2026-04-10",
+          "basePoints": 3,
           "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1 bonus=0 penalty=0"
+          "penaltyPoints": -0.5,
+          "total": 2.5,
+          "explanation": "base=3 bonus=0 penalty=-0.5"
         },
         {
           "clubId": "uy-cerro-largo",
@@ -1390,6 +1409,206 @@
           "penaltyPoints": -0.25,
           "total": 3.75,
           "explanation": "base=3 bonus=1 penalty=-0.25"
+        },
+        {
+          "clubId": "pe-adt",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-pe-adt-2026-04-14",
+          "basePoints": 0,
+          "bonusPoints": 0,
+          "penaltyPoints": -0.5,
+          "total": -0.5,
+          "explanation": "base=0 bonus=0 penalty=-0.5"
+        },
+        {
+          "clubId": "pe-alianza-lima",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-pe-alianza-lima-2026-04-14",
+          "basePoints": 3,
+          "bonusPoints": 1,
+          "penaltyPoints": -0.5,
+          "total": 3.5,
+          "explanation": "base=3 bonus=1 penalty=-0.5"
+        },
+        {
+          "clubId": "ar-argentinos-juniors",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ar-argentinos-juniors-2026-04-11",
+          "basePoints": 0,
+          "bonusPoints": 0,
+          "penaltyPoints": -2.0,
+          "total": -2.0,
+          "explanation": "base=0 bonus=0 penalty=-2.0"
+        },
+        {
+          "clubId": "ec-universidad-catolica",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ec-universidad-catolica-2026-04-12",
+          "basePoints": 3,
+          "bonusPoints": 2,
+          "penaltyPoints": -0.25,
+          "total": 4.75,
+          "explanation": "base=3 bonus=2 penalty=-0.25"
+        },
+        {
+          "clubId": "ec-emelec",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ec-emelec-2026-04-08",
+          "basePoints": 1,
+          "bonusPoints": 0,
+          "penaltyPoints": -0.25,
+          "total": 0.75,
+          "explanation": "base=1 bonus=0 penalty=-0.25"
+        },
+        {
+          "clubId": "ec-delfin",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ec-delfin-2026-04-10",
+          "basePoints": 3,
+          "bonusPoints": 1,
+          "penaltyPoints": -2.25,
+          "total": 1.75,
+          "explanation": "base=3 bonus=1 penalty=-2.25"
+        },
+        {
+          "clubId": "ec-aucas",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ec-aucas-2026-04-12",
+          "basePoints": 3,
+          "bonusPoints": 2,
+          "penaltyPoints": -1.25,
+          "total": 3.75,
+          "explanation": "base=3 bonus=2 penalty=-1.25"
+        },
+        {
+          "clubId": "ec-orense",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ec-orense-2026-04-11",
+          "basePoints": 3,
+          "bonusPoints": 0,
+          "penaltyPoints": -0.5,
+          "total": 2.5,
+          "explanation": "base=3 bonus=0 penalty=-0.5"
+        },
+        {
+          "clubId": "bo-nacional-potosi",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-bo-nacional-potosi-2026-04-03",
+          "basePoints": 3,
+          "bonusPoints": 3,
+          "penaltyPoints": -0.5,
+          "total": 5.5,
+          "explanation": "base=3 bonus=3 penalty=-0.5"
+        },
+        {
+          "clubId": "py-general-caballero",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-py-general-caballero-2026-04-11",
+          "basePoints": 1,
+          "bonusPoints": 0,
+          "penaltyPoints": -0.25,
+          "total": 0.75,
+          "explanation": "base=1 bonus=0 penalty=-0.25"
+        },
+        {
+          "clubId": "cl-deportes-limache",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-cl-deportes-limache-2026-04-11",
+          "basePoints": 0,
+          "bonusPoints": 0,
+          "penaltyPoints": -0.25,
+          "total": -0.25,
+          "explanation": "base=0 bonus=0 penalty=-0.25"
+        },
+        {
+          "clubId": "cl-nublense",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-cl-nublense-2026-04-12",
+          "basePoints": 3,
+          "bonusPoints": 1,
+          "penaltyPoints": -1.0,
+          "total": 3.0,
+          "explanation": "base=3 bonus=1 penalty=-1.0"
+        },
+        {
+          "clubId": "cl-universidad-de-chile",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-cl-universidad-de-chile-2026-04-12",
+          "basePoints": 0,
+          "bonusPoints": 0,
+          "penaltyPoints": -0.75,
+          "total": -0.75,
+          "explanation": "base=0 bonus=0 penalty=-0.75"
+        },
+        {
+          "clubId": "py-guarani",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-py-guarani-2026-04-10",
+          "basePoints": 0,
+          "bonusPoints": 0,
+          "penaltyPoints": -0.5,
+          "total": -0.5,
+          "explanation": "base=0 bonus=0 penalty=-0.5"
+        },
+        {
+          "clubId": "ve-deportivo-tachira",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ve-deportivo-tachira-2026-04-11",
+          "basePoints": 0,
+          "bonusPoints": 0,
+          "penaltyPoints": -2.0,
+          "total": -2.0,
+          "explanation": "base=0 bonus=0 penalty=-2.0"
+        },
+        {
+          "clubId": "ve-metropolitanos",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ve-metropolitanos-2026-04-11",
+          "basePoints": 1,
+          "bonusPoints": 0,
+          "penaltyPoints": -0.75,
+          "total": 0.25,
+          "explanation": "base=1 bonus=0 penalty=-0.75"
+        },
+        {
+          "clubId": "ve-zamora",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ve-zamora-2026-04-11",
+          "basePoints": 1,
+          "bonusPoints": 0,
+          "penaltyPoints": -1.0,
+          "total": 0.0,
+          "explanation": "base=1 bonus=0 penalty=-1.0"
+        },
+        {
+          "clubId": "ve-anzoategui",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ve-anzoategui-2026-04-11",
+          "basePoints": 3,
+          "bonusPoints": 0,
+          "penaltyPoints": -1.0,
+          "total": 2.0,
+          "explanation": "base=3 bonus=0 penalty=-1.0"
+        },
+        {
+          "clubId": "ve-rayo-zuliano",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-ve-rayo-zuliano-2026-04-11",
+          "basePoints": 0,
+          "bonusPoints": 0,
+          "penaltyPoints": -1.25,
+          "total": -1.25,
+          "explanation": "base=0 bonus=0 penalty=-1.25"
+        },
+        {
+          "clubId": "co-atletico-bucaramanga",
+          "roundId": "GS-F1",
+          "sourceMatchId": "GS-F1-co-atletico-bucaramanga-2026-04-12",
+          "basePoints": 3,
+          "bonusPoints": 5,
+          "penaltyPoints": -0.75,
+          "total": 7.25,
+          "explanation": "base=3 bonus=5 penalty=-0.75"
         }
       ]
     },
