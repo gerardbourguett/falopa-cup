@@ -89,11 +89,20 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-04-05",
       "competition": "Liga de Ascenso - Fecha 6",
       "holderId": "rangers",
-      "challengerId": "san-marcos-de-arica"
+      "challengerId": "san-marcos-de-arica",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-04-17",
+      "competition": "Copa Chile",
+      "holderId": "rangers",
+      "challengerId": "union-espanola"
     }
   ]
 }
