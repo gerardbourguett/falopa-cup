@@ -102,7 +102,28 @@
       "date": "2026-04-17",
       "competition": "Copa Chile",
       "holderId": "rangers",
-      "challengerId": "union-espanola"
+      "challengerId": "union-espanola",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-04-25",
+      "competition": "Liga de Ascenso - Fecha 7",
+      "holderId": "rangers",
+      "challengerId": "deportes-temuco",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-05-02T20:00:00",
+      "competition": "Liga de Ascenso - Fecha 8",
+      "holderId": "rangers",
+      "challengerId": "deportes-puerto-montt"
     }
   ]
 }
