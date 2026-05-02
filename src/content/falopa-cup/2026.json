@@ -153,11 +153,31 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-04-19",
       "competition": "Liga de Primera · Fecha 10",
       "holderId": "huachipato",
-      "challengerId": "audax-italiano"
+      "challengerId": "audax-italiano",
+      "scoreHolder": 3,
+      "scoreChallenger": 2,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "date": "2026-04-26",
+      "competition": "Liga de Primera · Fecha 11",
+      "holderId": "huachipato",
+      "challengerId": "deportes-la-serena",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-05-04T20:00:00",
+      "competition": "Copa de La Liga · Fecha 4",
+      "holderId": "huachipato",
+      "challengerId": "deportes-concepcion"
     }
   ]
 }
