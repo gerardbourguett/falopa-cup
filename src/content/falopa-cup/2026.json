@@ -173,9 +173,39 @@
     },
     {
       "type": "match",
-      "status": "pending",
-      "date": "2026-05-04T20:00:00",
+      "date": "2026-05-04",
       "competition": "Copa de La Liga · Fecha 4",
+      "holderId": "huachipato",
+      "challengerId": "deportes-concepcion",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "date": "2026-05-10",
+      "competition": "Copa de La Liga",
+      "holderId": "huachipato",
+      "challengerId": "coquimbo-unido",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "date": "2026-05-17",
+      "competition": "Liga de Primera · Fecha 12",
+      "holderId": "huachipato",
+      "challengerId": "union-la-calera",
+      "scoreHolder": 3,
+      "scoreChallenger": 1,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-05-24",
+      "competition": "Liga de Primera · Fecha 13",
       "holderId": "huachipato",
       "challengerId": "deportes-concepcion"
     }

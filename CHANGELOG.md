@@ -4,7 +4,9 @@
 
 ### Changed
 - Se eliminó la cinta visual `TITULO EN JUEGO` de las tarjetas de partido porque en Falopa Cup y Copa Pablo Milad todas las tarjetas ya representan defensas del título.
+- Se eliminó también la chapa visual `DEFIENDE` para simplificar el encabezado del marcador.
 - Se actualizaron resultados, tarjetas y puntajes fantasy pendientes de `Conference League Sudamericana` para la Fecha 1 de grupos.
+- Se cargaron nuevos resultados de `Falopa Cup` y `Copa Pablo Milad` 2026, dejando sus próximas defensas en estado pendiente.
 
 ### Verified
 - `pnpm test`
