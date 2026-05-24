@@ -119,11 +119,51 @@
     },
     {
       "type": "match",
-      "status": "pending",
-      "date": "2026-05-02T20:00:00",
+      "date": "2026-05-02",
       "competition": "Liga de Ascenso - Fecha 8",
       "holderId": "rangers",
-      "challengerId": "deportes-puerto-montt"
+      "challengerId": "deportes-puerto-montt",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-05-08",
+      "competition": "Liga de Ascenso - Fecha 9",
+      "holderId": "rangers",
+      "challengerId": "deportes-iquique",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-05-16",
+      "competition": "Liga de Ascenso - Fecha 10",
+      "holderId": "rangers",
+      "challengerId": "union-san-felipe",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-05-22",
+      "competition": "Liga de Ascenso - Fecha 11",
+      "holderId": "rangers",
+      "challengerId": "santiago-wanderers",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-05-31",
+      "competition": "Liga de Ascenso - Fecha 12",
+      "holderId": "rangers",
+      "challengerId": "cobreloa"
     }
   ]
 }

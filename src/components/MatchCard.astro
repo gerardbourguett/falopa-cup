@@ -96,9 +96,6 @@ const dateStr = match.date.toLocaleDateString('es-CL', {
         {challengerWon && (
           <span class:list={[styles.statusBadge, styles.changeBadge]}>CAMBIO</span>
         )}
-        {holderWon && !isDraw && !challengerWon && (
-          <span class:list={[styles.statusBadge, styles.retainBadge]}>DEFENDE</span>
-        )}
         {isDraw && (
           <span class:list={[styles.statusBadge, styles.drawBadge]}>EMPATE</span>
         )}
