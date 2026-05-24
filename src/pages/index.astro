@@ -66,6 +66,40 @@ function formatUpcomingDuel(match: any) {
   return `vs ${challenger?.name || match.challengerId} · ${dateLabel}`;
 }
 
+function getLatestPlayedMatch(matches: any[]) {
+  return [...matches]
+    .filter((match) => match.type === "match" && match.status !== "pending")
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+}
+
+function getLatestTitleChange(matches: any[]) {
+  return [...matches]
+    .filter(
+      (match) =>
+        match.type === "match" &&
+        match.status !== "pending" &&
+        match.newHolderId &&
+        match.newHolderId !== match.holderId,
+    )
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0];
+}
+
+function formatShortDate(value?: string | Date | null) {
+  if (!value) return "";
+  const d = value instanceof Date ? value : new Date(value);
+  return d.toLocaleDateString("es-CL", {
+    day: "numeric",
+    month: "short",
+  });
+}
+
+function describeTitleChange(match: any, tournamentLabel: string) {
+  if (!match) return "Sin cambios recientes";
+  const newHolder = getClub(match.newHolderId);
+  const oldHolder = getClub(match.holderId);
+  return `${newHolder?.name || match.newHolderId} le quitó ${tournamentLabel} a ${oldHolder?.name || match.holderId}`;
+}
+
 const falopaNextMatch = latestFalopa
   ? getNextPendingMatch(latestFalopa.data.matches)
   : null;
@@ -75,6 +109,21 @@ const miladNextMatch = latestMilad
 
 const conferenceClubs = conferenceEntries.find((entry) => entry.data.kind === "clubs")?.data as any;
 const conferenceStage = conferenceEntries.find((entry) => entry.data.kind === "stage")?.data as any;
+const falopaLatestPlayedMatch = latestFalopa
+  ? getLatestPlayedMatch(latestFalopa.data.matches)
+  : null;
+const miladLatestPlayedMatch = latestMilad
+  ? getLatestPlayedMatch(latestMilad.data.matches)
+  : null;
+const falopaLatestChange = latestFalopa
+  ? getLatestTitleChange(latestFalopa.data.matches)
+  : null;
+const miladLatestChange = latestMilad
+  ? getLatestTitleChange(latestMilad.data.matches)
+  : null;
+const lastUpdatedDate = [falopaLatestPlayedMatch?.date, miladLatestPlayedMatch?.date]
+  .filter(Boolean)
+  .sort((a, b) => new Date(String(b)).getTime() - new Date(String(a)).getTime())[0];
 
 function formatSinceDate(value?: string | Date | null) {
   if (!value) return "";
@@ -90,12 +139,47 @@ function formatSinceDate(value?: string | Date | null) {
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION} currentPath="/">
   <!-- Hero -->
   <Hero
-    client:load
     title="FALOPA CUP"
     subtitle="Campeón No Oficial + Copa del Más Malo"
     description="Seguimos dos títulos itinerantes del fútbol chileno: el campeón no oficial y la copa del más malo. Inspirado en el Campeonato Mundial No Oficial."
     year={falopaYear}
   />
+
+  <section class={styles.pulseSection}>
+    <div class="container">
+      <div class={styles.pulseGrid}>
+        <article class={styles.pulseCard}>
+          <span class={styles.pulseLabel}>ULTIMO CAMBIO</span>
+          <strong class={styles.pulseTitle}>Falopa Cup</strong>
+          <p class={styles.pulseText}>{describeTitleChange(falopaLatestChange, "la Falopa Cup")}</p>
+          {falopaLatestChange && (
+            <span class={styles.pulseMeta}>
+              {falopaLatestChange.scoreHolder}-{falopaLatestChange.scoreChallenger} · {formatShortDate(falopaLatestChange.date)}
+            </span>
+          )}
+        </article>
+
+        <article class={styles.pulseCard}>
+          <span class={styles.pulseLabel}>PROXIMAS DEFENSAS</span>
+          <strong class={styles.pulseTitle}>Agenda inmediata</strong>
+          <p class={styles.pulseText}>
+            Falopa: {formatUpcomingDuel(falopaNextMatch) || "Sin duelo pendiente"}
+          </p>
+          <p class={styles.pulseText}>
+            Milad: {formatUpcomingDuel(miladNextMatch) || "Sin duelo pendiente"}
+          </p>
+        </article>
+
+        <article class={styles.pulseCard}>
+          <span class={styles.pulseLabel}>ACTUALIZADO AL</span>
+          <strong class={styles.pulseTitle}>{formatSinceDate(lastUpdatedDate)}</strong>
+          <p class={styles.pulseText}>
+            Ultimo movimiento Milad: {describeTitleChange(miladLatestChange, "la Copa Pablo Milad")}
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
 
   <!-- Champions Section -->
   <section class={styles.championsSection}>
@@ -106,7 +190,6 @@ function formatSinceDate(value?: string | Date | null) {
 
       <div class={styles.championsGrid}>
         <ChampionCard
-          client:visible
           club={falopaClub || {
             name: "DESCONOCIDO",
             shortName: "N/A",
@@ -121,7 +204,6 @@ function formatSinceDate(value?: string | Date | null) {
         />
 
         <ChampionCard
-          client:visible
           club={miladClub || {
             name: "DESCONOCIDO",
             shortName: "N/A",
