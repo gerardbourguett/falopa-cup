@@ -54,24 +54,6 @@
     inset 0 0 0 1px rgba(231, 29, 54, 0.08);
 }
 
-.titleChange::before {
-  content: "TITULO EN JUEGO";
-  position: absolute;
-  top: -0.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2;
-  padding: 0.15rem 0.75rem;
-  border: 2px solid var(--color-liga-ascenso);
-  background: var(--color-bg-primary);
-  color: var(--color-liga-ascenso);
-  font-family: var(--font-display);
-  font-size: 0.55rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
 
 .seedingCard {
   border-color: var(--color-liga-primera);
@@ -324,13 +306,6 @@
 
   .seedingCard {
     box-shadow: 2px 2px 0 0 var(--color-liga-primera);
-  }
-
-  .titleChange::before {
-    font-size: 0.5rem;
-    top: -0.4rem;
-    padding: 0.1rem 0.5rem;
-    border-width: 1px;
   }
 
   /* ─── Header mobile ─── */
