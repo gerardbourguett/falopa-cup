@@ -3,6 +3,14 @@ import { getCollection } from 'astro:content';
 import Layout from '../../components/Layout.astro';
 import { SITE_TITLE } from '../../consts';
 import {
+  buildFantasyByClub,
+  buildFantasyStandingsByGroup,
+  buildMatchSourceMap,
+  buildRoundScoreMap,
+  type ConferenceGroupDefinition,
+  type RoundWindowData,
+} from '../../lib/tournaments/conference-league-sudamericana';
+import {
   getClubAccentColor,
   getEntryTypeSportLabel,
 } from '../../lib/tournaments/conference-league-sudamericana/club-visuals';
@@ -103,53 +111,12 @@ const tieCards = preliminaryTies.map((tie: any) => {
 });
 
 // Groups data
-const groups = groupsDoc?.groups || [];
-const roundWindows: any[] = groupsDoc?.roundWindows || [];
-// Build fantasy breakdown per club from all round scores
-const fantasyByClub = new Map<string, { played: number; base: number; bonus: number; penalty: number; total: number }>();
-for (const rw of roundWindows) {
-  for (const fs of (rw.fantasyScores || [])) {
-    const prev = fantasyByClub.get(fs.clubId) || { played: 0, base: 0, bonus: 0, penalty: 0, total: 0 };
-    prev.played++;
-    prev.base += fs.basePoints;
-    prev.bonus += fs.bonusPoints;
-    prev.penalty += fs.penaltyPoints;
-    prev.total += fs.total;
-    fantasyByClub.set(fs.clubId, prev);
-  }
-}
-
-// Build fantasy standings by group, sorted by total desc
-const fantasyStandingsByGroup = new Map<string, any[]>();
-for (const group of groups) {
-  const rows = group.clubIds.map((id: string) => {
-    const fb = fantasyByClub.get(id) || { played: 0, base: 0, bonus: 0, penalty: 0, total: 0 };
-    return { ...clubMeta(id), clubId: id, ...fb };
-  });
-  rows.sort((a: any, b: any) => b.total - a.total || b.bonus - a.bonus || b.base - a.base);
-  fantasyStandingsByGroup.set(group.group, rows);
-}
-
-// Fantasy score lookup: roundId -> clubId -> score entry
-const roundScoreMap = new Map<string, Map<string, any>>();
-for (const rw of roundWindows) {
-  const m = new Map<string, any>();
-  for (const fs of (rw.fantasyScores || [])) {
-    m.set(fs.clubId, fs);
-  }
-  roundScoreMap.set(rw.roundId, m);
-}
-
-// Match sources lookup: roundId -> clubId -> match source entries
-const matchSourceMap = new Map<string, Map<string, any[]>>();
-for (const rw of roundWindows) {
-  const m = new Map<string, any[]>();
-  for (const ms of (rw.windowMatchSources || [])) {
-    if (!m.has(ms.clubId)) m.set(ms.clubId, []);
-    m.get(ms.clubId)!.push(ms);
-  }
-  matchSourceMap.set(rw.roundId, m);
-}
+const groups = (groupsDoc?.groups || []) as ConferenceGroupDefinition[];
+const roundWindows = (groupsDoc?.roundWindows || []) as RoundWindowData[];
+const fantasyByClub = buildFantasyByClub(roundWindows);
+const fantasyStandingsByGroup = buildFantasyStandingsByGroup(groups, fantasyByClub, clubMeta);
+const roundScoreMap = buildRoundScoreMap(roundWindows);
+const matchSourceMap = buildMatchSourceMap(roundWindows);
 
 // Audit data
 const windowCutRows = (windowCutDoc?.entries || []).map((entry: any) => ({

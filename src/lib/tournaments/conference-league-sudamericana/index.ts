@@ -96,6 +96,25 @@ export interface GroupStandingEntry {
   awayBonusWins: number;
 }
 
+export interface FantasyClubTotals {
+  played: number;
+  base: number;
+  bonus: number;
+  penalty: number;
+  total: number;
+}
+
+export interface RoundWindowData {
+  roundId: string;
+  fantasyScores?: FantasyScoreResult[];
+  windowMatchSources?: OfficialMatchSource[];
+}
+
+export interface ConferenceGroupDefinition {
+  group: string;
+  clubIds: string[];
+}
+
 const OFFICIAL_COMPETITIONS = new Set<SourceCompetitionType>([
   'local-league',
   'local-cup',
@@ -170,6 +189,90 @@ export function computeFantasyScore(match: OfficialMatchSource): Omit<FantasySco
     total,
     explanation,
   };
+}
+
+export function buildFantasyByClub(roundWindows: RoundWindowData[]): Map<string, FantasyClubTotals> {
+  const fantasyByClub = new Map<string, FantasyClubTotals>();
+
+  for (const rw of roundWindows) {
+    for (const fs of rw.fantasyScores || []) {
+      const prev = fantasyByClub.get(fs.clubId) || {
+        played: 0,
+        base: 0,
+        bonus: 0,
+        penalty: 0,
+        total: 0,
+      };
+      prev.played += 1;
+      prev.base += fs.basePoints;
+      prev.bonus += fs.bonusPoints;
+      prev.penalty += fs.penaltyPoints;
+      prev.total += fs.total;
+      fantasyByClub.set(fs.clubId, prev);
+    }
+  }
+
+  return fantasyByClub;
+}
+
+export function buildFantasyStandingsByGroup<TClubMeta extends Record<string, unknown>>(
+  groups: ConferenceGroupDefinition[],
+  fantasyByClub: Map<string, FantasyClubTotals>,
+  getClubMeta: (clubId: string) => TClubMeta
+): Map<string, Array<TClubMeta & { clubId: string } & FantasyClubTotals>> {
+  const standingsByGroup = new Map<string, Array<TClubMeta & { clubId: string } & FantasyClubTotals>>();
+
+  for (const group of groups) {
+    const rows = group.clubIds.map((clubId) => {
+      const totals = fantasyByClub.get(clubId) || {
+        played: 0,
+        base: 0,
+        bonus: 0,
+        penalty: 0,
+        total: 0,
+      };
+
+      return {
+        ...getClubMeta(clubId),
+        clubId,
+        ...totals,
+      };
+    });
+
+    rows.sort((a, b) => b.total - a.total || b.bonus - a.bonus || b.base - a.base);
+    standingsByGroup.set(group.group, rows);
+  }
+
+  return standingsByGroup;
+}
+
+export function buildRoundScoreMap(roundWindows: RoundWindowData[]): Map<string, Map<string, FantasyScoreResult>> {
+  const roundScoreMap = new Map<string, Map<string, FantasyScoreResult>>();
+
+  for (const rw of roundWindows) {
+    const scoresByClub = new Map<string, FantasyScoreResult>();
+    for (const fs of rw.fantasyScores || []) {
+      scoresByClub.set(fs.clubId, fs);
+    }
+    roundScoreMap.set(rw.roundId, scoresByClub);
+  }
+
+  return roundScoreMap;
+}
+
+export function buildMatchSourceMap(roundWindows: RoundWindowData[]): Map<string, Map<string, OfficialMatchSource[]>> {
+  const matchSourceMap = new Map<string, Map<string, OfficialMatchSource[]>>();
+
+  for (const rw of roundWindows) {
+    const matchSourcesByClub = new Map<string, OfficialMatchSource[]>();
+    for (const ms of rw.windowMatchSources || []) {
+      if (!matchSourcesByClub.has(ms.clubId)) matchSourcesByClub.set(ms.clubId, []);
+      matchSourcesByClub.get(ms.clubId)!.push(ms);
+    }
+    matchSourceMap.set(rw.roundId, matchSourcesByClub);
+  }
+
+  return matchSourceMap;
 }
 
 function cardDeductions(entry: Pick<KnockoutTieInput, 'yellowCards' | 'redCards'>): number | null {

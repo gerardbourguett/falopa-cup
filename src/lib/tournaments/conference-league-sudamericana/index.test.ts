@@ -1,11 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildFantasyByClub,
+  buildFantasyStandingsByGroup,
+  buildMatchSourceMap,
+  buildRoundScoreMap,
   computeFantasyScore,
   rankGroupStandings,
   resolveKnockoutTie,
   selectCountedMatch,
   type OfficialMatchSource,
   type GroupStandingEntry,
+  type RoundWindowData,
 } from './index';
 
 const mk = (overrides: Partial<OfficialMatchSource>): OfficialMatchSource => ({
@@ -177,6 +182,103 @@ describe('computeFantasyScore', () => {
     );
     expect(score.penaltyPoints).toBe(0);
     expect(score.total).toBe(4); // 3 + 1 CS
+  });
+});
+
+describe('conference view-model helpers', () => {
+  const roundWindows: RoundWindowData[] = [
+    {
+      roundId: 'GS-F1',
+      fantasyScores: [
+        {
+          clubId: 'club-a',
+          roundId: 'GS-F1',
+          sourceMatchId: 'm1',
+          basePoints: 3,
+          bonusPoints: 1,
+          penaltyPoints: -0.25,
+          total: 3.75,
+          explanation: 'x',
+        },
+        {
+          clubId: 'club-b',
+          roundId: 'GS-F1',
+          sourceMatchId: 'm2',
+          basePoints: 1,
+          bonusPoints: 0,
+          penaltyPoints: 0,
+          total: 1,
+          explanation: 'y',
+        },
+      ],
+      windowMatchSources: [
+        mk({ id: 'm1', clubId: 'club-a', roundId: 'GS-F1' }),
+        mk({ id: 'm2', clubId: 'club-b', roundId: 'GS-F1' }),
+      ],
+    },
+    {
+      roundId: 'GS-F2',
+      fantasyScores: [
+        {
+          clubId: 'club-a',
+          roundId: 'GS-F2',
+          sourceMatchId: 'm3',
+          basePoints: 0,
+          bonusPoints: 0,
+          penaltyPoints: -1,
+          total: -1,
+          explanation: 'z',
+        },
+      ],
+      windowMatchSources: [
+        mk({ id: 'm3', clubId: 'club-a', roundId: 'GS-F2', goalsFor: 0, goalsAgainst: 3 }),
+      ],
+    },
+  ];
+
+  it('buildFantasyByClub accumulates totals per club across windows', () => {
+    const totals = buildFantasyByClub(roundWindows);
+
+    expect(totals.get('club-a')).toEqual({
+      played: 2,
+      base: 3,
+      bonus: 1,
+      penalty: -1.25,
+      total: 2.75,
+    });
+    expect(totals.get('club-b')).toEqual({
+      played: 1,
+      base: 1,
+      bonus: 0,
+      penalty: 0,
+      total: 1,
+    });
+  });
+
+  it('buildFantasyStandingsByGroup orders clubs by total, bonus and base', () => {
+    const totals = buildFantasyByClub(roundWindows);
+    const standings = buildFantasyStandingsByGroup(
+      [{ group: 'A', clubIds: ['club-b', 'club-a', 'club-c'] }],
+      totals,
+      (clubId) => ({ name: clubId.toUpperCase() })
+    );
+
+    expect(standings.get('A')?.map((row) => row.clubId)).toEqual(['club-a', 'club-b', 'club-c']);
+    expect(standings.get('A')?.[2]).toMatchObject({ clubId: 'club-c', total: 0, played: 0 });
+  });
+
+  it('buildRoundScoreMap indexes scores by round and club', () => {
+    const scoreMap = buildRoundScoreMap(roundWindows);
+
+    expect(scoreMap.get('GS-F1')?.get('club-a')?.sourceMatchId).toBe('m1');
+    expect(scoreMap.get('GS-F2')?.get('club-a')?.total).toBe(-1);
+  });
+
+  it('buildMatchSourceMap groups match sources by round and club', () => {
+    const sourceMap = buildMatchSourceMap(roundWindows);
+
+    expect(sourceMap.get('GS-F1')?.get('club-a')?.[0].id).toBe('m1');
+    expect(sourceMap.get('GS-F2')?.get('club-a')?.[0].id).toBe('m3');
   });
 });
 
