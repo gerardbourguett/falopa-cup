@@ -203,11 +203,21 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-05-24",
       "competition": "Liga de Primera · Fecha 13",
       "holderId": "huachipato",
-      "challengerId": "deportes-concepcion"
+      "challengerId": "deportes-concepcion",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-concepcion"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-05-30",
+      "competition": "Liga de Primera · Fecha 14",
+      "holderId": "deportes-concepcion",
+      "challengerId": "universidad-de-chile"
     }
   ]
 }

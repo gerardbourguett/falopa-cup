@@ -63,14 +63,12 @@ const currentHolder = currentSeason
   : undefined;
 ---
 
-<!doctype html>
-<html lang="es">
-  <head>
-    <Layout
-      title={`Copa Pablo Milad — ${SITE_TITLE}`}
-      description="Historial de la Copa Pablo Milad, el titulo del mas malo bajo la regla de la tina."
-      currentPath="/copa-pablo-milad"
-    >
+<Layout
+  title={`Copa Pablo Milad — ${SITE_TITLE}`}
+  description="Historial de la Copa Pablo Milad, el titulo del mas malo bajo la regla de la tina."
+  currentPath="/copa-pablo-milad"
+  image="/og/copa-pablo-milad.svg"
+>
       <!-- Page Hero -->
       <section class="page-hero milad-hero">
         <div class="hero-pattern"></div>
@@ -95,20 +93,21 @@ const currentHolder = currentSeason
         />
 
         <!-- Season Tabs -->
-        <nav class="season-nav" id="season-nav-milad">
+        <nav class="season-nav" id="season-nav-milad" aria-label="Temporadas Copa Pablo Milad">
           {
             seasons.map((season) => (
-              <button
-                type="button"
+              <a
+                href={`#season-${season.year}`}
                 class:list={[
                   "season-tab",
                   { active: season.year === currentSeason?.year },
                 ]}
                 data-year={season.year}
+                aria-current={season.year === currentSeason?.year ? "page" : undefined}
               >
                 <span class="tab-year">{season.year}</span>
                 <span class="tab-count">{seasonMatchCount(season.matches)} P</span>
-              </button>
+              </a>
             ))
           }
         </nav>
@@ -183,45 +182,69 @@ const currentHolder = currentSeason
           ))
         }
       </main>
-    </Layout>
 
     <script>
       function initMiladTabs() {
         const nav = document.getElementById("season-nav-milad");
         if (!nav) return;
 
-        const tabs = nav.querySelectorAll<HTMLButtonElement>(".season-tab");
+        const tabs = nav.querySelectorAll<HTMLAnchorElement>(".season-tab");
         const sections = document.querySelectorAll<HTMLElement>(
           "[data-season-milad]",
         );
 
+        function seasonIdToYear(hashValue: string) {
+          return hashValue.replace("#", "").replace("season-", "");
+        }
+
         function showSeason(year: string) {
-          tabs.forEach((t) =>
-            t.classList.toggle("active", t.dataset.year === year),
-          );
+          tabs.forEach((t) => {
+            const isTarget = t.dataset.year === year;
+            t.classList.toggle("active", isTarget);
+            if (isTarget) {
+              t.setAttribute("aria-current", "page");
+            } else {
+              t.removeAttribute("aria-current");
+            }
+          });
           sections.forEach((s) => {
             const isTarget = s.dataset.seasonMilad === year;
             s.classList.toggle("hidden", !isTarget);
           });
-          history.replaceState(null, "", `#${year}`);
+          history.replaceState(null, "", `#season-${year}`);
         }
 
         tabs.forEach((tab) => {
-          tab.addEventListener("click", () => {
+          tab.addEventListener("click", (event) => {
+            event.preventDefault();
             if (tab.dataset.year) showSeason(tab.dataset.year);
           });
         });
 
-        // Check URL hash on load
-        const hash = window.location.hash.replace("#", "");
+        const hash = seasonIdToYear(window.location.hash);
         if (hash && document.querySelector(`[data-season-milad="${hash}"]`)) {
           showSeason(hash);
         }
+
+        window.addEventListener("hashchange", () => {
+          const nextHash = seasonIdToYear(window.location.hash);
+          if (nextHash && document.querySelector(`[data-season-milad="${nextHash}"]`)) {
+            showSeason(nextHash);
+          }
+        });
       }
 
       initMiladTabs();
       document.addEventListener("astro:after-swap", initMiladTabs);
     </script>
+
+    <noscript>
+      <style>
+        .season-section.hidden {
+          display: block !important;
+        }
+      </style>
+    </noscript>
 
     <style>
       /* ═══ MILAD HERO ═══ */
@@ -471,5 +494,4 @@ const currentHolder = currentSeason
         }
       }
     </style>
-  </head>
-</html>
+</Layout>

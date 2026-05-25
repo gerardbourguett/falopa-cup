@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Falopa Cup social image">
+  <rect width="1200" height="630" fill="#120f05"/>
+  <rect x="52" y="52" width="1096" height="526" fill="#151515" stroke="#f3b321" stroke-width="8"/>
+  <text x="96" y="170" fill="#f3b321" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" letter-spacing="5">CAMPEONATO NO OFICIAL DEL FUTBOL CHILENO</text>
+  <text x="96" y="305" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="800">FALOPA CUP</text>
+  <text x="96" y="388" fill="#e5e7eb" font-family="Arial, Helvetica, sans-serif" font-size="34">El titulo se defiende en cada partido oficial</text>
+  <text x="96" y="515" fill="#f3b321" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700">Historia . defensas . cambios de campeon</text>
+</svg>

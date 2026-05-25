@@ -1,4 +1,5 @@
 ---
+import type { ImageMetadata } from 'astro';
 import BaseHead from './BaseHead.astro';
 import { Navigation } from './Navigation';
 import Footer from './Footer.astro';
@@ -7,15 +8,16 @@ interface Props {
   title: string;
   description?: string;
   currentPath?: string;
+  image?: ImageMetadata | string;
 }
 
-const { title, description = '', currentPath = '/' } = Astro.props;
+const { title, description = '', currentPath = '/', image } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={title} description={description} image={image} />
   </head>
   <body>
     <Navigation currentPath={currentPath} />

@@ -139,6 +139,7 @@ const currentHolder = currentSeason
   title={`Falopa Cup — ${SITE_TITLE}`}
   description="Historial completo de la Falopa Cup, el campeonato no oficial del futbol chileno."
   currentPath="/falopa-cup"
+  image="/og/falopa-cup.svg"
 >
   <!-- Page Hero -->
   <section class="page-hero">
@@ -165,20 +166,21 @@ const currentHolder = currentSeason
     />
 
     <!-- Season Tabs -->
-    <nav class="season-nav" id="season-nav">
+    <nav class="season-nav" id="season-nav" aria-label="Temporadas Falopa Cup">
       {
         seasons.map((season) => (
-          <button
-            type="button"
+          <a
+            href={`#season-${season.year}`}
             class:list={[
               "season-tab",
               { active: season.year === currentSeason?.year },
             ]}
             data-year={season.year}
+            aria-current={season.year === currentSeason?.year ? "page" : undefined}
           >
             <span class="tab-year">{season.year}</span>
             <span class="tab-count">{seasonMatchCount(season)} P</span>
-          </button>
+          </a>
         ))
       }
     </nav>
@@ -355,35 +357,61 @@ const currentHolder = currentSeason
     const nav = document.getElementById("season-nav");
     if (!nav) return;
 
-    const tabs = nav.querySelectorAll<HTMLButtonElement>(".season-tab");
+    const tabs = nav.querySelectorAll<HTMLAnchorElement>(".season-tab");
     const sections = document.querySelectorAll<HTMLElement>(".season-section");
 
+    function seasonIdToYear(hashValue: string) {
+      return hashValue.replace("#", "").replace("season-", "");
+    }
+
     function showSeason(year: string) {
-      tabs.forEach((t) =>
-        t.classList.toggle("active", t.dataset.year === year),
-      );
+      tabs.forEach((t) => {
+        const isTarget = t.dataset.year === year;
+        t.classList.toggle("active", isTarget);
+        if (isTarget) {
+          t.setAttribute("aria-current", "page");
+        } else {
+          t.removeAttribute("aria-current");
+        }
+      });
       sections.forEach((s) => {
         const isTarget = s.dataset.season === year;
         s.classList.toggle("hidden", !isTarget);
       });
-      history.replaceState(null, "", `#${year}`);
+      history.replaceState(null, "", `#season-${year}`);
     }
 
     tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
+      tab.addEventListener("click", (event) => {
+        event.preventDefault();
         if (tab.dataset.year) showSeason(tab.dataset.year);
       });
     });
 
-    const hash = window.location.hash.replace("#", "");
+    const hash = seasonIdToYear(window.location.hash);
     if (hash && document.querySelector(`[data-season="${hash}"]`)) {
       showSeason(hash);
     }
+
+    window.addEventListener("hashchange", () => {
+      const nextHash = seasonIdToYear(window.location.hash);
+      if (nextHash && document.querySelector(`[data-season="${nextHash}"]`)) {
+        showSeason(nextHash);
+      }
+    });
   }
 
   initTabs();
   document.addEventListener("astro:after-swap", initTabs);
 </script>
+
+<noscript>
+  <style>
+    .season-section.hidden {
+      display: block !important;
+    }
+  </style>
+</noscript>
 
 <style>
   /* === PAGE HERO === */
