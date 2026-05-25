@@ -4,13 +4,20 @@ import {
   buildFantasyStandingsByGroup,
   buildMatchSourceMap,
   buildRoundScoreMap,
+  buildTieResolutionDetail,
+  buildWindowCutFantasyBreakdown,
+  buildWindowCutRanking,
+  buildWindowCutReviewBuckets,
+  buildWindowCutWithFantasy,
   computeFantasyScore,
+  getWindowCutCardDeductions,
   rankGroupStandings,
   resolveKnockoutTie,
   selectCountedMatch,
   type OfficialMatchSource,
   type GroupStandingEntry,
   type RoundWindowData,
+  type WindowCutEntry,
 } from './index';
 
 const mk = (overrides: Partial<OfficialMatchSource>): OfficialMatchSource => ({
@@ -279,6 +286,65 @@ describe('conference view-model helpers', () => {
 
     expect(sourceMap.get('GS-F1')?.get('club-a')?.[0].id).toBe('m1');
     expect(sourceMap.get('GS-F2')?.get('club-a')?.[0].id).toBe('m3');
+  });
+
+  it('buildWindowCutFantasyBreakdown computes audit text and totals', () => {
+    const breakdown = buildWindowCutFantasyBreakdown({
+      clubId: 'club-a',
+      pot: 'Bombo 1',
+      status: 'ok',
+      total: 0,
+      goalsFor: 2,
+      goalsAgainst: 0,
+      yellowCards: 2,
+      redCards: 0,
+    });
+
+    expect(breakdown).toMatchObject({ base: 3, bonus: 2, penalty: -0.5, total: 4.5 });
+    expect(breakdown.text).toContain('victoria');
+  });
+
+  it('buildWindowCutRanking orders by total, gd, gf and sourceDate', () => {
+    const rows: WindowCutEntry[] = [
+      { clubId: 'b', pot: 'Bombo 1', status: 'ok', total: 3, gd: 1, gf: 2, sourceDate: '2026-04-11' },
+      { clubId: 'a', pot: 'Bombo 1', status: 'ok', total: 3, gd: 2, gf: 1, sourceDate: '2026-04-10' },
+      { clubId: 'c', pot: 'Bombo 1', status: 'no-match', total: 0 },
+    ];
+
+    expect(buildWindowCutRanking(rows).map((row) => row.clubId)).toEqual(['a', 'b']);
+  });
+
+  it('buildWindowCutWithFantasy attaches fantasy breakdowns', () => {
+    const rows = buildWindowCutWithFantasy([
+      { clubId: 'x', pot: 'Bombo 2', status: 'no-match', total: 0 } as WindowCutEntry,
+    ]);
+
+    expect(rows[0].fantasy.total).toBe(0);
+    expect(rows[0].fantasy.text).toContain('no-match');
+  });
+
+  it('buildTieResolutionDetail and getWindowCutCardDeductions use audit tiebreak order', () => {
+    const clubA: WindowCutEntry = {
+      clubId: 'a', pot: 'Bombo 1', status: 'ok', total: 3, gf: 2, homeAway: 'home', yellowCards: 1, redCards: 0,
+    };
+    const clubB: WindowCutEntry = {
+      clubId: 'b', pot: 'Bombo 1', status: 'ok', total: 3, gf: 2, homeAway: 'away', yellowCards: 3, redCards: 0,
+    };
+
+    expect(getWindowCutCardDeductions(clubA)).toBe(0.25);
+    expect(buildTieResolutionDetail(clubA, clubB)).toBe('Desempate: menos tarjetas');
+  });
+
+  it('buildWindowCutReviewBuckets groups no-match, non-ESPN and missing cards', () => {
+    const buckets = buildWindowCutReviewBuckets([
+      { clubId: 'a', pot: 'Bombo 1', status: 'no-match', total: 0 },
+      { clubId: 'b', pot: 'Bombo 2', status: 'ok', total: 2, sourceUrl: 'https://example.com/report', yellowCards: 1, redCards: 0 },
+      { clubId: 'c', pot: 'Bombo 2', status: 'ok', total: 1, sourceUrl: 'https://www.espn.com/x', yellowCards: null, redCards: 0 },
+    ] as WindowCutEntry[]);
+
+    expect(buckets.noMatch.map((row) => row.clubId)).toEqual(['a']);
+    expect(buckets.nonEspn.map((row) => row.clubId)).toEqual(['b']);
+    expect(buckets.missingCards.map((row) => row.clubId)).toEqual(['c']);
   });
 });
 
