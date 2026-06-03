@@ -153,10 +153,80 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-04-19",
       "competition": "Liga de Primera · Fecha 10",
       "holderId": "huachipato",
+      "challengerId": "audax-italiano",
+      "scoreHolder": 3,
+      "scoreChallenger": 2,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "date": "2026-04-26",
+      "competition": "Liga de Primera · Fecha 11",
+      "holderId": "huachipato",
+      "challengerId": "deportes-la-serena",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "date": "2026-05-04",
+      "competition": "Copa de La Liga · Fecha 4",
+      "holderId": "huachipato",
+      "challengerId": "deportes-concepcion",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "date": "2026-05-10",
+      "competition": "Copa de La Liga",
+      "holderId": "huachipato",
+      "challengerId": "coquimbo-unido",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "date": "2026-05-17",
+      "competition": "Liga de Primera · Fecha 12",
+      "holderId": "huachipato",
+      "challengerId": "union-la-calera",
+      "scoreHolder": 3,
+      "scoreChallenger": 1,
+      "newHolderId": "huachipato"
+    },
+    {
+      "type": "match",
+      "date": "2026-05-24",
+      "competition": "Liga de Primera · Fecha 13",
+      "holderId": "huachipato",
+      "challengerId": "deportes-concepcion",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "deportes-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2026-05-30",
+      "competition": "Liga de Primera · Fecha 14",
+      "holderId": "deportes-concepcion",
+      "challengerId": "universidad-de-chile",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "universidad-de-chile"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-06-07",
+      "competition": "Copa de la Liga · Fecha 6",
+      "holderId": "universidad-de-chile",
       "challengerId": "audax-italiano"
     }
   ]
