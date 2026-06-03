@@ -3,6 +3,20 @@ import { getCollection } from 'astro:content';
 import Layout from '../../components/Layout.astro';
 import { SITE_TITLE } from '../../consts';
 import {
+  buildFantasyByClub,
+  buildFantasyStandingsByGroup,
+  buildMatchSourceMap,
+  buildRoundScoreMap,
+  buildTieResolutionDetail,
+  buildWindowCutRanking,
+  buildWindowCutReviewBuckets,
+  buildWindowCutWithFantasy,
+  getWindowCutCardDeductions,
+  type ConferenceGroupDefinition,
+  type RoundWindowData,
+  type WindowCutEntry,
+} from '../../lib/tournaments/conference-league-sudamericana';
+import {
   getClubAccentColor,
   getEntryTypeSportLabel,
 } from '../../lib/tournaments/conference-league-sudamericana/club-visuals';
@@ -103,140 +117,46 @@ const tieCards = preliminaryTies.map((tie: any) => {
 });
 
 // Groups data
-const groups = groupsDoc?.groups || [];
-const roundWindows: any[] = groupsDoc?.roundWindows || [];
-// Build fantasy breakdown per club from all round scores
-const fantasyByClub = new Map<string, { played: number; base: number; bonus: number; penalty: number; total: number }>();
-for (const rw of roundWindows) {
-  for (const fs of (rw.fantasyScores || [])) {
-    const prev = fantasyByClub.get(fs.clubId) || { played: 0, base: 0, bonus: 0, penalty: 0, total: 0 };
-    prev.played++;
-    prev.base += fs.basePoints;
-    prev.bonus += fs.bonusPoints;
-    prev.penalty += fs.penaltyPoints;
-    prev.total += fs.total;
-    fantasyByClub.set(fs.clubId, prev);
-  }
-}
-
-// Build fantasy standings by group, sorted by total desc
-const fantasyStandingsByGroup = new Map<string, any[]>();
-for (const group of groups) {
-  const rows = group.clubIds.map((id: string) => {
-    const fb = fantasyByClub.get(id) || { played: 0, base: 0, bonus: 0, penalty: 0, total: 0 };
-    return { ...clubMeta(id), clubId: id, ...fb };
-  });
-  rows.sort((a: any, b: any) => b.total - a.total || b.bonus - a.bonus || b.base - a.base);
-  fantasyStandingsByGroup.set(group.group, rows);
-}
-
-// Fantasy score lookup: roundId -> clubId -> score entry
-const roundScoreMap = new Map<string, Map<string, any>>();
-for (const rw of roundWindows) {
-  const m = new Map<string, any>();
-  for (const fs of (rw.fantasyScores || [])) {
-    m.set(fs.clubId, fs);
-  }
-  roundScoreMap.set(rw.roundId, m);
-}
-
-// Match sources lookup: roundId -> clubId -> match source entries
-const matchSourceMap = new Map<string, Map<string, any[]>>();
-for (const rw of roundWindows) {
-  const m = new Map<string, any[]>();
-  for (const ms of (rw.windowMatchSources || [])) {
-    if (!m.has(ms.clubId)) m.set(ms.clubId, []);
-    m.get(ms.clubId)!.push(ms);
-  }
-  matchSourceMap.set(rw.roundId, m);
-}
+const groups = (groupsDoc?.groups || []) as ConferenceGroupDefinition[];
+const roundWindows = (groupsDoc?.roundWindows || []) as RoundWindowData[];
+const fantasyByClub = buildFantasyByClub(roundWindows);
+const fantasyStandingsByGroup = buildFantasyStandingsByGroup(groups, fantasyByClub, clubMeta);
+const roundScoreMap = buildRoundScoreMap(roundWindows);
+const matchSourceMap = buildMatchSourceMap(roundWindows);
 
 // Audit data
-const windowCutRows = (windowCutDoc?.entries || []).map((entry: any) => ({
+const windowCutRows = ((windowCutDoc?.entries || []) as WindowCutEntry[]).map((entry: WindowCutEntry) => ({
   ...entry,
   ...clubMeta(entry.clubId),
 }));
 
-const windowCutRanking = [...windowCutRows]
-  .filter((entry: any) => entry.status === 'ok')
-  .sort((a: any, b: any) => {
-    if (b.total !== a.total) return b.total - a.total;
-    if ((b.gd ?? -999) !== (a.gd ?? -999)) return (b.gd ?? -999) - (a.gd ?? -999);
-    if ((b.gf ?? -999) !== (a.gf ?? -999)) return (b.gf ?? -999) - (a.gf ?? -999);
-    return String(a.sourceDate || '').localeCompare(String(b.sourceDate || ''));
-  });
+const windowCutRanking = buildWindowCutRanking(windowCutRows);
 
 const windowCutNoMatch = windowCutRows.filter((entry: any) => entry.status === 'no-match');
-
-function fantasyBreakdown(entry: any) {
-  if (entry.status !== 'ok') return { base: 0, bonus: 0, penalty: 0, total: 0, text: 'Sin partido oficial (no-match) ⇒ 0' };
-  const goalsFor = Number(entry.goalsFor ?? 0);
-  const goalsAgainst = Number(entry.goalsAgainst ?? 0);
-  const isWin = goalsFor > goalsAgainst;
-  const isDraw = goalsFor === goalsAgainst;
-  const isLoss = goalsFor < goalsAgainst;
-  const base = isWin ? 3 : isDraw ? 1 : 0;
-  const cleanSheet = goalsAgainst === 0 ? 1 : 0;
-  const margin = isWin ? Math.max(0, (goalsFor - goalsAgainst) - 1) : 0;
-  const bonus = cleanSheet + margin;
-  const wideLoss = isLoss && goalsAgainst - goalsFor >= 3 ? -1 : 0;
-  const yellowPenalty = -(Number(entry.yellowCards ?? 0) * 0.25);
-  const redPenalty = -(Number(entry.redCards ?? 0));
-  const penalty = wideLoss + yellowPenalty + redPenalty;
-  const total = base + bonus + penalty;
-  const chunks: string[] = [`base ${base} (${isWin ? 'victoria' : isDraw ? 'empate' : 'derrota'})`];
-  if (cleanSheet) chunks.push('+1 arco en cero');
-  if (margin) chunks.push(`+${margin} margen`);
-  if (wideLoss) chunks.push('-1 derrota amplia');
-  if (yellowPenalty < 0) chunks.push(`${yellowPenalty} amarillas`);
-  if (redPenalty < 0) chunks.push(`${redPenalty} rojas`);
-  chunks.push(`= ${total}`);
-  return { base, bonus, penalty, total, text: chunks.join(' · ') };
-}
-
-function cardDeductions(entry: any): number | null {
-  if (entry?.yellowCards === null || entry?.yellowCards === undefined) return null;
-  if (entry?.redCards === null || entry?.redCards === undefined) return null;
-  return Number(entry.yellowCards) * 0.25 + Number(entry.redCards);
-}
-
-const windowCutWithFantasy = windowCutRows.map((entry: any) => ({ ...entry, fantasy: fantasyBreakdown(entry) }));
+const windowCutWithFantasy = buildWindowCutWithFantasy(windowCutRows);
 const windowCutByClubId = new Map<string, any>(
   windowCutWithFantasy.map((entry: any) => [entry.clubId, entry] as [string, any])
 );
-
-function tieResolutionDetail(tie: any) {
-  const a = windowCutByClubId.get(tie.clubAId);
-  const b = windowCutByClubId.get(tie.clubBId);
-  if (!a || !b) return 'Sin datos de ventana';
-  if (a.total !== b.total) return 'Desempate: total fantasy';
-  const deductA = cardDeductions(a);
-  const deductB = cardDeductions(b);
-  if (deductA !== null && deductB !== null && deductA !== deductB) return 'Desempate: menos tarjetas';
-  if ((a.gf ?? -999) !== (b.gf ?? -999)) return 'Desempate: goles marcados';
-  const awayA = a.homeAway === 'away';
-  const awayB = b.homeAway === 'away';
-  if (awayA !== awayB) return 'Desempate: condición visita';
-  return 'Desempate: criterio administrativo';
-}
 
 const preliminaryWikiRows = tieCards.map((tie: any) => ({
   ...tie,
   sourceA: windowCutByClubId.get(tie.clubAId),
   sourceB: windowCutByClubId.get(tie.clubBId),
-  resolutionDetail: tieResolutionDetail(tie),
+  resolutionDetail: buildTieResolutionDetail(windowCutByClubId.get(tie.clubAId), windowCutByClubId.get(tie.clubBId)),
 }));
 
-const reviewNoMatch = windowCutWithFantasy.filter((e: any) => e.status === 'no-match');
-const reviewNonEspn = windowCutWithFantasy.filter((e: any) => e.status === 'ok' && e.sourceUrl && !String(e.sourceUrl).includes('espn.com'));
+const reviewBuckets = buildWindowCutReviewBuckets(windowCutWithFantasy);
+const reviewNoMatch = reviewBuckets.noMatch;
+const reviewNonEspn = reviewBuckets.nonEspn;
 const reviewAdministrativeTies = preliminaryWikiRows.filter((t: any) => t.resolvedBy === 'administrative');
-const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 'ok' && (e.yellowCards === null || e.yellowCards === undefined || e.redCards === null || e.redCards === undefined));
+const reviewMissingCards = reviewBuckets.missingCards;
 ---
 
 <Layout
   title={`Conference League Sudamericana — ${SITE_TITLE}`}
   description="Torneo fantasy por ventanas: edición 2026"
   currentPath="/conference-league-sudamericana"
+  image="/og/conference-league-sudamericana.svg"
 >
   <section class="page-hero">
     <div class="container hero-inner">
@@ -559,7 +479,7 @@ const reviewMissingCards = windowCutWithFantasy.filter((e: any) => e.status === 
                     <br /><small>{tie.sourceB?.fantasy?.text || 'Sin datos'}</small>
                   </td>
                   <td><strong>{tie.scoreLabel}</strong></td>
-                  <td>{cardDeductions(tie.sourceA) ?? '—'} / {cardDeductions(tie.sourceB) ?? '—'}</td>
+                  <td>{getWindowCutCardDeductions(tie.sourceA) ?? '—'} / {getWindowCutCardDeductions(tie.sourceB) ?? '—'}</td>
                   <td>{tie.resolutionDetail}</td>
                   <td>{tie.winnerName || '—'}</td>
                 </tr>

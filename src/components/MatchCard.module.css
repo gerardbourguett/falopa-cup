@@ -1,51 +1,95 @@
+/* ═══════════════════════════════════════════════════════
+   MATCH CARD — Brutalist Football Scoreboard
+   Desktop: fila horizontal clásica
+   Mobile:  cara a cara con scoreboard de estadio
+   ═══════════════════════════════════════════════════════ */
+
 .matchCard {
   opacity: 0;
   transform: translateY(10px);
-  border: 1px solid var(--color-bg-elevated);
-  border-left: 4px solid transparent;
+  border: 2px solid #000;
   background: var(--color-bg-secondary);
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: cardEntry 0.35s ease-out forwards;
   animation-delay: var(--delay);
+  position: relative;
+  overflow: hidden;
 }
 
-@keyframes fadeIn {
-  to {
+.matchCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.03;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 1px,
+    #000 1px,
+    #000 2px
+  );
+  pointer-events: none;
+}
+
+@keyframes cardEntry {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+  }
+  60% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(-1px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
+/* ─── State: title change ─── */
+
 .titleChange {
-  border-left-color: var(--color-liga-ascenso);
+  border-color: var(--color-liga-ascenso);
+  box-shadow:
+    2px 2px 0 0 var(--color-liga-ascenso),
+    inset 0 0 0 1px rgba(231, 29, 54, 0.08);
 }
+
 
 .seedingCard {
-  border-left-color: var(--color-liga-primera);
+  border-color: var(--color-liga-primera);
+  box-shadow: 2px 2px 0 0 var(--color-liga-primera);
 }
 
-.seedingHeader,
-.matchHeader {
+/* ─── Header row ─── */
+
+.matchHeader,
+.seedingHeader {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-xs);
-  padding: var(--space-xs) var(--space-sm);
-  border-bottom: 1px solid var(--color-bg-elevated);
-  background: var(--color-bg-tertiary);
+  padding: 0.45rem var(--space-sm);
+  border-bottom: 2px solid #000;
+  background: #000;
 }
 
 .seedingHeader {
   justify-content: space-between;
 }
 
-.seedingBadge,
 .matchCompetition,
+.seedingBadge,
 .statusBadge {
   font-family: var(--font-display);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  line-height: 1;
+}
+
+.matchCompetition {
+  color: var(--comp-color);
 }
 
 .seedingBadge {
@@ -53,19 +97,17 @@
 }
 
 .matchDate {
-  color: var(--color-text-muted);
+  color: #aaa;
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
-}
-
-.matchCompetition {
-  color: var(--comp-color);
+  line-height: 1;
 }
 
 .statusBadge {
   margin-left: auto;
-  padding: 0.2rem var(--space-xs);
+  padding: 0.2rem 0.45rem;
+  line-height: 1;
 }
 
 .changeBadge {
@@ -79,14 +121,16 @@
 }
 
 .drawBadge {
-  background: #444;
+  background: #555;
   color: #fff;
 }
 
 .pendingBadge {
   background: var(--comp-color);
-  color: #fff;
+  color: #000;
 }
+
+/* ─── Seeding body ─── */
 
 .seedingBody {
   display: flex;
@@ -94,16 +138,12 @@
   justify-content: space-between;
   gap: var(--space-sm);
   flex-wrap: wrap;
-  padding: var(--space-sm);
-}
-
-.seedingTeam,
-.team {
-  display: flex;
-  align-items: center;
+  padding: var(--space-sm) var(--space-md);
 }
 
 .seedingTeam {
+  display: flex;
+  align-items: center;
   gap: var(--space-xs);
 }
 
@@ -114,17 +154,22 @@
   font-style: italic;
 }
 
+/* ─── Match body: DESKTOP ─── */
+
 .matchBody {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-xs);
-  padding: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
 }
 
 .team {
-  gap: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   flex: 1;
+  min-width: 0;
 }
 
 .teamHome {
@@ -139,11 +184,12 @@
 .teamLogo,
 .teamLogoSm {
   flex-shrink: 0;
-  border: 1px solid var(--color-bg-elevated);
+  border: 1px solid #000;
+  background: var(--color-bg-primary);
+  object-fit: contain;
 }
 
 .teamName,
-.teamNameShort,
 .newHolderName {
   color: var(--color-text-primary);
   font-family: var(--font-display);
@@ -153,18 +199,19 @@
 }
 
 .teamName {
-  font-size: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.1;
 }
 
 .teamNameShort {
   display: none;
-  font-size: 0.9rem;
 }
 
-.winner .teamName,
-.winner .teamNameShort {
+.winner .teamName {
   color: var(--color-liga-primera);
 }
+
+/* ─── Score Block ─── */
 
 .scoreBlock {
   display: flex;
@@ -188,12 +235,12 @@
 }
 
 .scoreboard {
-  min-width: 2.2rem;
-  padding: 0.15rem 0.6rem;
+  min-width: 2.5rem;
+  padding: 0.2rem 0.6rem;
   border: 2px solid #000;
-  background: #111;
-  color: #fff;
-  font-size: 1.5rem;
+  background: #0a0a0a;
+  color: var(--color-conference-bright);
+  font-size: 1.6rem;
   line-height: 1;
   text-align: center;
 }
@@ -204,7 +251,7 @@
 }
 
 .pendingScore {
-  padding: 0.15rem 0.6rem;
+  padding: 0.2rem 0.75rem;
   border: 2px dashed var(--comp-color);
   color: var(--comp-color);
   font-size: 1rem;
@@ -215,39 +262,124 @@
   color: var(--color-text-muted);
   font-family: var(--font-body);
   font-size: 0.55rem;
+  letter-spacing: 0.05em;
 }
+
+/* ─── New holder footer ─── */
 
 .newHolder {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  padding: var(--space-xs) var(--space-sm);
-  border-top: 2px solid var(--color-bg-elevated);
-  background: var(--color-bg-tertiary);
+  padding: 0.4rem var(--space-md);
+  border-top: 2px solid var(--color-liga-ascenso);
+  background: rgba(231, 29, 54, 0.06);
 }
 
 .newHolderLabel {
   color: var(--color-text-muted);
   font-family: var(--font-body);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .newHolderName {
-  color: var(--comp-color, var(--color-liga-primera));
-  font-size: 0.9rem;
+  color: var(--color-liga-ascenso);
+  font-size: 0.85rem;
 }
 
+/* ═══════════════════════════════════════════════════════
+   MOBILE — Scoreboard de Estadio
+   ═══════════════════════════════════════════════════════ */
+
 @media (max-width: 600px) {
-  .matchBody {
+  .matchCard {
+    border-width: 2px;
+  }
+
+  .titleChange {
+    border-width: 3px;
+    box-shadow: 2px 2px 0 0 var(--color-liga-ascenso);
+  }
+
+  .seedingCard {
+    box-shadow: 2px 2px 0 0 var(--color-liga-primera);
+  }
+
+  /* ─── Header mobile ─── */
+
+  .matchHeader,
+  .seedingHeader {
+    padding: 0.35rem var(--space-sm);
+    gap: 0.3rem;
+    border-bottom-width: 1px;
+  }
+
+  .matchCompetition,
+  .seedingBadge {
+    font-size: 0.55rem;
+  }
+
+  .matchDate {
+    font-size: 0.6rem;
+  }
+
+  .statusBadge {
+    font-size: 0.5rem;
+    padding: 0.15rem 0.35rem;
+  }
+
+  /* ─── Seeding mobile ─── */
+
+  .seedingBody {
+    padding: var(--space-sm);
     flex-direction: column;
+    align-items: flex-start;
     gap: var(--space-xs);
   }
 
+  .seedingTeam {
+    gap: var(--space-xs);
+  }
+
+  /* ─── Match body mobile: cara a cara ─── */
+
+  .matchBody {
+    display: grid;
+    grid-template-areas:
+      "score score"
+      "home  away";
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xs);
+    padding: var(--space-sm) var(--space-sm) var(--space-md);
+    align-items: start;
+  }
+
   .team {
-    justify-content: center !important;
+    flex: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.3rem;
+  }
+
+  .teamHome {
+    grid-area: home;
+    justify-content: center;
+  }
+
+  .teamAway {
+    grid-area: away;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .teamLogo {
+    width: 44px;
+    height: 44px;
+    border-width: 2px;
   }
 
   .teamName {
@@ -255,15 +387,75 @@
   }
 
   .teamNameShort {
-    display: inline;
+    display: block;
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.15;
+    max-width: 100%;
   }
+
+  .winner .teamNameShort {
+    color: var(--color-liga-primera);
+  }
+
+  /* ─── Score block mobile: LED stadium board ─── */
 
   .scoreBlock {
-    order: -1;
+    grid-area: score;
+    padding: var(--space-xs) var(--space-sm) var(--space-sm);
+    margin: 0 calc(var(--space-sm) * -1);
+    border-bottom: 2px solid #000;
+    background: #0a0a0a;
   }
 
-  .seedingBody {
-    flex-direction: column;
-    align-items: flex-start;
+  .scoreRow {
+    gap: 0.5rem;
+  }
+
+  .scoreboard {
+    font-size: 1.75rem;
+    min-width: 2.6rem;
+    padding: 0.25rem 0.7rem;
+    background: #111;
+    color: var(--color-conference-bright);
+    border-color: #222;
+  }
+
+  .scoreDash {
+    color: #666;
+    font-size: 1.3rem;
+  }
+
+  .pendingScore {
+    font-size: 1.2rem;
+    padding: 0.3rem 1rem;
+    min-width: auto;
+  }
+
+  .penalties {
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+    color: #666;
+  }
+
+  /* ─── New holder mobile ─── */
+
+  .newHolder {
+    padding: 0.35rem var(--space-sm);
+    border-top-width: 2px;
+    justify-content: center;
+    gap: 0.3rem;
+  }
+
+  .newHolderLabel {
+    font-size: 0.6rem;
+  }
+
+  .newHolderName {
+    font-size: 0.78rem;
   }
 }
