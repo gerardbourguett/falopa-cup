@@ -213,11 +213,31 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-05-30",
       "competition": "Liga de Primera · Fecha 14",
       "holderId": "deportes-concepcion",
-      "challengerId": "universidad-de-chile"
+      "challengerId": "universidad-de-chile",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "universidad-de-chile"
+    },
+    {
+      "type": "match",
+      "date": "2026-06-07",
+      "competition": "Copa de La Liga · Fecha 6",
+      "holderId": "universidad-de-chile",
+      "challengerId": "audax-italiano",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "universidad-de-chile"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-06-14",
+      "competition": "Liga de Primera · Fecha 15",
+      "holderId": "universidad-de-chile",
+      "challengerId": "union-la-calera"
     }
   ]
 }
