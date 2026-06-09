@@ -164,6 +164,16 @@
       "holderId": "rangers",
       "challengerId": "cobreloa",
       "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-06-07",
+      "competition": "Liga de Ascenso - Fecha 15",
+      "holderId": "rangers",
+      "challengerId": "deportes-santa-cruz",
+      "scoreHolder": 0,
       "scoreChallenger": 1,
       "newHolderId": "rangers"
     },
