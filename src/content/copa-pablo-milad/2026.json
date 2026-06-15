@@ -169,11 +169,21 @@
     },
     {
       "type": "match",
-      "status": "pending",
-      "date": "2026-06-06",
+      "date": "2026-06-07",
       "competition": "Liga de Ascenso - Fecha 15",
       "holderId": "rangers",
-      "challengerId": "deportes-santa-cruz"
+      "challengerId": "deportes-santa-cruz",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-06-20",
+      "competition": "Copa Chile · Fecha 3",
+      "holderId": "rangers",
+      "challengerId": "universidad-de-concepcion"
     }
   ]
 }
