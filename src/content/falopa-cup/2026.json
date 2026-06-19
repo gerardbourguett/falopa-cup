@@ -233,11 +233,23 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-06-14",
       "competition": "Liga de Primera · Fecha 15",
       "holderId": "universidad-de-chile",
-      "challengerId": "union-la-calera"
+      "challengerId": "union-la-calera",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "universidad-de-chile"
+    },
+    {
+      "type": "match",
+      "date": "2026-06-18",
+      "competition": "Liga de Primera · Fecha 16",
+      "holderId": "universidad-de-chile",
+      "challengerId": "ohiggins",
+      "scoreHolder": 2,
+      "scoreChallenger": 0,
+      "newHolderId": "universidad-de-chile"
     }
   ]
 }
