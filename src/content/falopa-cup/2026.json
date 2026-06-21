@@ -250,6 +250,14 @@
       "scoreHolder": 2,
       "scoreChallenger": 0,
       "newHolderId": "universidad-de-chile"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-06-21",
+      "competition": "Copa Chile · Fecha 3",
+      "holderId": "universidad-de-chile",
+      "challengerId": "santiago-wanderers"
     }
   ]
 }

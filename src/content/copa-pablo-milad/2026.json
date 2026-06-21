@@ -179,11 +179,21 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-06-20",
       "competition": "Copa Chile · Fecha 3",
       "holderId": "rangers",
-      "challengerId": "universidad-de-concepcion"
+      "challengerId": "universidad-de-concepcion",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "universidad-de-concepcion"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-06-25",
+      "competition": "Copa Chile · Fecha 4",
+      "holderId": "universidad-de-concepcion",
+      "challengerId": "nublense"
     }
   ]
 }
