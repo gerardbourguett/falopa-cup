@@ -253,6 +253,16 @@
     },
     {
       "type": "match",
+      "date": "2026-06-21",
+      "competition": "Copa Chile · Fecha 2",
+      "holderId": "universidad-de-chile",
+      "challengerId": "santiago-wanderers",
+      "scoreHolder": 4,
+      "scoreChallenger": 1,
+      "newHolderId": "universidad-de-chile"
+    },
+    {
+      "type": "match",
       "date": "2026-06-24",
       "competition": "Copa Chile · Fecha 3",
       "holderId": "universidad-de-chile",
