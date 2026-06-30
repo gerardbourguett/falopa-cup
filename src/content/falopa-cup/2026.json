@@ -253,11 +253,23 @@
     },
     {
       "type": "match",
-      "status": "pending",
-      "date": "2026-06-21",
+      "date": "2026-06-24",
       "competition": "Copa Chile · Fecha 3",
       "holderId": "universidad-de-chile",
-      "challengerId": "santiago-wanderers"
+      "challengerId": "union-la-calera",
+      "scoreHolder": 3,
+      "scoreChallenger": 3,
+      "newHolderId": "universidad-de-chile"
+    },
+    {
+      "type": "match",
+      "date": "2026-06-28",
+      "competition": "Copa Chile · Fecha 4",
+      "holderId": "universidad-de-chile",
+      "challengerId": "union-san-felipe",
+      "scoreHolder": 2,
+      "scoreChallenger": 0,
+      "newHolderId": "universidad-de-chile"
     }
   ]
 }

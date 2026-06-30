@@ -189,11 +189,23 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-06-25",
+      "competition": "Copa Chile · Fecha 1",
+      "holderId": "universidad-de-concepcion",
+      "challengerId": "nublense",
+      "scoreHolder": 2,
+      "scoreChallenger": 4,
+      "newHolderId": "universidad-de-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2026-06-28",
       "competition": "Copa Chile · Fecha 4",
       "holderId": "universidad-de-concepcion",
-      "challengerId": "nublense"
+      "challengerId": "curico-unido",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "universidad-de-concepcion"
     }
   ]
 }
