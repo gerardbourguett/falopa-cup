@@ -206,6 +206,16 @@
       "scoreHolder": 2,
       "scoreChallenger": 2,
       "newHolderId": "universidad-de-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2026-07-01",
+      "competition": "Copa Chile · Fecha 2",
+      "holderId": "universidad-de-concepcion",
+      "challengerId": "nublense",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "universidad-de-concepcion"
     }
   ]
 }
