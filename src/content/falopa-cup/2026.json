@@ -290,6 +290,26 @@
       "scoreHolder": 0,
       "scoreChallenger": 1,
       "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2026-07-04",
+      "competition": "Copa Chile · Fecha 5",
+      "holderId": "union-la-calera",
+      "challengerId": "union-san-felipe",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2026-07-08",
+      "competition": "Copa de La Liga · Semifinal",
+      "holderId": "union-la-calera",
+      "challengerId": "coquimbo-unido",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "coquimbo-unido"
     }
   ]
 }
