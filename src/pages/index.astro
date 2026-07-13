@@ -134,6 +134,18 @@ function formatSinceDate(value?: string | Date | null) {
     year: "2-digit",
   });
 }
+
+const heroBulletinTitle = falopaLatestChange
+  ? describeTitleChange(falopaLatestChange, "la Falopa Cup")
+  : "La Falopa Cup sigue en disputa";
+const heroBulletinMeta = falopaLatestChange
+  ? `${falopaLatestChange.scoreHolder}-${falopaLatestChange.scoreChallenger} · ${formatShortDate(falopaLatestChange.date)} · Último golpe de la temporada`
+  : "Sin cambios recientes registrados";
+const heroTickerItems = [
+  falopaLatestChange ? `Falopa: ${describeTitleChange(falopaLatestChange, "la Falopa Cup")}` : "Falopa sin cambios recientes",
+  miladLatestChange ? `Milad: ${describeTitleChange(miladLatestChange, "la Copa Pablo Milad")}` : "Milad sin cambios recientes",
+  `Actualizado al ${formatSinceDate(lastUpdatedDate) || "sin fecha"}`,
+];
 ---
 
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION} currentPath="/" image="/og/home.svg">
@@ -143,6 +155,10 @@ function formatSinceDate(value?: string | Date | null) {
     subtitle="Campeón No Oficial + Copa del Más Malo"
     description="Seguimos dos títulos itinerantes del fútbol chileno: el campeón no oficial y la copa del más malo. Inspirado en el Campeonato Mundial No Oficial."
     year={falopaYear}
+    bulletinLabel="Último cambio"
+    bulletinTitle={heroBulletinTitle}
+    bulletinMeta={heroBulletinMeta}
+    tickerItems={heroTickerItems}
   />
 
   <section class={styles.pulseSection}>
