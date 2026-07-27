@@ -310,6 +310,20 @@
       "scoreHolder": 0,
       "scoreChallenger": 1,
       "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2026-07-12",
+      "competition": "Copa de La Liga · Semifinal",
+      "holderId": "coquimbo-unido",
+      "challengerId": "union-la-calera",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "penalties": {
+        "holder": 4,
+        "challenger": 2
+      },
+      "newHolderId": "union-la-calera"
     }
   ]
 }

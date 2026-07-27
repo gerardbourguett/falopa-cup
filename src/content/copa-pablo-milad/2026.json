@@ -226,6 +226,16 @@
       "scoreHolder": 2,
       "scoreChallenger": 0,
       "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-07-26",
+      "competition": "Liga de Ascenso - Fecha 16",
+      "holderId": "rangers",
+      "challengerId": "deportes-copiapo",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "rangers"
     }
   ]
 }
