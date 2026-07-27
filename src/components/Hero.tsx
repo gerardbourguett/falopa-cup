@@ -26,12 +26,15 @@ export function Hero({
 
   return (
     <section className={styles.hero}>
-      <div className={styles.paperLabel}>Diario no oficial del fútbol chileno</div>
+      <div className={styles.paperLabel}>
+        <span>FC Sport / Portada</span>
+        <span>Resultados · Contexto · Estadísticas</span>
+      </div>
 
       <div className={styles.heroGrid}>
         <div className={styles.content}>
           <div className={styles.seasonBadge}>TEMPORADA {year}</div>
-          <p className={styles.kicker}>Especial títulos cursed</p>
+          <p className={styles.kicker}>Cobertura de temporada</p>
           <h1 className={styles.title}>{title}</h1>
           <div className={styles.subtitle}>{subtitle}</div>
 
