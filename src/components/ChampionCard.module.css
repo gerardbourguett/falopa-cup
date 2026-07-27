@@ -1,23 +1,44 @@
 .link {
   display: block;
+  height: 100%;
   color: inherit;
   text-decoration: none;
 }
 
 .card {
   position: relative;
+  display: flex;
+  flex-direction: column;
   height: 100%;
-  border: 3px solid var(--card-accent);
-  background: var(--color-bg-secondary);
+  border: 4px solid var(--card-accent);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0) 42%),
+    var(--color-bg-secondary);
   box-shadow: var(--shadow-card);
+  overflow: hidden;
   transition:
     transform var(--transition-productive),
     box-shadow var(--transition-productive),
     border-color var(--transition-productive);
 }
 
+.card::after {
+  position: absolute;
+  right: -1.25rem;
+  bottom: -1.85rem;
+  color: color-mix(in srgb, var(--card-accent) 24%, transparent);
+  content: "CAMPEÓN";
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  pointer-events: none;
+  transform: rotate(-6deg);
+}
+
 .link:hover .card {
-  transform: translate(-3px, -3px);
+  transform: translate(-4px, -4px) rotate(-0.35deg);
   box-shadow: var(--shadow-card-hover);
 }
 
@@ -42,34 +63,40 @@
 .year {
   color: var(--card-accent-contrast);
   font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 700;
 }
 
 .bannerText {
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .badge {
   position: absolute;
-  top: -10px;
-  left: 50%;
-  z-index: 1;
-  transform: translateX(-50%);
+  top: 2.35rem;
+  right: var(--space-md);
+  z-index: 2;
+  transform: rotate(2deg);
   padding: var(--space-2xs) var(--space-sm);
+  border: 2px solid var(--color-text-primary);
   background: var(--color-holder);
   color: var(--color-bg-primary);
   font-family: var(--font-display);
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.1em;
+  box-shadow: 0.18rem 0.18rem 0 var(--color-text-primary);
 }
 
 .content {
-  display: flex;
-  align-items: center;
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
   gap: var(--space-md);
+  align-items: center;
+  flex: 1;
   padding: var(--space-xl) var(--space-md) var(--space-lg);
 }
 
@@ -78,21 +105,23 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 64px;
-  height: 64px;
-  border: 2px solid var(--card-accent);
+  width: 112px;
+  height: 112px;
+  border: 3px solid var(--card-accent);
   background: var(--color-bg-primary);
+  box-shadow: 0.25rem 0.25rem 0 var(--color-text-primary);
+  transform: rotate(-2deg);
 }
 
 .logo {
-  width: 44px;
-  height: 44px;
+  width: 76px;
+  height: 76px;
   object-fit: contain;
 }
 
 .logoFallback {
   color: var(--card-accent);
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .clubInfo {
@@ -103,53 +132,75 @@
 .clubName {
   color: var(--color-text-primary);
   font-family: var(--font-display);
-  font-size: 1.4rem;
+  font-size: clamp(1.55rem, 3.2vw, 2.45rem);
   font-weight: 700;
-  line-height: 1.2;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
   text-transform: uppercase;
   text-wrap: balance;
 }
 
 .sinceDate {
-  color: var(--card-accent-text);
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  font-weight: 600;
+  display: inline-block;
+  margin-top: var(--space-sm);
+  padding: 0.22rem 0.45rem;
+  background: var(--card-accent);
+  color: var(--card-accent-contrast);
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .nextDuel {
-  margin-top: var(--space-xs);
-  color: var(--color-text-muted);
+  margin-top: var(--space-sm);
+  color: var(--color-text-secondary);
   font-family: var(--font-body);
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
 .footer {
-  padding: var(--space-xs) var(--space-md);
-  border-top: 2px solid var(--card-accent);
+  position: relative;
+  z-index: 1;
+  padding: var(--space-sm) var(--space-md);
+  border-top: 3px solid var(--card-accent);
   background: var(--color-bg-primary);
 }
 
 .footerText {
-  color: var(--color-text-muted);
+  color: var(--color-text-primary);
   font-family: var(--font-display);
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-align: center;
   text-transform: uppercase;
 }
 
-@media (max-width: 520px) {
+@media (max-width: 640px) {
   .content {
-    align-items: flex-start;
+    grid-template-columns: 84px minmax(0, 1fr);
   }
 
-  .clubName {
-    font-size: 1.15rem;
+  .logoFrame {
+    width: 84px;
+    height: 84px;
+  }
+
+  .logo {
+    width: 58px;
+    height: 58px;
+  }
+
+  .badge {
+    position: static;
+    display: inline-block;
+    width: max-content;
+    margin: var(--space-sm) var(--space-md) 0;
+    transform: none;
   }
 }

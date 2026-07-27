@@ -1,94 +1,279 @@
 .hero {
   position: relative;
-  padding: var(--space-3xl) var(--space-md);
-  background: var(--color-bg-primary);
-  border-bottom: 3px solid var(--color-bg-elevated);
+  padding: var(--space-xl) var(--space-md) 0;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.04) 1px, transparent 1px) 0 0 / 22px 22px,
+    linear-gradient(180deg, var(--color-bg-secondary), var(--color-bg-primary) 62%);
+  border-bottom: 4px solid var(--color-text-primary);
   overflow: clip;
 }
 
-.seasonBadge,
-.leagueBadge {
+.hero::before {
   position: absolute;
-  top: var(--space-md);
-  font-family: var(--font-scoreboard);
-  font-size: 0.75rem;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background: radial-gradient(circle at 18% 18%, rgba(244, 96, 54, 0.18), transparent 28%),
+    radial-gradient(circle at 82% 25%, rgba(231, 29, 54, 0.12), transparent 26%);
+  mix-blend-mode: multiply;
+}
+
+.paperLabel {
+  position: relative;
+  z-index: 1;
+  max-width: var(--page-max-width);
+  margin: 0 auto var(--space-md);
+  padding: var(--space-xs) var(--space-sm);
+  border-top: 2px solid var(--color-text-primary);
+  border-bottom: 2px solid var(--color-text-primary);
+  color: var(--color-text-secondary);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.16em;
+  text-align: center;
   text-transform: uppercase;
 }
 
-.seasonBadge {
-  left: var(--space-md);
-  padding: var(--space-xs) var(--space-md);
-  background: var(--color-liga-primera);
-  color: var(--color-bg-primary);
-}
-
-.leagueBadge {
-  right: var(--space-md);
-  padding: var(--space-xs) var(--space-sm);
-  border: 2px solid var(--color-liga-ascenso);
-  background: var(--color-bg-secondary);
-  color: var(--color-liga-ascenso);
-  text-align: center;
+.heroGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  gap: var(--space-xl);
+  align-items: stretch;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
 }
 
 .content {
-  max-width: 700px;
-  margin: 0 auto;
-  padding-top: var(--space-md);
-  text-align: center;
+  min-width: 0;
+  padding: var(--space-xl) 0 var(--space-2xl);
 }
 
-.title {
-  margin-bottom: var(--space-xs);
-  color: var(--color-text-primary);
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 8vw, 5rem);
+.seasonBadge {
+  display: inline-block;
+  margin-bottom: var(--space-md);
+  padding: var(--space-xs) var(--space-md);
+  background: var(--color-liga-primera);
+  color: var(--color-bg-primary);
+  font-family: var(--font-scoreboard);
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0.25rem 0.25rem 0 var(--color-text-primary);
 }
 
-.subtitle {
-  margin-bottom: var(--space-lg);
-  color: var(--color-text-muted);
+.kicker {
+  margin: 0 0 var(--space-xs);
+  color: var(--color-liga-ascenso);
   font-family: var(--font-display);
-  font-size: 1rem;
-  letter-spacing: 0.15em;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
+.title {
+  max-width: 860px;
+  margin: 0 0 var(--space-sm);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: clamp(4.25rem, 13vw, 10.5rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.78;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.subtitle {
+  display: inline;
+  padding: 0.08em 0.18em;
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.6vw, 2.1rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.35;
+  text-transform: uppercase;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
 .descriptionPanel {
-  margin-bottom: var(--space-xl);
+  max-width: 720px;
+  margin: var(--space-lg) 0 var(--space-xl);
   padding: 1.25rem;
-  border: var(--border-soft);
-  background: var(--color-bg-secondary);
-  text-align: left;
+  border: 3px solid var(--color-text-primary);
+  background: var(--color-bg-primary);
   box-shadow: var(--shadow-card);
+  transform: rotate(-0.4deg);
 }
 
 .description {
   margin: 0;
   color: var(--color-text-secondary);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: clamp(1rem, 1.8vw, 1.18rem);
   line-height: 1.7;
 }
 
-@media (max-width: 768px) {
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.secondaryLink {
+  padding: 0.65rem 0.85rem;
+  border: 2px solid var(--color-text-primary);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0.22rem 0.22rem 0 var(--color-text-primary);
+  transition: transform var(--transition-productive), box-shadow var(--transition-productive);
+}
+
+.secondaryLink:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 0.35rem 0.35rem 0 var(--color-text-primary);
+}
+
+.bulletin {
+  align-self: center;
+  border: 3px solid var(--color-text-primary);
+  background: var(--color-bg-primary);
+  box-shadow: var(--shadow-card-hover);
+  transform: rotate(1deg);
+}
+
+.bulletinHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-xs) var(--space-md);
+  background: var(--color-liga-ascenso);
+  color: var(--color-bg-primary);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bulletinTitle {
+  margin: 0;
+  padding: var(--space-lg) var(--space-md) var(--space-md);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 3vw, 2.15rem);
+  font-weight: 700;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.bulletinMeta {
+  margin: 0;
+  padding: 0 var(--space-md) var(--space-lg);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.signalBar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 3px solid var(--color-text-primary);
+}
+
+.signalBar span {
+  min-height: 0.8rem;
+  background: var(--color-liga-primera);
+}
+
+.signalBar span:nth-child(even) {
+  background: var(--color-text-primary);
+}
+
+.ticker {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: stretch;
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  border: 3px solid var(--color-text-primary);
+  border-bottom: 0;
+  background: var(--color-bg-primary);
+  box-shadow: var(--shadow-card);
+}
+
+.tickerLabel {
+  flex: 0 0 auto;
+  padding: 0.75rem var(--space-md);
+  background: var(--color-text-primary);
+  color: var(--color-bg-primary);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tickerText {
+  min-width: 0;
+  padding: 0.75rem var(--space-md);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .content {
+    padding-bottom: var(--space-lg);
+  }
+
+  .bulletin {
+    align-self: stretch;
+    transform: none;
+  }
+}
+
+@media (max-width: 640px) {
   .hero {
-    padding-top: calc(var(--space-3xl) + var(--space-xl));
+    padding-inline: var(--space-sm);
   }
 
-  .seasonBadge,
-  .leagueBadge {
-    position: static;
-    display: inline-block;
-    margin-bottom: var(--space-md);
+  .title {
+    font-size: clamp(3.5rem, 21vw, 5.8rem);
   }
 
-  .seasonBadge {
-    margin-right: var(--space-sm);
+  .ticker {
+    display: block;
+  }
+
+  .tickerLabel,
+  .tickerText {
+    display: block;
   }
 }
