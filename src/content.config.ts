@@ -110,6 +110,7 @@ const conferenceOfficialMatchSourceSchema = z.object({
     sourceCompetitionType: z.enum(['local-league', 'local-cup', 'conmebol', 'friendly']),
     sourceCompetition: z.string(),
     sourceDate: z.coerce.date(),
+    sourceUrl: z.string().url().optional(),
     homeClub: z.string(),
     awayClub: z.string(),
     goalsFor: z.number().nullable().optional(),
