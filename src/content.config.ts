@@ -18,6 +18,7 @@ const matchSchema = z.object({
     status: z.enum(['played', 'pending']).optional(),
     date: z.coerce.date(),
     competition: z.string().optional(),
+    sourceUrl: z.string().url().optional(),
     reason: z.string().optional(),
     holderId: z.string().optional(),
     challengerId: z.string().optional(),

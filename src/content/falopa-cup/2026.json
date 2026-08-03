@@ -324,6 +324,37 @@
         "challenger": 2
       },
       "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2026-07-27",
+      "competition": "Liga de Primera · Fecha 17",
+      "sourceUrl": "https://www.flashscore.cl/detalle-del-partido/futbol/everton-Kr3LOxgm/u-la-calera-M34g8ulJ/?mid=x23FbJfl",
+      "holderId": "union-la-calera",
+      "challengerId": "everton",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "union-la-calera"
+    },
+    {
+      "type": "match",
+      "date": "2026-08-01",
+      "competition": "Liga de Primera · Fecha 18",
+      "sourceUrl": "https://www.flashscore.cl/detalle-del-partido/futbol/cobresal-YeUwzehC/u-la-calera-M34g8ulJ/?mid=plrb9z96",
+      "holderId": "union-la-calera",
+      "challengerId": "cobresal",
+      "scoreHolder": 0,
+      "scoreChallenger": 4,
+      "newHolderId": "cobresal"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-08-08",
+      "competition": "Liga de Primera · Fecha 19",
+      "sourceUrl": "https://www.flashscore.cl/detalle-del-partido/futbol/cobresal-YeUwzehC/u-catolica-Qe432hiO/?mid=EuK7Pna4",
+      "holderId": "cobresal",
+      "challengerId": "universidad-catolica"
     }
   ]
 }
