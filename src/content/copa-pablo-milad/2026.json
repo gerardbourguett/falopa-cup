@@ -250,12 +250,21 @@
     },
     {
       "type": "match",
-      "status": "pending",
-      "date": "2026-08-04",
-      "competition": "Copa Chile · Fecha 6",
-      "sourceUrl": "https://www.flashscore.cl/detalle-del-partido/futbol/nublense-vVvwgdNn/rangers-QZfOjEMB/?mid=lMNDRtVg",
+      "date": "2026-08-09",
+      "competition": "Liga de Ascenso - Fecha 18",
       "holderId": "rangers",
-      "challengerId": "nublense"
+      "challengerId": "curico-unido",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-08-19",
+      "competition": "Liga de Ascenso - Fecha 19",
+      "holderId": "rangers",
+      "challengerId": "deportes-recoleta"
     }
   ]
 }
