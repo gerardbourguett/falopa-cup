@@ -1,75 +1,10 @@
-.footer {
-  margin-top: var(--space-3xl);
-  border-top: 3px solid var(--color-liga-primera);
-  background: #000;
-}
-
-.content {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: var(--space-2xl) var(--space-md);
-  text-align: center;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-md);
-  margin-bottom: var(--space-lg);
-}
-
-.brandIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  padding: 6px;
-  border: 2px solid var(--color-liga-primera);
-  background: var(--color-bg-secondary);
-}
-
-.brandLogo {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.brandText {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.brandTitle {
-  color: var(--color-liga-primera);
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-}
-
-.brandSubtitle {
-  color: var(--color-text-muted);
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.copy {
-  margin: 0;
-  color: #666;
-  font-size: 0.75rem;
-}
-
-@media (max-width: 600px) {
-  .brand {
-    flex-direction: column;
-  }
-
-  .brandText {
-    align-items: center;
-  }
-}
+.footer { margin-top: 0; border-top: 6px solid var(--color-liga-primera); background: #080808; }
+.content { display: flex; align-items: center; justify-content: space-between; gap: 2rem; max-width: var(--page-max-width); margin: auto; padding: 2.5rem 2rem; }
+.brand { display: flex; align-items: center; gap: .8rem; }
+.brandIcon { display: grid; place-items: center; width: 42px; height: 42px; padding: 5px; background: var(--color-liga-primera); transform: skew(-6deg); }
+.brandLogo { width: 100%; height: 100%; object-fit: contain; filter: brightness(0); transform: skew(6deg); }
+.brandText { display: flex; flex-direction: column; }
+.brandTitle { color: #fff; font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; letter-spacing: .04em; }
+.brandSubtitle { color: #777; font-size: .62rem; letter-spacing: .11em; text-transform: uppercase; }
+.copy { margin: 0; color: #666; font-size: .7rem; }
+@media (max-width: 650px) { .content { flex-direction: column; padding-inline: 1rem; text-align: center; } .brandText { align-items: flex-start; } }

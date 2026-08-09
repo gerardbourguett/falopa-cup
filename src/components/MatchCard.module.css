@@ -92,6 +92,21 @@
   color: var(--comp-color);
 }
 
+.sourceLink {
+  color: #888;
+  font-family: var(--font-display);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sourceLink:hover {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .seedingBadge {
   color: var(--color-liga-primera);
 }
