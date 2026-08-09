@@ -178,15 +178,29 @@ const conferenceKnockoutSchema = z.object({
     kind: z.literal('knockout'),
     edition: z.number().int().positive(),
     status: z.enum(['planned', 'in-progress', 'completed']),
-    ties: z.array(z.object({
+    formatNote: z.string().optional(),
+    rounds: z.array(z.object({
         id: z.string(),
-        round: z.string(),
-        clubAId: z.string(),
-        clubBId: z.string(),
-        scoreA: z.number().optional(),
-        scoreB: z.number().optional(),
-        winnerClubId: z.string().optional(),
-        tiebreakReason: z.string().optional(),
+        name: z.string(),
+        status: z.enum(['planned', 'in-progress', 'completed']),
+        description: z.string().optional(),
+        ties: z.array(z.object({
+            id: z.string(),
+            slotA: z.object({
+                sourceType: z.enum(['group-winner', 'group-runner-up', 'sudamericana-eliminated', 'tie-winner']),
+                sourceRef: z.string(),
+                clubId: z.string().nullable(),
+            }),
+            slotB: z.object({
+                sourceType: z.enum(['group-winner', 'group-runner-up', 'sudamericana-eliminated', 'tie-winner']),
+                sourceRef: z.string(),
+                clubId: z.string().nullable(),
+            }),
+            scoreA: z.number().optional(),
+            scoreB: z.number().optional(),
+            winnerClubId: z.string().nullable().optional(),
+            tiebreakReason: z.string().optional(),
+        })),
     })),
 });
 
