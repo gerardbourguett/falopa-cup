@@ -1,5 +1,7 @@
 # Plantilla de resultados pendientes — GS-F3 2026
 
+> Si prefieres trabajar con las tres fechas en una sola planilla, usa `conference-all-group-matches.csv`. Ese archivo contiene 64 filas por ronda y distingue datos cargados (`loaded`) de campos pendientes (`todo`). Se regenera con `python scripts/export-conference-matches.py`.
+
 Abre `conference-f3-results-template.csv` con Excel, LibreOffice o Google Sheets y completa únicamente las columnas vacías.
 
 ## Campos por completar
