@@ -269,7 +269,7 @@
           "yellowCards": 3,
           "redCards": 0,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -307,7 +307,7 @@
           "yellowCards": 0,
           "redCards": 1,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -345,7 +345,7 @@
           "yellowCards": 5,
           "redCards": 0,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -383,7 +383,7 @@
           "yellowCards": 2,
           "redCards": 0,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -421,7 +421,7 @@
           "yellowCards": 2,
           "redCards": 0,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -437,8 +437,8 @@
           "awayClub": "Ind. Medellín",
           "goalsFor": 1,
           "goalsAgainst": 1,
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "isHome": true,
           "counted": true,
           "status": "played"
@@ -459,7 +459,7 @@
           "yellowCards": 1,
           "redCards": 1,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -478,7 +478,7 @@
           "yellowCards": 1,
           "redCards": 0,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -535,7 +535,7 @@
           "yellowCards": 0,
           "redCards": 0,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -551,8 +551,8 @@
           "awayClub": "Montevideo City Torque",
           "goalsFor": 1,
           "goalsAgainst": 1,
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 4,
+          "redCards": 0,
           "isHome": true,
           "counted": true,
           "status": "played"
@@ -573,7 +573,7 @@
           "yellowCards": 3,
           "redCards": 0,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -611,7 +611,7 @@
           "yellowCards": 5,
           "redCards": 1,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -630,7 +630,7 @@
           "yellowCards": 2,
           "redCards": 0,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -668,7 +668,7 @@
           "yellowCards": 3,
           "redCards": 0,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "status": "played"
         },
         {
@@ -1384,231 +1384,231 @@
           "clubId": "cl-universidad-de-chile",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-cl-universidad-de-chile-2026-04-12",
-          "basePoints": 0,
-          "bonusPoints": 0,
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -0.75,
           "total": -0.75,
-          "explanation": "base=0(der) 3A=-0.75 total=-0.75"
+          "explanation": "base=0(der) 3A=-0,75 total=-0,75"
         },
         {
           "clubId": "cl-universidad-de-chile",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-cl-universidad-de-chile-2026-04-18",
-          "basePoints": 1,
-          "bonusPoints": 0,
+          "basePoints": 1.0,
+          "bonusPoints": 1.0,
           "penaltyPoints": -0.75,
-          "total": 0.25,
-          "explanation": "base=1(emp) 3A=-0.75 total=0.25"
+          "total": 1.25,
+          "explanation": "base=1(emp) CS=1 3A=-0,75 total=1,25"
         },
         {
           "clubId": "ec-emelec",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-ec-emelec-2026-04-08",
-          "basePoints": 1,
-          "bonusPoints": 0,
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -0.25,
           "total": 0.75,
-          "explanation": "base=1(emp) 1A=-0.25 total=0.75"
+          "explanation": "base=1(emp) 1A=-0,25 total=0,75"
         },
         {
           "clubId": "ec-emelec",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-ec-emelec-2026-04-12",
-          "basePoints": 0,
-          "bonusPoints": 0,
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -1.0,
           "total": -1.0,
-          "explanation": "base=0(der) 1R=-1 total=-1.00"
+          "explanation": "base=0(der) 1R=-1 total=-1"
         },
         {
           "clubId": "py-guarani",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-py-guarani-2026-04-10",
-          "basePoints": 0,
-          "bonusPoints": 0,
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -0.5,
           "total": -0.5,
-          "explanation": "base=0(der) 2A=-0.50 total=-0.50"
+          "explanation": "base=0(der) 2A=-0,5 total=-0,5"
         },
         {
           "clubId": "py-guarani",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-py-guarani-2026-04-18",
-          "basePoints": 3,
-          "bonusPoints": 0,
+          "basePoints": 3.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -1.25,
           "total": 1.75,
-          "explanation": "base=3(vic) 5A=-1.25 total=1.75"
+          "explanation": "base=3(vic) 5A=-1,25 total=1,75"
         },
         {
           "clubId": "ar-argentinos-juniors",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-ar-argentinos-juniors-2026-04-11",
-          "basePoints": 0,
-          "bonusPoints": 0,
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -2.0,
           "total": -2.0,
-          "explanation": "base=0(der) 4A=-1.00 1R=-1 total=-2.00"
+          "explanation": "base=0(der) 4A=-1 1R=-1 total=-2"
         },
         {
           "clubId": "ar-argentinos-juniors",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-ar-argentinos-juniors-2026-04-18",
-          "basePoints": 3,
-          "bonusPoints": 1,
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
           "penaltyPoints": -0.5,
           "total": 3.5,
-          "explanation": "base=3(vic) CS=1 2A=-0.50 total=3.50"
+          "explanation": "base=3(vic) CS=1 2A=-0,5 total=3,5"
         },
         {
           "clubId": "ve-deportivo-tachira",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-ve-deportivo-tachira-2026-04-11",
-          "basePoints": 0,
-          "bonusPoints": 0,
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -2.0,
           "total": -2.0,
-          "explanation": "base=0(der) 4A=-1.00 1R=-1 total=-2.00"
+          "explanation": "base=0(der) 4A=-1 1R=-1 total=-2"
         },
         {
           "clubId": "ve-deportivo-tachira",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-ve-deportivo-tachira-2026-04-18",
-          "basePoints": 1,
-          "bonusPoints": 0,
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -0.5,
           "total": 0.5,
-          "explanation": "base=1(emp) 2A=-0.50 total=0.50"
+          "explanation": "base=1(emp) 2A=-0,5 total=0,5"
         },
         {
           "clubId": "co-once-caldas",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-co-once-caldas-2026-04-02",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0.0,
-          "total": 1.0,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.75,
+          "total": 0.25,
+          "explanation": "base=1(emp) 3A=-0,75 total=0,25"
         },
         {
           "clubId": "co-once-caldas",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-co-once-caldas-2026-04-10",
-          "basePoints": 1,
-          "bonusPoints": 0,
+          "basePoints": 1.0,
+          "bonusPoints": 1.0,
           "penaltyPoints": -1.25,
-          "total": -0.25,
-          "explanation": "base=1(emp) 1A=-0.25 1R=-1 total=-0.25"
+          "total": 0.75,
+          "explanation": "base=1(emp) CS=1 1A=-0,25 1R=-1 total=0,75"
         },
         {
           "clubId": "ec-universidad-catolica",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-ec-universidad-catolica-2026-04-08",
-          "basePoints": 1,
-          "bonusPoints": 0,
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -0.25,
           "total": 0.75,
-          "explanation": "base=1(emp) 1A=-0.25 total=0.75"
+          "explanation": "base=1(emp) 1A=-0,25 total=0,75"
         },
         {
           "clubId": "ec-universidad-catolica",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-ec-universidad-catolica-2026-04-12",
-          "basePoints": 3,
-          "bonusPoints": 2,
+          "basePoints": 3.0,
+          "bonusPoints": 2.0,
           "penaltyPoints": -0.25,
           "total": 4.75,
-          "explanation": "base=3(vic) CS=1 marg+1 1A=-0.25 total=4.75"
+          "explanation": "base=3(vic) CS=1 marg+1 1A=-0,25 total=4,75"
         },
         {
           "clubId": "br-bahia",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-br-bahia-2026-04-11",
-          "basePoints": 3,
-          "bonusPoints": 0,
+          "basePoints": 3.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -0.25,
           "total": 2.75,
-          "explanation": "base=3(vic) 1A=-0.25 total=2.75"
+          "explanation": "base=3(vic) 1A=-0,25 total=2,75"
         },
         {
           "clubId": "br-bahia",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-br-bahia-2026-04-19",
-          "basePoints": 0,
-          "bonusPoints": 0,
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": 0.0,
           "total": 0.0,
-          "explanation": "base=0(der) total=0.00"
+          "explanation": "base=0(der) total=0"
         },
         {
           "clubId": "uy-danubio",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-uy-danubio-2026-04-05",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0.0,
-          "total": 1.0,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -1.0,
+          "total": 0.0,
+          "explanation": "base=1(emp) 4A=-1 total=0"
         },
         {
           "clubId": "uy-danubio",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-uy-danubio-2026-04-12",
-          "basePoints": 1,
-          "bonusPoints": 0,
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -0.75,
           "total": 0.25,
-          "explanation": "base=1(emp) 3A=-0.75 total=0.25"
+          "explanation": "base=1(emp) 3A=-0,75 total=0,25"
         },
         {
           "clubId": "ec-delfin",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-ec-delfin-2026-04-10",
-          "basePoints": 3,
-          "bonusPoints": 1,
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
           "penaltyPoints": -2.25,
           "total": 1.75,
-          "explanation": "base=3(vic) CS=1 5A=-1.25 1R=-1 total=1.75"
+          "explanation": "base=3(vic) CS=1 5A=-1,25 1R=-1 total=1,75"
         },
         {
           "clubId": "ec-delfin",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-ec-delfin-2026-04-19",
-          "basePoints": 1,
-          "bonusPoints": 0,
+          "basePoints": 1.0,
+          "bonusPoints": 1.0,
           "penaltyPoints": -2.25,
-          "total": -1.25,
-          "explanation": "base=1(emp) 5A=-1.25 1R=-1 total=-1.25"
+          "total": -0.25,
+          "explanation": "base=1(emp) CS=1 5A=-1,25 1R=-1 total=-0,25"
         },
         {
           "clubId": "co-atletico-bucaramanga",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-co-atletico-bucaramanga-2026-04-07",
-          "basePoints": 0,
-          "bonusPoints": 0,
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -0.5,
           "total": -0.5,
-          "explanation": "base=0(der) 2A=-0.50 total=-0.50"
+          "explanation": "base=0(der) 2A=-0,5 total=-0,5"
         },
         {
           "clubId": "co-atletico-bucaramanga",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-co-atletico-bucaramanga-2026-04-12",
-          "basePoints": 3,
-          "bonusPoints": 5,
+          "basePoints": 3.0,
+          "bonusPoints": 5.0,
           "penaltyPoints": -0.75,
           "total": 7.25,
-          "explanation": "base=3(vic) CS=1 marg+4 3A=-0.75 total=7.25"
+          "explanation": "base=3(vic) CS=1 marg+4 3A=-0,75 total=7,25"
         },
         {
           "clubId": "bo-nacional-potosi",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-bo-nacional-potosi-2026-04-11",
-          "basePoints": 3,
-          "bonusPoints": 1,
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
           "penaltyPoints": -0.75,
           "total": 3.25,
-          "explanation": "base=3(vic) CS=1 3A=-0.75 total=3.25"
+          "explanation": "base=3(vic) CS=1 3A=-0,75 total=3,25"
         },
         {
           "clubId": "uy-racing-club",
@@ -1934,11 +1934,11 @@
           "clubId": "bo-nacional-potosi",
           "roundId": "GS-F1",
           "sourceMatchId": "GS-F1-bo-nacional-potosi-2026-04-03",
-          "basePoints": 3,
-          "bonusPoints": 3,
+          "basePoints": 3.0,
+          "bonusPoints": 3.0,
           "penaltyPoints": -0.5,
           "total": 5.5,
-          "explanation": "base=3(vic) CS=1 marg+2 2A=-0.50 total=5.50"
+          "explanation": "base=3(vic) CS=1 marg+2 2A=-0,5 total=5,5"
         }
       ]
     },
@@ -2115,8 +2115,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 4,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2130,12 +2130,12 @@
           "goalsFor": 5,
           "goalsAgainst": 0,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 4,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2153,8 +2153,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2168,12 +2168,12 @@
           "goalsFor": 1,
           "goalsAgainst": 0,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2191,8 +2191,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 5,
+          "redCards": 1,
           "status": "played"
         },
         {
@@ -2206,12 +2206,12 @@
           "goalsFor": 0,
           "goalsAgainst": 1,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 1,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2229,8 +2229,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2244,12 +2244,12 @@
           "goalsFor": 0,
           "goalsAgainst": 2,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 5,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2267,8 +2267,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2282,12 +2282,12 @@
           "goalsFor": 1,
           "goalsAgainst": 2,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 4,
+          "redCards": 1,
           "status": "played"
         },
         {
@@ -2305,8 +2305,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 5,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2320,12 +2320,12 @@
           "goalsFor": 1,
           "goalsAgainst": 0,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2343,8 +2343,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 1,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2358,12 +2358,12 @@
           "goalsFor": 2,
           "goalsAgainst": 3,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2381,8 +2381,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2396,12 +2396,12 @@
           "goalsFor": 2,
           "goalsAgainst": 2,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2419,8 +2419,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2434,12 +2434,12 @@
           "goalsFor": 0,
           "goalsAgainst": 3,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 0,
+          "redCards": 1,
           "status": "played"
         },
         {
@@ -2457,8 +2457,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2472,12 +2472,12 @@
           "goalsFor": 1,
           "goalsAgainst": 0,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2495,8 +2495,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2510,12 +2510,12 @@
           "goalsFor": 5,
           "goalsAgainst": 0,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 1,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2533,8 +2533,8 @@
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -2548,12 +2548,12 @@
           "goalsFor": 1,
           "goalsAgainst": 1,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F2",
           "windowStart": "2026-04-21",
           "windowEnd": "2026-05-04",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 1,
           "status": "played"
         },
         {
@@ -3253,241 +3253,241 @@
           "clubId": "cl-universidad-de-chile",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-cl-universidad-de-chile-2026-04-25",
-          "basePoints": 3,
-          "bonusPoints": 1,
-          "penaltyPoints": 0,
-          "total": 4,
-          "explanation": "base=3(vic) CS=1 total=4.00"
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": -1.0,
+          "total": 3.0,
+          "explanation": "base=3(vic) CS=1 4A=-1 total=3"
         },
         {
           "clubId": "cl-universidad-de-chile",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-cl-universidad-de-chile-2026-05-02",
-          "basePoints": 3,
-          "bonusPoints": 5,
-          "penaltyPoints": 0,
-          "total": 8,
-          "explanation": "base=3(vic) CS=1 marg+4 total=8.00"
+          "basePoints": 3.0,
+          "bonusPoints": 5.0,
+          "penaltyPoints": -1.0,
+          "total": 7.0,
+          "explanation": "base=3(vic) CS=1 marg+4 4A=-1 total=7"
         },
         {
           "clubId": "ec-emelec",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-ec-emelec-2026-04-21",
-          "basePoints": 3,
-          "bonusPoints": 1,
-          "penaltyPoints": 0,
-          "total": 4,
-          "explanation": "base=3(vic) CS=1 total=4.00"
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": -0.5,
+          "total": 3.5,
+          "explanation": "base=3(vic) CS=1 2A=-0,5 total=3,5"
         },
         {
           "clubId": "ec-emelec",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-ec-emelec-2026-04-25",
-          "basePoints": 3,
-          "bonusPoints": 1,
-          "penaltyPoints": 0,
-          "total": 4,
-          "explanation": "base=3(vic) CS=1 total=4.00"
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": -0.5,
+          "total": 3.5,
+          "explanation": "base=3(vic) CS=1 2A=-0,5 total=3,5"
         },
         {
           "clubId": "py-guarani",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-py-guarani-2026-04-26",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -2.25,
+          "total": -1.25,
+          "explanation": "base=1(emp) 5A=-1,25 1R=-1 total=-1,25"
         },
         {
           "clubId": "py-guarani",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-py-guarani-2026-05-03",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.25,
+          "total": -0.25,
+          "explanation": "base=0(der) 1A=-0,25 total=-0,25"
         },
         {
           "clubId": "ar-argentinos-juniors",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-ar-argentinos-juniors-2026-04-27",
-          "basePoints": 3,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 3,
-          "explanation": "base=3(vic) total=3.00"
+          "basePoints": 3.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.5,
+          "total": 2.5,
+          "explanation": "base=3(vic) 2A=-0,5 total=2,5"
         },
         {
           "clubId": "ar-argentinos-juniors",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-ar-argentinos-juniors-2026-05-03",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -1.25,
+          "total": -1.25,
+          "explanation": "base=0(der) 5A=-1,25 total=-1,25"
         },
         {
           "clubId": "ve-deportivo-tachira",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-ve-deportivo-tachira-2026-04-25",
-          "basePoints": 3,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 3,
-          "explanation": "base=3(vic) total=3.00"
+          "basePoints": 3.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.75,
+          "total": 2.25,
+          "explanation": "base=3(vic) 3A=-0,75 total=2,25"
         },
         {
           "clubId": "ve-deportivo-tachira",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-ve-deportivo-tachira-2026-05-02",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -2.0,
+          "total": -2.0,
+          "explanation": "base=0(der) 4A=-1 1R=-1 total=-2"
         },
         {
           "clubId": "co-once-caldas",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-co-once-caldas-2026-04-26",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -1.25,
+          "total": -0.25,
+          "explanation": "base=1(emp) 5A=-1,25 total=-0,25"
         },
         {
           "clubId": "co-once-caldas",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-co-once-caldas-2026-05-01",
-          "basePoints": 3,
-          "bonusPoints": 1,
-          "penaltyPoints": 0,
-          "total": 4,
-          "explanation": "base=3(vic) CS=1 total=4.00"
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": -0.75,
+          "total": 3.25,
+          "explanation": "base=3(vic) CS=1 3A=-0,75 total=3,25"
         },
         {
           "clubId": "ec-universidad-catolica",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-ec-universidad-catolica-2026-04-23",
-          "basePoints": 3,
-          "bonusPoints": 4,
-          "penaltyPoints": 0,
-          "total": 7,
-          "explanation": "base=3(vic) CS=1 marg+3 total=7.00"
+          "basePoints": 3.0,
+          "bonusPoints": 4.0,
+          "penaltyPoints": -0.25,
+          "total": 6.75,
+          "explanation": "base=3(vic) CS=1 marg+3 1A=-0,25 total=6,75"
         },
         {
           "clubId": "ec-universidad-catolica",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-ec-universidad-catolica-2026-05-01",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.5,
+          "total": -0.5,
+          "explanation": "base=0(der) 2A=-0,5 total=-0,5"
         },
         {
           "clubId": "br-bahia",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-br-bahia-2026-04-25",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.75,
+          "total": 0.25,
+          "explanation": "base=1(emp) 3A=-0,75 total=0,25"
         },
         {
           "clubId": "br-bahia",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-br-bahia-2026-05-03",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.75,
+          "total": 0.25,
+          "explanation": "base=1(emp) 3A=-0,75 total=0,25"
         },
         {
           "clubId": "uy-danubio",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-uy-danubio-2026-04-25",
-          "basePoints": 3,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 3,
-          "explanation": "base=3(vic) total=3.00"
+          "basePoints": 3.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.75,
+          "total": 2.25,
+          "explanation": "base=3(vic) 3A=-0,75 total=2,25"
         },
         {
           "clubId": "uy-danubio",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-uy-danubio-2026-05-02",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": -1,
-          "total": -1,
-          "explanation": "base=0(der) der3+=-1 total=-1.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -2.0,
+          "total": -2.0,
+          "explanation": "base=0(der) der3=-1 1R=-1 total=-2"
         },
         {
           "clubId": "ec-delfin",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-ec-delfin-2026-04-27",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.75,
+          "total": -0.75,
+          "explanation": "base=0(der) 3A=-0,75 total=-0,75"
         },
         {
           "clubId": "ec-delfin",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-ec-delfin-2026-05-03",
-          "basePoints": 3,
-          "bonusPoints": 1,
-          "penaltyPoints": 0,
-          "total": 4,
-          "explanation": "base=3(vic) CS=1 total=4.00"
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": -0.5,
+          "total": 3.5,
+          "explanation": "base=3(vic) CS=1 2A=-0,5 total=3,5"
         },
         {
           "clubId": "co-atletico-bucaramanga",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-co-atletico-bucaramanga-2026-04-25",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.5,
+          "total": 0.5,
+          "explanation": "base=1(emp) 2A=-0,5 total=0,5"
         },
         {
           "clubId": "co-atletico-bucaramanga",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-co-atletico-bucaramanga-2026-05-07",
-          "basePoints": 3,
-          "bonusPoints": 5,
-          "penaltyPoints": 0,
-          "total": 8,
-          "explanation": "base=3(vic) CS=1 marg+4 total=8.00"
+          "basePoints": 3.0,
+          "bonusPoints": 5.0,
+          "penaltyPoints": -0.25,
+          "total": 7.75,
+          "explanation": "base=3(vic) CS=1 marg+4 1A=-0,25 total=7,75"
         },
         {
           "clubId": "bo-nacional-potosi",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-bo-nacional-potosi-2026-04-22",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.75,
+          "total": -0.75,
+          "explanation": "base=0(der) 3A=-0,75 total=-0,75"
         },
         {
           "clubId": "bo-nacional-potosi",
           "roundId": "GS-F2",
           "sourceMatchId": "GS-F2-bo-nacional-potosi-2026-04-25",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -1.5,
+          "total": -0.5,
+          "explanation": "base=1(emp) 2A=-0,5 1R=-1 total=-0,5"
         },
         {
           "clubId": "uy-racing-club",
@@ -3967,8 +3967,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 1,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -3986,8 +3986,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 0,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4005,8 +4005,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4020,12 +4020,12 @@
           "goalsFor": 1,
           "goalsAgainst": 0,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4043,8 +4043,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4058,12 +4058,12 @@
           "goalsFor": 1,
           "goalsAgainst": 0,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4081,8 +4081,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4096,12 +4096,12 @@
           "goalsFor": 1,
           "goalsAgainst": 0,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 0,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4119,8 +4119,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 1,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4134,12 +4134,12 @@
           "goalsFor": 2,
           "goalsAgainst": 2,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4157,8 +4157,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 0,
+          "redCards": 1,
           "status": "played"
         },
         {
@@ -4172,12 +4172,12 @@
           "goalsFor": 2,
           "goalsAgainst": 2,
           "isHome": true,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4195,8 +4195,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4210,12 +4210,12 @@
           "goalsFor": 1,
           "goalsAgainst": 2,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 4,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4233,8 +4233,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 5,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4248,12 +4248,12 @@
           "goalsFor": 1,
           "goalsAgainst": 3,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 1,
           "status": "played"
         },
         {
@@ -4271,8 +4271,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 1,
           "status": "played"
         },
         {
@@ -4286,12 +4286,12 @@
           "goalsFor": 2,
           "goalsAgainst": 2,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4309,8 +4309,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 3,
+          "redCards": 1,
           "status": "played"
         },
         {
@@ -4328,8 +4328,8 @@
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 2,
+          "redCards": 0,
           "status": "played"
         },
         {
@@ -4343,12 +4343,12 @@
           "goalsFor": 1,
           "goalsAgainst": 2,
           "isHome": false,
-          "counted": false,
+          "counted": true,
           "roundId": "GS-F3",
           "windowStart": "2026-05-05",
           "windowEnd": "2026-05-18",
-          "yellowCards": null,
-          "redCards": null,
+          "yellowCards": 4,
+          "redCards": 2,
           "status": "played"
         },
         {
@@ -5128,211 +5128,211 @@
           "clubId": "cl-universidad-de-chile",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-cl-universidad-de-chile-2026-05-17",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.25,
+          "total": -0.25,
+          "explanation": "base=0(der) 1A=-0,25 total=-0,25"
         },
         {
           "clubId": "ec-emelec",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-ec-emelec-2026-05-17",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": 0.0,
+          "total": 2.0,
+          "explanation": "base=1(emp) CS=1 total=2"
         },
         {
           "clubId": "py-guarani",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-py-guarani-2026-05-11",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": -0.5,
+          "total": 1.5,
+          "explanation": "base=1(emp) CS=1 2A=-0,5 total=1,5"
         },
         {
           "clubId": "py-guarani",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-py-guarani-2026-05-16",
-          "basePoints": 3,
-          "bonusPoints": 1,
-          "penaltyPoints": 0,
-          "total": 4,
-          "explanation": "base=3(vic) CS=1 total=4.00"
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": -0.75,
+          "total": 3.25,
+          "explanation": "base=3(vic) CS=1 3A=-0,75 total=3,25"
         },
         {
           "clubId": "ar-argentinos-juniors",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-ar-argentinos-juniors-2026-05-09",
-          "basePoints": 3,
-          "bonusPoints": 2,
-          "penaltyPoints": 0,
-          "total": 5,
-          "explanation": "base=3(vic) CS=1 marg+1 total=5.00"
+          "basePoints": 3.0,
+          "bonusPoints": 2.0,
+          "penaltyPoints": -0.75,
+          "total": 4.25,
+          "explanation": "base=3(vic) CS=1 marg+1 3A=-0,75 total=4,25"
         },
         {
           "clubId": "ar-argentinos-juniors",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-ar-argentinos-juniors-2026-05-12",
-          "basePoints": 3,
-          "bonusPoints": 1,
-          "penaltyPoints": 0,
-          "total": 4,
-          "explanation": "base=3(vic) CS=1 total=4.00"
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": -0.5,
+          "total": 3.5,
+          "explanation": "base=3(vic) CS=1 2A=-0,5 total=3,5"
         },
         {
           "clubId": "ve-deportivo-tachira",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-ve-deportivo-tachira-2026-05-09",
-          "basePoints": 3,
-          "bonusPoints": 1,
-          "penaltyPoints": 0,
-          "total": 4,
-          "explanation": "base=3(vic) marg+1 total=4.00"
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": -0.5,
+          "total": 3.5,
+          "explanation": "base=3(vic) marg+1 2A=-0,5 total=3,5"
         },
         {
           "clubId": "ve-deportivo-tachira",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-ve-deportivo-tachira-2026-05-17",
-          "basePoints": 3,
-          "bonusPoints": 1,
-          "penaltyPoints": 0,
-          "total": 4,
-          "explanation": "base=3(vic) CS=1 total=4.00"
+          "basePoints": 3.0,
+          "bonusPoints": 1.0,
+          "penaltyPoints": 0.0,
+          "total": 4.0,
+          "explanation": "base=3(vic) CS=1 total=4"
         },
         {
           "clubId": "co-once-caldas",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-co-once-caldas-2026-05-10",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.25,
+          "total": -0.25,
+          "explanation": "base=0(der) 1A=-0,25 total=-0,25"
         },
         {
           "clubId": "co-once-caldas",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-co-once-caldas-2026-05-13",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.75,
+          "total": 0.25,
+          "explanation": "base=1(emp) 3A=-0,75 total=0,25"
         },
         {
           "clubId": "ec-universidad-catolica",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-ec-universidad-catolica-2026-05-09",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -1.0,
+          "total": -1.0,
+          "explanation": "base=0(der) 1R=-1 total=-1"
         },
         {
           "clubId": "ec-universidad-catolica",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-ec-universidad-catolica-2026-05-16",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.5,
+          "total": 0.5,
+          "explanation": "base=1(emp) 2A=-0,5 total=0,5"
         },
         {
           "clubId": "br-bahia",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-br-bahia-2026-05-09",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.75,
+          "total": -0.75,
+          "explanation": "base=0(der) 3A=-0,75 total=-0,75"
         },
         {
           "clubId": "br-bahia",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-br-bahia-2026-05-13",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -1.0,
+          "total": -1.0,
+          "explanation": "base=0(der) 4A=-1 total=-1"
         },
         {
           "clubId": "uy-danubio",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-uy-danubio-2026-05-09",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -1.25,
+          "total": -1.25,
+          "explanation": "base=0(der) 5A=-1,25 total=-1,25"
         },
         {
           "clubId": "uy-danubio",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-uy-danubio-2026-05-18",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -1.5,
+          "total": -1.5,
+          "explanation": "base=0(der) 2A=-0,5 1R=-1 total=-1,5"
         },
         {
           "clubId": "ec-delfin",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-ec-delfin-2026-05-09",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": -1,
-          "total": -1,
-          "explanation": "base=0(der) der3+=-1 total=-1.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -2.5,
+          "total": -2.5,
+          "explanation": "base=0(der) der3=-1 2A=-0,5 1R=-1 total=-2,5"
         },
         {
           "clubId": "ec-delfin",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-ec-delfin-2026-05-16",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.75,
+          "total": 0.25,
+          "explanation": "base=1(emp) 3A=-0,75 total=0,25"
         },
         {
           "clubId": "co-atletico-bucaramanga",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-co-atletico-bucaramanga-2026-05-11",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -1.75,
+          "total": -1.75,
+          "explanation": "base=0(der) 3A=-0,75 1R=-1 total=-1,75"
         },
         {
           "clubId": "bo-nacional-potosi",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-bo-nacional-potosi-2026-05-13",
-          "basePoints": 1,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 1,
-          "explanation": "base=1(emp) total=1.00"
+          "basePoints": 1.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -0.5,
+          "total": 0.5,
+          "explanation": "base=1(emp) 2A=-0,5 total=0,5"
         },
         {
           "clubId": "bo-nacional-potosi",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-bo-nacional-potosi-2026-05-17",
-          "basePoints": 0,
-          "bonusPoints": 0,
-          "penaltyPoints": 0,
-          "total": 0,
-          "explanation": "base=0(der) total=0.00"
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
+          "penaltyPoints": -3.0,
+          "total": -3.0,
+          "explanation": "base=0(der) 4A=-1 2R=-2 total=-3"
         },
         {
           "clubId": "uy-racing-club",
@@ -5538,31 +5538,31 @@
           "clubId": "cl-universidad-de-chile",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-cl-universidad-de-chile-2026-05-30",
-          "basePoints": 3,
-          "bonusPoints": 0,
+          "basePoints": 3.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": -1.5,
           "total": 1.5,
-          "explanation": "base=3(vic) 6A=-1.50 total=1.50"
+          "explanation": "base=3(vic) 6A=-1,5 total=1,5"
         },
         {
           "clubId": "ec-emelec",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-ec-emelec-2026-05-20",
-          "basePoints": 1,
-          "bonusPoints": 1,
+          "basePoints": 1.0,
+          "bonusPoints": 1.0,
           "penaltyPoints": 0.0,
           "total": 2.0,
-          "explanation": "base=1(emp) CS=1 total=2.00"
+          "explanation": "base=1(emp) CS=1 total=2"
         },
         {
           "clubId": "co-atletico-bucaramanga",
           "roundId": "GS-F3",
           "sourceMatchId": "GS-F3-co-atletico-bucaramanga-2026-05-20",
-          "basePoints": 0,
-          "bonusPoints": 0,
+          "basePoints": 0.0,
+          "bonusPoints": 0.0,
           "penaltyPoints": 0.0,
           "total": 0.0,
-          "explanation": "base=0(der) total=0.00"
+          "explanation": "base=0(der) total=0"
         },
         {
           "clubId": "cl-nublense",
