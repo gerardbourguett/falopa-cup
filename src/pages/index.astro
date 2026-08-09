@@ -134,15 +134,31 @@ function formatSinceDate(value?: string | Date | null) {
     year: "2-digit",
   });
 }
+
+const heroBulletinTitle = falopaLatestChange
+  ? describeTitleChange(falopaLatestChange, "la Falopa Cup")
+  : "La Falopa Cup sigue en disputa";
+const heroBulletinMeta = falopaLatestChange
+  ? `${falopaLatestChange.scoreHolder}-${falopaLatestChange.scoreChallenger} · ${formatShortDate(falopaLatestChange.date)} · Último golpe de la temporada`
+  : "Sin cambios recientes registrados";
+const heroTickerItems = [
+  falopaLatestChange ? `Falopa: ${describeTitleChange(falopaLatestChange, "la Falopa Cup")}` : "Falopa sin cambios recientes",
+  miladLatestChange ? `Milad: ${describeTitleChange(miladLatestChange, "la Copa Pablo Milad")}` : "Milad sin cambios recientes",
+  `Actualizado al ${formatSinceDate(lastUpdatedDate) || "sin fecha"}`,
+];
 ---
 
 <Layout title={SITE_TITLE} description={SITE_DESCRIPTION} currentPath="/" image="/og/home.svg">
   <!-- Hero -->
   <Hero
-    title="FALOPA CUP"
-    subtitle="Campeón No Oficial + Copa del Más Malo"
-    description="Seguimos dos títulos itinerantes del fútbol chileno: el campeón no oficial y la copa del más malo. Inspirado en el Campeonato Mundial No Oficial."
+    title="TÍTULOS EN JUEGO"
+    subtitle="La otra tabla del fútbol chileno"
+    description="Cobertura editorial de la Falopa Cup, la Copa Pablo Milad y la Conference League Sudamericana. Resultados, poseedores, rachas y cada cambio de mando en un solo lugar."
     year={falopaYear}
+    bulletinLabel="Último cambio"
+    bulletinTitle={heroBulletinTitle}
+    bulletinMeta={heroBulletinMeta}
+    tickerItems={heroTickerItems}
   />
 
   <section class={styles.pulseSection}>
@@ -185,7 +201,7 @@ function formatSinceDate(value?: string | Date | null) {
   <section class={styles.championsSection}>
     <div class="container">
       <div class={styles.sectionHeader}>
-        <span class={styles.sectionLabel}>POSEEEDORES ACTUALES</span>
+        <span class={styles.sectionLabel}>POSEEDORES ACTUALES</span>
       </div>
 
       <div class={styles.championsGrid}>
