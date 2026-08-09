@@ -1,0 +1,18 @@
+order,round_id,group,club_id,club_name,counted,matchup_reference,source_url,source_date,source_competition,home_club,away_club,home_score,away_score,club_yellow_cards,club_red_cards,notes
+1,GS-F3,A,co-atletico-nacional,Atlético Nacional,false,Atlético Nacional - Deportes Tolima,https://www.sofascore.com/es/football/match/deportes-tolima-atletico-nacional/gxcslxc#id:16183791,,,,,,,,,
+2,GS-F3,B,cl-universidad-de-chile,Universidad de Chile,false,Universidad de Chile - Deportes Concepción,https://www.sofascore.com/es/football/match/universidad-de-chile-deportes-concepcion/knbslnb#id:15353060,,,,,,,,,
+3,GS-F3,B,ec-emelec,Emelec,false,Emelec - Daquilema FC,https://www.sofascore.com/es/football/match/daquilema-fc-emelec/ffcsiyJj#id:16141726,,,,,,,,,
+4,GS-F3,D,co-atletico-bucaramanga,Atlético Bucaramanga,false,Atlético Bucaramanga - Boca Juniors de Cali,https://www.sofascore.com/es/football/match/boca-juniors-de-cali-atletico-bucaramanga/dxcsqMK#id:16142070,,,,,,,,,
+5,GS-F3,E,cl-nublense,Ñublense,false,Ñublense - Universidad de Concepción,https://www.sofascore.com/es/football/match/nublense-universidad-de-concepcion/JacsEPc#id:15353052,,,,,,,,,
+6,GS-F3,F,bo-san-antonio-bulo-bulo,San Antonio Bulo Bulo,true,Universitario - San Antonio,https://www.sofascore.com/es/football/match/cd-san-antonio-club-fc-universitario/HlhcsAHid#id:15941999,,,,,,,,,
+7,GS-F3,F,bo-san-antonio-bulo-bulo,San Antonio Bulo Bulo,false,Guabirá - San Antonio,https://www.sofascore.com/es/football/match/cd-san-antonio-guabira/beusAHid#id:15942033,,,,,,,,,
+8,GS-F3,F,ve-zamora,Zamora,true,Atlético El Vigía - Zamora,https://www.sofascore.com/es/football/match/atletico-el-vigia-zamora/MzcsQed#id:16378422,,,,,,,,,Excepción Venezuela; también cierra F2
+9,GS-F3,F,ve-zamora,Zamora,false,Rayo Zuliano - Zamora,https://www.sofascore.com/es/football/match/deportivo-rayo-zuliano-zamora/MzcskBed#id:16687823,,,,,,,,,Excepción Venezuela
+10,GS-F3,G,bo-gv-san-jose,GV San José,false,GV San José - Real Tomayapo,https://www.sofascore.com/es/football/match/gv-san-jose-cd-real-tomayapo/KnJcstfce#id:16389660,,,,,,,,,
+11,GS-F3,G,ve-rayo-zuliano,Rayo Zuliano,true,Trujillanos - Rayo Zuliano,https://www.sofascore.com/es/football/match/deportivo-rayo-zuliano-trujillanos-fc/KzcskBed#id:16378414,,,,,,,,,Excepción Venezuela; también cierra F2
+12,GS-F3,G,ve-rayo-zuliano,Rayo Zuliano,false,Rayo Zuliano - Zamora,https://www.sofascore.com/es/football/match/deportivo-rayo-zuliano-zamora/MzcskBed#id:16687823,,,,,,,,,Excepción Venezuela
+13,GS-F3,H,ve-anzoategui,Anzoátegui,true,Atlético Ávila - Anzoátegui,https://www.sofascore.com/es/football/match/atletico-avila-fc-anzoategui-fc/TyrdsVquj#id:16378417,,,,,,,,,Excepción Venezuela; también cierra F2
+14,GS-F3,H,ve-anzoategui,Anzoátegui,false,Anzoátegui - Rayo Zuliano,https://www.sofascore.com/es/football/match/anzoategui-fc-deportivo-rayo-zuliano/kBedsTyrd#id:16728437,,,,,,,,,Excepción Venezuela
+15,GS-F3,H,ec-orense,Orense,false,Orense - Guayaquil City,https://www.sofascore.com/es/football/match/orense-sc-guayaquil-city/aCAbsAalc#id:15502561,,,,,,,,,
+16,GS-F3,H,pe-los-chankas,Los Chankas,false,Deportivo Moquegua - Los Chankas,https://www.sofascore.com/es/football/match/cd-moquegua-los-chankas-cyc/eVacsYgXd#id:16022836,,,,,,,,,
+17,GS-F3,H,cl-deportes-limache,Deportes Limache,false,Deportes La Serena - Deportes Limache,https://www.sofascore.com/es/football/match/deportes-limache-deportes-la-serena/GacsGxHc#id:15353167,,,,,,,,,

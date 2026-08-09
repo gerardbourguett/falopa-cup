@@ -1,238 +1,41 @@
-.pulseSection {
-  padding: 0 0 var(--space-xl);
-  background: var(--color-bg-primary);
-}
-
-.pulseGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-md);
-}
-
-.pulseCard {
-  padding: 1rem 1.25rem;
-  border: var(--border-strong);
-  background: var(--color-bg-secondary);
-}
-
-.pulseLabel {
-  display: block;
-  margin-bottom: 0.35rem;
-  color: var(--color-text-muted);
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.pulseTitle {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: var(--color-text-primary);
-  font-size: 1rem;
-}
-
-.pulseText {
-  margin: 0 0 0.45rem;
-  color: var(--color-text-secondary);
-  font-size: 0.88rem;
-  line-height: 1.5;
-}
-
-.pulseMeta {
-  color: var(--color-liga-primera);
-  font-family: var(--font-display);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.sectionHeader {
-  margin-bottom: var(--space-lg);
-}
-
-.sectionLabel {
-  color: var(--color-text-primary);
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
-.championsSection {
-  padding: var(--space-2xl) 0;
-  background: var(--color-bg-primary);
-}
-
-.championsGrid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-lg);
-}
-
-.conferenceCta {
-  margin-top: var(--space-lg);
-  padding: 1rem 1.25rem;
-  border: var(--border-strong);
-  background: var(--color-bg-secondary);
-}
-
-.conferenceHeader {
-  margin-bottom: 0.25rem;
-  color: var(--color-text-muted);
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.conferenceCta h3 {
-  margin: 0.2rem 0 0.5rem;
-  color: var(--color-text-primary);
-}
-
-.conferenceCta p {
-  margin: 0 0 0.75rem;
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.conferenceLink {
-  color: var(--color-liga-primera);
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.conferenceLink:hover {
-  text-decoration: underline;
-}
-
-.conceptSection {
-  padding: var(--space-2xl) 0;
-  border-top: 3px solid var(--color-bg-elevated);
-  border-bottom: 3px solid var(--color-bg-elevated);
-  background: var(--color-bg-primary);
-}
-
-.conceptBody {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-}
-
-.conceptTitle {
-  margin-bottom: var(--space-sm);
-  color: var(--color-text-primary);
-  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-  letter-spacing: 0.05em;
-}
-
-.conceptDesc {
-  max-width: 680px;
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-family: var(--font-body);
-  font-size: 0.95rem;
-  line-height: 1.75;
-}
-
-.conceptLink {
-  color: var(--color-liga-primera);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.conceptLink:hover {
-  color: var(--color-liga-primera-dim);
-}
-
-.conceptChains {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-md);
-}
-
-.conceptChainBlock {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.conceptChainLabel {
-  color: var(--color-text-muted);
-  font-family: var(--font-display);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.conceptCaption {
-  margin: calc(var(--space-md) * -1) 0 0;
-  color: var(--color-text-muted);
-  font-family: var(--font-body);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.rulesSection {
-  padding: var(--space-2xl) 0;
-  border-top: 3px solid var(--color-bg-elevated);
-  background: var(--color-bg-secondary);
-}
-
-.rulesGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-md);
-}
-
-.ruleCard {
-  padding: 1.25rem;
-  border: var(--border-strong);
-  background: var(--color-bg-primary);
-}
-
-.ruleNumber {
-  margin-bottom: var(--space-sm);
-  color: var(--color-liga-primera);
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.ruleTitle {
-  margin-bottom: var(--space-sm);
-  color: var(--color-text-primary);
-  font-size: 0.9rem;
-  letter-spacing: 0.1em;
-}
-
-.ruleText {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-  line-height: 1.6;
-}
-
-.ruleText strong {
-  color: var(--color-liga-primera);
-}
-
-@media (max-width: 768px) {
-  .championsGrid,
-  .pulseGrid,
-  .rulesGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .conceptChains {
-    grid-template-columns: 1fr;
-  }
-}
+.pulseSection { padding: 1.25rem 0; background: #121212; color: #fff; }
+.pulseGrid { display: grid; grid-template-columns: 1.2fr 1fr .8fr; border: 1px solid #303030; }
+.pulseCard { position: relative; min-height: 150px; padding: 1.25rem; border-right: 1px solid #303030; background: #171717; }
+.pulseCard:last-child { border-right: 0; }
+.pulseCard::before { display: block; width: max-content; margin-bottom: .7rem; padding: .2rem .4rem; background: var(--color-liga-primera); color: #080808; content: "FLASH"; font-family: var(--font-display); font-size: .58rem; font-weight: 700; letter-spacing: .13em; }
+.pulseCard:nth-child(2)::before { background: #fff; content: "AGENDA"; }
+.pulseCard:nth-child(3)::before { background: var(--color-holder); content: "DATA"; }
+.pulseLabel { display: block; margin-bottom: .2rem; color: #777; font-family: var(--font-display); font-size: .63rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.pulseTitle { display: block; margin-bottom: .55rem; color: #fff; font-family: var(--font-display); font-size: clamp(1.25rem, 2vw, 1.7rem); line-height: 1; text-transform: uppercase; }
+.pulseText { margin: 0 0 .35rem; color: #aaa; font-size: .82rem; line-height: 1.45; }
+.pulseMeta { display: inline-block; margin-top: .4rem; color: var(--color-liga-primera); font-family: var(--font-display); font-size: .67rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.sectionHeader { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.4rem; }
+.sectionHeader::after { flex: 1; height: 1px; background: #bbb; content: ""; }
+.sectionLabel { color: #0a0a0a; font-family: var(--font-display); font-size: .75rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.championsSection { padding: clamp(3rem, 7vw, 6rem) 0; background: var(--color-bg-primary); }
+.championsGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.conferenceCta { position: relative; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: .6rem 2rem; align-items: center; margin-top: 1rem; padding: 1.5rem; border-left: 6px solid var(--color-conference); background: #0c0c0c; color: #fff; overflow: hidden; }
+.conferenceCta::after { position: absolute; right: -2rem; color: rgba(255,255,255,.04); content: "CLS"; font-family: var(--font-display); font-size: 8rem; font-weight: 700; }
+.conferenceHeader { grid-column: 1/-1; color: var(--color-conference-bright); font-family: var(--font-display); font-size: .66rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.conferenceCta h3 { color: #fff; font-size: clamp(1.5rem,3vw,2.3rem); }
+.conferenceCta p { max-width: 700px; margin: 0; color: #999; font-size: .86rem; }
+.conferenceLink { position: relative; z-index: 1; padding: .8rem 1rem; background: var(--color-conference); color: #07140b; font-family: var(--font-display); font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.conceptSection { padding: clamp(3rem,7vw,6rem) 0; border-top: 1px solid #ccc; background: #e8e7e1; }
+.conceptBody { display: grid; grid-template-columns: .72fr 1.28fr; gap: clamp(2rem,5vw,5rem); align-items: start; }
+.conceptTitle { margin-bottom: 1rem; font-size: clamp(2.3rem,5vw,4.7rem); letter-spacing: -.05em; }
+.conceptDesc { max-width: 620px; margin: 0; color: var(--color-text-secondary); font-size: .95rem; line-height: 1.75; }
+.conceptLink { color: var(--color-liga-primera-dim); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+.conceptChains { display: grid; gap: 1rem; }
+.conceptChainBlock { display: flex; flex-direction: column; gap: .5rem; }
+.conceptChainLabel { color: #555; font-family: var(--font-display); font-size: .66rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.conceptCaption { grid-column: 2; margin: -.5rem 0 0; color: #777; font-size: .63rem; letter-spacing: .1em; text-transform: uppercase; }
+.rulesSection { padding: clamp(3rem,7vw,6rem) 0; background: #0b0b0b; color: #fff; }
+.rulesSection .sectionHeader::after { background: #333; } .rulesSection .sectionLabel { color: #fff; }
+.rulesGrid { display: grid; grid-template-columns: repeat(3,1fr); border: 1px solid #333; }
+.ruleCard { min-height: 240px; padding: 1.5rem; border-right: 1px solid #333; background: #111; }
+.ruleCard:last-child { border-right: 0; }
+.ruleNumber { margin-bottom: 2rem; color: var(--color-liga-primera); font-family: var(--font-display); font-size: 2.4rem; font-weight: 700; }
+.ruleTitle { margin-bottom: .8rem; color: #fff; font-size: 1.25rem; letter-spacing: .03em; }
+.ruleText { margin: 0; color: #999; font-size: .84rem; line-height: 1.65; }
+.ruleText strong { color: #fff; }
+@media (max-width: 820px) { .championsGrid,.pulseGrid,.rulesGrid,.conceptBody { grid-template-columns: 1fr; } .pulseCard,.ruleCard { border-right: 0; border-bottom: 1px solid #303030; } .conceptCaption { grid-column: auto; } .conferenceCta { grid-template-columns: 1fr; } }
