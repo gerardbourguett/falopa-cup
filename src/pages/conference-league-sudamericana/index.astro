@@ -69,6 +69,7 @@ function allocationLabel(category?: string) {
 }
 
 function knockoutSlotLabel(slot: any) {
+  if (slot.label) return slot.label;
   if (slot.clubId) return clubMeta(slot.clubId).name;
   const groupMatch = String(slot.sourceRef).match(/^group-([A-H])-(1|2)$/);
   if (groupMatch) return `${groupMatch[2] === '1' ? '1º' : '2º'} Grupo ${groupMatch[1]}`;
@@ -267,7 +268,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
       <section class="block knockout-format" id="eliminatorias">
         <div class="section-header">
           <h2>Camino a la final</h2>
-          <span class="section-badge">Formato planificado · Sin clubes asignados</span>
+          <span class="section-badge">Cruces definidos · Puntaje fantasy</span>
         </div>
         <p class="knockout-note">{knockoutDoc.formatNote}</p>
         <div class="knockout-rounds">
