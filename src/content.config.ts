@@ -18,6 +18,7 @@ const matchSchema = z.object({
     status: z.enum(['played', 'pending']).optional(),
     date: z.coerce.date(),
     competition: z.string().optional(),
+    sourceUrl: z.string().url().optional(),
     reason: z.string().optional(),
     holderId: z.string().optional(),
     challengerId: z.string().optional(),
@@ -110,6 +111,7 @@ const conferenceOfficialMatchSourceSchema = z.object({
     sourceCompetitionType: z.enum(['local-league', 'local-cup', 'conmebol', 'friendly']),
     sourceCompetition: z.string(),
     sourceDate: z.coerce.date(),
+    sourceUrl: z.string().url().optional(),
     homeClub: z.string(),
     awayClub: z.string(),
     goalsFor: z.number().nullable().optional(),
@@ -133,6 +135,11 @@ const conferenceGroupsSchema = z.object({
         windowStart: z.coerce.date(),
         windowEnd: z.coerce.date(),
         extendedWindowEnd: z.coerce.date(),
+        clubsWithoutSecondMatch: z.array(z.object({
+            clubId: z.string(),
+            reason: z.string(),
+            sourceUrl: z.string().url().optional(),
+        })).optional(),
         fixture: z.array(z.object({
             group: z.string(),
             club1Id: z.string(),

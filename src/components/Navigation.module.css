@@ -2,128 +2,81 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 3px solid var(--color-liga-primera);
-  background: #000;
+  border-bottom: 1px solid #292929;
+  background: rgba(8, 8, 8, 0.97);
+  backdrop-filter: blur(14px);
 }
 
-.inner {
+.networkBar {
+  border-bottom: 1px solid #292929;
+  background: var(--color-liga-primera);
+  color: #080808;
+}
+
+.networkInner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-lg);
   max-width: var(--page-max-width);
+  min-height: 27px;
   margin: 0 auto;
-  padding: var(--space-sm) var(--space-xl);
-}
-
-.brandLink {
-  color: inherit;
-  text-decoration: none;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  min-width: 0;
-}
-
-.brandIcon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 4px;
-  border: 2px solid var(--color-liga-primera);
-  background: var(--color-bg-secondary);
-}
-
-.brandLogo {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.brandText {
-  min-width: 0;
-}
-
-.title {
-  color: var(--color-liga-primera);
+  padding: 0 var(--space-xl);
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 0.64rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  line-height: 1;
-}
-
-.subtitle {
-  color: var(--color-text-muted);
-  font-family: var(--font-body);
-  font-size: 0.6rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
 }
 
-.nav {
+.live { display: flex; align-items: center; gap: 0.4rem; }
+.live i { width: 6px; height: 6px; border-radius: 50%; background: #080808; box-shadow: 0 0 0 3px rgba(8,8,8,.18); }
+.networkName { font-size: 0.7rem; }
+
+.inner {
   display: flex;
-  gap: var(--space-2xs);
+  align-items: stretch;
+  justify-content: space-between;
+  gap: var(--space-xl);
+  max-width: var(--page-max-width);
+  min-height: 68px;
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
 }
 
+.brandLink { display: flex; align-items: center; color: inherit; text-decoration: none; }
+.brand { display: flex; align-items: center; gap: var(--space-sm); min-width: 0; }
+.brandIcon { display: grid; place-items: center; width: 42px; height: 42px; padding: 5px; background: var(--color-liga-primera); transform: skew(-6deg); }
+.brandLogo { width: 100%; height: 100%; object-fit: contain; filter: brightness(0); transform: skew(6deg); }
+.brandText { min-width: 0; }
+.title { color: #fff; font-family: var(--font-display); font-size: 1.55rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1; }
+.subtitle { margin-top: 0.2rem; color: #8d8d8d; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+
+.nav { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
+.nav::-webkit-scrollbar { display: none; }
 .navLink {
-  padding: var(--space-xs) var(--space-sm);
-  color: var(--color-bg-primary);
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 0 var(--space-sm);
+  color: #a7a7a7;
   font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.07em;
   text-decoration: none;
   text-transform: uppercase;
-  transition:
-    background-color var(--transition-productive),
-    color var(--transition-productive),
-    transform var(--transition-productive);
+  white-space: nowrap;
+  transition: color var(--transition-productive), background var(--transition-productive);
 }
+.navLink::after { position: absolute; inset: auto .7rem 0; height: 3px; background: var(--color-liga-primera); content: ""; transform: scaleX(0); transition: transform var(--transition-productive); }
+.navLink:hover { color: #fff; background: #151515; }
+.navLinkActive { color: #fff; }
+.navLinkActive::after { transform: scaleX(1); }
 
-.navLink:hover {
-  background: rgba(244, 96, 54, 0.16);
-  color: var(--color-liga-primera);
-}
-
-.navLinkActive {
-  background: var(--color-liga-primera);
-  color: #000;
-}
-
-.mobileBadge {
-  display: none;
-  color: var(--color-liga-primera);
-  font-family: var(--font-display);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-@media (max-width: 768px) {
-  .inner {
-    padding: var(--space-sm) var(--space-md);
-  }
-
-  .nav {
-    display: none;
-  }
-
-  .mobileBadge {
-    display: block;
-  }
-
-  .title {
-    font-size: 1.2rem;
-  }
-
-  .subtitle {
-    letter-spacing: 0.12em;
-  }
+@media (max-width: 900px) {
+  .networkInner span:nth-child(2) { display: none; }
+  .inner { display: block; min-height: 0; padding: 0; }
+  .brandLink { min-height: 58px; padding: 0 var(--space-md); }
+  .nav { border-top: 1px solid #292929; padding: 0 var(--space-xs); }
+  .navLink { min-height: 42px; padding: 0 .65rem; }
 }

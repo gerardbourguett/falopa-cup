@@ -1,94 +1,26 @@
-.hero {
-  position: relative;
-  padding: var(--space-3xl) var(--space-md);
-  background: var(--color-bg-primary);
-  border-bottom: 3px solid var(--color-bg-elevated);
-  overflow: clip;
-}
-
-.seasonBadge,
-.leagueBadge {
-  position: absolute;
-  top: var(--space-md);
-  font-family: var(--font-scoreboard);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.seasonBadge {
-  left: var(--space-md);
-  padding: var(--space-xs) var(--space-md);
-  background: var(--color-liga-primera);
-  color: var(--color-bg-primary);
-}
-
-.leagueBadge {
-  right: var(--space-md);
-  padding: var(--space-xs) var(--space-sm);
-  border: 2px solid var(--color-liga-ascenso);
-  background: var(--color-bg-secondary);
-  color: var(--color-liga-ascenso);
-  text-align: center;
-}
-
-.content {
-  max-width: 700px;
-  margin: 0 auto;
-  padding-top: var(--space-md);
-  text-align: center;
-}
-
-.title {
-  margin-bottom: var(--space-xs);
-  color: var(--color-text-primary);
-  font-family: var(--font-display);
-  font-size: clamp(2.5rem, 8vw, 5rem);
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  line-height: 1;
-}
-
-.subtitle {
-  margin-bottom: var(--space-lg);
-  color: var(--color-text-muted);
-  font-family: var(--font-display);
-  font-size: 1rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-.descriptionPanel {
-  margin-bottom: var(--space-xl);
-  padding: 1.25rem;
-  border: var(--border-soft);
-  background: var(--color-bg-secondary);
-  text-align: left;
-  box-shadow: var(--shadow-card);
-}
-
-.description {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.7;
-}
-
-@media (max-width: 768px) {
-  .hero {
-    padding-top: calc(var(--space-3xl) + var(--space-xl));
-  }
-
-  .seasonBadge,
-  .leagueBadge {
-    position: static;
-    display: inline-block;
-    margin-bottom: var(--space-md);
-  }
-
-  .seasonBadge {
-    margin-right: var(--space-sm);
-  }
-}
+.hero { position: relative; overflow: hidden; padding: 0 var(--space-md); border-bottom: 5px solid var(--color-liga-primera); background: #090909; color: #fff; }
+.hero::before { position: absolute; inset: 0; background: radial-gradient(circle at 76% 20%, rgba(255,77,0,.2), transparent 27%), linear-gradient(112deg, transparent 0 63%, rgba(255,255,255,.035) 63% 64%, transparent 64%), repeating-linear-gradient(90deg, transparent 0 99px, rgba(255,255,255,.025) 100px); content: ""; }
+.paperLabel { position: relative; z-index: 1; display: flex; justify-content: space-between; max-width: var(--page-max-width); margin: auto; padding: .7rem 0; border-bottom: 1px solid #2b2b2b; color: #777; font-family: var(--font-display); font-size: .66rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; }
+.heroGrid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(280px, .65fr); gap: clamp(2rem, 5vw, 5rem); align-items: end; max-width: var(--page-max-width); margin: auto; }
+.content { min-width: 0; padding: clamp(3rem, 8vw, 7rem) 0 clamp(2.5rem, 6vw, 5rem); }
+.seasonBadge { display: inline-block; margin-bottom: 1.25rem; padding: .35rem .7rem; border-left: 4px solid var(--color-liga-primera); background: #202020; color: #fff; font-family: var(--font-display); font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.kicker { margin: 0 0 .6rem; color: var(--color-liga-primera); font-family: var(--font-display); font-size: .78rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.title { max-width: 900px; margin: 0 0 1rem; color: #fff; font-family: var(--font-display); font-size: clamp(4.3rem, 10.5vw, 9rem); font-weight: 700; letter-spacing: -.065em; line-height: .78; text-wrap: balance; }
+.subtitle { color: #fff; font-family: var(--font-display); font-size: clamp(1.3rem, 3vw, 2.4rem); font-weight: 500; letter-spacing: -.015em; text-transform: uppercase; }
+.descriptionPanel { max-width: 760px; margin: 1.5rem 0 1.8rem; border-left: 2px solid #3a3a3a; padding-left: 1rem; }
+.description { margin: 0; color: #a7a7a7; font-size: clamp(.95rem, 1.5vw, 1.08rem); line-height: 1.65; }
+.actions { display: flex; flex-wrap: wrap; gap: .7rem; align-items: center; }
+.secondaryLink { padding: .7rem 1rem; border: 1px solid #444; color: #fff; font-family: var(--font-display); font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; transition: border-color .18s, color .18s; }
+.secondaryLink:hover { border-color: var(--color-liga-primera); color: var(--color-liga-primera); }
+.bulletin { align-self: end; margin-bottom: clamp(2.5rem, 6vw, 5rem); border-top: 5px solid var(--color-liga-primera); background: #f4f3ef; color: #0a0a0a; box-shadow: 18px 18px 0 rgba(255,77,0,.18); }
+.bulletinHeader { display: flex; justify-content: space-between; padding: .65rem 1rem; border-bottom: 1px solid #cac9c2; font-family: var(--font-display); font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.bulletinHeader strong { color: var(--color-liga-primera); }
+.bulletinTitle { margin: 0; padding: 1.25rem 1rem .65rem; font-family: var(--font-display); font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 700; line-height: .98; text-transform: uppercase; }
+.bulletinMeta { margin: 0; padding: 0 1rem 1.25rem; color: #666; font-size: .82rem; line-height: 1.5; }
+.signalBar { display: grid; grid-template-columns: 2fr 1fr 1fr 3fr; height: 6px; }
+.signalBar span { background: #0a0a0a; } .signalBar span:nth-child(odd) { background: var(--color-liga-primera); }
+.ticker { position: relative; z-index: 1; display: flex; max-width: var(--page-max-width); min-height: 44px; margin: auto; border-top: 1px solid #292929; background: #111; }
+.tickerLabel { display: grid; place-items: center; flex: none; padding: 0 1rem; background: var(--color-liga-primera); color: #080808; font-family: var(--font-display); font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.tickerText { min-width: 0; padding: .75rem 1rem; color: #ddd; font-family: var(--font-display); font-size: .73rem; letter-spacing: .08em; overflow: hidden; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+@media (max-width: 900px) { .heroGrid { grid-template-columns: 1fr; } .content { padding-bottom: 1rem; } .bulletin { margin: 0 0 2rem; box-shadow: 9px 9px 0 rgba(255,77,0,.18); } }
+@media (max-width: 640px) { .hero { padding-inline: .7rem; } .paperLabel span:last-child { display: none; } .title { font-size: clamp(3.7rem, 20vw, 6rem); } .ticker { display: block; } .tickerLabel, .tickerText { display: block; } }
