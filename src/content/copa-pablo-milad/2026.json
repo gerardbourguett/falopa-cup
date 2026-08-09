@@ -216,6 +216,46 @@
       "scoreHolder": 0,
       "scoreChallenger": 1,
       "newHolderId": "universidad-de-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2026-07-05",
+      "competition": "Copa Chile · Fecha 5",
+      "holderId": "universidad-de-concepcion",
+      "challengerId": "rangers",
+      "scoreHolder": 2,
+      "scoreChallenger": 0,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-07-26",
+      "competition": "Liga de Ascenso - Fecha 16",
+      "holderId": "rangers",
+      "challengerId": "deportes-copiapo",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-07-31",
+      "competition": "Liga de Ascenso - Fecha 17",
+      "sourceUrl": "https://www.flashscore.cl/detalle-del-partido/futbol/rangers-QZfOjEMB/san-luis-tjbndIRL/?mid=ryQpPUCO",
+      "holderId": "rangers",
+      "challengerId": "san-luis-de-quillota",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-08-04",
+      "competition": "Copa Chile · Fecha 6",
+      "sourceUrl": "https://www.flashscore.cl/detalle-del-partido/futbol/nublense-vVvwgdNn/rangers-QZfOjEMB/?mid=lMNDRtVg",
+      "holderId": "rangers",
+      "challengerId": "nublense"
     }
   ]
 }
