@@ -1947,6 +1947,23 @@
       "windowStart": "2026-04-21",
       "windowEnd": "2026-05-04",
       "extendedWindowEnd": "2026-05-07",
+      "clubsWithoutSecondMatch": [
+        {
+          "clubId": "ve-zamora",
+          "reason": "Sin segundo partido oficial en la ventana F2 ni en su extensión; volvió a jugar en junio.",
+          "sourceUrl": "https://www.sofascore.com/es/football/match/atletico-el-vigia-zamora/MzcsQed#id:16378422"
+        },
+        {
+          "clubId": "ve-rayo-zuliano",
+          "reason": "Sin segundo partido oficial en la ventana F2 ni en su extensión; volvió a jugar en junio.",
+          "sourceUrl": "https://www.sofascore.com/es/football/match/deportivo-rayo-zuliano-trujillanos-fc/KzcskBed#id:16378414"
+        },
+        {
+          "clubId": "ve-anzoategui",
+          "reason": "Sin segundo partido oficial en la ventana F2 ni en su extensión; volvió a jugar en junio.",
+          "sourceUrl": "https://www.sofascore.com/es/football/match/atletico-avila-fc-anzoategui-fc/TyrdsVquj#id:16378417"
+        }
+      ],
       "windowMatchSources": [
         {
           "id": "GS-F2-cl-colo-colo-2026-04-26",

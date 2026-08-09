@@ -303,6 +303,9 @@ const reviewMissingCards = reviewBuckets.missingCards;
                     {clubIds.map((id: string) => {
                       const club = clubMeta(id);
                       const matches = matchSourceMap.get(round.roundId)?.get(id) || [];
+                      const noSecondMatch = (round.clubsWithoutSecondMatch || []).find(
+                        (entry: any) => entry.clubId === id,
+                      );
                       const allMs = matches.map((ms: any) => {
                         const fx = (round.fantasyScores || []).find((fs: any) => fs.sourceMatchId === ms.id);
                         return { ...ms, fx };
@@ -361,6 +364,17 @@ const reviewMissingCards = reviewBuckets.missingCards;
                                 )}
                               </div>
                             ))}
+                            {noSecondMatch && (
+                              <div class="f1-no-second-match">
+                                <strong>Ventana cerrada con un partido</strong>
+                                <span>{noSecondMatch.reason}</span>
+                                {noSecondMatch.sourceUrl && (
+                                  <a href={noSecondMatch.sourceUrl} target="_blank" rel="noreferrer">
+                                    Ver siguiente partido en junio ↗
+                                  </a>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       );
@@ -1443,6 +1457,32 @@ const reviewMissingCards = reviewBuckets.missingCards;
     border: 1px dashed var(--color-bg-elevated);
     color: var(--color-text-muted);
     font-size: 0.68rem;
+  }
+
+  .f1-no-second-match {
+    display: grid;
+    gap: 0.18rem;
+    margin-top: 0.2rem;
+    padding: 0.5rem;
+    border-left: 3px solid #d7a500;
+    background: rgba(215, 165, 0, 0.08);
+    color: var(--color-text-muted);
+    font-size: 0.62rem;
+  }
+
+  .f1-no-second-match strong {
+    color: #8f6e00;
+    font-family: var(--font-display);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .f1-no-second-match a {
+    width: max-content;
+    color: var(--color-conference-dim);
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
   }
 
   .f1-match-scheduled {

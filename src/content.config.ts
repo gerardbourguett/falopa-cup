@@ -135,6 +135,11 @@ const conferenceGroupsSchema = z.object({
         windowStart: z.coerce.date(),
         windowEnd: z.coerce.date(),
         extendedWindowEnd: z.coerce.date(),
+        clubsWithoutSecondMatch: z.array(z.object({
+            clubId: z.string(),
+            reason: z.string(),
+            sourceUrl: z.string().url().optional(),
+        })).optional(),
         fixture: z.array(z.object({
             group: z.string(),
             club1Id: z.string(),
