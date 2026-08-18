@@ -260,11 +260,31 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-08-19",
       "competition": "Liga de Ascenso - Fecha 19",
       "holderId": "rangers",
-      "challengerId": "deportes-recoleta"
+      "challengerId": "deportes-recoleta",
+      "scoreHolder": 2,
+      "scoreChallenger": 4,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-08-20",
+      "competition": "Liga de Ascenso - Fecha 20",
+      "holderId": "rangers",
+      "challengerId": "magallanes",
+      "scoreHolder": 2,
+      "scoreChallenger": 3,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-08-21",
+      "competition": "Liga de Ascenso - Fecha 21",
+      "holderId": "rangers",
+      "challengerId": "san-marcos-de-arica"
     }
   ]
 }
