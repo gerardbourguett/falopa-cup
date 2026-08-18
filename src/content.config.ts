@@ -190,11 +190,13 @@ const conferenceKnockoutSchema = z.object({
                 sourceType: z.enum(['group-winner', 'group-runner-up', 'sudamericana-eliminated', 'tie-winner']),
                 sourceRef: z.string(),
                 clubId: z.string().nullable(),
+                label: z.string().optional(),
             }),
             slotB: z.object({
                 sourceType: z.enum(['group-winner', 'group-runner-up', 'sudamericana-eliminated', 'tie-winner']),
                 sourceRef: z.string(),
                 clubId: z.string().nullable(),
+                label: z.string().optional(),
             }),
             scoreA: z.number().optional(),
             scoreB: z.number().optional(),

@@ -349,12 +349,23 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-08-08",
       "competition": "Liga de Primera · Fecha 19",
       "sourceUrl": "https://www.flashscore.cl/detalle-del-partido/futbol/cobresal-YeUwzehC/u-catolica-Qe432hiO/?mid=EuK7Pna4",
       "holderId": "cobresal",
-      "challengerId": "universidad-catolica"
+      "challengerId": "universidad-catolica",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "universidad-catolica"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-08-22",
+      "competition": "Liga de Primera · Fecha 20",
+      "sourceUrl": "https://www.sofascore.com/football/match/nublense-universidad-catolica/bnbsEPc#id:15353096",
+      "holderId": "universidad-catolica",
+      "challengerId": "nublense"
     }
   ]
 }

@@ -13,12 +13,18 @@ const clubsDoc = entries.find((e) => e.data.kind === 'clubs')?.data as any;
 const stageDoc = entries.find((e) => e.data.kind === 'stage')?.data as any;
 const groupsDoc = entries.find((e) => e.data.kind === 'groups')?.data as any;
 const windowCutDoc = entries.find((e) => e.data.kind === 'window-cut')?.data as any;
+const knockoutDoc = entries.find((e) => e.data.kind === 'knockout')?.data as any;
 
 const seeds: any[] = clubsDoc?.seeds || [];
 const groups: any[] = groupsDoc?.groups || [];
 const roundWindows: any[] = groupsDoc?.roundWindows || [];
 const seedByIdWiki = new Map<string, any>(seeds.map((s: any) => [s.clubId, s]));
 const preliminaryTies: any[] = stageDoc?.preliminaryTies || [];
+const playoffRound = knockoutDoc?.rounds?.find((round: any) => round.id === 'KO-PLAYOFF');
+const roundOf16 = knockoutDoc?.rounds?.find((round: any) => round.id === 'KO-R16');
+const roundOf16ByPlayoff = new Map<string, any>(
+  (roundOf16?.ties || []).map((tie: any) => [tie.slotB.sourceRef, tie] as [string, any]),
+);
 
 const countryNames: Record<string, string> = {
   AR: 'Argentina',
@@ -55,6 +61,12 @@ function entryLabelLong(type: string) {
     case 'sudamericana-f1': return 'Eliminado Copa Sudamericana (Fase 1)';
     default: return 'Cupo base de liga nacional';
   }
+}
+
+function knockoutSlotName(slot: any) {
+  if (slot.label) return slot.label;
+  if (slot.clubId) return seedByIdWiki.get(slot.clubId)?.name || slot.clubId;
+  return `Ganador ${slot.sourceRef}`;
 }
 
 function resolvedByLabel(r: string) {
@@ -551,20 +563,38 @@ function scoreBreakdownText(wc: any): string {
       <h3 class="subsection-title">Clasificación</h3>
       <div class="class-table">
         <div class="class-row class-direct">
-          <span class="class-pos">1° y 2°</span>
-          <span class="class-desc">Avanzan directamente a la fase eliminatoria</span>
+          <span class="class-pos">1°</span>
+          <span class="class-desc">Avanza directamente a octavos de final</span>
         </div>
         <div class="class-row class-playoff">
-          <span class="class-pos">3°</span>
+          <span class="class-pos">2°</span>
           <span class="class-desc">
-            Playoff de repechaje vs. tercero de grupo de Copa Sudamericana
-            <span class="tbd-badge">Copa Sud TBD</span>
+            Playoff eliminatorio vs. un eliminado de Copa Sudamericana
           </span>
         </div>
         <div class="class-row class-out">
-          <span class="class-pos">4°</span>
+          <span class="class-pos">3° y 4°</span>
           <span class="class-desc">Eliminado del torneo</span>
         </div>
+      </div>
+
+      <h3 class="subsection-title">Siguiente ronda: playoff eliminatorio</h3>
+      <p class="criterion-note">
+        Los segundos de cada grupo se ordenan de mejor a peor puntaje fantasy. En ese mismo orden
+        enfrentan a los ocho equipos provenientes de la Copa Sudamericana. Los primeros de grupo
+        también se ordenan por puntaje y esperan en octavos al ganador de la llave correspondiente.
+      </p>
+      <div class="wiki-playoff-grid">
+        {(playoffRound?.ties || []).map((tie: any) => {
+          const nextTie = roundOf16ByPlayoff.get(tie.id);
+          return (
+            <article class="wiki-playoff-card">
+              <span>{tie.id}</span>
+              <strong>{knockoutSlotName(tie.slotA)} vs {knockoutSlotName(tie.slotB)}</strong>
+              {nextTie && <small>Ganador vs {knockoutSlotName(nextTie.slotA)}</small>}
+            </article>
+          );
+        })}
       </div>
 
       <!-- SORTEO -->
@@ -595,7 +625,7 @@ function scoreBreakdownText(wc: any): string {
       </div>
 
       <p class="criterion-note footnote">
-        Los 8 cupos de Copa Sudamericana para el playoff de 3ros se conocerán al finalizar esa fase de grupos.
+        Los cruces de playoff y sus rivales de octavos ya están definidos según el orden final del puntaje fantasy.
       </p>
     </section>
 
@@ -1156,6 +1186,40 @@ function scoreBreakdownText(wc: any): string {
 
   .status-done { background: color-mix(in srgb, #5cb85c 20%, transparent); color: #5cb85c; }
   .status-pending { background: var(--color-bg-elevated); color: var(--color-text-muted); }
+
+  .wiki-playoff-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .wiki-playoff-card {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid var(--color-bg-elevated);
+    border-left: 3px solid #f0a500;
+    border-radius: 8px;
+    background: var(--color-bg-primary);
+  }
+
+  .wiki-playoff-card > span,
+  .wiki-playoff-card > small {
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+  }
+
+  .wiki-playoff-card > span {
+    font-family: var(--font-display);
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 640px) {
+    .wiki-playoff-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 
   /* Clasificación */
   .class-table {
