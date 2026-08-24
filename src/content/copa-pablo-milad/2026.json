@@ -280,11 +280,21 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-08-21",
       "competition": "Liga de Ascenso - Fecha 21",
       "holderId": "rangers",
-      "challengerId": "san-marcos-de-arica"
+      "challengerId": "san-marcos-de-arica",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "san-marcos-de-arica"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-08-31",
+      "competition": "Liga de Ascenso - Fecha 22",
+      "holderId": "san-marcos-de-arica",
+      "challengerId": "cobreloa"
     }
   ]
 }
