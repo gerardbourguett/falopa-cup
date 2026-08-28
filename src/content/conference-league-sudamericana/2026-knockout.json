@@ -1,39 +1,239 @@
 {
   "kind": "knockout",
   "edition": 2026,
-  "status": "planned",
-  "formatNote": "Los ocho ganadores de grupo avanzan directamente a octavos. Los ocho segundos disputan un playoff contra ocho eliminados provenientes de la ronda eliminatoria de la Copa Sudamericana.",
+  "status": "in-progress",
+  "formatNote": "Los ocho segundos de grupo se ordenan de mejor a peor puntaje fantasy y disputan un playoff contra los ocho eliminados de la Copa Sudamericana. Los ocho primeros de grupo, también ordenados por puntaje, avanzan directamente a octavos.",
   "rounds": [
     {
       "id": "KO-PLAYOFF",
       "name": "Playoff eliminatorio",
       "status": "planned",
-      "description": "Segundos de grupo vs eliminados de la ronda eliminatoria de Sudamericana.",
+      "description": "Segundos de grupo, ordenados de mejor a peor puntaje fantasy, vs eliminados de la Copa Sudamericana.",
       "ties": [
-        { "id": "PO-1", "slotA": { "sourceType": "group-runner-up", "sourceRef": "group-A-2", "clubId": null }, "slotB": { "sourceType": "sudamericana-eliminated", "sourceRef": "sudamericana-eliminated-1", "clubId": null } },
-        { "id": "PO-2", "slotA": { "sourceType": "group-runner-up", "sourceRef": "group-B-2", "clubId": null }, "slotB": { "sourceType": "sudamericana-eliminated", "sourceRef": "sudamericana-eliminated-2", "clubId": null } },
-        { "id": "PO-3", "slotA": { "sourceType": "group-runner-up", "sourceRef": "group-C-2", "clubId": null }, "slotB": { "sourceType": "sudamericana-eliminated", "sourceRef": "sudamericana-eliminated-3", "clubId": null } },
-        { "id": "PO-4", "slotA": { "sourceType": "group-runner-up", "sourceRef": "group-D-2", "clubId": null }, "slotB": { "sourceType": "sudamericana-eliminated", "sourceRef": "sudamericana-eliminated-4", "clubId": null } },
-        { "id": "PO-5", "slotA": { "sourceType": "group-runner-up", "sourceRef": "group-E-2", "clubId": null }, "slotB": { "sourceType": "sudamericana-eliminated", "sourceRef": "sudamericana-eliminated-5", "clubId": null } },
-        { "id": "PO-6", "slotA": { "sourceType": "group-runner-up", "sourceRef": "group-F-2", "clubId": null }, "slotB": { "sourceType": "sudamericana-eliminated", "sourceRef": "sudamericana-eliminated-6", "clubId": null } },
-        { "id": "PO-7", "slotA": { "sourceType": "group-runner-up", "sourceRef": "group-G-2", "clubId": null }, "slotB": { "sourceType": "sudamericana-eliminated", "sourceRef": "sudamericana-eliminated-7", "clubId": null } },
-        { "id": "PO-8", "slotA": { "sourceType": "group-runner-up", "sourceRef": "group-H-2", "clubId": null }, "slotB": { "sourceType": "sudamericana-eliminated", "sourceRef": "sudamericana-eliminated-8", "clubId": null } }
+        {
+          "id": "PO-1",
+          "slotA": {
+            "sourceType": "group-runner-up",
+            "sourceRef": "group-A-2",
+            "clubId": "co-atletico-nacional"
+          },
+          "slotB": {
+            "sourceType": "sudamericana-eliminated",
+            "sourceRef": "sudamericana-eliminated-1",
+            "clubId": null,
+            "label": "O’Higgins (CHI)"
+          }
+        },
+        {
+          "id": "PO-2",
+          "slotA": {
+            "sourceType": "group-runner-up",
+            "sourceRef": "group-G-2",
+            "clubId": "pe-adt"
+          },
+          "slotB": {
+            "sourceType": "sudamericana-eliminated",
+            "sourceRef": "sudamericana-eliminated-2",
+            "clubId": null,
+            "label": "Grêmio (BRA)"
+          }
+        },
+        {
+          "id": "PO-3",
+          "slotA": {
+            "sourceType": "group-runner-up",
+            "sourceRef": "group-H-2",
+            "clubId": "pe-los-chankas"
+          },
+          "slotB": {
+            "sourceType": "sudamericana-eliminated",
+            "sourceRef": "sudamericana-eliminated-3",
+            "clubId": null,
+            "label": "Caracas (VEN)"
+          }
+        },
+        {
+          "id": "PO-4",
+          "slotA": {
+            "sourceType": "group-runner-up",
+            "sourceRef": "group-F-2",
+            "clubId": "ec-aucas"
+          },
+          "slotB": {
+            "sourceType": "sudamericana-eliminated",
+            "sourceRef": "sudamericana-eliminated-4",
+            "clubId": null,
+            "label": "Independiente Medellín (COL)"
+          }
+        },
+        {
+          "id": "PO-5",
+          "slotA": {
+            "sourceType": "group-runner-up",
+            "sourceRef": "group-B-2",
+            "clubId": "ec-emelec"
+          },
+          "slotB": {
+            "sourceType": "sudamericana-eliminated",
+            "sourceRef": "sudamericana-eliminated-5",
+            "clubId": null,
+            "label": "Sporting Cristal (PER)"
+          }
+        },
+        {
+          "id": "PO-6",
+          "slotA": {
+            "sourceType": "group-runner-up",
+            "sourceRef": "group-E-2",
+            "clubId": "uy-racing-club"
+          },
+          "slotB": {
+            "sourceType": "sudamericana-eliminated",
+            "sourceRef": "sudamericana-eliminated-6",
+            "clubId": null,
+            "label": "UCV (VEN)"
+          }
+        },
+        {
+          "id": "PO-7",
+          "slotA": {
+            "sourceType": "group-runner-up",
+            "sourceRef": "group-C-2",
+            "clubId": "ve-deportivo-tachira"
+          },
+          "slotB": {
+            "sourceType": "sudamericana-eliminated",
+            "sourceRef": "sudamericana-eliminated-7",
+            "clubId": null,
+            "label": "Nacional (URU)"
+          }
+        },
+        {
+          "id": "PO-8",
+          "slotA": {
+            "sourceType": "group-runner-up",
+            "sourceRef": "group-D-2",
+            "clubId": "bo-nacional-potosi"
+          },
+          "slotB": {
+            "sourceType": "sudamericana-eliminated",
+            "sourceRef": "sudamericana-eliminated-8",
+            "clubId": null,
+            "label": "Lanús (ARG)"
+          }
+        }
       ]
     },
     {
       "id": "KO-R16",
       "name": "Octavos de final",
       "status": "planned",
-      "description": "Ganadores de grupo vs ganadores del playoff.",
+      "description": "Primeros de grupo, ordenados de mejor a peor puntaje fantasy, vs ganadores del playoff en el mismo orden.",
       "ties": [
-        { "id": "R16-1", "slotA": { "sourceType": "group-winner", "sourceRef": "group-A-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "PO-1", "clubId": null } },
-        { "id": "R16-2", "slotA": { "sourceType": "group-winner", "sourceRef": "group-B-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "PO-2", "clubId": null } },
-        { "id": "R16-3", "slotA": { "sourceType": "group-winner", "sourceRef": "group-C-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "PO-3", "clubId": null } },
-        { "id": "R16-4", "slotA": { "sourceType": "group-winner", "sourceRef": "group-D-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "PO-4", "clubId": null } },
-        { "id": "R16-5", "slotA": { "sourceType": "group-winner", "sourceRef": "group-E-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "PO-5", "clubId": null } },
-        { "id": "R16-6", "slotA": { "sourceType": "group-winner", "sourceRef": "group-F-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "PO-6", "clubId": null } },
-        { "id": "R16-7", "slotA": { "sourceType": "group-winner", "sourceRef": "group-G-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "PO-7", "clubId": null } },
-        { "id": "R16-8", "slotA": { "sourceType": "group-winner", "sourceRef": "group-H-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "PO-8", "clubId": null } }
+        {
+          "id": "R16-1",
+          "slotA": {
+            "sourceType": "group-winner",
+            "sourceRef": "group-A-1",
+            "clubId": "pe-alianza-lima"
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "PO-1",
+            "clubId": null
+          }
+        },
+        {
+          "id": "R16-2",
+          "slotA": {
+            "sourceType": "group-winner",
+            "sourceRef": "group-F-1",
+            "clubId": "ve-zamora"
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "PO-2",
+            "clubId": null
+          }
+        },
+        {
+          "id": "R16-3",
+          "slotA": {
+            "sourceType": "group-winner",
+            "sourceRef": "group-H-1",
+            "clubId": "ec-orense"
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "PO-3",
+            "clubId": null
+          }
+        },
+        {
+          "id": "R16-4",
+          "slotA": {
+            "sourceType": "group-winner",
+            "sourceRef": "group-G-1",
+            "clubId": "py-general-caballero"
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "PO-4",
+            "clubId": null
+          }
+        },
+        {
+          "id": "R16-5",
+          "slotA": {
+            "sourceType": "group-winner",
+            "sourceRef": "group-E-1",
+            "clubId": "ve-metropolitanos"
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "PO-5",
+            "clubId": null
+          }
+        },
+        {
+          "id": "R16-6",
+          "slotA": {
+            "sourceType": "group-winner",
+            "sourceRef": "group-D-1",
+            "clubId": "co-atletico-bucaramanga"
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "PO-6",
+            "clubId": null
+          }
+        },
+        {
+          "id": "R16-7",
+          "slotA": {
+            "sourceType": "group-winner",
+            "sourceRef": "group-B-1",
+            "clubId": "cl-universidad-de-chile"
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "PO-7",
+            "clubId": null
+          }
+        },
+        {
+          "id": "R16-8",
+          "slotA": {
+            "sourceType": "group-winner",
+            "sourceRef": "group-C-1",
+            "clubId": "ec-universidad-catolica"
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "PO-8",
+            "clubId": null
+          }
+        }
       ]
     },
     {
@@ -41,10 +241,58 @@
       "name": "Cuartos de final",
       "status": "planned",
       "ties": [
-        { "id": "QF-1", "slotA": { "sourceType": "tie-winner", "sourceRef": "R16-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "R16-2", "clubId": null } },
-        { "id": "QF-2", "slotA": { "sourceType": "tie-winner", "sourceRef": "R16-3", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "R16-4", "clubId": null } },
-        { "id": "QF-3", "slotA": { "sourceType": "tie-winner", "sourceRef": "R16-5", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "R16-6", "clubId": null } },
-        { "id": "QF-4", "slotA": { "sourceType": "tie-winner", "sourceRef": "R16-7", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "R16-8", "clubId": null } }
+        {
+          "id": "QF-1",
+          "slotA": {
+            "sourceType": "tie-winner",
+            "sourceRef": "R16-1",
+            "clubId": null
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "R16-2",
+            "clubId": null
+          }
+        },
+        {
+          "id": "QF-2",
+          "slotA": {
+            "sourceType": "tie-winner",
+            "sourceRef": "R16-3",
+            "clubId": null
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "R16-4",
+            "clubId": null
+          }
+        },
+        {
+          "id": "QF-3",
+          "slotA": {
+            "sourceType": "tie-winner",
+            "sourceRef": "R16-5",
+            "clubId": null
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "R16-6",
+            "clubId": null
+          }
+        },
+        {
+          "id": "QF-4",
+          "slotA": {
+            "sourceType": "tie-winner",
+            "sourceRef": "R16-7",
+            "clubId": null
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "R16-8",
+            "clubId": null
+          }
+        }
       ]
     },
     {
@@ -52,8 +300,32 @@
       "name": "Semifinales",
       "status": "planned",
       "ties": [
-        { "id": "SF-1", "slotA": { "sourceType": "tie-winner", "sourceRef": "QF-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "QF-2", "clubId": null } },
-        { "id": "SF-2", "slotA": { "sourceType": "tie-winner", "sourceRef": "QF-3", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "QF-4", "clubId": null } }
+        {
+          "id": "SF-1",
+          "slotA": {
+            "sourceType": "tie-winner",
+            "sourceRef": "QF-1",
+            "clubId": null
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "QF-2",
+            "clubId": null
+          }
+        },
+        {
+          "id": "SF-2",
+          "slotA": {
+            "sourceType": "tie-winner",
+            "sourceRef": "QF-3",
+            "clubId": null
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "QF-4",
+            "clubId": null
+          }
+        }
       ]
     },
     {
@@ -61,7 +333,19 @@
       "name": "Final",
       "status": "planned",
       "ties": [
-        { "id": "F-1", "slotA": { "sourceType": "tie-winner", "sourceRef": "SF-1", "clubId": null }, "slotB": { "sourceType": "tie-winner", "sourceRef": "SF-2", "clubId": null } }
+        {
+          "id": "F-1",
+          "slotA": {
+            "sourceType": "tie-winner",
+            "sourceRef": "SF-1",
+            "clubId": null
+          },
+          "slotB": {
+            "sourceType": "tie-winner",
+            "sourceRef": "SF-2",
+            "clubId": null
+          }
+        }
       ]
     }
   ]

@@ -1,0 +1,17 @@
+﻿orden,llave,club_id,club_participante,pais,origen,rival_playoff,local,visitante,fecha_aaaa_mm_dd,competicion,goles_local,goles_visitante,amarillas_participante,rojas_participante,url_fuente,notas
+1,PO-1,co-atletico-nacional,Atlético Nacional,COL,Segundo del grupo A,O'Higgins,Fortaleza FC,Atlético Nacional,2026-08-23,Liga DIMAYOR,1,2,3,0,https://www.sofascore.com/es/football/match/fortaleza-fc-atletico-nacional/gxcstMK#id:16390700,Partido válido cargado
+2,PO-1,cl-ohiggins,O'Higgins,CHI,Eliminado de Sudamericana,Atlético Nacional,O'Higgins,Palestino,2026-08-23,Liga de Primera,0,1,2,1,https://www.sofascore.com/es/football/match/ohiggins-palestino/hnbsnnb#id:15353105,Partido válido cargado
+3,PO-2,pe-adt,ADT,PER,Segundo del grupo G,Grêmio,,,,,,,,,,
+4,PO-2,br-gremio,Grêmio,BRA,Eliminado de Sudamericana,ADT,,,,,,,,,,
+5,PO-3,pe-los-chankas,Los Chankas,PER,Segundo del grupo H,Caracas,,,,,,,,,,
+6,PO-3,ve-caracas,Caracas,VEN,Eliminado de Sudamericana,Los Chankas,,,,,,,,,,
+7,PO-4,ec-aucas,Aucas,ECU,Segundo del grupo F,Independiente Medellín,,,,,,,,,,
+8,PO-4,co-independiente-medellin,Independiente Medellín,COL,Eliminado de Sudamericana,Aucas,,,,,,,,,,
+9,PO-5,ec-emelec,Emelec,ECU,Segundo del grupo B,Sporting Cristal,,,,,,,,,,
+10,PO-5,pe-sporting-cristal,Sporting Cristal,PER,Eliminado de Sudamericana,Emelec,,,,,,,,,,
+11,PO-6,uy-racing-club,Racing Club,URU,Segundo del grupo E,UCV,,,,,,,,,,
+12,PO-6,ve-ucv,UCV,VEN,Eliminado de Sudamericana,Racing Club,,,,,,,,,,
+13,PO-7,ve-deportivo-tachira,Deportivo Táchira,VEN,Segundo del grupo C,Nacional,,,,,,,,,,
+14,PO-7,uy-nacional,Nacional,URU,Eliminado de Sudamericana,Deportivo Táchira,,,,,,,,,,
+15,PO-8,bo-nacional-potosi,Nacional Potosí,BOL,Segundo del grupo D,Lanús,,,,,,,,,,
+16,PO-8,ar-lanus,Lanús,ARG,Eliminado de Sudamericana,Nacional Potosí,,,,,,,,,,
