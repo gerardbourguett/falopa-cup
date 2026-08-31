@@ -1,0 +1,33 @@
+﻿orden,llave,partido_numero,club_id,club_participante,pais,origen,rival_playoff,local,visitante,fecha_aaaa_mm_dd,competicion,goles_local,goles_visitante,amarillas_participante,rojas_participante,diferencia_goles,clean_sheet,puntos_base,puntos_bonus,puntos_penalizacion,puntaje_fantasy,url_fuente,estado,notas
+1,PO-1,1,co-atletico-nacional,Atlético Nacional,COL,Segundo del grupo A,O'Higgins,Fortaleza FC,Atlético Nacional,2026-08-23,Liga DIMAYOR,1,2,3,0,1,0,3,0,-0.75,2.25,"https://www.sofascore.com/es/football/match/fortaleza-fc-atletico-nacional/gxcstMK#id:16390700,tab:statistics",played,
+2,PO-1,2,co-atletico-nacional,Atlético Nacional,COL,Segundo del grupo A,O'Higgins,Atlético Nacional,Deportivo Cali,2026-08-26,Liga DIMAYOR,2,1,5,1,1,0,3,0,-2.25,0.75,"https://www.sofascore.com/es/football/match/deportivo-cali-atletico-nacional/gxcsmxc#id:16390710,tab:statistics",played,
+3,PO-1,1,cl-ohiggins,O'Higgins,CHI,Eliminado de Sudamericana,Atlético Nacional,O'Higgins,Palestino,2026-08-23,Liga de Primera,0,1,2,1,-1,0,0,0,-1.5,-1.5,"https://www.sofascore.com/es/football/match/ohiggins-palestino/hnbsnnb#id:15353105,tab:statistics",played,
+4,PO-1,2,cl-ohiggins,O'Higgins,CHI,Eliminado de Sudamericana,Atlético Nacional,Deportes Recoleta,O'Higgins,2026-08-26,Copa Chile,3,1,2,0,-2,0,0,0,-0.5,-0.5,"https://www.sofascore.com/es/football/match/deportes-recoleta-ohiggins/nnbsjLnc#id:16416692,tab:statistics",played,
+5,PO-2,1,pe-adt,ADT,PER,Segundo del grupo G,Grêmio,CD Juan Pablo II,ADT,2026-08-22,Liga 1,5,1,0,0,-4,0,0,0,-1,-1,"https://www.sofascore.com/es/football/match/cd-juan-pablo-ii-asociacion-deportiva-tarma/hlJcsgzee#id:16281133,tab:statistics",played,
+6,PO-2,2,pe-adt,ADT,PER,Segundo del grupo G,Grêmio,ADT,Moquegua,2026-08-27,Copa de la Liga,2,0,4,0,2,1,3,2,-1,4,"https://www.sofascore.com/es/football/match/cd-moquegua-asociacion-deportiva-tarma/hlJcsYgXd#id:16715237,tab:statistics",played,
+7,PO-2,1,br-gremio,Grêmio,BRA,Eliminado de Sudamericana,ADT,RB Bragantino,Grêmio,2026-08-23,Brasileirão,1,0,3,0,-1,0,0,0,-0.75,-0.75,"https://www.sofascore.com/es/football/match/gremio-red-bull-bragantino/ZOsBtc#id:15235436,tab:statistics",played,
+8,PO-2,2,br-gremio,Grêmio,BRA,Eliminado de Sudamericana,ADT,Internacional,Grêmio,2026-08-27,Copa do Brasil,0,0,2,0,0,1,1,1,-0.5,1.5,"https://www.sofascore.com/es/football/match/gremio-internacional/qOsBtc#id:16795425,tab:statistics",played,
+9,PO-3,1,pe-los-chankas,Los Chankas,PER,Segundo del grupo H,Caracas,Universitario,Los Chankas,2026-08-23,Liga 1,3,0,2,1,-3,0,0,0,-2.5,-2.5,"https://www.sofascore.com/es/football/match/los-chankas-cyc-universitario-de-deportes/fWseVac#id:16280805,tab:statistics",played,
+10,PO-3,2,pe-los-chankas,Los Chankas,PER,Segundo del grupo H,Caracas,Los Chankas,CD Juan Pablo II,2026-08-29,Liga 1,,,,,,,,,,,,scheduled,Resultado pendiente
+11,PO-3,1,ve-caracas,Caracas,VEN,Eliminado de Sudamericana,Los Chankas,Caracas,Carabobo,2026-08-21,Primera División,1,1,4,0,0,0,1,0,-1,0,"https://www.sofascore.com/es/football/match/caracasc-carabobo-fc/EzcsFzc#id:16758364,tab:statistics",played,
+12,PO-3,2,ve-caracas,Caracas,VEN,Eliminado de Sudamericana,Los Chankas,Caracas,Barquisimeto,2026-08-26,Copa Venezuela,3,1,3,0,2,0,3,1,-0.75,3.25,"https://www.sofascore.com/es/football/match/barquisimeto-sc-caracasc/FzcsOKIi#id:16787586,tab:statistics",played,
+13,PO-4,1,ec-aucas,Aucas,ECU,Segundo del grupo F,Independiente Medellín,Delfín,Aucas,2026-08-23,LigaPro,0,1,2,0,1,1,3,1,-0.5,3.5,"https://www.sofascore.com/es/football/match/delfin-aucas/ZecsNxKb#id:15502655,tab:statistics",played,
+14,PO-4,2,ec-aucas,Aucas,ECU,Segundo del grupo F,Independiente Medellín,Liga de Quito,Aucas,2026-08-26,Copa Ecuador,1,0,0,0,-1,0,0,0,0,0,"https://www.sofascore.com/es/football/match/ldu-aucas/Zecshfc#id:16880510,tab:statistics",played,
+15,PO-4,1,co-independiente-medellin,Independiente Medellín,COL,Eliminado de Sudamericana,Aucas,Independiente Medellín,Cúcuta,2026-08-22,Liga DIMAYOR,0,1,0,0,-1,0,0,0,0,0,"https://www.sofascore.com/es/football/match/independiente-medellin-cucuta-deportivo/ixcspxc#id:16390703,tab:statistics",played,
+16,PO-4,2,co-independiente-medellin,Independiente Medellín,COL,Eliminado de Sudamericana,Aucas,Independiente Medellín,Llaneros,2026-08-30,Liga DIMAYOR,,,,,,,,,,,,scheduled,Resultado pendiente
+17,PO-5,1,ec-emelec,Emelec,ECU,Segundo del grupo B,Sporting Cristal,Liga de Quito,Emelec,2026-08-23,LigaPro,2,0,2,0,-2,0,0,0,-0.5,-0.5,"https://www.sofascore.com/es/football/match/ldu-emelec/ffcshfc#id:15502653,tab:statistics",played,
+18,PO-5,2,ec-emelec,Emelec,ECU,Segundo del grupo B,Sporting Cristal,Emelec,Leones del Norte,2026-08-30,LigaPro,,,,,,,,,,,,scheduled,Resultado pendiente
+19,PO-5,1,pe-sporting-cristal,Sporting Cristal,PER,Eliminado de Sudamericana,Emelec,Alianza Atlético,Sporting Cristal,2026-08-21,Liga 1,3,1,3,0,-2,0,0,0,-0.75,-0.75,"https://www.sofascore.com/es/football/match/alianza-atletico-de-sullana-club-sporting-cristal/cWshW#id:16280801,tab:statistics",played,
+20,PO-5,2,pe-sporting-cristal,Sporting Cristal,PER,Eliminado de Sudamericana,Emelec,Sporting Cristal,Sport Huancayo,2026-08-26,Copa de la Liga,4,1,0,0,3,0,3,2,0,5,"https://www.sofascore.com/es/football/match/sport-huancayo-club-sporting-cristal/cWsVCn#id:16715235,tab:statistics",played,
+21,PO-6,1,uy-racing-club,Racing Club,URU,Segundo del grupo E,UCV,Danubio,Racing Club,2026-08-23,Liga AUF,0,0,2,0,0,1,1,1,-0.5,1.5,"https://www.sofascore.com/es/football/match/racing-de-montevideo-danubio/Dobskak#id:16828543,tab:statistics",played,
+22,PO-6,2,uy-racing-club,Racing Club,URU,Segundo del grupo E,UCV,Racing Club,Albion,2026-08-31,Liga AUF,,,,,,,,,,,,scheduled,Resultado pendiente
+23,PO-6,1,ve-ucv,UCV,VEN,Eliminado de Sudamericana,Racing Club,,,,,,,,,,,,,,,,tbd,
+24,PO-6,2,ve-ucv,UCV,VEN,Eliminado de Sudamericana,Racing Club,,,,,,,,,,,,,,,,tbd,
+25,PO-7,1,ve-deportivo-tachira,Deportivo Táchira,VEN,Segundo del grupo C,Nacional,,,,,,,,,,,,,,,,tbd,
+26,PO-7,2,ve-deportivo-tachira,Deportivo Táchira,VEN,Segundo del grupo C,Nacional,,,,,,,,,,,,,,,,tbd,
+27,PO-7,1,uy-nacional,Nacional,URU,Eliminado de Sudamericana,Deportivo Táchira,,,,,,,,,,,,,,,,tbd,
+28,PO-7,2,uy-nacional,Nacional,URU,Eliminado de Sudamericana,Deportivo Táchira,,,,,,,,,,,,,,,,tbd,
+29,PO-8,1,bo-nacional-potosi,Nacional Potosí,BOL,Segundo del grupo D,Lanús,,,,,,,,,,,,,,,,tbd,
+30,PO-8,2,bo-nacional-potosi,Nacional Potosí,BOL,Segundo del grupo D,Lanús,,,,,,,,,,,,,,,,tbd,
+31,PO-8,1,ar-lanus,Lanús,ARG,Eliminado de Sudamericana,Nacional Potosí,,,,,,,,,,,,,,,,tbd,
+32,PO-8,2,ar-lanus,Lanús,ARG,Eliminado de Sudamericana,Nacional Potosí,,,,,,,,,,,,,,,,tbd,
