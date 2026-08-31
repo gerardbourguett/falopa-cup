@@ -200,6 +200,8 @@ const conferenceKnockoutSchema = z.object({
             }),
             scoreA: z.number().optional(),
             scoreB: z.number().optional(),
+            matchesPlayedA: z.number().int().min(0).max(2).optional(),
+            matchesPlayedB: z.number().int().min(0).max(2).optional(),
             winnerClubId: z.string().nullable().optional(),
             tiebreakReason: z.string().optional(),
         })),

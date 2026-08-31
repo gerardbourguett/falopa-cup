@@ -371,11 +371,13 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-08-29",
       "competition": "Liga de Primera · Fecha 21",
       "holderId": "nublense",
-      "challengerId": "deportes-concepcion"
+      "challengerId": "deportes-concepcion",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-concepcion"
     }
   ]
 }

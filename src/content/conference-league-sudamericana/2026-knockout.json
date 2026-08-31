@@ -7,7 +7,7 @@
     {
       "id": "KO-PLAYOFF",
       "name": "Playoff eliminatorio",
-      "status": "planned",
+      "status": "in-progress",
       "description": "Segundos de grupo, ordenados de mejor a peor puntaje fantasy, vs eliminados de la Copa Sudamericana.",
       "ties": [
         {
@@ -22,7 +22,13 @@
             "sourceRef": "sudamericana-eliminated-1",
             "clubId": null,
             "label": "O’Higgins (CHI)"
-          }
+          },
+          "scoreA": 3,
+          "scoreB": -2,
+          "matchesPlayedA": 2,
+          "matchesPlayedB": 2,
+          "winnerClubId": "co-atletico-nacional",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos"
         },
         {
           "id": "PO-2",
@@ -36,7 +42,13 @@
             "sourceRef": "sudamericana-eliminated-2",
             "clubId": null,
             "label": "Grêmio (BRA)"
-          }
+          },
+          "scoreA": 3,
+          "scoreB": 0.75,
+          "matchesPlayedA": 2,
+          "matchesPlayedB": 2,
+          "winnerClubId": "pe-adt",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos"
         },
         {
           "id": "PO-3",
@@ -50,7 +62,12 @@
             "sourceRef": "sudamericana-eliminated-3",
             "clubId": null,
             "label": "Caracas (VEN)"
-          }
+          },
+          "scoreA": -2.5,
+          "scoreB": 3.25,
+          "matchesPlayedA": 1,
+          "matchesPlayedB": 2,
+          "winnerClubId": null
         },
         {
           "id": "PO-4",
@@ -64,7 +81,12 @@
             "sourceRef": "sudamericana-eliminated-4",
             "clubId": null,
             "label": "Independiente Medellín (COL)"
-          }
+          },
+          "scoreA": 3.5,
+          "scoreB": 0,
+          "matchesPlayedA": 2,
+          "matchesPlayedB": 1,
+          "winnerClubId": null
         },
         {
           "id": "PO-5",
@@ -78,7 +100,12 @@
             "sourceRef": "sudamericana-eliminated-5",
             "clubId": null,
             "label": "Sporting Cristal (PER)"
-          }
+          },
+          "scoreA": -0.5,
+          "scoreB": 4.25,
+          "matchesPlayedA": 1,
+          "matchesPlayedB": 2,
+          "winnerClubId": null
         },
         {
           "id": "PO-6",
@@ -92,7 +119,11 @@
             "sourceRef": "sudamericana-eliminated-6",
             "clubId": null,
             "label": "UCV (VEN)"
-          }
+          },
+          "scoreA": 1.5,
+          "matchesPlayedA": 1,
+          "matchesPlayedB": 0,
+          "winnerClubId": null
         },
         {
           "id": "PO-7",

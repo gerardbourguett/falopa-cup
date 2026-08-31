@@ -468,15 +468,29 @@ const reviewMissingCards = reviewBuckets.missingCards;
           <div class="next-round-grid">
             {playoffRound.ties.map((tie: any, index: number) => {
               const roundOf16Tie = roundOf16ByPlayoff.get(tie.id);
+              const scoreA = Number.isFinite(tie.scoreA) ? tie.scoreA : null;
+              const scoreB = Number.isFinite(tie.scoreB) ? tie.scoreB : null;
+              const isComplete = tie.matchesPlayedA === 2 && tie.matchesPlayedB === 2;
               return (
                 <article class="next-round-match">
                   <header>
                     <span>{tie.id}</span>
                     <strong>Llave {index + 1}</strong>
                   </header>
-                  <div class="next-round-club">{knockoutSlotLabel(tie.slotA)}</div>
+                  <div class:list={['next-round-club', tie.winnerClubId === tie.slotA.clubId && 'winner']}>
+                    <span>{knockoutSlotLabel(tie.slotA)}</span>
+                    <strong>{scoreA ?? '—'} FX</strong>
+                    <small>{tie.matchesPlayedA || 0}/2 partidos</small>
+                  </div>
                   <span class="next-round-vs">vs</span>
-                  <div class="next-round-club">{knockoutSlotLabel(tie.slotB)}</div>
+                  <div class:list={['next-round-club', isComplete && scoreB !== null && scoreB > (scoreA ?? -Infinity) && 'winner']}>
+                    <span>{knockoutSlotLabel(tie.slotB)}</span>
+                    <strong>{scoreB ?? '—'} FX</strong>
+                    <small>{tie.matchesPlayedB || 0}/2 partidos</small>
+                  </div>
+                  <p class:list={['playoff-score-status', isComplete ? 'is-final' : 'is-live']}>
+                    {isComplete ? 'Resultado final' : 'Puntaje provisional'}
+                  </p>
                   {roundOf16Tie && (
                     <footer>
                       El ganador enfrentará a <strong>{knockoutSlotLabel(roundOf16Tie.slotA)}</strong>
@@ -1499,10 +1513,43 @@ const reviewMissingCards = reviewBuckets.missingCards;
   }
 
   .next-round-club {
+    display: grid;
+    gap: 0.15rem;
     color: var(--color-text-primary);
     font-weight: 700;
     text-align: center;
   }
+
+  .next-round-club strong {
+    color: var(--color-conference-dim);
+    font-family: var(--font-display);
+    font-size: 1rem;
+  }
+
+  .next-round-club small {
+    color: var(--color-text-muted);
+    font-size: 0.6rem;
+    font-weight: 400;
+  }
+
+  .next-round-club.winner {
+    padding: 0.4rem;
+    border: 1px solid var(--color-conference);
+    background: var(--color-conference-tint);
+  }
+
+  .playoff-score-status {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .playoff-score-status.is-final { color: var(--color-conference-dim); }
+  .playoff-score-status.is-live { color: var(--color-text-muted); }
 
   .next-round-vs {
     color: var(--color-conference);
