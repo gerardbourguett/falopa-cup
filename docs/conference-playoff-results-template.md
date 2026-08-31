@@ -28,7 +28,7 @@ El CSV es texto compatible con Excel, LibreOffice Calc y Google Sheets. La marca
 
 ## Puntaje fantasy
 
-El CSV calcula y conserva el desglose de cada resultado en `puntos_base`, `puntos_bonus`, `puntos_penalizacion` y `puntaje_fantasy`. Los totales acumulados visibles en la web son:
+El CSV calcula y conserva la `diferencia_goles`, si hubo `clean_sheet` y el desglose de cada resultado en `puntos_base`, `puntos_bonus`, `puntos_penalizacion` y `puntaje_fantasy`. Los totales acumulados visibles en la web son:
 
 | Llave | Club A | FX | Club B | FX | Estado |
 | --- | --- | ---: | --- | ---: | --- |
@@ -45,5 +45,6 @@ El CSV calcula y conserva el desglose de cada resultado en `puntos_base`, `punto
 - `goles_local` y `goles_visitante` siguen la localía indicada en cada fila.
 - Las tarjetas corresponden únicamente al club indicado en `club_participante`.
 - El fantasy aplica victoria `+3`, empate `+1`, arco en cero `+1`, margen progresivo, derrota por tres o más goles `-1`, amarilla `-0.25` y roja `-1`.
+- En caso de igualdad fantasy, la diferencia de goles, los goles a favor y el descuento disciplinario permanecen disponibles para aplicar los desempates de la llave.
 - `estado` puede ser `played`, `scheduled` o `tbd`.
 - Las URL apuntan directamente a la pestaña de estadísticas de cada evento de SofaScore.

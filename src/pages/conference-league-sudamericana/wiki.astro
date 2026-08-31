@@ -599,6 +599,12 @@ function scoreBreakdownText(wc: any): string {
                   <small>{isComplete ? ' final' : ' provisional'}</small>
                 </b>
               )}
+              {hasAnyScore && (
+                <small>
+                  DG {tie.goalDifferenceA > 0 ? '+' : ''}{tie.goalDifferenceA ?? '—'} / {tie.goalDifferenceB > 0 ? '+' : ''}{tie.goalDifferenceB ?? '—'}
+                  {' · '}CS {tie.cleanSheetsA ?? 0} / {tie.cleanSheetsB ?? 0}
+                </small>
+              )}
               {nextTie && <small>Ganador vs {knockoutSlotName(nextTie.slotA)}</small>}
             </article>
           );
