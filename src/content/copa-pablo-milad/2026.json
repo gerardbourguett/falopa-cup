@@ -298,6 +298,17 @@
       "scoreHolder": 0,
       "scoreChallenger": 2,
       "newHolderId": "san-marcos-de-arica"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-05",
+      "competition": "Liga de Ascenso - Fecha 24",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/san-marcos-de-arica-deportes-copiap%C3%B3-2026-09-02/",
+      "holderId": "san-marcos-de-arica",
+      "challengerId": "deportes-copiapo",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-copiapo"
     }
   ]
 }
