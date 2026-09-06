@@ -136,22 +136,21 @@ const currentHolder = currentSeason
 ---
 
 <Layout
-  title={`Falopa Cup — ${SITE_TITLE}`}
+  title={SITE_TITLE}
   description="Historial completo de la Falopa Cup, el campeonato no oficial del futbol chileno."
   currentPath="/falopa-cup"
   image="/og/falopa-cup.svg"
 >
   <!-- Page Hero -->
   <section class="page-hero">
-    <div class="hero-pattern"></div>
     <div class="page-hero-inner">
       <div class="page-hero-label">
-        Campeonato No Oficial del Futbol Chileno
+        Campeonato No Oficial del Fútbol Chileno
       </div>
       <h1 class="page-hero-title">Falopa Cup</h1>
       <p class="page-hero-desc">
-        El titulo se defiende en cada partido oficial. Si el defensor pierde el
-        titulo cambia de manos.
+        El título se defiende en cada partido oficial. Si el defensor pierde, el
+        título cambia de manos.
       </p>
     </div>
   </section>
@@ -287,7 +286,7 @@ const currentHolder = currentSeason
                       <div class="branch-champion">
                         <span class="champion-trophy">&#9733;</span>
                         <div class="champion-info">
-                          <span class="champion-label">Campeon de la rama</span>
+                          <span class="champion-label">Campeón de la rama</span>
                           <div class="champion-club">
                             {champion.logo && (
                               <img
@@ -320,7 +319,7 @@ const currentHolder = currentSeason
                         </summary>
                         <div class="whatif-body">
                           <p class="whatif-desc">
-                            Si el titulo se hubiera seguido rastreando por esta
+                            Si el título se hubiera seguido rastreando por esta
                             rama...
                           </p>
                           <div class="matches-list whatif-matches">
@@ -415,45 +414,6 @@ const currentHolder = currentSeason
 
 <style>
   /* === PAGE HERO === */
-  .page-hero {
-    padding: 4rem 1.5rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    background: var(--color-bg-primary);
-  }
-
-  .hero-pattern {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(
-        circle at 30% 20%,
-        rgba(251, 191, 36, 0.05) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 70% 80%,
-        rgba(158, 18, 57, 0.05) 0%,
-        transparent 50%
-      ),
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 50px,
-        rgba(255, 255, 255, 0.01) 50px,
-        rgba(255, 255, 255, 0.01) 51px
-      );
-    pointer-events: none;
-  }
-
-  .page-hero-inner {
-    max-width: 700px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 1;
-  }
-
   .page-hero-label {
     font-family: var(--font-display);
     font-size: 0.85rem;
@@ -462,23 +422,6 @@ const currentHolder = currentSeason
     color: var(--color-liga-primera-dim);
     opacity: 0.8;
     margin-bottom: 0.5rem;
-  }
-
-  .page-hero-title {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    color: var(--color-liga-primera-dim);
-    margin-bottom: 0.75rem;
-    letter-spacing: 0.04em;
-  }
-
-  .page-hero-desc {
-    color: var(--color-text-secondary);
-    font-family: var(--font-body);
-    font-size: 1rem;
-    margin-bottom: 0;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
   }
 
   /* === SEASON NAV === */
@@ -498,7 +441,7 @@ const currentHolder = currentSeason
     padding: 0.5rem 1.5rem;
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-bg-elevated);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     color: var(--color-text-secondary);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -579,7 +522,7 @@ const currentHolder = currentSeason
     padding: 0.4rem 0.75rem;
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-bg-elevated);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
   }
 
   .mini-stat-num {
@@ -638,7 +581,7 @@ const currentHolder = currentSeason
     background: var(--color-bg-secondary);
     padding: 0.3rem 1rem;
     border: 1px solid var(--color-liga-ascenso);
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     white-space: nowrap;
   }
 
@@ -648,7 +591,7 @@ const currentHolder = currentSeason
     padding: 1.25rem;
     border: 1px solid var(--color-bg-elevated);
     border-left: 4px solid var(--color-liga-primera);
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     background: rgba(212, 168, 83, 0.03);
   }
 
@@ -707,7 +650,7 @@ const currentHolder = currentSeason
       rgba(212, 168, 83, 0.03) 100%
     );
     border: 1px solid var(--color-liga-primera);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
   }
 
   .branch-champion:last-of-type {
@@ -754,7 +697,7 @@ const currentHolder = currentSeason
   }
 
   .champion-logo {
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     background: var(--color-bg-tertiary);
     padding: 2px;
   }
@@ -778,7 +721,7 @@ const currentHolder = currentSeason
   .whatif-section {
     margin-top: 1rem;
     border: 1px dashed var(--color-bg-elevated);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     overflow: hidden;
   }
 
@@ -845,6 +788,12 @@ const currentHolder = currentSeason
   }
 
   /* === RESPONSIVE === */
+  @media (max-width: 420px) {
+    /* Cuatro tarjetas en fila no entran: ~68px por celda menos padding deja
+       menos de lo que mide la etiqueta "Poseedores". */
+    .season-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
   @media (max-width: 768px) {
     .page-hero {
       padding: 3rem 1rem;
@@ -886,7 +835,7 @@ const currentHolder = currentSeason
 
     .season-stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 0.35rem;
       width: 100%;
     }

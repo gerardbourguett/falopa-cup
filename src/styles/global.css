@@ -8,7 +8,9 @@
   --color-bg-elevated: #cfcec6;
   --color-text-primary: #0a0a0a;
   --color-text-secondary: #4e4e4a;
-  --color-text-muted: #777772;
+  /* AA sobre los tres fondos del sistema: 5.78 papel / 5.23 secondary / 4.76 tertiary.
+     El #777772 anterior daba 4.05 / 3.67 / 3.34, todos por debajo de 4.5. */
+  --color-text-muted: #5f5f5a;
   --color-liga-primera: #ff4d00;
   --color-liga-primera-dim: #c83c00;
   --color-liga-ascenso: #d9153f;
