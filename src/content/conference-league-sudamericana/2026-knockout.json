@@ -23,8 +23,8 @@
             "clubId": null,
             "label": "O’Higgins (CHI)"
           },
-          "scoreA": 3,
-          "scoreB": -2,
+          "scoreA": 3.0,
+          "scoreB": -2.0,
           "matchesPlayedA": 2,
           "matchesPlayedB": 2,
           "goalsForA": 4,
@@ -33,8 +33,8 @@
           "goalDifferenceB": -3,
           "cleanSheetsA": 0,
           "cleanSheetsB": 0,
-          "cardDeductionsA": 3,
-          "cardDeductionsB": 2,
+          "cardDeductionsA": 3.0,
+          "cardDeductionsB": 2.0,
           "winnerClubId": "co-atletico-nacional",
           "tiebreakReason": "Puntaje fantasy tras dos partidos"
         },
@@ -51,7 +51,7 @@
             "clubId": null,
             "label": "Grêmio (BRA)"
           },
-          "scoreA": 3,
+          "scoreA": 3.0,
           "scoreB": 0.75,
           "matchesPlayedA": 2,
           "matchesPlayedB": 2,
@@ -61,7 +61,7 @@
           "goalDifferenceB": -1,
           "cleanSheetsA": 1,
           "cleanSheetsB": 1,
-          "cardDeductionsA": 1,
+          "cardDeductionsA": 1.0,
           "cardDeductionsB": 1.25,
           "winnerClubId": "pe-adt",
           "tiebreakReason": "Puntaje fantasy tras dos partidos"
@@ -79,19 +79,20 @@
             "clubId": null,
             "label": "Caracas (VEN)"
           },
-          "scoreA": -2.5,
+          "scoreA": -5.25,
           "scoreB": 3.25,
-          "matchesPlayedA": 1,
+          "matchesPlayedA": 2,
           "matchesPlayedB": 2,
-          "goalsForA": 0,
+          "goalsForA": 3,
           "goalsForB": 4,
-          "goalDifferenceA": -3,
+          "goalDifferenceA": -4,
           "goalDifferenceB": 2,
           "cleanSheetsA": 0,
           "cleanSheetsB": 0,
-          "cardDeductionsA": 1.5,
+          "cardDeductionsA": 4.25,
           "cardDeductionsB": 1.75,
-          "winnerClubId": null
+          "winnerClubId": "ve-caracas",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos"
         },
         {
           "id": "PO-4",
@@ -107,18 +108,19 @@
             "label": "Independiente Medellín (COL)"
           },
           "scoreA": 3.5,
-          "scoreB": 0,
+          "scoreB": 2.0,
           "matchesPlayedA": 2,
-          "matchesPlayedB": 1,
+          "matchesPlayedB": 2,
           "goalsForA": 1,
-          "goalsForB": 0,
+          "goalsForB": 2,
           "goalDifferenceA": 0,
-          "goalDifferenceB": -1,
+          "goalDifferenceB": 0,
           "cleanSheetsA": 1,
           "cleanSheetsB": 0,
           "cardDeductionsA": 0.5,
-          "cardDeductionsB": 0,
-          "winnerClubId": null
+          "cardDeductionsB": 1.0,
+          "winnerClubId": "ec-aucas",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos"
         },
         {
           "id": "PO-5",
@@ -133,19 +135,20 @@
             "clubId": null,
             "label": "Sporting Cristal (PER)"
           },
-          "scoreA": -0.5,
+          "scoreA": 2.0,
           "scoreB": 4.25,
-          "matchesPlayedA": 1,
+          "matchesPlayedA": 2,
           "matchesPlayedB": 2,
-          "goalsForA": 0,
+          "goalsForA": 2,
           "goalsForB": 5,
-          "goalDifferenceA": -2,
+          "goalDifferenceA": -1,
           "goalDifferenceB": 1,
           "cleanSheetsA": 0,
           "cleanSheetsB": 0,
-          "cardDeductionsA": 0.5,
+          "cardDeductionsA": 1.0,
           "cardDeductionsB": 0.75,
-          "winnerClubId": null
+          "winnerClubId": "pe-sporting-cristal",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos"
         },
         {
           "id": "PO-6",
@@ -160,18 +163,20 @@
             "clubId": null,
             "label": "UCV (VEN)"
           },
-          "scoreA": 1.5,
-          "matchesPlayedA": 1,
-          "matchesPlayedB": 0,
-          "goalsForA": 0,
-          "goalsForB": 0,
-          "goalDifferenceA": 0,
-          "goalDifferenceB": 0,
-          "cleanSheetsA": 1,
+          "scoreA": 5.0,
+          "matchesPlayedA": 2,
+          "matchesPlayedB": 2,
+          "goalsForA": 1,
+          "goalsForB": 4,
+          "goalDifferenceA": 1,
+          "goalDifferenceB": 1,
+          "cleanSheetsA": 2,
           "cleanSheetsB": 0,
-          "cardDeductionsA": 0.5,
-          "cardDeductionsB": 0,
-          "winnerClubId": null
+          "cardDeductionsA": 1.0,
+          "cardDeductionsB": 1.0,
+          "winnerClubId": "uy-racing-club",
+          "scoreB": 4.0,
+          "tiebreakReason": "Puntaje fantasy tras dos partidos"
         },
         {
           "id": "PO-7",
@@ -185,7 +190,21 @@
             "sourceRef": "sudamericana-eliminated-7",
             "clubId": null,
             "label": "Nacional (URU)"
-          }
+          },
+          "scoreA": 0.0,
+          "matchesPlayedA": 2,
+          "goalsForA": 1,
+          "goalDifferenceA": -2,
+          "cleanSheetsA": 1,
+          "cardDeductionsA": 2.0,
+          "scoreB": 5.0,
+          "matchesPlayedB": 2,
+          "goalsForB": 1,
+          "goalDifferenceB": 1,
+          "cleanSheetsB": 2,
+          "cardDeductionsB": 1.0,
+          "winnerClubId": "uy-nacional",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos"
         },
         {
           "id": "PO-8",
@@ -199,7 +218,21 @@
             "sourceRef": "sudamericana-eliminated-8",
             "clubId": null,
             "label": "Lanús (ARG)"
-          }
+          },
+          "scoreA": 4.25,
+          "matchesPlayedA": 2,
+          "goalsForA": 3,
+          "goalDifferenceA": 1,
+          "cleanSheetsA": 1,
+          "cardDeductionsA": 1.75,
+          "scoreB": -1.0,
+          "matchesPlayedB": 2,
+          "goalsForB": 1,
+          "goalDifferenceB": -1,
+          "cleanSheetsB": 0,
+          "cardDeductionsB": 2.0,
+          "winnerClubId": "bo-nacional-potosi",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos"
         }
       ]
     },
@@ -219,7 +252,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "PO-1",
-            "clubId": null
+            "clubId": "co-atletico-nacional"
           }
         },
         {
@@ -232,7 +265,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "PO-2",
-            "clubId": null
+            "clubId": "pe-adt"
           }
         },
         {
@@ -245,7 +278,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "PO-3",
-            "clubId": null
+            "clubId": "ve-caracas"
           }
         },
         {
@@ -258,7 +291,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "PO-4",
-            "clubId": null
+            "clubId": "ec-aucas"
           }
         },
         {
@@ -271,7 +304,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "PO-5",
-            "clubId": null
+            "clubId": "pe-sporting-cristal"
           }
         },
         {
@@ -284,7 +317,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "PO-6",
-            "clubId": null
+            "clubId": "uy-racing-club"
           }
         },
         {
@@ -297,7 +330,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "PO-7",
-            "clubId": null
+            "clubId": "uy-nacional"
           }
         },
         {
@@ -310,7 +343,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "PO-8",
-            "clubId": null
+            "clubId": "bo-nacional-potosi"
           }
         }
       ]
