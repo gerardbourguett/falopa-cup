@@ -40,14 +40,17 @@
 - Victoria: +3
 - Empate: +1
 - Derrota: +0
-- Bono ganar por 2+ goles: +1
-- Penalización perder de local: -1
+- Arco en cero (clean sheet): +1
+- Margen de victoria: +1 por cada gol de diferencia a partir del segundo (2 goles: +1; 3 goles: +2; etc.)
+- Derrota por tres o más goles de diferencia: -1
+- Tarjeta amarilla: -0.25
+- Tarjeta roja: -1
 
 ## Desempates
 
 ### Llaves
 1. Total fantasy
-2. Fair play (menos castigo disciplinario: amarilla=1, roja=3)
+2. Fair play (menor descuento por tarjetas: amarilla=0.25, roja=1)
 3. Diferencia de gol del partido contado
 4. Goles a favor
 5. Criterio administrativo
