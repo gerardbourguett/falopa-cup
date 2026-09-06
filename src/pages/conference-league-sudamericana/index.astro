@@ -133,6 +133,34 @@ const tieCards = preliminaryTies.map((tie: any) => {
 
 // Groups data
 const groups = (groupsDoc?.groups || []) as ConferenceGroupDefinition[];
+const totalClubs = (clubsDoc?.seeds || []).length;
+const groupCount = ((groupsDoc?.groups || []) as ConferenceGroupDefinition[]).length;
+const groupStageClubs = (stageDoc?.mainStageQualifiedIds || []).length;
+
+// Estado del torneo: una sola lectura de en que fase estamos hoy.
+// Se deriva de los propios documentos; no hay estados escritos a mano.
+const preliminaryResolved = tieCards.filter((tie: any) => tie.hasScore).length;
+const phaseTimeline = [
+  {
+    id: 'previa',
+    name: 'Fase previa',
+    status: tieCards.length > 0 && preliminaryResolved === tieCards.length ? 'completed' : 'in-progress',
+    detail: `${preliminaryResolved}/${tieCards.length} llaves`,
+  },
+  {
+    id: 'grupos',
+    name: 'Fase de grupos',
+    status: (groupsDoc?.roundWindows || []).length >= 3 ? 'completed' : 'in-progress',
+    detail: `${(groupsDoc?.roundWindows || []).length} fechas`,
+  },
+  ...((knockoutDoc?.rounds || []) as any[]).map((round: any) => ({
+    id: round.id,
+    name: round.name,
+    status: round.status,
+    detail: `${round.ties.length} ${round.ties.length === 1 ? 'llave' : 'llaves'}`,
+  })),
+];
+const currentPhase = phaseTimeline.find((phase: any) => phase.status !== 'completed');
 const roundWindows = (groupsDoc?.roundWindows || []) as RoundWindowData[];
 const fantasyByClub = buildFantasyByClub(roundWindows);
 const fantasyStandingsByGroup = buildFantasyStandingsByGroup(groups, fantasyByClub, clubMeta);
@@ -194,14 +222,16 @@ const reviewMissingCards = reviewBuckets.missingCards;
     <div class="container hero-inner">
       <div class="hero-content">
         <p class="eyebrow">Conference League Sudamericana</p>
-        <h1>Fase de Grupos <span class="hero-year">2026</span></h1>
-        <p class="hero-sub">32 clubes · 8 grupos · 3 fechas fantasy · Acumulación pura</p>
+        <h1>Edición <span class="hero-year">2026</span></h1>
+        <p class="hero-sub">
+          {totalClubs} clubes · {groupStageClubs} en fase de grupos · {groupCount} grupos · {roundWindows.length} fechas fantasy · acumulación pura
+        </p>
       </div>
       <div class="hero-stat-bar">
-        <div class="hero-stat"><span class="hero-stat-num">{clubsDoc?.seeds?.length || 0}</span><span class="hero-stat-label">Participantes</span></div>
-        <div class="hero-stat"><span class="hero-stat-num">{stageDoc?.mainStageQualifiedIds?.length || 0}</span><span class="hero-stat-label">Clasificados</span></div>
-        <div class="hero-stat"><span class="hero-stat-num">3</span><span class="hero-stat-label">Fechas</span></div>
-        <div class="hero-stat"><span class="hero-stat-num">6</span><span class="hero-stat-label">Partidos/club</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">{totalClubs}</span><span class="hero-stat-label">Clubes en la edición</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">{groupStageClubs}</span><span class="hero-stat-label">En fase de grupos</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">{roundWindows.length}</span><span class="hero-stat-label">Fechas fantasy</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">{groupCount}</span><span class="hero-stat-label">Grupos</span></div>
       </div>
     </div>
   </section>
@@ -212,6 +242,31 @@ const reviewMissingCards = reviewBuckets.missingCards;
   </div>
 
   <main class="container page-main">
+
+    <!-- ===== ESTADO DEL TORNEO ===== -->
+    <section class="block tournament-status" aria-label="Estado del torneo">
+      <div class="section-header">
+        <h2>Estado del torneo</h2>
+        <span class="section-badge">
+          {!currentPhase
+            ? 'Torneo finalizado'
+            : currentPhase.status === 'in-progress'
+              ? `En curso · ${currentPhase.name}`
+              : `Próxima ronda · ${currentPhase.name}`}
+        </span>
+      </div>
+      <ol class="phase-rail">
+        {phaseTimeline.map((phase: any) => (
+          <li class:list={['phase-step', `is-${phase.status}`, currentPhase?.id === phase.id && 'is-current']}>
+            <span class="phase-name">{phase.name}</span>
+            <span class="phase-detail">{phase.detail}</span>
+            <span class="phase-state">
+              {phase.status === 'completed' ? 'Cerrada' : phase.status === 'in-progress' ? 'En curso' : 'Pendiente'}
+            </span>
+          </li>
+        ))}
+      </ol>
+    </section>
 
     <!-- ===== FASE DE GRUPOS ===== -->
     <section class="block block-groups">
@@ -545,6 +600,11 @@ const reviewMissingCards = reviewBuckets.missingCards;
     </section>
 
     <!-- ===== FASE PREVIA (colapsada) ===== -->
+    <div class="deep-data-divider">
+      <span>Detalle y trazabilidad</span>
+      <small>Resultado partido a partido, actas fantasy y pendientes de revisión</small>
+    </div>
+
     <details class="audit-block">
       <summary>Fase Previa — Resultados ({tieCards.filter((t: any) => t.hasScore).length}/{tieCards.length} resueltas)</summary>
       <div class="audit-body">
@@ -586,7 +646,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
 
     <!-- ===== AUDITORÍA (colapsada) ===== -->
     <details class="audit-block">
-      <summary>Auditoría — Ventana de corte para sorteo de grupos</summary>
+      <summary>Auditoría — Ventana de corte para sorteo de grupos ({windowCutRows.length} clubes)</summary>
       <div class="audit-body">
         <p class="criterion-note">
           Ventana: <strong>{windowCutDoc?.windowStart || '—'}</strong> a <strong>{windowCutDoc?.windowEnd || '—'}</strong>.
@@ -629,7 +689,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
     </details>
 
     <details class="audit-block">
-      <summary>Auditoría — Acta fantasy por club (previa)</summary>
+      <summary>Auditoría — Acta fantasy por club (previa) ({windowCutWithFantasy.length} clubes)</summary>
       <div class="audit-body">
         <div class="table-wrap">
           <table>
@@ -677,7 +737,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
     </details>
 
     <details class="audit-block">
-      <summary>Auditoría — Acta de llaves (resolución fantasy)</summary>
+      <summary>Auditoría — Acta de llaves (resolución fantasy) ({preliminaryWikiRows.length} llaves)</summary>
       <div class="audit-body">
         <div class="table-wrap">
           <table>
@@ -711,7 +771,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
     </details>
 
     <details class="audit-block">
-      <summary>Auditoría — Pendientes de revisión manual</summary>
+      <summary>Auditoría — Pendientes de revisión manual ({reviewNoMatch.length + reviewNonEspn.length + reviewAdministrativeTies.length + reviewMissingCards.length} señalados)</summary>
       <div class="audit-body">
         <ul class="audit-list">
           <li><strong>Sin partido en ventana:</strong> {reviewNoMatch.length ? reviewNoMatch.map((e: any) => e.name).join(', ') : 'ninguno'}</li>
@@ -919,10 +979,11 @@ const reviewMissingCards = reviewBuckets.missingCards;
   }
 
   .page-main {
+    --stack-gap: 2.25rem;
     padding: 1.5rem 0 3rem;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: var(--stack-gap);
   }
 
   /* ── Blocks ── */
@@ -932,6 +993,86 @@ const reviewMissingCards = reviewBuckets.missingCards;
     border-radius: 2px;
     padding: 1.25rem;
   }
+
+  /* ── Estado del torneo: la primera lectura de la pagina ── */
+  .phase-rail {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-bg-elevated);
+  }
+
+  .phase-step {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    padding: 0.7rem 0.8rem;
+    background: var(--color-bg-secondary);
+    border-top: 3px solid var(--color-bg-elevated);
+  }
+
+  .phase-step.is-completed { border-top-color: var(--color-conference); }
+
+  .phase-step.is-current {
+    background: var(--color-bg-primary);
+    border-top-color: var(--color-liga-primera);
+  }
+
+  .phase-name {
+    font-family: var(--font-display);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    overflow-wrap: anywhere;
+  }
+
+  .phase-detail {
+    font-size: 0.68rem;
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .phase-state {
+    font-family: var(--font-display);
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .phase-step.is-completed .phase-state { color: var(--color-conference-dim); }
+  .phase-step.is-current .phase-state { color: var(--color-liga-primera-dim); }
+
+  /* ── Ritmo: las secciones principales respiran, la pila de auditoria se agrupa ── */
+  .deep-data-divider {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-bottom: -1.4rem;
+    padding-left: 0.75rem;
+    border-left: 4px solid var(--color-text-muted);
+  }
+
+  .deep-data-divider span {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .deep-data-divider small {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+  }
+
+  .audit-block + .audit-block { margin-top: calc(-1 * var(--stack-gap) + 0.35rem); }
 
   .block-groups {
     background: transparent;
@@ -954,6 +1095,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
 
   .section-header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1rem;
