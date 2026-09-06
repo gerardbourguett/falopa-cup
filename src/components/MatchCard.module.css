@@ -89,7 +89,7 @@
 }
 
 .matchCompetition {
-  color: var(--comp-color);
+  color: var(--match-meta-accent, var(--comp-color));
 }
 
 .sourceLink {
@@ -108,7 +108,7 @@
 }
 
 .seedingBadge {
-  color: var(--color-liga-primera);
+  color: #fff;
 }
 
 .matchDate {
@@ -132,7 +132,7 @@
 
 .retainBadge {
   background: var(--color-liga-primera);
-  color: #000;
+  color: #fff;
 }
 
 .drawBadge {
@@ -142,7 +142,7 @@
 
 .pendingBadge {
   background: var(--comp-color);
-  color: #000;
+  color: var(--badge-on-accent, #000);
 }
 
 /* ─── Seeding body ─── */
@@ -252,9 +252,9 @@
 .scoreboard {
   min-width: 2.5rem;
   padding: 0.2rem 0.6rem;
-  border: 2px solid #000;
-  background: #0a0a0a;
-  color: var(--color-conference-bright);
+  border: 2px solid var(--score-border, #000);
+  background: var(--score-bg, #0a0a0a);
+  color: var(--score-color, var(--color-conference-bright));
   font-size: 1.6rem;
   line-height: 1;
   text-align: center;
@@ -424,7 +424,7 @@
     padding: var(--space-xs) var(--space-sm) var(--space-sm);
     margin: 0 calc(var(--space-sm) * -1);
     border-bottom: 2px solid #000;
-    background: #0a0a0a;
+    background: var(--score-bg, #0a0a0a);
   }
 
   .scoreRow {
@@ -435,13 +435,13 @@
     font-size: 1.75rem;
     min-width: 2.6rem;
     padding: 0.25rem 0.7rem;
-    background: #111;
-    color: var(--color-conference-bright);
-    border-color: #222;
+    background: var(--score-bg, #111);
+    color: var(--score-color, var(--color-conference-bright));
+    border-color: var(--score-border, #222);
   }
 
   .scoreDash {
-    color: #666;
+    color: var(--score-secondary, #666);
     font-size: 1.3rem;
   }
 
@@ -454,7 +454,7 @@
   .penalties {
     font-size: 0.5rem;
     letter-spacing: 0.08em;
-    color: #666;
+    color: var(--score-secondary, #666);
   }
 
   /* ─── New holder mobile ─── */
