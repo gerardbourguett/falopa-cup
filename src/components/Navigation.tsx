@@ -6,7 +6,7 @@ import styles from "./Navigation.module.css";
 const NAV_ITEMS = [
   { path: "/", label: "Inicio" },
   { path: "/falopa-cup", label: "Falopa Cup" },
-  { path: "/copa-pablo-milad", label: "Copa Milad" },
+  { path: "/copa-pablo-milad", label: "Copa REDACTED" },
   { path: "/conference-league-sudamericana", label: "Conference" },
   { path: "/blog", label: "Blog" },
   { path: "/about", label: "Acerca" },

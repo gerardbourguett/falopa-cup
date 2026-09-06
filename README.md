@@ -1,13 +1,13 @@
 # Falopa Cup
 
-Sitio web para el seguimiento de dos campeonatos no oficiales del fútbol chileno: la **Falopa Cup** y la **Copa Pablo Milad**. Basado en el concepto del [Campeonato Mundial No Oficial (UFWC)](https://en.wikipedia.org/wiki/Unofficial_Football_World_Championships).
+Sitio web para el seguimiento de dos campeonatos no oficiales del fútbol chileno: la **Falopa Cup** y la **Copa REDACTED**. Basado en el concepto del [Campeonato Mundial No Oficial (UFWC)](https://en.wikipedia.org/wiki/Unofficial_Football_World_Championships).
 
 ## Concepto
 
 El título no se gana en un torneo — se toma en la cancha. El poseedor lo defiende en cada partido oficial, y si lo pierde (según las reglas de cada copa), el título pasa al rival.
 
 - **Falopa Cup**: el título cambia si el defensor pierde. Los empates no transfieren.
-- **Copa Pablo Milad**: el título solo cambia si el defensor **gana**. Si pierde o empata, sigue con él (es la copa del más malo).
+- **Copa REDACTED**: el título solo cambia si el defensor **gana**. Si pierde o empata, sigue con él (es la copa del más malo).
 
 ## Comandos
 
@@ -29,7 +29,7 @@ pnpm script:next
 
 El CLI te guía paso a paso:
 
-1. Seleccioná el torneo (Falopa Cup o Copa Pablo Milad)
+1. Seleccioná el torneo (Falopa Cup o Copa REDACTED)
 2. Ingresá el nombre de la competición (ej. `Liga de Primera · Fecha 12`)
 3. Seleccioná el equipo rival de la lista de clubes
 4. Ingresá el marcador

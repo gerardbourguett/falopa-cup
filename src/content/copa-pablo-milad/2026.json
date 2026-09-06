@@ -309,6 +309,14 @@
       "scoreHolder": 2,
       "scoreChallenger": 1,
       "newHolderId": "deportes-copiapo"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-09-09",
+      "competition": "Liga de Ascenso · Fecha 25",
+      "holderId": "deportes-copiapo",
+      "challengerId": "magallanes"
     }
   ]
 }
