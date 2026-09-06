@@ -8,7 +8,9 @@
   --color-bg-elevated: #cfcec6;
   --color-text-primary: #0a0a0a;
   --color-text-secondary: #4e4e4a;
-  --color-text-muted: #777772;
+  /* AA sobre los tres fondos del sistema: 5.78 papel / 5.23 secondary / 4.76 tertiary.
+     El #777772 anterior daba 4.05 / 3.67 / 3.34, todos por debajo de 4.5. */
+  --color-text-muted: #5f5f5a;
   --color-liga-primera: #ff4d00;
   --color-liga-primera-dim: #c83c00;
   --color-liga-ascenso: #d9153f;
@@ -35,17 +37,30 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; background: #080808; }
-body { margin: 0; background: var(--color-bg-primary); color: var(--color-text-primary); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+/* clip, no hidden: contiene los full-bleed de 100vw sin romper position: sticky */
+html { scroll-behavior: smooth; background: #080808; overflow-x: clip; }
+body { margin: 0; background: var(--color-bg-primary); color: var(--color-text-primary); font-family: var(--font-body); font-size: 15px; line-height: 1.5; overflow-x: clip; }
 body::before { position: fixed; inset: 0; z-index: -1; background-image: radial-gradient(#111 0.55px, transparent .55px); background-size: 6px 6px; opacity: .05; content: ""; }
 h1,h2,h3,h4,h5,h6 { margin: 0; font-family: var(--font-display); font-weight: 700; line-height: .98; letter-spacing: -.02em; text-transform: uppercase; }
 h1 { font-size: clamp(3rem, 7vw, 6rem); } h2 { font-size: clamp(1.8rem, 4vw, 3rem); } h3 { font-size: 1.35rem; }
 a { color: inherit; text-decoration: none; }
 img { max-width: 100%; }
+/* Sitio de estadisticas: las cifras deben alinearse columna a columna */
+table { font-variant-numeric: tabular-nums; }
 .container { width: min(100% - 2rem, var(--page-max-width)); margin-inline: auto; padding: 0; }
 main.container { padding-block: var(--space-xl); }
 ::selection { background: var(--color-liga-primera); color: #fff; }
 :focus-visible { outline: 3px solid var(--color-liga-primera); outline-offset: 3px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 ::-webkit-scrollbar { width: 9px; height: 9px; background: #111; }
 ::-webkit-scrollbar-thumb { background: var(--color-liga-primera); }
 

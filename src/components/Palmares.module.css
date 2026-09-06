@@ -9,7 +9,7 @@
   margin-bottom: var(--space-md);
   padding: var(--space-sm) var(--space-md);
   background: var(--accent);
-  color: var(--color-text-primary);
+  color: var(--palmares-header-ink, var(--color-text-primary));
 }
 
 .label,
