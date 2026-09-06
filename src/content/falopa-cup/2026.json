@@ -378,6 +378,26 @@
       "scoreHolder": 0,
       "scoreChallenger": 1,
       "newHolderId": "deportes-concepcion"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-04",
+      "competition": "Liga de Primera · Fecha 22",
+      "sourceUrl": "https://www.cooperativa.cl/noticias/deportes/futbol/liga-de-primera/deportes-concepcion-tropezo-con-audax-y-sufrio-su-primera-derrota-en-la/2026-09-04/224256.html",
+      "holderId": "deportes-concepcion",
+      "challengerId": "audax-italiano",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-09-13",
+      "competition": "Liga de Primera · Fecha 23",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/audax-italiano-ohiggins-2026-09-13/",
+      "holderId": "audax-italiano",
+      "challengerId": "ohiggins"
     }
   ]
 }

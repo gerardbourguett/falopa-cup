@@ -7,7 +7,7 @@
     {
       "id": "KO-PLAYOFF",
       "name": "Playoff eliminatorio",
-      "status": "in-progress",
+      "status": "completed",
       "description": "Segundos de grupo, ordenados de mejor a peor puntaje fantasy, vs eliminados de la Copa Sudamericana.",
       "ties": [
         {
@@ -20,7 +20,7 @@
           "slotB": {
             "sourceType": "sudamericana-eliminated",
             "sourceRef": "sudamericana-eliminated-1",
-            "clubId": null,
+            "clubId": "cl-ohiggins",
             "label": "O’Higgins (CHI)"
           },
           "scoreA": 3.0,
@@ -48,7 +48,7 @@
           "slotB": {
             "sourceType": "sudamericana-eliminated",
             "sourceRef": "sudamericana-eliminated-2",
-            "clubId": null,
+            "clubId": "br-gremio",
             "label": "Grêmio (BRA)"
           },
           "scoreA": 3.0,
@@ -76,7 +76,7 @@
           "slotB": {
             "sourceType": "sudamericana-eliminated",
             "sourceRef": "sudamericana-eliminated-3",
-            "clubId": null,
+            "clubId": "ve-caracas",
             "label": "Caracas (VEN)"
           },
           "scoreA": -5.25,
@@ -104,7 +104,7 @@
           "slotB": {
             "sourceType": "sudamericana-eliminated",
             "sourceRef": "sudamericana-eliminated-4",
-            "clubId": null,
+            "clubId": "co-independiente-medellin",
             "label": "Independiente Medellín (COL)"
           },
           "scoreA": 3.5,
@@ -132,7 +132,7 @@
           "slotB": {
             "sourceType": "sudamericana-eliminated",
             "sourceRef": "sudamericana-eliminated-5",
-            "clubId": null,
+            "clubId": "pe-sporting-cristal",
             "label": "Sporting Cristal (PER)"
           },
           "scoreA": 2.0,
@@ -160,7 +160,7 @@
           "slotB": {
             "sourceType": "sudamericana-eliminated",
             "sourceRef": "sudamericana-eliminated-6",
-            "clubId": null,
+            "clubId": "ve-ucv",
             "label": "UCV (VEN)"
           },
           "scoreA": 5.0,
@@ -188,7 +188,7 @@
           "slotB": {
             "sourceType": "sudamericana-eliminated",
             "sourceRef": "sudamericana-eliminated-7",
-            "clubId": null,
+            "clubId": "uy-nacional",
             "label": "Nacional (URU)"
           },
           "scoreA": 0.0,
@@ -216,7 +216,7 @@
           "slotB": {
             "sourceType": "sudamericana-eliminated",
             "sourceRef": "sudamericana-eliminated-8",
-            "clubId": null,
+            "clubId": "ar-lanus",
             "label": "Lanús (ARG)"
           },
           "scoreA": 4.25,

@@ -290,11 +290,14 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-08-31",
-      "competition": "Liga de Ascenso - Fecha 22",
+      "competition": "Liga de Ascenso - Fecha 23",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/cobreloa-san-marcos-de-arica-2026-08-31/",
       "holderId": "san-marcos-de-arica",
-      "challengerId": "cobreloa"
+      "challengerId": "cobreloa",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "san-marcos-de-arica"
     }
   ]
 }
