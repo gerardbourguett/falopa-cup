@@ -276,6 +276,18 @@ function bracketSlotLabel(slot: any) {
   if (sourceTie.slotB.clubId === sourceTie.winnerClubId) return knockoutSlotLabel(sourceTie.slotB);
   return knockoutSlotLabel(slot);
 }
+// clubMeta() no resuelve a los clubes que entraron por la via de eliminados y no
+// estan en seeds (Caracas, Sporting Cristal, Nacional): devuelve el slug crudo.
+// slotIdentity() si los resuelve, asi que se indexa por clubId desde las llaves.
+const r16IdentityByClub = new Map<string, any>();
+for (const tie of (roundOf16?.ties || [])) {
+  for (const slot of [tie.slotA, tie.slotB]) {
+    if (slot.clubId && !r16IdentityByClub.has(slot.clubId)) {
+      r16IdentityByClub.set(slot.clubId, slotIdentity(slot));
+    }
+  }
+}
+
 const roundOf16ByPlayoff = new Map<string, any>(
   (roundOf16?.ties || []).map((tie: any) => [tie.slotB.sourceRef, tie] as [string, any]),
 );
@@ -814,7 +826,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
                 </thead>
                 <tbody>
                   {r16AuditRows.map((row: any) => {
-                    const club = clubMeta(row.clubId);
+                    const club = r16IdentityByClub.get(row.clubId) || clubMeta(row.clubId);
                     return (
                       <tr class:list={[`is-${row.status}`]}>
                         <td>{row.tieId}</td>
