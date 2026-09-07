@@ -10,6 +10,7 @@ import {
   buildWindowCutRanking,
   buildWindowCutReviewBuckets,
   buildWindowCutWithFantasy,
+  computeFantasyScore,
   getWindowCutCardDeductions,
   type ConferenceGroupDefinition,
   type RoundWindowData,
@@ -27,6 +28,7 @@ const stageDoc = entries.find((entry) => entry.data.kind === 'stage')?.data as a
 const groupsDoc = entries.find((entry) => entry.data.kind === 'groups')?.data as any;
 const windowCutDoc = entries.find((entry) => entry.data.kind === 'window-cut')?.data as any;
 const knockoutDoc = entries.find((entry) => entry.data.kind === 'knockout')?.data as any;
+const r16WindowDoc = entries.find((entry) => entry.data.kind === 'r16-window')?.data as any;
 
 const seedById = new Map<string, any>(
   (clubsDoc?.seeds || []).map((seed: any) => [seed.clubId, seed] as [string, any])
@@ -161,6 +163,37 @@ const phaseTimeline = [
   })),
 ];
 const currentPhase = phaseTimeline.find((phase: any) => phase.status !== 'completed');
+
+// Planilla de auditoria de octavos: mismas columnas que el CSV del playoff.
+// El fantasy se calcula con la misma funcion que el resto del torneo, y solo
+// cuando la fila tiene marcador y tarjetas; si falta algo, queda sin puntaje.
+const r16AuditRows = ((r16WindowDoc?.matchSources || []) as any[]).map((source: any) => {
+  const complete =
+    source.status === 'played' &&
+    source.goalsFor != null && source.goalsAgainst != null &&
+    source.yellowCards != null && source.redCards != null;
+  const fx = complete ? computeFantasyScore(source) : null;
+  const gf = source.goalsFor, ga = source.goalsAgainst;
+  return {
+    ...source,
+    complete,
+    fx,
+    dg: gf != null && ga != null ? gf - ga : null,
+    cleanSheet: ga != null ? (ga === 0 ? 1 : 0) : null,
+    cardDeduction: source.yellowCards != null && source.redCards != null
+      ? source.yellowCards * 0.25 + source.redCards
+      : null,
+  };
+});
+const r16AuditByTie = new Map<string, any[]>();
+for (const row of r16AuditRows) {
+  if (!r16AuditByTie.has(row.tieId)) r16AuditByTie.set(row.tieId, []);
+  r16AuditByTie.get(row.tieId)!.push(row);
+}
+const r16AuditCounts = r16AuditRows.reduce((acc: any, row: any) => {
+  acc[row.status] = (acc[row.status] || 0) + 1;
+  return acc;
+}, {} as Record<string, number>);
 const PHASE_ANCHORS: Record<string, string> = {
   previa: 'fase-previa',
   grupos: 'fase-grupos',
@@ -745,6 +778,87 @@ const reviewMissingCards = reviewBuckets.missingCards;
             );
           })}
         </div>
+
+        {round.id === 'KO-R16' && r16WindowDoc && (
+          <div class="r16-audit">
+            <div class="phase-subhead">
+              <h3>Planilla de la ventana</h3>
+              <span>
+                {r16AuditCounts.played || 0} jugados · {r16AuditCounts.scheduled || 0} programados · {r16AuditCounts.tbd || 0} por confirmar
+              </span>
+            </div>
+            <p class="r16-audit-note">{r16WindowDoc.note}</p>
+
+            <div class="table-wrap">
+              <table class="r16-table">
+                <thead>
+                  <tr>
+                    <th>Llave</th>
+                    <th>#</th>
+                    <th class="col-club">Club</th>
+                    <th class="col-club">Local</th>
+                    <th class="col-club">Visitante</th>
+                    <th>Fecha</th>
+                    <th class="col-club">Competición</th>
+                    <th title="Goles a favor del participante">GF</th>
+                    <th title="Goles en contra del participante">GC</th>
+                    <th title="Diferencia de gol">DG</th>
+                    <th title="Arco en cero">AEC</th>
+                    <th title="Amarillas del participante">TA</th>
+                    <th title="Rojas del participante">TR</th>
+                    <th title="Descuento disciplinario">−D</th>
+                    <th title="Puntaje fantasy">FX</th>
+                    <th>Fuente</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {r16AuditRows.map((row: any) => {
+                    const club = clubMeta(row.clubId);
+                    return (
+                      <tr class:list={[`is-${row.status}`]}>
+                        <td>{row.tieId}</td>
+                        <td>{row.matchNumber}</td>
+                        <td class="col-club">
+                          <span class="inline-club club-accent" style={`--club-accent:${club.accent}`}>
+                            {club.country && (
+                              <span class:list={['club-flag-icon', flagClass(club.country)]} aria-hidden="true"></span>
+                            )}
+                            <span class="club-name-text" title={club.name}>{club.name}</span>
+                          </span>
+                        </td>
+                        <td class:list={['col-club', row.isHome && 'is-participant']}>{row.homeClub}</td>
+                        <td class:list={['col-club', !row.isHome && 'is-participant']}>{row.awayClub}</td>
+                        <td>{row.status === 'tbd' ? '—' : row.sourceDate.toISOString().slice(0, 10)}</td>
+                        <td class="col-club">{row.sourceCompetition}</td>
+                        <td>{row.goalsFor ?? '—'}</td>
+                        <td>{row.goalsAgainst ?? '—'}</td>
+                        <td>{row.dg == null ? '—' : row.dg > 0 ? `+${row.dg}` : row.dg}</td>
+                        <td>{row.cleanSheet ?? '—'}</td>
+                        <td>{row.yellowCards ?? '—'}</td>
+                        <td>{row.redCards ?? '—'}</td>
+                        <td>{row.cardDeduction == null ? '—' : `−${row.cardDeduction}`}</td>
+                        <td class:list={['col-fx', row.fx && (row.fx.total > 0 ? 'fx-pos' : row.fx.total < 0 ? 'fx-neg' : '')]}>
+                          {row.fx ? (row.fx.total > 0 ? `+${row.fx.total}` : row.fx.total) : '—'}
+                        </td>
+                        <td>
+                          {row.sourceUrl
+                            ? <a href={row.sourceUrl} target="_blank" rel="noreferrer">Ver ↗</a>
+                            : '—'}
+                        </td>
+                        <td>
+                          <span class:list={['r16-state', `is-${row.status}`]}>
+                            {row.status === 'played' ? 'Jugado' : row.status === 'scheduled' ? 'Programado' : 'Por confirmar'}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </section>
     ))}
 
@@ -1537,6 +1651,76 @@ const reviewMissingCards = reviewBuckets.missingCards;
   @media (min-width: 900px) {
     .bracket-hint { display: none; }
   }
+
+
+  /* ================= PLANILLA DE OCTAVOS ================= */
+  .r16-audit { margin-top: 2rem; }
+
+  .r16-audit-note {
+    max-width: 70ch;
+    margin: 0 0 1rem;
+    font-size: 0.76rem;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+  }
+
+  .r16-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .r16-table th {
+    padding: 0.4rem 0.35rem;
+    font-family: var(--font-display);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-tertiary);
+    border-bottom: 1px solid var(--color-bg-elevated);
+  }
+
+  .r16-table td {
+    padding: 0.4rem 0.35rem;
+    text-align: center;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-bg-elevated) 45%, transparent);
+  }
+
+  .r16-table th.col-club,
+  .r16-table td.col-club { text-align: left; }
+
+  /* El club participante se distingue del rival en la fila. */
+  .r16-table td.is-participant { font-weight: 700; color: var(--color-text-primary); }
+  .r16-table td.col-club:not(.is-participant) { color: var(--color-text-muted); }
+
+  .r16-table tr.is-tbd td { color: var(--color-text-muted); }
+  .r16-table tr.is-played { background: var(--color-conference-tint); }
+
+  .r16-table td.col-fx { font-family: var(--font-display); font-size: 0.85rem; font-weight: 700; }
+  .r16-table td.fx-pos { color: var(--color-conference-dim); }
+  .r16-table td.fx-neg { color: #b3251f; }
+
+  .r16-table a { text-decoration: underline; text-underline-offset: 2px; }
+
+  .r16-state {
+    display: inline-block;
+    padding: 0.1rem 0.35rem;
+    font-family: var(--font-display);
+    font-size: 0.55rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background: var(--color-bg-elevated);
+    color: var(--color-text-secondary);
+  }
+
+  .r16-state.is-played { background: var(--color-conference); color: var(--color-text-primary); }
+  .r16-state.is-scheduled { background: var(--color-liga-primera); color: var(--color-text-primary); }
 
   /* ================= LLAVES POR RONDA ================= */
   .round-grid {
