@@ -174,6 +174,23 @@ const conferenceGroupsSchema = z.object({
     })).optional(),
 });
 
+// Ventana de octavos: mismo contrato que las ventanas de grupos, pero cada fila
+// se ancla a una llave y a un numero de partido, para poder auditarla como el CSV
+// del playoff (dos filas por participante).
+const conferenceR16WindowSchema = z.object({
+    kind: z.literal('r16-window'),
+    edition: z.number().int().positive(),
+    roundId: z.string(),
+    windowStart: z.coerce.date(),
+    windowEnd: z.coerce.date(),
+    extendedWindowEnd: z.coerce.date(),
+    note: z.string().optional(),
+    matchSources: z.array(conferenceOfficialMatchSourceSchema.extend({
+        tieId: z.string(),
+        matchNumber: z.union([z.literal(1), z.literal(2)]),
+    })),
+});
+
 const conferenceKnockoutSchema = z.object({
     kind: z.literal('knockout'),
     edition: z.number().int().positive(),
@@ -248,6 +265,7 @@ const conferenceLeagueSudamericana = defineCollection({
         conferenceStageSchema,
         conferenceGroupsSchema,
         conferenceKnockoutSchema,
+        conferenceR16WindowSchema,
         conferenceWindowCutSchema,
     ]),
 });
