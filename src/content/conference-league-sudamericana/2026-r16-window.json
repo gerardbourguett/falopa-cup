@@ -196,14 +196,14 @@
       "sourceDate": "2026-09-07",
       "homeClub": "Orense SC",
       "awayClub": "Guayaquil City",
-      "goalsFor": null,
-      "goalsAgainst": null,
+      "goalsFor": 2,
+      "goalsAgainst": 0,
       "yellowCards": null,
       "redCards": null,
       "isHome": true,
       "counted": true,
-      "status": "scheduled",
-      "sourceUrl": "https://www.sofascore.com/football/match/orense-sc-guayaquil-city/aCAbsAalc#id:15502678"
+      "status": "played",
+      "sourceUrl": "https://www.sofascore.com/es/football/match/orense-sc-guayaquil-city/aCAbsAalc#id:15502678"
     },
     {
       "id": "KO-R16-ec-orense-2",
@@ -306,14 +306,14 @@
       "sourceDate": "2026-09-08",
       "homeClub": "General Caballero",
       "awayClub": "Resistencia FC",
-      "goalsFor": null,
-      "goalsAgainst": null,
+      "goalsFor": 1,
+      "goalsAgainst": 0,
       "yellowCards": null,
       "redCards": null,
       "isHome": true,
       "counted": true,
-      "status": "scheduled",
-      "sourceUrl": "https://www.sofascore.com/football/match/general-caballero-resistencia-fc/tuLsucfd#id:17032436"
+      "status": "played",
+      "sourceUrl": "https://www.sofascore.com/es/football/match/general-caballero-resistencia-fc/tuLsucfd#id:17032436"
     },
     {
       "id": "KO-R16-ec-aucas-1",
@@ -504,14 +504,14 @@
       "sourceDate": "2026-09-09",
       "homeClub": "Racing de Montevideo",
       "awayClub": "Central Español",
-      "goalsFor": null,
-      "goalsAgainst": null,
+      "goalsFor": 1,
+      "goalsAgainst": 0,
       "yellowCards": null,
       "redCards": null,
       "isHome": true,
       "counted": true,
-      "status": "scheduled",
-      "sourceUrl": "https://www.sofascore.com/football/match/racing-de-montevideo-central-espanol/Hobskak#id:16873750"
+      "status": "played",
+      "sourceUrl": "https://www.sofascore.com/es/football/match/racing-de-montevideo-central-espanol/Hobskak#id:16873750"
     },
     {
       "id": "KO-R16-uy-racing-club-2",
@@ -636,14 +636,14 @@
       "sourceDate": "2026-09-10",
       "homeClub": "Astillero FC",
       "awayClub": "Universidad Católica del Ecuador",
-      "goalsFor": null,
-      "goalsAgainst": null,
+      "goalsFor": 4,
+      "goalsAgainst": 0,
       "yellowCards": null,
       "redCards": null,
       "isHome": false,
       "counted": true,
-      "status": "scheduled",
-      "sourceUrl": "https://www.sofascore.com/football/match/astillero-fc-ecu-universidad-catolica-del-ecuador/RNisnyJj#id:16923847"
+      "status": "played",
+      "sourceUrl": "https://www.sofascore.com/es/football/match/astillero-fc-ecu-universidad-catolica-del-ecuador/RNisnyJj#id:16923847"
     },
     {
       "id": "KO-R16-ec-universidad-catolica-2",
@@ -680,14 +680,14 @@
       "sourceDate": "2026-09-09",
       "homeClub": "CDT Real Oruro",
       "awayClub": "Nacional Potosí",
-      "goalsFor": null,
-      "goalsAgainst": null,
+      "goalsFor": 2,
+      "goalsAgainst": 1,
       "yellowCards": null,
       "redCards": null,
       "isHome": false,
       "counted": true,
-      "status": "scheduled",
-      "sourceUrl": "https://www.sofascore.com/football/match/cdt-real-oruro-nacional-potosi/aeusLnud#id:16767455"
+      "status": "played",
+      "sourceUrl": "https://www.sofascore.com/es/football/match/cdt-real-oruro-nacional-potosi/aeusLnud#id:16767455"
     },
     {
       "id": "KO-R16-bo-nacional-potosi-2",
