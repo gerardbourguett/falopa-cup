@@ -392,12 +392,22 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-09-13",
       "competition": "Liga de Primera · Fecha 23",
       "sourceUrl": "https://www.campeonatochileno.cl/match/audax-italiano-ohiggins-2026-09-13/",
       "holderId": "audax-italiano",
-      "challengerId": "ohiggins"
+      "challengerId": "ohiggins",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-09-25",
+      "competition": "Liga de Primera · Fecha 24",
+      "holderId": "audax-italiano",
+      "challengerId": "colo-colo"
     }
   ]
 }
