@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "flag-icons/css/flag-icons.min.css";
+@import "../../tokens.css";
 
 @theme {
   --color-bg-primary: #f4f3ef;
@@ -38,7 +39,7 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 /* clip, no hidden: contiene los full-bleed de 100vw sin romper position: sticky */
-html { scroll-behavior: smooth; background: #080808; overflow-x: clip; }
+html { scroll-behavior: smooth; background: var(--color-ink); overflow-x: clip; }
 body { margin: 0; background: var(--color-bg-primary); color: var(--color-text-primary); font-family: var(--font-body); font-size: 15px; line-height: 1.5; overflow-x: clip; }
 body::before { position: fixed; inset: 0; z-index: -1; background-image: radial-gradient(#111 0.55px, transparent .55px); background-size: 6px 6px; opacity: .05; content: ""; }
 h1,h2,h3,h4,h5,h6 { margin: 0; font-family: var(--font-display); font-weight: 700; line-height: .98; letter-spacing: -.02em; text-transform: uppercase; }
@@ -49,8 +50,8 @@ img { max-width: 100%; }
 table { font-variant-numeric: tabular-nums; }
 .container { width: min(100% - 2rem, var(--page-max-width)); margin-inline: auto; padding: 0; }
 main.container { padding-block: var(--space-xl); }
-::selection { background: var(--color-liga-primera); color: #fff; }
-:focus-visible { outline: 3px solid var(--color-liga-primera); outline-offset: 3px; }
+::selection { background: var(--color-orange); color: var(--color-ink); }
+:focus-visible { outline: 3px solid var(--color-focus); outline-offset: 3px; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
