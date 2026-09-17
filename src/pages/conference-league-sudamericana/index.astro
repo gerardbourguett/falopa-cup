@@ -165,13 +165,13 @@ const phaseTimeline = [
 const currentPhase = phaseTimeline.find((phase: any) => phase.status !== 'completed');
 
 // Planilla de auditoria de octavos: mismas columnas que el CSV del playoff.
-// El fantasy se calcula con la misma funcion que el resto del torneo, y solo
-// cuando la fila tiene marcador y tarjetas; si falta algo, queda sin puntaje.
+// El fantasy se calcula con la misma funcion que el resto del torneo cuando
+// existe marcador. La funcion canonica trata las tarjetas aun no informadas
+// como cero, por lo que cada partido jugado muestra de inmediato su puntaje.
 const r16AuditRows = ((r16WindowDoc?.matchSources || []) as any[]).map((source: any) => {
   const complete =
     source.status === 'played' &&
-    source.goalsFor != null && source.goalsAgainst != null &&
-    source.yellowCards != null && source.redCards != null;
+    source.goalsFor != null && source.goalsAgainst != null;
   const fx = complete ? computeFantasyScore(source) : null;
   const gf = source.goalsFor, ga = source.goalsAgainst;
   return {
