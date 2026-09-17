@@ -1,6 +1,15 @@
 [
   {
     "date": "2026-09-17",
+    "macrostructure": "Tournament Matchbooks",
+    "theme": "custom",
+    "theme_axes": "night / condensed-athletic / tournament accents",
+    "vibe": "hardcore football competition coverage",
+    "enrichment": "scoreboard and crest compositions",
+    "brief": "Extend the night broadcast system to all three tournament pages"
+  },
+  {
+    "date": "2026-09-17",
     "macrostructure": "Live Matchboard",
     "theme": "custom",
     "theme_axes": "night / condensed-athletic / neon-orange",
