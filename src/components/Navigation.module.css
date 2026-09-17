@@ -1,82 +1,24 @@
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom: 1px solid #292929;
-  background: rgba(8, 8, 8, 0.97);
-  backdrop-filter: blur(14px);
-}
-
-.networkBar {
-  border-bottom: 1px solid #292929;
-  background: var(--color-liga-primera);
-  color: #080808;
-}
-
-.networkInner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  max-width: var(--page-max-width);
-  min-height: 27px;
-  margin: 0 auto;
-  padding: 0 var(--space-xl);
-  font-family: var(--font-display);
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
-.live { display: flex; align-items: center; gap: 0.4rem; }
-.live i { width: 6px; height: 6px; border-radius: 50%; background: #080808; box-shadow: 0 0 0 3px rgba(8,8,8,.18); }
-.networkName { font-size: 0.7rem; }
-
-.inner {
-  display: flex;
-  align-items: stretch;
-  justify-content: space-between;
-  gap: var(--space-xl);
-  max-width: var(--page-max-width);
-  min-height: 68px;
-  margin: 0 auto;
-  padding: 0 var(--space-xl);
-}
-
-.brandLink { display: flex; align-items: center; color: inherit; text-decoration: none; }
+/* Hallmark · navigation: broadcast rail · tone: night match */
+.header { position: sticky; top: 0; z-index: 100; border-bottom: var(--rule-soft); background: var(--color-black-alpha); backdrop-filter: blur(16px); }
+.networkBar { background: var(--color-orange); color: var(--color-ink); }
+.networkInner { display: flex; align-items: center; justify-content: space-between; max-width: var(--page-max-width); min-height: 26px; margin-inline: auto; padding-inline: var(--space-xl); font-family: var(--font-display); font-size: .62rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+.live { display: flex; align-items: center; gap: var(--space-xs); }
+.live i { width: 6px; height: 6px; background: var(--color-ink); box-shadow: 0 0 0 3px var(--color-orange-glow); }
+.networkName { font-size: .7rem; }
+.inner { display: flex; align-items: stretch; justify-content: space-between; gap: var(--space-xl); max-width: var(--page-max-width); min-height: 70px; margin-inline: auto; padding-inline: var(--space-xl); }
+.brandLink { display: flex; align-items: center; color: inherit; }
 .brand { display: flex; align-items: center; gap: var(--space-sm); min-width: 0; }
-.brandIcon { display: grid; place-items: center; width: 42px; height: 42px; padding: 5px; background: var(--color-liga-primera); transform: skew(-6deg); }
-.brandLogo { width: 100%; height: 100%; object-fit: contain; filter: brightness(0); transform: skew(6deg); }
+.brandIcon { display: grid; width: 43px; height: 43px; padding: 6px; place-items: center; border: 1px solid var(--color-orange); background: var(--color-ink); transform: skew(-7deg); }
+.brandLogo { width: 100%; height: 100%; filter: grayscale(1) brightness(4); object-fit: contain; transform: skew(7deg); }
 .brandText { min-width: 0; }
-.title { color: #fff; font-family: var(--font-display); font-size: 1.55rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1; }
-.subtitle { margin-top: 0.2rem; color: #8d8d8d; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
-
+.title { color: var(--color-white); font-family: var(--font-display); font-size: 1.55rem; font-weight: 700; letter-spacing: -.02em; line-height: 1; text-transform: uppercase; }
+.subtitle { margin-top: .15rem; color: var(--color-silver); font-size: .52rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
 .nav { display: flex; align-items: stretch; overflow-x: auto; scrollbar-width: none; }
 .nav::-webkit-scrollbar { display: none; }
-.navLink {
-  position: relative;
-  display: grid;
-  place-items: center;
-  padding: 0 var(--space-sm);
-  color: #a7a7a7;
-  font-family: var(--font-display);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-decoration: none;
-  text-transform: uppercase;
-  white-space: nowrap;
-  transition: color var(--transition-productive), background var(--transition-productive);
-}
-.navLink::after { position: absolute; inset: auto .7rem 0; height: 3px; background: var(--color-liga-primera); content: ""; transform: scaleX(0); transition: transform var(--transition-productive); }
-.navLink:hover { color: #fff; background: #151515; }
-.navLinkActive { color: #fff; }
+.navLink { position: relative; display: grid; place-items: center; padding-inline: var(--space-sm); color: var(--color-silver); font-family: var(--font-display); font-size: .74rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; white-space: nowrap; transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out); }
+.navLink::after { position: absolute; inset: auto .7rem 0; height: 3px; background: var(--color-orange); content: ""; transform: scaleX(0); transition: transform var(--dur-base) var(--ease-out); }
+.navLink:hover { background: var(--color-ink-soft); color: var(--color-white); }
+.navLink:active { color: var(--color-orange); }
+.navLinkActive { color: var(--color-white); }
 .navLinkActive::after { transform: scaleX(1); }
-
-@media (max-width: 900px) {
-  .networkInner span:nth-child(2) { display: none; }
-  .inner { display: block; min-height: 0; padding: 0; }
-  .brandLink { min-height: 58px; padding: 0 var(--space-md); }
-  .nav { border-top: 1px solid #292929; padding: 0 var(--space-xs); }
-  .navLink { min-height: 42px; padding: 0 .65rem; }
-}
+@media (max-width: 900px) { .networkInner span:nth-child(2) { display: none; } .inner { display: block; min-height: 0; padding: 0; } .brandLink { min-height: 58px; padding-inline: var(--space-md); } .nav { border-top: var(--rule-soft); padding-inline: var(--space-xs); } .navLink { min-height: 42px; padding-inline: .65rem; } }
