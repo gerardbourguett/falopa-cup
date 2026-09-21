@@ -142,6 +142,8 @@ const groupStageClubs = (stageDoc?.mainStageQualifiedIds || []).length;
 // Estado del torneo: una sola lectura de en que fase estamos hoy.
 // Se deriva de los propios documentos; no hay estados escritos a mano.
 const preliminaryResolved = tieCards.filter((tie: any) => tie.hasScore).length;
+const r16PlayedCount = ((r16WindowDoc?.matchSources || []) as any[])
+  .filter((source: any) => source.status === 'played').length;
 const phaseTimeline = [
   {
     id: 'previa',
@@ -158,25 +160,28 @@ const phaseTimeline = [
   ...((knockoutDoc?.rounds || []) as any[]).map((round: any) => ({
     id: round.id,
     name: round.name,
-    status: round.status,
+    status: round.id === 'KO-R16' && r16PlayedCount > 0 ? 'in-progress' : round.status,
     detail: `${round.ties.length} ${round.ties.length === 1 ? 'llave' : 'llaves'}`,
   })),
 ];
 const currentPhase = phaseTimeline.find((phase: any) => phase.status !== 'completed');
 
 // Planilla de auditoria de octavos: mismas columnas que el CSV del playoff.
-// El fantasy se calcula con la misma funcion que el resto del torneo, y solo
-// cuando la fila tiene marcador y tarjetas; si falta algo, queda sin puntaje.
+// Todo marcador jugado suma de inmediato. Cuando todavía falta el acta de
+// tarjetas, el total queda marcado como provisional (disciplina asumida en 0)
+// en vez de ocultar por completo los puntos deportivos ya confirmados.
 const r16AuditRows = ((r16WindowDoc?.matchSources || []) as any[]).map((source: any) => {
-  const complete =
+  const hasResult =
     source.status === 'played' &&
-    source.goalsFor != null && source.goalsAgainst != null &&
-    source.yellowCards != null && source.redCards != null;
-  const fx = complete ? computeFantasyScore(source) : null;
+    source.goalsFor != null && source.goalsAgainst != null;
+  const disciplinePending = hasResult &&
+    (source.yellowCards == null || source.redCards == null);
+  const fx = hasResult ? computeFantasyScore(source) : null;
   const gf = source.goalsFor, ga = source.goalsAgainst;
   return {
     ...source,
-    complete,
+    complete: hasResult && !disciplinePending,
+    disciplinePending,
     fx,
     dg: gf != null && ga != null ? gf - ga : null,
     cleanSheet: ga != null ? (ga === 0 ? 1 : 0) : null,
@@ -194,6 +199,16 @@ const r16AuditCounts = r16AuditRows.reduce((acc: any, row: any) => {
   acc[row.status] = (acc[row.status] || 0) + 1;
   return acc;
 }, {} as Record<string, number>);
+
+const r16TotalsByClub = new Map<string, { total: number; played: number; provisional: boolean }>();
+for (const row of r16AuditRows) {
+  if (!row.fx) continue;
+  const current = r16TotalsByClub.get(row.clubId) || { total: 0, played: 0, provisional: false };
+  current.total += row.fx.total;
+  current.played += 1;
+  current.provisional ||= row.disciplinePending;
+  r16TotalsByClub.set(row.clubId, current);
+}
 const PHASE_ANCHORS: Record<string, string> = {
   previa: 'fase-previa',
   grupos: 'fase-grupos',
@@ -214,7 +229,25 @@ const fantasyStandingsByGroup = buildFantasyStandingsByGroup(groups, fantasyByCl
 const matchSourceMap = buildMatchSourceMap(roundWindows);
 const playoffRound = knockoutDoc?.rounds?.find((round: any) => round.id === 'KO-PLAYOFF');
 const roundOf16 = knockoutDoc?.rounds?.find((round: any) => round.id === 'KO-R16');
-const finalBracketRounds = (knockoutDoc?.rounds || []).filter((round: any) => round.id !== 'KO-PLAYOFF');
+const finalBracketRounds = (knockoutDoc?.rounds || [])
+  .filter((round: any) => round.id !== 'KO-PLAYOFF')
+  .map((round: any) => round.id !== 'KO-R16' ? round : ({
+    ...round,
+    status: (r16AuditCounts.played || 0) > 0 ? 'in-progress' : round.status,
+    ties: round.ties.map((tie: any) => {
+      const sideA = r16TotalsByClub.get(tie.slotA.clubId);
+      const sideB = r16TotalsByClub.get(tie.slotB.clubId);
+      return {
+        ...tie,
+        scoreA: sideA?.total,
+        scoreB: sideB?.total,
+        matchesPlayedA: sideA?.played || 0,
+        matchesPlayedB: sideB?.played || 0,
+        scoreProvisionalA: sideA?.provisional || false,
+        scoreProvisionalB: sideB?.provisional || false,
+      };
+    }),
+  }));
 const knockoutTieById = new Map<string, any>(
   (knockoutDoc?.rounds || []).flatMap((round: any) => round.ties || []).map((tie: any) => [tie.id, tie] as [string, any]),
 );
@@ -722,12 +755,15 @@ const reviewMissingCards = reviewBuckets.missingCards;
                 {round.ties.map((tie: any) => {
                   const a = slotIdentity(tie.slotA);
                   const b = slotIdentity(tie.slotB);
-                  const hasScore = Number.isFinite(tie.scoreA) && Number.isFinite(tie.scoreB);
+                  const sides = [
+                    { who: a, id: tie.slotA.clubId, score: tie.scoreA, provisional: tie.scoreProvisionalA },
+                    { who: b, id: tie.slotB.clubId, score: tie.scoreB, provisional: tie.scoreProvisionalB },
+                  ];
                   return (
                     <div class="bracket-slot">
                       <article class:list={['bracket-tie', tie.winnerClubId && 'is-resolved']}>
                         <span class="bracket-tie-id">{tie.id}</span>
-                        {[{ who: a, id: tie.slotA.clubId, score: tie.scoreA }, { who: b, id: tie.slotB.clubId, score: tie.scoreB }].map((side: any) => (
+                        {sides.map((side: any) => (
                           <div
                             class:list={['bracket-side', !side.who.resolved && 'is-open', tie.winnerClubId === side.id && 'is-winner']}
                             style={side.who.accent ? `--club-accent:${side.who.accent}` : undefined}
@@ -736,7 +772,9 @@ const reviewMissingCards = reviewBuckets.missingCards;
                               ? <span class:list={['club-flag-icon', flagClass(side.who.country)]} aria-hidden="true"></span>
                               : <span class="bracket-flag-empty" aria-hidden="true"></span>}
                             <span class="bracket-side-name" title={side.who.name}>{side.who.name}</span>
-                            <span class="bracket-side-fx">{hasScore ? side.score : '—'}</span>
+                            <span class:list={['bracket-side-fx', side.provisional && 'is-provisional']}>
+                              {Number.isFinite(side.score) ? `${side.score}${side.provisional ? '*' : ''}` : '—'}
+                            </span>
                           </div>
                         ))}
                       </article>
@@ -766,12 +804,12 @@ const reviewMissingCards = reviewBuckets.missingCards;
           {round.ties.map((tie: any) => {
             const a = slotIdentity(tie.slotA);
             const b = slotIdentity(tie.slotB);
-            const hasScore = Number.isFinite(tie.scoreA) && Number.isFinite(tie.scoreB);
+            const hasAnyScore = Number.isFinite(tie.scoreA) || Number.isFinite(tie.scoreB);
             return (
               <article class:list={['round-tie', tie.winnerClubId && 'is-resolved']}>
                 <header class="round-tie-head">
                   <span>{tie.id}</span>
-                  {!hasScore && <small>Sin disputar</small>}
+                  <small>{hasAnyScore ? 'Puntaje provisional' : 'Sin disputar'}</small>
                 </header>
                 {[{ who: a, id: tie.slotA.clubId, score: tie.scoreA, slot: tie.slotA }, { who: b, id: tie.slotB.clubId, score: tie.scoreB, slot: tie.slotB }].map((side: any) => (
                   <div
@@ -783,7 +821,9 @@ const reviewMissingCards = reviewBuckets.missingCards;
                       : <span class="bracket-flag-empty" aria-hidden="true"></span>}
                     <span class="round-side-name" title={side.who.name}>{side.who.name}</span>
                     {side.who.from && <small class="round-side-from">vía {side.who.from}</small>}
-                    <span class="round-side-fx">{hasScore ? side.score : '—'}</span>
+                    <span class="round-side-fx">
+                      {Number.isFinite(side.score) ? `${side.score}${tie[`scoreProvisional${side.id === tie.slotA.clubId ? 'A' : 'B'}`] ? '*' : ''}` : '—'}
+                    </span>
                   </div>
                 ))}
               </article>
@@ -800,6 +840,9 @@ const reviewMissingCards = reviewBuckets.missingCards;
               </span>
             </div>
             <p class="r16-audit-note">{r16WindowDoc.note}</p>
+            <p class="r16-audit-note">
+              * Puntaje provisional: incluye resultado y bonificaciones deportivas, pero todavía no descuenta tarjetas cuando el acta disciplinaria está pendiente.
+            </p>
 
             <div class="table-wrap">
               <table class="r16-table">
@@ -851,7 +894,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
                         <td>{row.redCards ?? '—'}</td>
                         <td>{row.cardDeduction == null ? '—' : `−${row.cardDeduction}`}</td>
                         <td class:list={['col-fx', row.fx && (row.fx.total > 0 ? 'fx-pos' : row.fx.total < 0 ? 'fx-neg' : '')]}>
-                          {row.fx ? (row.fx.total > 0 ? `+${row.fx.total}` : row.fx.total) : '—'}
+                          {row.fx ? `${row.fx.total > 0 ? '+' : ''}${row.fx.total}${row.disciplinePending ? '*' : ''}` : '—'}
                         </td>
                         <td>
                           {row.sourceUrl
@@ -2801,4 +2844,94 @@ const reviewMissingCards = reviewBuckets.missingCards;
     .hero-content { padding: 2rem 0 1.5rem; }
     .ms-club-name { width: 5.5rem; font-size: 0.65rem; }
   }
+
+
+  /* Hallmark · tournament skin: Conference night broadcast · critique P5 H5 E4 S5 R4 V5 */
+  :global(body) {
+    --color-bg-primary: var(--color-ink);
+    --color-bg-secondary: var(--color-ink-raised);
+    --color-bg-tertiary: var(--color-ink-soft);
+    --color-bg-elevated: var(--color-white-rule);
+    --color-text-primary: var(--color-white);
+    --color-text-secondary: var(--color-paper-muted);
+    --color-text-muted: var(--color-silver);
+    --color-conference: var(--color-green);
+    --color-conference-bright: var(--color-lime);
+    --color-conference-dim: var(--color-green);
+    --color-conference-tint: color-mix(in oklch, var(--color-green) 10%, transparent);
+    --color-conference-tint-hover: color-mix(in oklch, var(--color-green) 16%, transparent);
+    background: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  .page-hero {
+    isolation: isolate;
+    min-height: min(68vh, 720px);
+    border-bottom: 1px solid var(--color-green);
+    background: var(--color-ink);
+  }
+  .page-hero::before {
+    z-index: -2;
+    background:
+      linear-gradient(90deg, var(--color-black-alpha), transparent 56%),
+      repeating-linear-gradient(112deg, transparent 0 84px, var(--color-white-faint) 85px 86px),
+      radial-gradient(circle at 80% 24%, color-mix(in oklch, var(--color-green) 20%, transparent), transparent 30%);
+  }
+  .page-hero::after {
+    right: -2vw;
+    bottom: -8vw;
+    z-index: -1;
+    color: var(--color-white-faint);
+    font-size: clamp(12rem, 32vw, 28rem);
+    transform: rotate(-8deg);
+  }
+  .hero-inner { align-items: center; min-height: min(68vh, 720px); }
+  .hero-content { padding-block: var(--space-4xl); border-left-color: var(--color-green); }
+  .page-hero h1 { max-width: 8ch; color: var(--color-white); font-size: clamp(4rem, 10vw, 9rem); letter-spacing: -.065em; line-height: .8; overflow-wrap: anywhere; }
+  .hero-year { color: var(--color-lime); }
+  .hero-sub { max-width: 64ch; color: var(--color-paper-muted); font-size: var(--text-base); line-height: 1.6; }
+  .eyebrow { color: var(--color-green); }
+  .hero-stat-bar { align-self: stretch; display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); border: var(--rule-soft); border-top: 4px solid var(--color-green); background: var(--color-ink-raised); }
+  .hero-stat { min-width: 8rem; border-color: var(--color-white-rule); }
+  .hero-stat-num { color: var(--color-white); font-size: 2.4rem; }
+  .hero-stat-label { color: var(--color-silver); }
+
+  .page-nav-strip { border: var(--rule-soft); border-top: 0; background: var(--color-ink-raised); }
+  .page-nav-tab { color: var(--color-silver); transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out); }
+  .page-nav-tab:hover { background: var(--color-ink-soft); color: var(--color-white); }
+  .page-nav-tab.active { border-bottom-color: var(--color-green); color: var(--color-green); }
+  .page-nav-tab:active, .phase-chip:active { transform: translateY(1px); }
+  .page-nav-tab:focus-visible, .phase-chip:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -3px; }
+
+  .page-main { padding-top: var(--space-xl); padding-bottom: var(--space-4xl); }
+  .phase-nav { top: 96px; border: var(--rule-soft); padding: var(--space-sm); background: var(--color-black-alpha); }
+  .phase-nav-list { border-color: var(--color-white-rule); background: var(--color-white-rule); }
+  .phase-chip { background: var(--color-ink-raised); border-top-color: var(--color-white-rule); transition: background var(--dur-fast) var(--ease-out); }
+  .phase-chip:hover { background: var(--color-ink-soft); }
+  .phase-chip.is-current { background: var(--color-ink-soft); border-top-color: var(--color-orange); }
+  .phase-head { border-color: var(--color-white-rule); }
+  .phase-head h2 { color: var(--color-white); font-size: clamp(2.2rem, 5vw, 4.5rem); letter-spacing: -.045em; }
+  .phase-head-note { color: var(--color-paper-muted); }
+  .phase-section { padding-top: var(--space-lg); }
+
+  .tie-card, .group-card, .po-tie, .bracket-tie, .window-cut-card, .r16-audit-card {
+    border-color: var(--color-white-rule);
+    background: var(--color-ink-raised);
+  }
+  .tie-header, .group-title, .po-tie-head, .bracket-tie-id { border-color: var(--color-white-rule); background: var(--color-ink); }
+  .tie-score, .po-side-fx, .bracket-side-fx { color: var(--color-lime); }
+  .standings-table tbody tr:hover, .tie-club:hover { background: var(--color-ink-soft); }
+  .round-tab { border-color: var(--color-green); background: var(--color-ink-raised); color: var(--color-green); }
+  .block-groups { border-color: var(--color-green); background: var(--color-ink); }
+  .bracket-viewport { border-block: var(--rule-soft); padding-block: var(--space-md); }
+
+  @media (max-width: 760px) {
+    .page-hero, .hero-inner { min-height: auto; }
+    .hero-inner { flex-direction: column; align-items: stretch; }
+    .hero-content { padding-block: var(--space-2xl); }
+    .hero-stat-bar { width: 100%; }
+    .hero-stat { min-width: 0; padding: var(--space-md); }
+    .phase-nav { top: 126px; }
+  }
+
 </style>
