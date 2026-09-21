@@ -5,6 +5,9 @@ import { fileURLToPath } from 'node:url';
 import {
   validateConferenceIntegrity,
   validateTournamentIntegrity,
+  validateQuarterfinalIntegrity,
+  type QuarterfinalWindowDocument,
+  type KnockoutDocument,
   type ConferenceClubsDocument,
   type ConferenceGroupsDocument,
   type ConferenceStageDocument,
@@ -61,6 +64,9 @@ async function loadConferenceDocuments() {
   let stageDoc: ConferenceStageDocument | null = null;
   let groupsDoc: ConferenceGroupsDocument | null = null;
   let windowCutDoc: ConferenceWindowCutDocument | null = null;
+  let qfWindowDoc: QuarterfinalWindowDocument | null = null;
+  let knockoutDoc: KnockoutDocument | null = null;
+  let r16Sources: Array<{ sourceUrl?: string }> | null = null;
 
   for (const file of files) {
     const json = await readJson(join(conferenceDir, file));
@@ -68,9 +74,12 @@ async function loadConferenceDocuments() {
     if (json.kind === 'stage') stageDoc = json as unknown as ConferenceStageDocument;
     if (json.kind === 'groups') groupsDoc = json as unknown as ConferenceGroupsDocument;
     if (json.kind === 'window-cut') windowCutDoc = json as unknown as ConferenceWindowCutDocument;
+    if (json.kind === 'qf-window') qfWindowDoc = json as unknown as QuarterfinalWindowDocument;
+    if (json.kind === 'knockout') knockoutDoc = json as unknown as KnockoutDocument;
+    if (json.kind === 'r16-window') r16Sources = json.matchSources as Array<{ sourceUrl?: string }>;
   }
 
-  return { clubsDoc, stageDoc, groupsDoc, windowCutDoc };
+  return { clubsDoc, stageDoc, groupsDoc, windowCutDoc, qfWindowDoc, knockoutDoc, r16Sources };
 }
 
 async function main() {
@@ -84,6 +93,13 @@ async function main() {
   const issues = validateTournamentIntegrity(tournamentFiles, clubIds);
 
   const conference = await loadConferenceDocuments();
+  if (conference.qfWindowDoc) {
+    if (!conference.knockoutDoc || !conference.r16Sources) {
+      issues.push('conference/qf-window: Missing knockout or R16 sources.');
+    } else {
+      issues.push(...validateQuarterfinalIntegrity(conference.qfWindowDoc, conference.knockoutDoc, conference.r16Sources));
+    }
+  }
   if (!conference.clubsDoc || !conference.stageDoc || !conference.groupsDoc) {
     issues.push('conference: faltan documentos mínimos (clubs/stage/groups) en src/content/conference-league-sudamericana');
   } else {
