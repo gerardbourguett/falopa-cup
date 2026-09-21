@@ -12,6 +12,7 @@ import {
   buildWindowCutWithFantasy,
   computeFantasyScore,
   getWindowCutCardDeductions,
+  selectQuarterfinalFixtures,
   type ConferenceGroupDefinition,
   type RoundWindowData,
   type WindowCutEntry,
@@ -29,6 +30,19 @@ const groupsDoc = entries.find((entry) => entry.data.kind === 'groups')?.data as
 const windowCutDoc = entries.find((entry) => entry.data.kind === 'window-cut')?.data as any;
 const knockoutDoc = entries.find((entry) => entry.data.kind === 'knockout')?.data as any;
 const r16WindowDoc = entries.find((entry) => entry.data.kind === 'r16-window')?.data as any;
+const qfEntry = entries.find((entry) => entry.data.kind === 'qf-window');
+const qfWindowDoc = qfEntry?.data.kind === 'qf-window' ? qfEntry.data : undefined;
+const r16EventIds = new Set<number>((r16WindowDoc?.matchSources || []).map(
+  (source: { sourceUrl?: string }) => Number(source.sourceUrl?.match(/#id:(\d+)/)?.[1]),
+));
+const qfPlanGroups = [
+  { qualification: 'confirmed', title: 'Partidos de los clasificados' },
+  { qualification: 'conditional', title: 'Escenarios de Zamora y ADT (sin activar)' },
+].map((group) => ({
+  ...group,
+  clubs: (qfWindowDoc?.clubs || []).filter((club) => club.qualification === group.qualification)
+    .map((club) => ({ ...club, slots: selectQuarterfinalFixtures(club.fixtures, r16EventIds) })),
+}));
 
 const seedById = new Map<string, any>(
   (clubsDoc?.seeds || []).map((seed: any) => [seed.clubId, seed] as [string, any])
@@ -809,7 +823,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
               <article class:list={['round-tie', tie.winnerClubId && 'is-resolved']}>
                 <header class="round-tie-head">
                   <span>{tie.id}</span>
-                  <small>{hasAnyScore ? 'Puntaje provisional' : 'Sin disputar'}</small>
+                  <small>{tie.winnerClubId ? 'Clasificado confirmado' : hasAnyScore ? 'Puntaje provisional' : 'Sin disputar'}</small>
                 </header>
                 {[{ who: a, id: tie.slotA.clubId, score: tie.scoreA, slot: tie.slotA }, { who: b, id: tie.slotB.clubId, score: tie.scoreB, slot: tie.slotB }].map((side: any) => (
                   <div
@@ -822,14 +836,80 @@ const reviewMissingCards = reviewBuckets.missingCards;
                     <span class="round-side-name" title={side.who.name}>{side.who.name}</span>
                     {side.who.from && <small class="round-side-from">vía {side.who.from}</small>}
                     <span class="round-side-fx">
-                      {Number.isFinite(side.score) ? `${side.score}${tie[`scoreProvisional${side.id === tie.slotA.clubId ? 'A' : 'B'}`] ? '*' : ''}` : '—'}
+                      {Number.isFinite(side.score) ? `${tie[`scoreProvisional${side.id === tie.slotA.clubId ? 'A' : 'B'}`] ? '≤ ' : ''}${side.score}${tie[`scoreProvisional${side.id === tie.slotA.clubId ? 'A' : 'B'}`] ? '*' : ''}` : '—'}
                     </span>
                   </div>
                 ))}
+                {tie.tiebreakReason && <p class="round-tie-reason">{tie.tiebreakReason}</p>}
               </article>
             );
           })}
         </div>
+
+        {round.id === 'KO-QF' && qfWindowDoc && (
+          <div class="r16-audit" data-qf-plan>
+            <p class="r16-audit-note">
+              <strong>Ventana: 24 de septiembre al 8 de octubre de 2026.</strong> Ambas fechas incluidas,
+              según la sede. Primeros dos partidos oficiales por club, sin amistosos ni extensión.
+              Programación sujeta a cambios. Un espacio pendiente no otorga puntos.
+            </p>
+            {qfPlanGroups.map((group) => (
+              <div>
+                <div class="phase-subhead"><h3>{group.title}</h3></div>
+                {group.qualification === 'conditional' && (
+                  <p class="r16-audit-note">
+                    Solo el ganador de R16-2 ocupará el lugar frente a Alianza Lima.
+                    Estas alternativas no se suman entre sí ni confirman un clasificado.
+                  </p>
+                )}
+                <div class="table-wrap" role="region" aria-label={group.title} tabindex="0">
+                  <table class="r16-table">
+                    <caption class="sr-only">{group.title}: primeros dos partidos oficiales dentro de la ventana de cuartos.</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">Llave</th><th scope="col" class="col-club">Club</th>
+                        <th scope="col">#</th><th scope="col">Fecha local</th><th scope="col">Condición</th>
+                        <th scope="col" class="col-club">Rival</th><th scope="col" class="col-club">Competición</th>
+                        <th scope="col">Estado</th><th scope="col">Fuente</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {group.clubs.flatMap((club) => club.slots.map((fixture, index) => (
+                        <tr class={fixture ? 'is-scheduled' : 'is-tbd'}>
+                          <td>{club.tieId}</td>
+                          <td class="col-club">{clubMeta(club.clubId).name}{group.qualification === 'conditional' && <small> · si clasifica</small>}</td>
+                          <td>{index + 1}</td>
+                          <td>{fixture ? <time datetime={fixture.sourceDate}>{fixture.sourceDate}</time> : '—'}</td>
+                          <td>{fixture ? fixture.isHome ? 'Local' : 'Visitante' : '—'}</td>
+                          <td class="col-club">{fixture ? fixture.isHome ? fixture.awayClub : fixture.homeClub : 'Partido por confirmar'}</td>
+                          <td class="col-club">{fixture?.sourceCompetition ?? '—'}</td>
+                          <td>{fixture ? 'Programado' : 'Pendiente de programación verificada'}</td>
+                          <td><a href={fixture?.sourceUrl ?? club.scheduleSourceUrl} target="_blank" rel="noreferrer"
+                            aria-label={`${fixture ? 'Ver partido' : 'Ver calendario'} de ${clubMeta(club.clubId).name}, espacio ${index + 1}`}>
+                            {fixture ? 'Ver partido' : 'Calendario'}
+                          </a></td>
+                        </tr>
+                      )))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+            <details class="audit-block">
+              <summary>Fuentes y pendientes del calendario de cuartos</summary>
+              <div class="audit-body">
+                <p class="r16-audit-note">{qfWindowDoc.note}</p>
+                <ul class="audit-list">
+                  {qfWindowDoc.clubs.map((club) => (
+                    <li><strong>{clubMeta(club.clubId).name}:</strong> {club.note || 'Dos partidos programados verificados.'}{' '}
+                      <a href={club.scheduleSourceUrl} target="_blank" rel="noreferrer">Consultar calendario</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </details>
+          </div>
+        )}
 
         {round.id === 'KO-R16' && r16WindowDoc && (
           <div class="r16-audit">
@@ -841,7 +921,8 @@ const reviewMissingCards = reviewBuckets.missingCards;
             </div>
             <p class="r16-audit-note">{r16WindowDoc.note}</p>
             <p class="r16-audit-note">
-              * Puntaje provisional: incluye resultado y bonificaciones deportivas, pero todavía no descuenta tarjetas cuando el acta disciplinaria está pendiente.
+              * Límite superior provisional: incluye resultado y bonificaciones deportivas, pero todavía no descuenta tarjetas cuando el acta disciplinaria está pendiente. No es un total verificado.
+              Siete clasificados confirmados en el cuadro; Zamora–ADT continúa pendiente. Las fuentes originales de esta planilla se conservan.
             </p>
 
             <div class="table-wrap">
@@ -894,7 +975,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
                         <td>{row.redCards ?? '—'}</td>
                         <td>{row.cardDeduction == null ? '—' : `−${row.cardDeduction}`}</td>
                         <td class:list={['col-fx', row.fx && (row.fx.total > 0 ? 'fx-pos' : row.fx.total < 0 ? 'fx-neg' : '')]}>
-                          {row.fx ? `${row.fx.total > 0 ? '+' : ''}${row.fx.total}${row.disciplinePending ? '*' : ''}` : '—'}
+                          {row.fx ? `${row.disciplinePending ? '≤ ' : row.fx.total > 0 ? '+' : ''}${row.fx.total}${row.disciplinePending ? '*' : ''}` : '—'}
                         </td>
                         <td>
                           {row.sourceUrl
@@ -1795,6 +1876,14 @@ const reviewMissingCards = reviewBuckets.missingCards;
 
   .round-tie:hover { border-color: var(--color-text-muted); }
   .round-tie.is-resolved { border-color: var(--color-conference-dim); }
+
+  .round-tie-reason {
+    margin: 0;
+    padding: 0.5rem 0.6rem;
+    font-size: 0.76rem;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+  }
 
   .round-tie-head {
     display: flex;

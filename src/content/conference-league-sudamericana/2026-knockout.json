@@ -239,7 +239,7 @@
     {
       "id": "KO-R16",
       "name": "Octavos de final",
-      "status": "planned",
+      "status": "in-progress",
       "description": "Primeros de grupo, ordenados de mejor a peor puntaje fantasy, vs ganadores del playoff en el mismo orden.",
       "ties": [
         {
@@ -253,7 +253,9 @@
             "sourceType": "tie-winner",
             "sourceRef": "PO-1",
             "clubId": "co-atletico-nacional"
-          }
+          },
+          "winnerClubId": "pe-alianza-lima",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos: Alianza Lima 4.5, Atlético Nacional 4."
         },
         {
           "id": "R16-2",
@@ -279,7 +281,9 @@
             "sourceType": "tie-winner",
             "sourceRef": "PO-3",
             "clubId": "ve-caracas"
-          }
+          },
+          "winnerClubId": "ec-orense",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos: Orense 1.75, Caracas -0.5."
         },
         {
           "id": "R16-4",
@@ -292,7 +296,9 @@
             "sourceType": "tie-winner",
             "sourceRef": "PO-4",
             "clubId": "ec-aucas"
-          }
+          },
+          "winnerClubId": "py-general-caballero",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos: General Caballero 5, Aucas 1."
         },
         {
           "id": "R16-5",
@@ -305,7 +311,9 @@
             "sourceType": "tie-winner",
             "sourceRef": "PO-5",
             "clubId": "pe-sporting-cristal"
-          }
+          },
+          "winnerClubId": "ve-metropolitanos",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos: Metropolitanos 8.5, Sporting Cristal 5.5."
         },
         {
           "id": "R16-6",
@@ -318,7 +326,9 @@
             "sourceType": "tie-winner",
             "sourceRef": "PO-6",
             "clubId": "uy-racing-club"
-          }
+          },
+          "winnerClubId": "co-atletico-bucaramanga",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos: Atlético Bucaramanga 7.75, Racing 2."
         },
         {
           "id": "R16-7",
@@ -331,7 +341,9 @@
             "sourceType": "tie-winner",
             "sourceRef": "PO-7",
             "clubId": "uy-nacional"
-          }
+          },
+          "winnerClubId": "cl-universidad-de-chile",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos: Universidad de Chile 8.75, Nacional 1.25."
         },
         {
           "id": "R16-8",
@@ -344,7 +356,9 @@
             "sourceType": "tie-winner",
             "sourceRef": "PO-8",
             "clubId": "bo-nacional-potosi"
-          }
+          },
+          "winnerClubId": "bo-nacional-potosi",
+          "tiebreakReason": "Clasificación matemáticamente asegurada: Nacional Potosí 10.5 supera el máximo de 7 de U. Católica (3 verificados + 4 menos disciplina pendiente ante Astillero). El 7 es un límite superior, no un total confirmado; las tarjetas siguen sin verificar."
         }
       ]
     },
@@ -352,18 +366,20 @@
       "id": "KO-QF",
       "name": "Cuartos de final",
       "status": "planned",
+      "description": "Cruces fijados por el cuadro, sin reordenamiento. Primeros dos partidos oficiales por club del 24 de septiembre al 8 de octubre de 2026, ambas fechas incluidas según la sede. Sin extensión. Zamora–ADT sigue pendiente en octavos.",
       "ties": [
         {
           "id": "QF-1",
           "slotA": {
             "sourceType": "tie-winner",
             "sourceRef": "R16-1",
-            "clubId": null
+            "clubId": "pe-alianza-lima"
           },
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "R16-2",
-            "clubId": null
+            "clubId": null,
+            "label": "Ganador Zamora / ADT (pendiente)"
           }
         },
         {
@@ -371,12 +387,12 @@
           "slotA": {
             "sourceType": "tie-winner",
             "sourceRef": "R16-3",
-            "clubId": null
+            "clubId": "ec-orense"
           },
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "R16-4",
-            "clubId": null
+            "clubId": "py-general-caballero"
           }
         },
         {
@@ -384,12 +400,12 @@
           "slotA": {
             "sourceType": "tie-winner",
             "sourceRef": "R16-5",
-            "clubId": null
+            "clubId": "ve-metropolitanos"
           },
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "R16-6",
-            "clubId": null
+            "clubId": "co-atletico-bucaramanga"
           }
         },
         {
@@ -397,12 +413,12 @@
           "slotA": {
             "sourceType": "tie-winner",
             "sourceRef": "R16-7",
-            "clubId": null
+            "clubId": "cl-universidad-de-chile"
           },
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "R16-8",
-            "clubId": null
+            "clubId": "bo-nacional-potosi"
           }
         }
       ]

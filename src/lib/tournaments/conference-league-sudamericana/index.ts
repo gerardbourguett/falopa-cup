@@ -147,6 +147,87 @@ const OFFICIAL_COMPETITIONS = new Set<SourceCompetitionType>([
   'conmebol',
 ]);
 
+// This planning policy is specific to the authorized 2026 quarterfinal window.
+export const QUARTERFINAL_WINDOW = { start: '2026-09-24', end: '2026-10-08' } as const;
+
+export interface QuarterfinalFixture {
+  eventId: number;
+  sourceDate: string;
+  startTimestamp: number;
+  timeZone: string;
+  sourceCompetitionType: SourceCompetitionType;
+  sourceCompetition: string;
+  homeClub: string;
+  awayClub: string;
+  isHome: boolean;
+  status: string;
+  sourceUrl: string;
+  goalsFor: null;
+  goalsAgainst: null;
+  yellowCards: null;
+  redCards: null;
+}
+
+export interface QuarterfinalClubPlan {
+  clubId: string;
+  tieId: string;
+  sourceRef: string;
+  qualification: 'confirmed' | 'conditional';
+  scheduleSourceUrl: string;
+  note?: string;
+  fixtures: QuarterfinalFixture[];
+}
+
+// Exact source/seed aliases only; normalization follows the R16 updater convention.
+const QUARTERFINAL_NAME_ALIASES = new Map<string, string[]>([
+  ['pe-adt', ['Asociación Deportiva Tarma']],
+  ['ec-orense', ['Orense SC']],
+  ['py-general-caballero', ['General Caballero (JLM)']],
+]);
+
+export function quarterfinalParticipantIssue(clubId: string, fixture: QuarterfinalFixture): string | null {
+  const normalize = (name: string) => name.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]/g, '');
+  const names = [clubId.slice(3), ...(QUARTERFINAL_NAME_ALIASES.get(clubId) ?? [])].map(normalize);
+  const participant = fixture.isHome ? fixture.homeClub : fixture.awayClub;
+  const opponent = fixture.isHome ? fixture.awayClub : fixture.homeClub;
+  const context = `${clubId}: event ${fixture.eventId}`;
+  if (!names.includes(normalize(participant))) {
+    return `${context}: ${fixture.isHome ? 'homeClub' : 'awayClub'} must identify the plan club; check participants and isHome.`;
+  }
+  if (!normalize(opponent) || names.includes(normalize(opponent))) {
+    return `${context}: opponent must be a different club; check homeClub and awayClub.`;
+  }
+  return null;
+}
+
+export function quarterfinalLocalDate(fixture: Pick<QuarterfinalFixture, 'startTimestamp' | 'timeZone'>): string {
+  return new Intl.DateTimeFormat('sv-SE', {
+    timeZone: fixture.timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
+  }).format(new Date(fixture.startTimestamp * 1000));
+}
+
+export function selectQuarterfinalFixtures(
+  candidates: QuarterfinalFixture[],
+  previouslyUsedEventIds: ReadonlySet<number> = new Set(),
+): [QuarterfinalFixture | null, QuarterfinalFixture | null] {
+  const seen = new Set(previouslyUsedEventIds);
+  const eligible = [...candidates]
+    .filter((match) => match.status === 'scheduled' && OFFICIAL_COMPETITIONS.has(match.sourceCompetitionType))
+    .filter((match) => {
+      const date = quarterfinalLocalDate(match);
+      return date >= QUARTERFINAL_WINDOW.start && date <= QUARTERFINAL_WINDOW.end;
+    })
+    .sort((a, b) => a.startTimestamp - b.startTimestamp || a.eventId - b.eventId)
+    .filter((match) => {
+      if (seen.has(match.eventId)) return false;
+      seen.add(match.eventId);
+      return true;
+    });
+  // Missing published fixtures are unknown, not a no-match scoring decision.
+  return [eligible[0] ?? null, eligible[1] ?? null];
+}
+
 function parseDate(value: string): number {
   return new Date(value).getTime();
 }

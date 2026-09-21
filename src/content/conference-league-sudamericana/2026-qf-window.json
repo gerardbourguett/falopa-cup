@@ -1,0 +1,302 @@
+{
+  "kind": "qf-window",
+  "edition": 2026,
+  "roundId": "KO-QF",
+  "status": "planned",
+  "windowStart": "2026-09-24",
+  "windowEnd": "2026-10-08",
+  "selectionPolicy": "first-two-official-local-dates",
+  "verifiedAt": "2026-09-21",
+  "note": "Primeros dos partidos oficiales por club dentro del 24 de septiembre al 8 de octubre de 2026, inclusive y por fecha local de la sede. Sin amistosos ni extensión. Calendarios públicos de todas las competiciones y detalles /api/v1/event/{id} de Sofascore contrastados el 21 de septiembre; programación sujeta a cambios. Los espacios pendientes indican falta de un partido verificable en esta ventana, no ausencia definitiva de actividad ni puntos otorgados. No hay resultados de cuartos. Los escenarios de Zamora y ADT son alternativos y ninguno está activado.",
+  "clubs": [
+    {
+      "clubId": "pe-alianza-lima",
+      "tieId": "QF-1",
+      "sourceRef": "R16-1",
+      "qualification": "confirmed",
+      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/2311/events/next/0",
+      "note": "Solo un partido verificado dentro de la ventana. Atlético Grau, del 17 de octubre, queda fuera; segundo espacio pendiente.",
+      "fixtures": [
+        {
+          "eventId": 16280833,
+          "sourceDate": "2026-10-08",
+          "startTimestamp": 1791489600,
+          "timeZone": "America/Lima",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga 1 · Clausura F11",
+          "homeClub": "Cusco FC",
+          "awayClub": "Alianza Lima",
+          "isHome": false,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/cusco-fc-alianza-lima/lWskAA#id:16280833"
+        }
+      ]
+    },
+    {
+      "clubId": "ec-orense",
+      "tieId": "QF-2",
+      "sourceRef": "R16-3",
+      "qualification": "confirmed",
+      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/277525/events/next/0",
+      "note": "Dos espacios pendientes. Manta (17102430) sigue aplazado con fecha anterior a la ventana, sin nueva fecha verificada; Cuenca (11 de octubre) y Mushuc Runa (18 de octubre) quedan fuera. El calendario consultado no publica otro partido oficial elegible.",
+      "fixtures": []
+    },
+    {
+      "clubId": "py-general-caballero",
+      "tieId": "QF-2",
+      "sourceRef": "R16-4",
+      "qualification": "confirmed",
+      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/387619/events/next/0",
+      "fixtures": [
+        {
+          "eventId": 17146932,
+          "sourceDate": "2026-09-25",
+          "startTimestamp": 1790371800,
+          "timeZone": "America/Asuncion",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "División Intermedia F26",
+          "homeClub": "General Caballero",
+          "awayClub": "3 de Noviembre",
+          "isHome": true,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/club-3-de-noviembre-general-caballero/ucfdsbCQd#id:17146932"
+        },
+        {
+          "eventId": 17146922,
+          "sourceDate": "2026-10-05",
+          "startTimestamp": 1791239400,
+          "timeZone": "America/Asuncion",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "División Intermedia F27",
+          "homeClub": "Fernando de la Mora",
+          "awayClub": "General Caballero",
+          "isHome": false,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/general-caballero-club-fernando-de-la-mora/Tucsucfd#id:17146922"
+        }
+      ]
+    },
+    {
+      "clubId": "ve-metropolitanos",
+      "tieId": "QF-3",
+      "sourceRef": "R16-5",
+      "qualification": "confirmed",
+      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/162480/events/next/0",
+      "note": "Dos espacios pendientes. El calendario de todas las competiciones consultado solo publica Rayo Zuliano (11 de octubre) y Estudiantes de Mérida (18 de octubre), fuera de la ventana. No se verificó un partido de copa dentro del período; no se presume ausencia definitiva de actividad.",
+      "fixtures": []
+    },
+    {
+      "clubId": "co-atletico-bucaramanga",
+      "tieId": "QF-3",
+      "sourceRef": "R16-6",
+      "qualification": "confirmed",
+      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/6103/events/next/0",
+      "fixtures": [
+        {
+          "eventId": 16390759,
+          "sourceDate": "2026-09-25",
+          "startTimestamp": 1790385300,
+          "timeZone": "America/Bogota",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga DIMAYOR · Finalización F12",
+          "homeClub": "Once Caldas",
+          "awayClub": "Atlético Bucaramanga",
+          "isHome": false,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/once-caldas-atletico-bucaramanga/dxcstxc#id:16390759"
+        },
+        {
+          "eventId": 16390774,
+          "sourceDate": "2026-10-04",
+          "startTimestamp": 1791155400,
+          "timeZone": "America/Bogota",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga DIMAYOR · Finalización F13",
+          "homeClub": "Atlético Bucaramanga",
+          "awayClub": "Junior Barranquilla",
+          "isHome": true,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/junior-barranquilla-atletico-bucaramanga/dxcsfxc#id:16390774"
+        }
+      ]
+    },
+    {
+      "clubId": "cl-universidad-de-chile",
+      "tieId": "QF-4",
+      "sourceRef": "R16-7",
+      "qualification": "confirmed",
+      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/3161/events/next/0",
+      "fixtures": [
+        {
+          "eventId": 16997888,
+          "sourceDate": "2026-09-24",
+          "startTimestamp": 1790292600,
+          "timeZone": "America/Santiago",
+          "sourceCompetitionType": "local-cup",
+          "sourceCompetition": "Copa Chile · Dieciseisavos, ida",
+          "homeClub": "Everton de Viña del Mar",
+          "awayClub": "Universidad de Chile",
+          "isHome": false,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/everton-de-vina-del-mar-universidad-de-chile/lnbsHac#id:16997888"
+        },
+        {
+          "eventId": 16997892,
+          "sourceDate": "2026-09-27",
+          "startTimestamp": 1790541000,
+          "timeZone": "America/Santiago",
+          "sourceCompetitionType": "local-cup",
+          "sourceCompetition": "Copa Chile · Dieciseisavos, vuelta",
+          "homeClub": "Universidad de Chile",
+          "awayClub": "Everton de Viña del Mar",
+          "isHome": true,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/everton-de-vina-del-mar-universidad-de-chile/lnbsHac#id:16997892"
+        }
+      ]
+    },
+    {
+      "clubId": "bo-nacional-potosi",
+      "tieId": "QF-4",
+      "sourceRef": "R16-8",
+      "qualification": "confirmed",
+      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/47700/events/next/0",
+      "note": "Real Potosí (22 de septiembre) queda fuera. Los partidos de copa del 3 y 8 de octubre son posteriores a los dos seleccionados.",
+      "fixtures": [
+        {
+          "eventId": 16767470,
+          "sourceDate": "2026-09-25",
+          "startTimestamp": 1790379000,
+          "timeZone": "America/La_Paz",
+          "sourceCompetitionType": "local-cup",
+          "sourceCompetition": "Copa Bolivia · Ronda 5",
+          "homeClub": "Nacional Potosí",
+          "awayClub": "Always Ready",
+          "isHome": true,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/club-always-ready-nacional-potosi/aeusIlhc#id:16767470"
+        },
+        {
+          "eventId": 16767482,
+          "sourceDate": "2026-09-30",
+          "startTimestamp": 1790807400,
+          "timeZone": "America/La_Paz",
+          "sourceCompetitionType": "local-cup",
+          "sourceCompetition": "Copa Bolivia · Ronda 6",
+          "homeClub": "Real Tomayapo",
+          "awayClub": "Nacional Potosí",
+          "isHome": false,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/cd-real-tomayapo-nacional-potosi/aeusKnJc#id:16767482"
+        }
+      ]
+    },
+    {
+      "clubId": "ve-zamora",
+      "tieId": "QF-1",
+      "sourceRef": "R16-2",
+      "qualification": "conditional",
+      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/6237/events/next/0",
+      "note": "Solo si Zamora gana R16-2. Segundo espacio pendiente: Caracas (11 de octubre) y Atlético El Vigía (14 de octubre) quedan fuera.",
+      "fixtures": [
+        {
+          "eventId": 16787579,
+          "sourceDate": "2026-10-07",
+          "startTimestamp": 1791403200,
+          "timeZone": "America/Caracas",
+          "sourceCompetitionType": "local-cup",
+          "sourceCompetition": "Copa Venezuela · Grupo B F5",
+          "homeClub": "Zamora",
+          "awayClub": "Atlético Barinas",
+          "isHome": true,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/club-atletico-barinas-zamora/MzcsUquj#id:16787579"
+        }
+      ]
+    },
+    {
+      "clubId": "pe-adt",
+      "tieId": "QF-1",
+      "sourceRef": "R16-2",
+      "qualification": "conditional",
+      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/335557/events/next/0",
+      "note": "Solo si ADT gana R16-2. Cienciano (23 de septiembre, 17059625) queda fuera y no sustituye el partido pendiente de octavos. La vuelta ante Sporting Cristal del 1 de octubre es posterior a los dos seleccionados.",
+      "fixtures": [
+        {
+          "eventId": 16281140,
+          "sourceDate": "2026-09-26",
+          "startTimestamp": 1790452800,
+          "timeZone": "America/Lima",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga 1 · Clausura F11",
+          "homeClub": "ADT",
+          "awayClub": "FC Cajamarca",
+          "isHome": true,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/fc-cajamarca-asociacion-deportiva-tarma/hlJcscPHi#id:16281140"
+        },
+        {
+          "eventId": 17034085,
+          "sourceDate": "2026-09-27",
+          "startTimestamp": 1790540100,
+          "timeZone": "America/Lima",
+          "sourceCompetitionType": "local-cup",
+          "sourceCompetition": "Copa de la Liga · Semifinal, ida",
+          "homeClub": "ADT",
+          "awayClub": "Sporting Cristal",
+          "isHome": true,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.sofascore.com/football/match/asociacion-deportiva-tarma-club-sporting-cristal/cWshlJc#id:17034085"
+        }
+      ]
+    }
+  ]
+}
