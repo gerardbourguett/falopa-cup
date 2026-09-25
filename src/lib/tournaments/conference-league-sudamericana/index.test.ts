@@ -11,6 +11,7 @@ import {
   buildWindowCutReviewBuckets,
   buildWindowCutWithFantasy,
   computeFantasyScore,
+  getRoundOf16Status,
   getWindowCutCardDeductions,
   rankGroupStandings,
   resolveKnockoutTie,
@@ -560,16 +561,16 @@ describe('quarterfinal planning', () => {
     }
   });
 
-  it('validates the actual planning data and keeps alternatives out of the confirmed bracket', () => {
+  it('confirms eight QF plans with ADT instead of the eliminated Zamora alternative', () => {
     expect(validateQuarterfinalIntegrity(qfWindow, knockout, r16Window.matchSources)).toEqual([]);
-    expect(qfWindow.clubs.filter((club) => club.qualification === 'confirmed')).toHaveLength(7);
-    expect(qfWindow.clubs.filter((club) => club.qualification === 'conditional').map((club) => club.clubId))
-      .toEqual(['ve-zamora', 'pe-adt']);
+    expect(qfWindow.clubs.filter((club) => club.qualification === 'confirmed')).toHaveLength(8);
+    expect(qfWindow.clubs.filter((club) => club.qualification === 'conditional')).toEqual([]);
+    expect(qfWindow.clubs.some((club) => club.clubId === 've-zamora')).toBe(false);
     const qf = knockout.rounds.find((round) => round.id === 'KO-QF')!;
     const active = qf.ties.flatMap((tie) => [tie.slotA.clubId, tie.slotB.clubId]);
     expect(active).not.toContain('ve-zamora');
-    expect(active).not.toContain('pe-adt');
-    expect(qfWindow.clubs.flatMap((club) => club.fixtures)).toHaveLength(12);
+    expect(qf.ties[0]).toMatchObject({ slotA: { clubId: 'pe-alianza-lima' }, slotB: { clubId: 'pe-adt', sourceRef: 'R16-2' } });
+    expect(qfWindow.clubs.flatMap((club) => club.fixtures)).toHaveLength(11);
   });
 
   it('retains exactly the researched slots, not outside-window replacements or future scores', () => {
@@ -578,7 +579,7 @@ describe('quarterfinal planning', () => {
       'py-general-caballero': [17146932, 17146922], 've-metropolitanos': [null, null],
       'co-atletico-bucaramanga': [16390759, 16390774],
       'cl-universidad-de-chile': [16997888, 16997892], 'bo-nacional-potosi': [16767470, 16767482],
-      've-zamora': [16787579, null], 'pe-adt': [16281140, 17034085],
+      'pe-adt': [16281140, 17034085],
     };
     const used = new Set(r16Window.matchSources.map((source) => Number(source.sourceUrl.match(/#id:(\d+)/)?.[1])));
     for (const club of qfWindow.clubs) {
@@ -593,11 +594,21 @@ describe('quarterfinal planning', () => {
   });
 
   it('rejects activating either candidate before R16-2 is resolved', () => {
+    const unresolved = structuredClone(knockout);
+    const source = unresolved.rounds.find((round) => round.id === 'KO-R16')!.ties.find((tie) => tie.id === 'R16-2')!;
+    source.winnerClubId = null;
+    unresolved.rounds.find((round) => round.id === 'KO-QF')!.ties[0].slotB.clubId = null;
     for (const clubId of ['ve-zamora', 'pe-adt']) {
       const changed = structuredClone(qfWindow);
-      changed.clubs.find((club) => club.clubId === clubId)!.qualification = 'confirmed';
-      expect(validateQuarterfinalIntegrity(changed, knockout, r16Window.matchSources).join()).toContain('conditional activation');
+      changed.clubs.find((club) => club.clubId === 'pe-adt')!.clubId = clubId;
+      expect(validateQuarterfinalIntegrity(changed, unresolved, r16Window.matchSources).join()).toContain('conditional activation');
     }
+  });
+
+  it('rejects retaining an eliminated conditional plan after qualification is settled', () => {
+    const changed = structuredClone(qfWindow);
+    changed.clubs.push({ ...changed.clubs.find((club) => club.clubId === 'pe-adt')!, clubId: 've-zamora', qualification: 'conditional', fixtures: [] });
+    expect(validateQuarterfinalIntegrity(changed, knockout, r16Window.matchSources).join()).toContain('conditional activation');
   });
 
   it('rejects slot remapping, missing candidate plans and invented QF results', () => {
@@ -644,12 +655,12 @@ describe('quarterfinal planning', () => {
     }
   });
 
-  it('records only seven confirmed R16 advancements and preserves the fixed QF source refs', () => {
+  it('records eight confirmed R16 advancements and preserves the fixed QF source refs', () => {
     const r16 = knockout.rounds.find((r) => r.id === 'KO-R16')!;
     const qf = knockout.rounds.find((r) => r.id === 'KO-QF')!;
-    expect(r16.status).toBe('in-progress');
-    expect(r16.ties.filter((t) => t.winnerClubId)).toHaveLength(7);
-    expect(r16.ties.find((t) => t.id === 'R16-2')?.winnerClubId).toBeFalsy();
+    expect(r16.status).toBe('completed');
+    expect(r16.ties.filter((t) => t.winnerClubId)).toHaveLength(8);
+    expect(r16.ties.find((t) => t.id === 'R16-2')).toMatchObject({ winnerClubId: 'pe-adt', scoreA: -1.5, scoreB: 1 });
     expect(qf.status).toBe('planned');
     qf.ties.forEach((tie, i) => {
       expect(tie.winnerClubId).toBeUndefined();
@@ -662,7 +673,7 @@ describe('quarterfinal planning', () => {
     });
   });
 
-  it('backs the seven advancements with complete results or the Potosi upper bound', () => {
+  it('backs all eight advancements with complete results or the Potosi upper bound', () => {
     const r16 = knockout.rounds.find((r) => r.id === 'KO-R16')!;
     for (const tie of r16.ties.filter((t) => t.winnerClubId)) {
       const rows = r16Window.matchSources.filter((m) => m.tieId === tie.id);
@@ -683,8 +694,37 @@ describe('quarterfinal planning', () => {
     expect(potosi.scoreA).toBeUndefined();
     expect(potosi.tiebreakReason).toContain('7');
     expect(r16Window.matchSources.find((m) => m.id === 'KO-R16-pe-adt-1')).toMatchObject({
-      status: 'tbd', goalsFor: null, goalsAgainst: null,
-      sourceUrl: expect.stringContaining('#id:16978899'),
+      status: 'played', goalsFor: 2, goalsAgainst: 1, yellowCards: 3, redCards: 0,
+      sourceDate: '2026-09-23', sourceUrl: expect.stringContaining('#id:17059625'),
     });
+  });
+
+  it('closes R16 by qualification, not by assuming all discipline has been verified', () => {
+    const ties = knockout.rounds.find((r) => r.id === 'KO-R16')!.ties;
+    expect(getRoundOf16Status(ties, 32)).toBe('completed');
+    expect(getRoundOf16Status(ties.slice(0, 7), 32)).toBe('in-progress');
+    const pending = structuredClone(ties);
+    pending[1].winnerClubId = null;
+    expect(getRoundOf16Status(pending, 32)).toBe('in-progress');
+    pending[1].winnerClubId = 'pe-alianza-lima';
+    expect(getRoundOf16Status(pending, 32)).toBe('in-progress');
+    expect(getRoundOf16Status([], 0)).toBe('planned');
+  });
+
+  it('scores the approved ADT exception without changing the general window or counting it in QF', () => {
+    const rows = r16Window.matchSources.filter((source) => source.tieId === 'R16-2');
+    const totals = (clubId: string) => rows.filter((source) => source.clubId === clubId)
+      .map((source) => computeFantasyScore(source as OfficialMatchSource).total);
+    expect(totals('pe-adt')).toEqual([2.25, -1.25]);
+    expect(totals('ve-zamora')).toEqual([-0.5, -1]);
+    expect(r16Window.windowEnd).toBe('2026-09-20');
+    expect(r16Window.extendedWindowEnd).toBe('2026-09-20');
+    expect(rows.every((source) => source.windowEnd === '2026-09-20')).toBe(true);
+    expect(r16Window.note).toContain('confirmadas expresamente por el usuario');
+    const rescheduled = fixture({ eventId: 17059625, sourceDate: '2026-09-23',
+      startTimestamp: Date.parse('2026-09-23T20:00:00Z') / 1000, timeZone: 'America/Lima' });
+    expect(selectQuarterfinalFixtures([rescheduled])).toEqual([null, null]);
+    expect(selectQuarterfinalFixtures([{ ...rescheduled, startTimestamp: Date.parse('2026-09-24T20:00:00Z') / 1000 }], new Set([17059625])))
+      .toEqual([null, null]);
   });
 });

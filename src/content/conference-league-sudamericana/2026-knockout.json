@@ -239,7 +239,7 @@
     {
       "id": "KO-R16",
       "name": "Octavos de final",
-      "status": "in-progress",
+      "status": "completed",
       "description": "Primeros de grupo, ordenados de mejor a peor puntaje fantasy, vs ganadores del playoff en el mismo orden.",
       "ties": [
         {
@@ -268,7 +268,13 @@
             "sourceType": "tie-winner",
             "sourceRef": "PO-2",
             "clubId": "pe-adt"
-          }
+          },
+          "scoreA": -1.5,
+          "scoreB": 1,
+          "matchesPlayedA": 2,
+          "matchesPlayedB": 2,
+          "winnerClubId": "pe-adt",
+          "tiebreakReason": "Puntaje fantasy tras dos partidos: Zamora -1.5, ADT 1. ADT–Cienciano del 23 de septiembre cuenta por excepción específica autorizada; no se amplía la ventana general."
         },
         {
           "id": "R16-3",
@@ -366,7 +372,7 @@
       "id": "KO-QF",
       "name": "Cuartos de final",
       "status": "planned",
-      "description": "Cruces fijados por el cuadro, sin reordenamiento. Primeros dos partidos oficiales por club del 24 de septiembre al 8 de octubre de 2026, ambas fechas incluidas según la sede. Sin extensión. Zamora–ADT sigue pendiente en octavos.",
+      "description": "Cruces fijados por el cuadro, sin reordenamiento. Primeros dos partidos oficiales por club del 24 de septiembre al 8 de octubre de 2026, ambas fechas incluidas según la sede. Sin extensión. Los ocho clasificados están confirmados; Alianza Lima enfrenta a ADT en QF-1.",
       "ties": [
         {
           "id": "QF-1",
@@ -378,8 +384,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "R16-2",
-            "clubId": null,
-            "label": "Ganador Zamora / ADT (pendiente)"
+            "clubId": "pe-adt"
           }
         },
         {

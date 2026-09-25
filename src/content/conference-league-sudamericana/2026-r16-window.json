@@ -5,7 +5,7 @@
   "windowStart": "2026-08-28",
   "windowEnd": "2026-09-20",
   "extendedWindowEnd": "2026-09-20",
-  "note": "Selección original de dos partidos oficiales por club conservada; su prioridad cronológica sigue pendiente de revisión. General Caballero (JLM) participa en División Intermedia y su primera fuente seleccionada es del 2026-08-28. Revisión del 2026-09-21: marcadores y fechas locales contrastados con https://www.sofascore.com/api/v1/event/{id}; tarjetas del período ALL de /statistics. Por criterio explícitamente confirmado por el usuario, la omisión de Red cards en estadísticas ALL válidas y pobladas equivale a cero rojas; no se aplica a amarillas omitidas, datos inválidos ni errores de consulta. null sigue indicando disciplina pendiente. Astillero–U. Católica (16923847) conserva ambas tarjetas pendientes por falta de estadísticas. No se añaden sanciones del cuerpo técnico ni se cierran llaves. Con autorización explícita y verificación de los nuevos IDs aportados por el usuario, se reconcilian las fuentes aplazadas 16774712 → 17093893 (Monagas 1–0 Zamora) y 16774708 → 17093892 (Metropolitanos 3–0 Caracas, ambas filas). Los dos eventos finalizaron el 2026-09-16, fecha local de Venezuela; ALL confirma 2 amarillas de Zamora y 2–1 de Metropolitanos–Caracas, sin rojas según el criterio aprobado. El ID 16978899 de ADT–Cienciano devuelve 404; la página del enfrentamiento anuncia el 2026-09-23 a las 15:00 de Perú (20:00 UTC), fuera de la ventana. No se sustituye el ID de ADT ni se amplía la ventana. La fecha de la fila tbd es una referencia original, no una nueva fecha confirmada. Los subtotales no resuelven las llaves pendientes.",
+  "note": "Selección original de dos partidos oficiales por club conservada; su prioridad cronológica sigue pendiente de revisión. General Caballero (JLM) participa en División Intermedia y su primera fuente seleccionada es del 2026-08-28. Revisión del 2026-09-21: marcadores y fechas locales contrastados con https://www.sofascore.com/api/v1/event/{id}; tarjetas del período ALL de /statistics. Por criterio explícitamente confirmado por el usuario, la omisión de Red cards en estadísticas ALL válidas y pobladas equivale a cero rojas; no se aplica a amarillas omitidas, datos inválidos ni errores de consulta. null sigue indicando disciplina pendiente. Astillero–U. Católica (16923847) conserva ambas tarjetas pendientes por falta de estadísticas; la clasificación de Nacional Potosí se sostiene por su ventaja sobre el límite superior de U. Católica, no por una disciplina inventada. No se añaden sanciones del cuerpo técnico. Con autorización explícita y verificación de los nuevos IDs aportados por el usuario, se reconcilian las fuentes aplazadas 16774712 → 17093893 (Monagas 1–0 Zamora) y 16774708 → 17093892 (Metropolitanos 3–0 Caracas, ambas filas). Los dos eventos finalizaron el 2026-09-16, fecha local de Venezuela; ALL confirma 2 amarillas de Zamora y 2–1 de Metropolitanos–Caracas, sin rojas según el criterio aprobado. Cierre del 2026-09-25: el usuario autoriza como excepción específica de R16-2 el partido original reprogramado ADT–Cienciano, evento 17059625, del 2026-09-23 a las 15:00 de Perú, en sustitución del ID inválido 16978899. La ventana general y su extensión siguen cerrando el 2026-09-20. ESPN 401886187 confirma el 2–1 y las tres amarillas de ADT (https://www.espn.com.pe/futbol/comentario/_/juegoId/401886187); las cero rojas fueron confirmadas expresamente por el usuario, no por una nueva consulta a ALL. ADT suma 1 punto frente a -1.5 de Zamora y clasifica. Las ocho llaves están resueltas, aunque la auditoría disciplinaria de U. Católica continúa pendiente. Este partido no cuenta en cuartos.",
   "matchSources": [
     {
       "id": "KO-R16-pe-alianza-lima-1",
@@ -148,18 +148,18 @@
       "windowStart": "2026-08-28",
       "windowEnd": "2026-09-20",
       "sourceCompetitionType": "local-league",
-      "sourceCompetition": "Liga 1 · Clausura F9 (aplazado)",
-      "sourceDate": "2026-09-13",
+      "sourceCompetition": "Liga 1 · Clausura F9",
+      "sourceDate": "2026-09-23",
       "homeClub": "ADT",
       "awayClub": "Cienciano",
-      "goalsFor": null,
-      "goalsAgainst": null,
-      "yellowCards": null,
-      "redCards": null,
+      "goalsFor": 2,
+      "goalsAgainst": 1,
+      "yellowCards": 3,
+      "redCards": 0,
       "isHome": true,
       "counted": true,
-      "status": "tbd",
-      "sourceUrl": "https://www.sofascore.com/football/match/asociacion-deportiva-tarma-cienciano/bWshlJc#id:16978899"
+      "status": "played",
+      "sourceUrl": "https://www.sofascore.com/es/football/match/asociacion-deportiva-tarma-cienciano/bWshlJc#id:17059625"
     },
     {
       "id": "KO-R16-pe-adt-2",

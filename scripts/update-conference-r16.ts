@@ -9,6 +9,9 @@ const API_ROOT = "https://www.sofascore.com/api/v1";
 const RAPIDAPI_HOST = "sofascore.p.rapidapi.com";
 
 export type SourceRow = {
+  id?: string;
+  tieId?: string;
+  roundId?: string;
   sourceUrl?: string;
   clubId?: string;
   homeClub?: string;
@@ -26,6 +29,7 @@ export type SourceRow = {
 
 export type R16Document = {
   edition: number;
+  roundId?: string;
   extendedWindowEnd: string;
   matchSources: SourceRow[];
 };
@@ -204,8 +208,16 @@ function verifiedDate(row: SourceRow, event: any, document: R16Document): string
   const sourceDate = new Intl.DateTimeFormat("en-CA", {
     timeZone, year: "numeric", month: "2-digit", day: "2-digit",
   }).format(new Date(event.startTimestamp * 1000));
+  // User-approved on 2026-09-25: this rescheduled original selection only.
+  // Identity/season checks above still apply; this is not a window extension.
+  const approvedReschedule = document.edition === 2026 && document.roundId === "KO-R16" &&
+    document.extendedWindowEnd === "2026-09-20" && row.roundId === "KO-R16" &&
+    row.id === "KO-R16-pe-adt-1" && row.tieId === "R16-2" && row.clubId === "pe-adt" &&
+    row.windowStart === "2026-08-28" && row.windowEnd === "2026-09-20" &&
+    eventIdFromUrl(row.sourceUrl) === "17059625" && sourceDate === "2026-09-23" &&
+    country === "PE" && row.isHome && row.homeClub === "ADT" && row.awayClub === "Cienciano";
   if (!row.windowStart || !row.windowEnd || !document.extendedWindowEnd ||
-      sourceDate < row.windowStart || sourceDate > document.extendedWindowEnd) {
+      sourceDate < row.windowStart || (sourceDate > document.extendedWindowEnd && !approvedReschedule)) {
     throw new Error(`Local fixture date ${sourceDate} is outside the approved window`);
   }
   return sourceDate;
