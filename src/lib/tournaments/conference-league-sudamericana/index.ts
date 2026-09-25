@@ -266,6 +266,18 @@ export function selectCountedMatch(
   return { policy: 'no-match', match: null };
 }
 
+// Qualification can be settled by an upper bound while discipline remains unknown.
+export function getRoundOf16Status(ties: Array<{
+  winnerClubId?: string | null;
+  slotA: { clubId: string | null };
+  slotB: { clubId: string | null };
+}>, playedCount: number): 'planned' | 'in-progress' | 'completed' {
+  const resolved = ties.filter((tie) => tie.winnerClubId &&
+    [tie.slotA.clubId, tie.slotB.clubId].includes(tie.winnerClubId)).length;
+  if (ties.length === 8 && resolved === 8) return 'completed';
+  return playedCount > 0 || resolved > 0 ? 'in-progress' : 'planned';
+}
+
 export function computeFantasyScore(match: OfficialMatchSource): Omit<FantasyScoreResult, 'sourceMatchId'> {
   let basePoints = 0;
   let bonusPoints = 0;

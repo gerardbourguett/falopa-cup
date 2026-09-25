@@ -158,6 +158,67 @@ const realStatistics = { statistics: [{ period: "ALL", groups: [{ groupName: "Ma
 const makeDocument = (rows = [row]): R16Document => ({ edition: 2026, extendedWindowEnd: "2026-09-20", matchSources: structuredClone(rows) });
 const getJson = async (url: string) => url.endsWith("/statistics") ? realStatistics : eventPayload;
 
+describe("Approved ADT rescheduling exception (offline)", () => {
+  const source = {
+    ...row, id: "KO-R16-pe-adt-1", tieId: "R16-2", roundId: "KO-R16",
+    clubId: "pe-adt", homeClub: "ADT", awayClub: "Cienciano",
+    sourceDate: "2026-09-23", sourceUrl: "https://www.sofascore.com/es/football/match/asociacion-deportiva-tarma-cienciano/bWshlJc#id:17059625",
+  };
+  const approvedDocument = () => ({ ...makeDocument([source]), roundId: "KO-R16" });
+  const event = {
+    ...eventPayload.event, id: 17059625,
+    startTimestamp: Date.parse("2026-09-23T20:00:00Z") / 1000,
+    homeTeam: eventPayload.event.awayTeam,
+    awayTeam: { name: "Cienciano", country: { alpha2: "PE" } },
+    awayScore: { current: 1, normaltime: 1 },
+  };
+  const cards = { statistics: [{ period: "ALL", groups: [{ groupName: "Match overview", statisticsItems: [
+    { name: "Yellow cards", home: 3, away: 4 },
+    { name: "Red cards", home: 0, away: 0 },
+  ] }] }] };
+
+  it("refreshes only the approved fixture without extending the R16 window", async () => {
+    const document = approvedDocument();
+    const before = structuredClone(document);
+    const result = await updateDocument(document, async (url) => url.endsWith("/statistics") ? cards : { event });
+    expect(result).toMatchObject({ updated: 1, issues: [], pendingDiscipline: 0 });
+    expect(result.document.matchSources[0]).toMatchObject({ sourceDate: "2026-09-23", goalsFor: 2, goalsAgainst: 1, yellowCards: 3, redCards: 0, windowEnd: "2026-09-20" });
+    expect(result.document.extendedWindowEnd).toBe("2026-09-20");
+    expect(document).toEqual(before);
+  });
+
+  it.each([
+    "date", "event", "team", "opponent", "season", "round", "row-round", "club", "tie", "row-id", "side", "country", "window", "arbitrary-flag",
+  ])("rejects an unapproved %s even with otherwise matching source identity", async (change) => {
+    const document = approvedDocument();
+    const fixture = structuredClone(event);
+    const candidate = document.matchSources[0];
+    if (change === "date") fixture.startTimestamp += 86400;
+    if (change === "event" || change === "arbitrary-flag") {
+      fixture.id = 17059626;
+      candidate.sourceUrl = source.sourceUrl.replace("17059625", "17059626");
+      Object.assign(candidate, { approved: true });
+    }
+    if (change === "team" || change === "club") {
+      candidate.clubId = "pe-cusco"; candidate.homeClub = "Cusco";
+      fixture.homeTeam = { name: "Cusco", shortName: "Cusco", country: { alpha2: "PE" } };
+    }
+    if (change === "opponent") { candidate.awayClub = "Alianza Lima"; fixture.awayTeam.name = "Alianza Lima"; }
+    if (change === "season") { document.edition = 2025; fixture.season.year = "2025"; }
+    if (change === "round") document.roundId = "KO-QF";
+    if (change === "row-round") Object.assign(candidate, { roundId: "KO-QF" });
+    if (change === "tie") Object.assign(candidate, { tieId: "R16-3" });
+    if (change === "row-id") Object.assign(candidate, { id: "KO-R16-pe-adt-2" });
+    if (change === "side") candidate.isHome = false;
+    if (change === "country") fixture.venue.country.alpha2 = "CO";
+    if (change === "window") candidate.windowEnd = "2026-09-21";
+    const result = await updateDocument(document, async (url) => url.endsWith("/statistics") ? cards : { event: fixture });
+    expect(result.updated).toBe(0);
+    expect(result.document).toEqual(document);
+    expect(result.issues.length).toBeGreaterThan(0);
+  });
+});
+
 describe("R16 update pipeline", () => {
   it("repairs played rows, shares cached events, and is idempotent without mutating its input", async () => {
     const document = makeDocument([row, { ...row, clubId: "pe-adt", isHome: false }]);

@@ -7,7 +7,7 @@
   "windowEnd": "2026-10-08",
   "selectionPolicy": "first-two-official-local-dates",
   "verifiedAt": "2026-09-21",
-  "note": "Primeros dos partidos oficiales por club dentro del 24 de septiembre al 8 de octubre de 2026, inclusive y por fecha local de la sede. Sin amistosos ni extensión. Calendarios públicos de todas las competiciones y detalles /api/v1/event/{id} de Sofascore contrastados el 21 de septiembre; programación sujeta a cambios. Los espacios pendientes indican falta de un partido verificable en esta ventana, no ausencia definitiva de actividad ni puntos otorgados. No hay resultados de cuartos. Los escenarios de Zamora y ADT son alternativos y ninguno está activado.",
+  "note": "Primeros dos partidos oficiales por club dentro del 24 de septiembre al 8 de octubre de 2026, inclusive y por fecha local de la sede. Sin amistosos ni extensión. Calendarios públicos de todas las competiciones y detalles /api/v1/event/{id} de Sofascore contrastados el 21 de septiembre; programación sujeta a cambios. Los espacios pendientes indican falta de un partido verificable en esta ventana, no ausencia definitiva de actividad ni puntos otorgados. No hay resultados de cuartos. El 25 de septiembre se confirma a ADT como ganador de R16-2 y se activa su planificación frente a Alianza Lima. Zamora queda fuera de los planes activos; no se modifica el calendario seleccionado.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
@@ -228,39 +228,12 @@
       ]
     },
     {
-      "clubId": "ve-zamora",
-      "tieId": "QF-1",
-      "sourceRef": "R16-2",
-      "qualification": "conditional",
-      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/6237/events/next/0",
-      "note": "Solo si Zamora gana R16-2. Segundo espacio pendiente: Caracas (11 de octubre) y Atlético El Vigía (14 de octubre) quedan fuera.",
-      "fixtures": [
-        {
-          "eventId": 16787579,
-          "sourceDate": "2026-10-07",
-          "startTimestamp": 1791403200,
-          "timeZone": "America/Caracas",
-          "sourceCompetitionType": "local-cup",
-          "sourceCompetition": "Copa Venezuela · Grupo B F5",
-          "homeClub": "Zamora",
-          "awayClub": "Atlético Barinas",
-          "isHome": true,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/club-atletico-barinas-zamora/MzcsUquj#id:16787579"
-        }
-      ]
-    },
-    {
       "clubId": "pe-adt",
       "tieId": "QF-1",
       "sourceRef": "R16-2",
-      "qualification": "conditional",
+      "qualification": "confirmed",
       "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/335557/events/next/0",
-      "note": "Solo si ADT gana R16-2. Cienciano (23 de septiembre, 17059625) queda fuera y no sustituye el partido pendiente de octavos. La vuelta ante Sporting Cristal del 1 de octubre es posterior a los dos seleccionados.",
+      "note": "ADT clasifica por R16-2. Cienciano (23 de septiembre, 17059625) cuenta exclusivamente en octavos por excepción autorizada y queda fuera de esta ventana. La vuelta ante Sporting Cristal del 1 de octubre es posterior a los dos seleccionados.",
       "fixtures": [
         {
           "eventId": 16281140,

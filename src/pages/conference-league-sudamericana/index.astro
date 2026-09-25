@@ -11,6 +11,7 @@ import {
   buildWindowCutReviewBuckets,
   buildWindowCutWithFantasy,
   computeFantasyScore,
+  getRoundOf16Status,
   getWindowCutCardDeductions,
   selectQuarterfinalFixtures,
   type ConferenceGroupDefinition,
@@ -37,12 +38,12 @@ const r16EventIds = new Set<number>((r16WindowDoc?.matchSources || []).map(
 ));
 const qfPlanGroups = [
   { qualification: 'confirmed', title: 'Partidos de los clasificados' },
-  { qualification: 'conditional', title: 'Escenarios de Zamora y ADT (sin activar)' },
+  { qualification: 'conditional', title: 'Escenarios pendientes de clasificación' },
 ].map((group) => ({
   ...group,
   clubs: (qfWindowDoc?.clubs || []).filter((club) => club.qualification === group.qualification)
     .map((club) => ({ ...club, slots: selectQuarterfinalFixtures(club.fixtures, r16EventIds) })),
-}));
+})).filter((group) => group.clubs.length > 0);
 
 const seedById = new Map<string, any>(
   (clubsDoc?.seeds || []).map((seed: any) => [seed.clubId, seed] as [string, any])
@@ -158,6 +159,9 @@ const groupStageClubs = (stageDoc?.mainStageQualifiedIds || []).length;
 const preliminaryResolved = tieCards.filter((tie: any) => tie.hasScore).length;
 const r16PlayedCount = ((r16WindowDoc?.matchSources || []) as any[])
   .filter((source: any) => source.status === 'played').length;
+const roundOf16 = knockoutDoc?.rounds?.find((round: any) => round.id === 'KO-R16');
+const r16Status = getRoundOf16Status(roundOf16?.ties || [], r16PlayedCount);
+const r16ResolvedCount = (roundOf16?.ties || []).filter((tie: any) => tie.winnerClubId).length;
 const phaseTimeline = [
   {
     id: 'previa',
@@ -174,7 +178,7 @@ const phaseTimeline = [
   ...((knockoutDoc?.rounds || []) as any[]).map((round: any) => ({
     id: round.id,
     name: round.name,
-    status: round.id === 'KO-R16' && r16PlayedCount > 0 ? 'in-progress' : round.status,
+    status: round.id === 'KO-R16' ? r16Status : round.status,
     detail: `${round.ties.length} ${round.ties.length === 1 ? 'llave' : 'llaves'}`,
   })),
 ];
@@ -242,12 +246,11 @@ const fantasyByClub = buildFantasyByClub(roundWindows);
 const fantasyStandingsByGroup = buildFantasyStandingsByGroup(groups, fantasyByClub, clubMeta);
 const matchSourceMap = buildMatchSourceMap(roundWindows);
 const playoffRound = knockoutDoc?.rounds?.find((round: any) => round.id === 'KO-PLAYOFF');
-const roundOf16 = knockoutDoc?.rounds?.find((round: any) => round.id === 'KO-R16');
 const finalBracketRounds = (knockoutDoc?.rounds || [])
   .filter((round: any) => round.id !== 'KO-PLAYOFF')
   .map((round: any) => round.id !== 'KO-R16' ? round : ({
     ...round,
-    status: (r16AuditCounts.played || 0) > 0 ? 'in-progress' : round.status,
+    status: r16Status,
     ties: round.ties.map((tie: any) => {
       const sideA = r16TotalsByClub.get(tie.slotA.clubId);
       const sideB = r16TotalsByClub.get(tie.slotB.clubId);
@@ -858,7 +861,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
                 <div class="phase-subhead"><h3>{group.title}</h3></div>
                 {group.qualification === 'conditional' && (
                   <p class="r16-audit-note">
-                    Solo el ganador de R16-2 ocupará el lugar frente a Alianza Lima.
+                    Solo el ganador de cada llave pendiente ocupará su lugar en cuartos.
                     Estas alternativas no se suman entre sí ni confirman un clasificado.
                   </p>
                 )}
@@ -922,7 +925,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
             <p class="r16-audit-note">{r16WindowDoc.note}</p>
             <p class="r16-audit-note">
               * Límite superior provisional: incluye resultado y bonificaciones deportivas, pero todavía no descuenta tarjetas cuando el acta disciplinaria está pendiente. No es un total verificado.
-              Siete clasificados confirmados en el cuadro; Zamora–ADT continúa pendiente. Las fuentes originales de esta planilla se conservan.
+              {r16ResolvedCount} de {roundOf16?.ties.length || 0} clasificados confirmados en el cuadro. La disciplina pendiente de U. Católica no impide la clasificación de Nacional Potosí por su ventaja sobre el límite superior. Se conserva la selección original de partidos, con las fuentes reprogramadas documentadas.
             </p>
 
             <div class="table-wrap">
