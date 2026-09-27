@@ -322,11 +322,20 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-09-26",
       "competition": "Liga de Ascenso - Fecha 26",
       "holderId": "deportes-copiapo",
-      "challengerId": "union-san-felipe"
+      "challengerId": "union-san-felipe",
+      "scoreHolder": 4,
+      "scoreChallenger": 1,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-09-30",
+      "holderId": "union-san-felipe",
+      "challengerId": "san-luis-de-quillota"
     }
   ]
 }

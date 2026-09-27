@@ -403,11 +403,30 @@
     },
     {
       "type": "match",
-      "status": "pending",
+      "date": "2026-09-22",
+      "holderId": "audax-italiano",
+      "challengerId": "colo-colo",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
       "date": "2026-09-25",
       "competition": "Liga de Primera · Fecha 24",
       "holderId": "audax-italiano",
-      "challengerId": "colo-colo"
+      "challengerId": "colo-colo",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "colo-colo"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-09-29",
+      "competition": "Copa Chile",
+      "holderId": "colo-colo",
+      "challengerId": "deportes-puerto-montt"
     }
   ]
 }
