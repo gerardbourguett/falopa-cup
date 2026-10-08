@@ -22,7 +22,9 @@ export function Navigation({ currentPath = "/" }: { currentPath?: string }) {
     <header className={styles.header}>
       <div className={styles.networkBar}>
         <div className={styles.networkInner}>
-          <span className={styles.live}><i /> Cobertura 2026</span>
+          <span className={styles.live}>
+            <i /> Cobertura 2026
+          </span>
           <span>Fútbol chileno · Resultados · Títulos itinerantes</span>
           <span className={styles.networkName}>FC SPORT</span>
         </div>
@@ -35,7 +37,7 @@ export function Navigation({ currentPath = "/" }: { currentPath?: string }) {
             </div>
             <div className={styles.brandText}>
               <div className={styles.title}>{SITE_TITLE}</div>
-              <div className={styles.subtitle}>Tournament coverage</div>
+              <div className={styles.subtitle}>El título se gana en cancha</div>
             </div>
           </div>
         </a>
@@ -54,7 +56,6 @@ export function Navigation({ currentPath = "/" }: { currentPath?: string }) {
             );
           })}
         </nav>
-
       </div>
     </header>
   );

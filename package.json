@@ -9,6 +9,7 @@
     "astro": "astro",
     "script:next": "tsx scripts/next-match.ts",
     "script:conference-window": "tsx scripts/conference-window.ts",
+    "script:conference-r16": "tsx scripts/update-conference-r16.ts",
     "validate:content": "tsx scripts/validate-content.ts",
     "test": "pnpm validate:content && vitest run",
     "test:watch": "vitest",

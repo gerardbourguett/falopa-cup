@@ -161,7 +161,7 @@ const heroTickerItems = [
     tickerItems={heroTickerItems}
   />
 
-  <section class={styles.pulseSection}>
+  <section class={`${styles.pulseSection} reveal`}>
     <div class="container">
       <div class={styles.pulseGrid}>
         <article class={styles.pulseCard}>
@@ -198,7 +198,7 @@ const heroTickerItems = [
   </section>
 
   <!-- Champions Section -->
-  <section class={styles.championsSection}>
+  <section class={`${styles.championsSection} reveal`}>
     <div class="container">
       <div class={styles.sectionHeader}>
         <span class={styles.sectionLabel}>POSEEDORES ACTUALES</span>
@@ -249,7 +249,7 @@ const heroTickerItems = [
   </section>
 
   <!-- Concepto Section -->
-  <section id="concepto" class={styles.conceptSection}>
+  <section id="concepto" class={`${styles.conceptSection} reveal`}>
     <div class="container">
       <div class={styles.sectionHeader}>
         <span class={styles.sectionLabel}>EL CONCEPTO</span>
@@ -294,7 +294,7 @@ const heroTickerItems = [
   </section>
 
   <!-- How It Works -->
-  <section class={styles.rulesSection}>
+  <section class={`${styles.rulesSection} reveal`}>
     <div class="container">
       <div class={styles.sectionHeader}>
         <span class={styles.sectionLabel}>COMO FUNCIONA</span>
@@ -332,4 +332,20 @@ const heroTickerItems = [
       </div>
     </div>
   </section>
+
+  <script>
+    const sections = document.querySelectorAll(".reveal");
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry, index) => {
+          if (!entry.isIntersecting) return;
+          window.setTimeout(() => entry.target.classList.add("is-visible"), index * 70);
+          revealObserver.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.08 },
+    );
+
+    sections.forEach((section) => revealObserver.observe(section));
+  </script>
 </Layout>

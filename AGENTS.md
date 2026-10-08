@@ -1,97 +1,27 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+## Commands and verification
 
-## Project Overview
-
-This is an Astro-based website for tracking two unofficial Chilean football tournaments: **Falopa Cup** and **Copa Pablo Milad**. The site follows the "Unofficial Football World Championships" concept where a championship title is contested in every official match.
-
-## Commands
-
-```bash
-pnpm dev          # Start local dev server at localhost:4321
-pnpm build        # Build production site to ./dist/
-pnpm preview      # Preview build locally
-pnpm test         # Run unit tests (Vitest)
-pnpm test:watch   # Run tests in watch mode
-pnpm check        # Run astro check (automatically runs tests first via precheck)
-```
-
-## Pre-Push Protocol
-
-Before every `git push`, run in this order:
-
-```bash
-pnpm test         # 1. Unit tests — must be 100% green
-pnpm check        # 2. Type checking — only pre-existing errors allowed (MatchCard + Palmares ts(1002))
-```
-
-### Known pre-existing type errors (do NOT fix unless explicitly working on those components)
-- `src/components/MatchCard.astro:420` — `ts(1002)` Unterminated string literal (false positive)
-- `src/components/Palmares.astro:333` — `ts(1002)` Unterminated string literal (false positive)
-
-These errors existed before the project was set up and do not affect the build or runtime.
-
-### What each check covers
-
-| Check | Command | Covers |
-|-------|---------|--------|
-| Unit tests | `pnpm test` | `src/lib/tournament.ts` — `getCurrentHolder`, `getHolderChain`, `resolveClub` |
-| Type check | `pnpm check` | All `.astro`, `.ts`, `.tsx` files |
-
-### Test files
-- `src/lib/tournament.test.ts` — 17 tests for core tournament logic
+- `pnpm test` runs content integrity validation **before** Vitest; `pnpm test:watch` runs Vitest only.
+- `pnpm check` automatically runs `precheck` (content validation + all tests), then `astro check`. Direct `pnpm astro check` bypasses that gate.
+- For a focused run: `pnpm exec vitest run src/lib/tournament.test.ts`. This skips content validation; run `pnpm validate:content` separately for data changes.
+- Do not assume `pnpm test -- src/lib/tournament.test.ts` filters tests: it ran the full suite in the verified local environment.
+- Vitest discovers `src/**/*.test.ts` and `scripts/**/*.test.ts` (`vitest.config.ts`), not just tournament tests.
+- Before an authorized push, run `pnpm test` then `pnpm check`; tests must pass. Report failures without fixing unrelated components.
+- Do not reuse the historical MatchCard/Palmares `ts(1002)` exemptions in `CLAUDE.md` without reproducing them; the current check does not report those errors.
 
 ## Architecture
 
-### Content Collections
+- Read `src/content.config.ts` for collection loaders and schemas rather than copying the schema summaries in `CLAUDE.md`.
+- Conference League Sudamericana is a separate collection: `src/content/conference-league-sudamericana/`, with domain logic in `src/lib/tournaments/conference-league-sudamericana/`. Do not apply the two title-holder cups' rules to it.
+- `src/lib/tournament.ts` is shared by pages and the match-entry CLI. `getCurrentHolder` and `getHolderChain` trust stored `newHolderId`, fall back to seeding `holderId`, and skip pending matches; they do **not** derive transfers from scores.
+- Use `getCurrentReign` for the reign start date; `getCurrentHolder().match.date` can be a later successful defense.
 
-The project uses Astro Content Collections with JSON loaders:
+## Adding match data
 
-- **`blog`** - Blog posts (Markdown/MDX files in `src/content/blog/`)
-- **`falopa-cup`** - Falopa Cup tournament data (JSON in `src/content/falopa-cup/`)
-- **`copa-pablo-milad`** - Copa Pablo Milad tournament data (JSON in `src/content/copa-pablo-milad/`)
-- **`clubs`** - Chilean football club info (JSON in `src/content/clubs/`)
-
-### Data Schema
-
-Tournament matches use this schema (defined in `src/content.config.ts`):
-- `type`: "seeding" | "match"
-- `date`: Match date
-- `competition`: Competition name (e.g., "Liga de Primera · Fecha 1")
-- `holderId`: Current champion's club ID
-- `challengerId`: Opponent's club ID
-- `scoreHolder` / `scoreChallenger`: Final score
-- `penalties`: Optional penalty shootout scores
-- `newHolderId`: Who holds the title after this match
-- `reason`: Explanation for seeding matches
-
-### Key Files
-
-- `astro.config.mjs` - Astro config with MDX, sitemap, and Tailwind v4
-- `src/content.config.ts` - Content collection schemas
-- `src/consts.ts` - Site title and description
-- `src/pages/index.astro` - Homepage showing current champions
-- `src/pages/falopa-cup/index.astro` - Falopa Cup history
-- `src/pages/copa-pablo-milad/index.astro` - Copa Pablo Milad history
-
-### Club Data
-
-Each club JSON in `src/content/clubs/` contains:
-```json
-{
-  "id": "club-id",
-  "name": "Full Club Name",
-  "shortName": "Short Name",
-  "stadium": "Stadium Name",
-  "logo": "/logos/club-name.svg"
-}
-```
-
-### Adding Match Data
-
-To add a new match:
-1. Edit the appropriate year's JSON file in `src/content/falopa-cup/` or `src/content/copa-pablo-milad/`
-2. Add a match object with the required fields
-3. For Falopa Cup: title transfers on any loss (defender loses = new holder)
-4. For Copa Pablo Milad: title only transfers if defender wins (defender wins = keeps title and challenger becomes worst)
+- Edit the appropriate season's `matches` array in `src/content/falopa-cup/` or `src/content/copa-pablo-milad/`; keep entries in ascending date order.
+- Check both `src/content.config.ts` (shape) and `src/lib/validation/content-integrity.ts` (semantic constraints). Optional schema fields are not necessarily optional for a played match.
+- Club references must exist in `src/content/clubs/`. Played matches require both scores and `newHolderId`; pending matches must omit those fields. A played match's `newHolderId` must be its holder or challenger.
+- `pnpm script:next` prints a comment plus a JSON entry to stdout; it does not write files. Paste only the JSON object into `matches`.
+- **Copa Pablo Milad discrepancy:** stored history transfers to the challenger when the holder wins (see `src/content/copa-pablo-milad/2026.json`), but `computeNewHolder` in `scripts/next-match.ts` currently transfers on a challenger win for **both** cups, including shootouts. Do not blindly paste its Copa output or rewrite existing history to match it.
+- Content validation checks completeness, club IDs, ordering, and participant membership, **not** whether scores justify `newHolderId`. The Copa-named test in `src/lib/tournament.test.ts` also supplies `newHolderId`; it does not prove the transfer rule.

@@ -1,10 +1,11 @@
-.footer { margin-top: 0; border-top: 6px solid var(--color-liga-primera); background: #080808; }
-.content { display: flex; align-items: center; justify-content: space-between; gap: 2rem; max-width: var(--page-max-width); margin: auto; padding: 2.5rem 2rem; }
-.brand { display: flex; align-items: center; gap: .8rem; }
-.brandIcon { display: grid; place-items: center; width: 42px; height: 42px; padding: 5px; background: var(--color-liga-primera); transform: skew(-6deg); }
-.brandLogo { width: 100%; height: 100%; object-fit: contain; filter: brightness(0); transform: skew(6deg); }
+/* Hallmark · footer: compact broadcast sign-off · tone: night match */
+.footer { margin-top: 0; border-top: 5px solid var(--color-orange); background: var(--color-ink); }
+.content { display: flex; align-items: center; justify-content: space-between; gap: var(--space-xl); max-width: var(--page-max-width); margin-inline: auto; padding: var(--space-2xl) var(--space-xl); }
+.brand { display: flex; align-items: center; gap: var(--space-sm); }
+.brandIcon { display: grid; width: 42px; height: 42px; padding: 5px; place-items: center; border: 1px solid var(--color-orange); transform: skew(-7deg); }
+.brandLogo { width: 100%; height: 100%; filter: grayscale(1) brightness(4); object-fit: contain; transform: skew(7deg); }
 .brandText { display: flex; flex-direction: column; }
-.brandTitle { color: #fff; font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; letter-spacing: .04em; }
-.brandSubtitle { color: #777; font-size: .62rem; letter-spacing: .11em; text-transform: uppercase; }
-.copy { margin: 0; color: #666; font-size: .7rem; }
-@media (max-width: 650px) { .content { flex-direction: column; padding-inline: 1rem; text-align: center; } .brandText { align-items: flex-start; } }
+.brandTitle { color: var(--color-white); font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; letter-spacing: .04em; }
+.brandSubtitle { color: var(--color-silver); font-size: .62rem; letter-spacing: .11em; text-transform: uppercase; }
+.copy { margin: 0; color: var(--color-silver); font-size: .7rem; }
+@media (max-width: 650px) { .content { flex-direction: column; padding-inline: var(--space-md); text-align: center; } .brandText { align-items: flex-start; } }

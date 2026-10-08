@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
+import type { z } from 'astro/zod';
 import {
   buildFantasyByClub,
   buildFantasyStandingsByGroup,
@@ -10,15 +11,32 @@ import {
   buildWindowCutReviewBuckets,
   buildWindowCutWithFantasy,
   computeFantasyScore,
+  getRoundOf16Status,
   getWindowCutCardDeductions,
   rankGroupStandings,
   resolveKnockoutTie,
   selectCountedMatch,
+  selectQuarterfinalFixtures,
+  type QuarterfinalFixture,
   type OfficialMatchSource,
   type GroupStandingEntry,
   type RoundWindowData,
   type WindowCutEntry,
 } from './index';
+import knockoutData from '../../../content/conference-league-sudamericana/2026-knockout.json';
+import r16Window from '../../../content/conference-league-sudamericana/2026-r16-window.json';
+import qfWindowData from '../../../content/conference-league-sudamericana/2026-qf-window.json';
+import { validateQuarterfinalIntegrity, type KnockoutDocument, type QuarterfinalWindowDocument } from '../../validation/content-integrity';
+import { collections } from '../../../content.config';
+
+// Supply Astro's virtual collection wrapper while testing the real content schema.
+vi.mock('astro:content', async () => ({
+  z: (await import('astro/zod')).z,
+  defineCollection: (definition: unknown) => definition,
+}));
+
+const knockout: KnockoutDocument = knockoutData;
+const conferenceSchema = collections['conference-league-sudamericana'].schema as z.ZodType;
 
 const mk = (overrides: Partial<OfficialMatchSource>): OfficialMatchSource => ({
   id: 'm1',
@@ -414,5 +432,299 @@ describe('rankGroupStandings', () => {
 
     const ranked = rankGroupStandings(standings);
     expect(ranked.map((s) => s.clubId)).toEqual(['b', 'c', 'a']);
+  });
+});
+
+describe('quarterfinal planning', () => {
+  const fixture = (overrides: Partial<QuarterfinalFixture> = {}): QuarterfinalFixture => ({
+    eventId: 1,
+    sourceDate: '2026-09-24',
+    startTimestamp: 1790292600,
+    timeZone: 'America/Santiago',
+    sourceCompetitionType: 'local-cup',
+    sourceCompetition: 'Copa Chile',
+    homeClub: 'Everton',
+    awayClub: 'Universidad de Chile',
+    isHome: false,
+    status: 'scheduled',
+    sourceUrl: 'https://www.sofascore.com/football/match/everton-de-vina-del-mar-universidad-de-chile/lnbsHac#id:1',
+    goalsFor: null, goalsAgainst: null, yellowCards: null, redCards: null,
+    ...overrides,
+  });
+
+  it('includes both local date endpoints without extending the window', () => {
+    const end = fixture({ eventId: 2, sourceDate: '2026-10-08', startTimestamp: 1791489600, timeZone: 'America/Lima' });
+    const before = fixture({ eventId: 3, sourceDate: '2026-09-23', startTimestamp: 1790193600, timeZone: 'America/Lima' });
+    const after = fixture({ eventId: 4, sourceDate: '2026-10-09', startTimestamp: 1791576000, timeZone: 'America/Lima' });
+    expect(selectQuarterfinalFixtures([after, end, before, fixture()]).map((m) => m?.eventId)).toEqual([1, 2]);
+  });
+
+  it('sorts and deduplicates official games, including cups before later league games', () => {
+    const later = fixture({ eventId: 2, sourceDate: '2026-09-27', startTimestamp: 1790541000, sourceCompetitionType: 'local-league' });
+    const third = fixture({ eventId: 3, sourceDate: '2026-10-08', startTimestamp: 1791489600 });
+    const ignored = ['postponed', 'canceled', 'tbd'].map((status, i) => fixture({ eventId: 10 + i, status }));
+    expect(selectQuarterfinalFixtures([
+      ...ignored, fixture({ eventId: 20, sourceCompetitionType: 'friendly' }),
+      third, later, fixture(), fixture(),
+    ]).map((m) => m?.eventId)).toEqual([1, 2]);
+  });
+
+  it('represents missing fixtures as pending slots, never synthetic matches or points', () => {
+    expect(selectQuarterfinalFixtures([])).toEqual([null, null]);
+    expect(selectQuarterfinalFixtures([fixture()])).toEqual([fixture(), null]);
+    expect(selectQuarterfinalFixtures([fixture()], new Set([1]))).toEqual([null, null]);
+  });
+
+  it('uses venue dates rather than UTC dates or unverified date labels', () => {
+    // 02:00 UTC on September 24 is still September 23 in Peru.
+    const before = fixture({ sourceDate: '2026-09-24', startTimestamp: Date.parse('2026-09-24T02:00:00Z') / 1000, timeZone: 'America/Lima' });
+    // 02:00 UTC on October 9 is still October 8 in Peru.
+    const end = fixture({ eventId: 2, sourceDate: '2026-10-08', startTimestamp: Date.parse('2026-10-09T02:00:00Z') / 1000, timeZone: 'America/Lima' });
+    expect(selectQuarterfinalFixtures([before, end]).map((m) => m?.eventId ?? null)).toEqual([2, null]);
+  });
+
+  const qfWindow = qfWindowData as QuarterfinalWindowDocument;
+  it('rejects an incorrect home/away flag or fixtures belonging to another club', () => {
+    const flipped = structuredClone(qfWindow);
+    flipped.clubs[0].fixtures[0].isHome = true;
+    expect(validateQuarterfinalIntegrity(flipped, knockout, r16Window.matchSources).join())
+      .toContain('pe-alianza-lima: event 16280833');
+    expect(conferenceSchema.safeParse(flipped).success).toBe(false);
+    const wrongClub = structuredClone(qfWindow);
+    wrongClub.clubs[0].fixtures = structuredClone(qfWindow.clubs.find((club) => club.clubId === 'cl-universidad-de-chile')!.fixtures);
+    expect(validateQuarterfinalIntegrity(wrongClub, knockout, r16Window.matchSources).join())
+      .toContain('pe-alianza-lima: event 16997888');
+    expect(conferenceSchema.safeParse(wrongClub).success).toBe(false);
+  });
+
+  it('rejects a participant as its own opponent, including a known alias', () => {
+    const changed = structuredClone(qfWindow);
+    const adt = changed.clubs.find((club) => club.clubId === 'pe-adt')!;
+    adt.fixtures[0].awayClub = 'Asociación Deportiva Tarma';
+    expect(validateQuarterfinalIntegrity(changed, knockout, r16Window.matchSources).join())
+      .toContain('opponent must be a different club');
+    expect(conferenceSchema.safeParse(changed).success).toBe(false);
+  });
+
+  it('accepts current club names and only exact verified naming aliases in both validation paths', () => {
+    expect(conferenceSchema.safeParse(qfWindowData).success).toBe(true);
+    expect(validateQuarterfinalIntegrity(qfWindow, knockout, r16Window.matchSources)).toEqual([]);
+    const aliases: Record<string, string> = {
+      'pe-adt': 'Asociación Deportiva Tarma',
+      'ec-orense': 'Orense SC',
+      'py-general-caballero': 'General Caballero (JLM)',
+    };
+    const changed = structuredClone(qfWindow);
+    for (const club of changed.clubs.filter((club) => aliases[club.clubId])) {
+      // Orense has no published fixtures; use an in-memory fixture to exercise its known alias.
+      if (!club.fixtures.length) club.fixtures = [structuredClone(qfWindow.clubs[0].fixtures[0])];
+      for (const fixture of club.fixtures) {
+        fixture[fixture.isHome ? 'homeClub' : 'awayClub'] = aliases[club.clubId];
+      }
+    }
+    expect(conferenceSchema.safeParse(changed).success).toBe(true);
+    expect(validateQuarterfinalIntegrity(changed, knockout, r16Window.matchSources)).toEqual([]);
+    const lookalike = structuredClone(qfWindow);
+    lookalike.clubs[0].fixtures[0].awayClub = 'Alianza Lima B';
+    expect(conferenceSchema.safeParse(lookalike).success).toBe(false);
+    expect(validateQuarterfinalIntegrity(lookalike, knockout, r16Window.matchSources).join())
+      .toContain('awayClub must identify the plan club');
+  });
+
+  it('rejects coordinated QF source rewiring even when club plans follow the rewired slots', () => {
+    const changed = structuredClone(knockout);
+    const qf = changed.rounds.find((round) => round.id === 'KO-QF')!;
+    [qf.ties[1].slotB, qf.ties[2].slotB] = [qf.ties[2].slotB, qf.ties[1].slotB];
+    const plans = structuredClone(qfWindow);
+    plans.clubs.find((club) => club.sourceRef === 'R16-4')!.tieId = 'QF-3';
+    plans.clubs.find((club) => club.sourceRef === 'R16-6')!.tieId = 'QF-2';
+    const issues = validateQuarterfinalIntegrity(plans, changed, r16Window.matchSources).join();
+    expect(issues).toContain('QF-2: Fixed bracket requires slotA=R16-3, slotB=R16-4');
+    expect(issues).toContain('QF-3: Fixed bracket requires slotA=R16-5, slotB=R16-6');
+    const reversed = structuredClone(knockout);
+    const first = reversed.rounds.find((round) => round.id === 'KO-QF')!.ties[0];
+    [first.slotA, first.slotB] = [first.slotB, first.slotA];
+    expect(validateQuarterfinalIntegrity(qfWindow, reversed, r16Window.matchSources).join())
+      .toContain('QF-1: Fixed bracket requires slotA=R16-1, slotB=R16-2');
+  });
+
+  it('requires exactly four distinct fixed QF ties, rejecting missing, duplicate and unknown IDs', () => {
+    for (const mutation of ['missing', 'duplicate', 'replacement', 'unknown']) {
+      const changed = structuredClone(knockout);
+      const qf = changed.rounds.find((round) => round.id === 'KO-QF')!;
+      if (mutation === 'missing') qf.ties.pop();
+      if (mutation === 'duplicate') qf.ties.push(structuredClone(qf.ties[0]));
+      if (mutation === 'replacement') qf.ties[3] = structuredClone(qf.ties[0]);
+      if (mutation === 'unknown') qf.ties[3].id = 'QF-5';
+      expect(validateQuarterfinalIntegrity(qfWindow, changed, r16Window.matchSources).join())
+        .toContain('Fixed bracket requires exactly one');
+    }
+  });
+
+  it('confirms eight QF plans with ADT instead of the eliminated Zamora alternative', () => {
+    expect(validateQuarterfinalIntegrity(qfWindow, knockout, r16Window.matchSources)).toEqual([]);
+    expect(qfWindow.clubs.filter((club) => club.qualification === 'confirmed')).toHaveLength(8);
+    expect(qfWindow.clubs.filter((club) => club.qualification === 'conditional')).toEqual([]);
+    expect(qfWindow.clubs.some((club) => club.clubId === 've-zamora')).toBe(false);
+    const qf = knockout.rounds.find((round) => round.id === 'KO-QF')!;
+    const active = qf.ties.flatMap((tie) => [tie.slotA.clubId, tie.slotB.clubId]);
+    expect(active).not.toContain('ve-zamora');
+    expect(qf.ties[0]).toMatchObject({ slotA: { clubId: 'pe-alianza-lima' }, slotB: { clubId: 'pe-adt', sourceRef: 'R16-2' } });
+    expect(qfWindow.clubs.flatMap((club) => club.fixtures)).toHaveLength(11);
+  });
+
+  it('retains exactly the researched slots, not outside-window replacements or future scores', () => {
+    const expected: Record<string, Array<number | null>> = {
+      'pe-alianza-lima': [16280833, null], 'ec-orense': [null, null],
+      'py-general-caballero': [17146932, 17146922], 've-metropolitanos': [null, null],
+      'co-atletico-bucaramanga': [16390759, 16390774],
+      'cl-universidad-de-chile': [16997888, 16997892], 'bo-nacional-potosi': [16767470, 16767482],
+      'pe-adt': [16281140, 17034085],
+    };
+    const used = new Set(r16Window.matchSources.map((source) => Number(source.sourceUrl.match(/#id:(\d+)/)?.[1])));
+    for (const club of qfWindow.clubs) {
+      expect(selectQuarterfinalFixtures(club.fixtures, used).map((fixture) => fixture?.eventId ?? null)).toEqual(expected[club.clubId]);
+      for (const fixture of club.fixtures) {
+        expect(fixture.status).toBe('scheduled');
+        expect([fixture.goalsFor, fixture.goalsAgainst, fixture.yellowCards, fixture.redCards]).toEqual([null, null, null, null]);
+        expect(fixture.eventId).not.toBe(17059625);
+        expect(used.has(fixture.eventId)).toBe(false);
+      }
+    }
+  });
+
+  it('rejects activating either candidate before R16-2 is resolved', () => {
+    const unresolved = structuredClone(knockout);
+    const source = unresolved.rounds.find((round) => round.id === 'KO-R16')!.ties.find((tie) => tie.id === 'R16-2')!;
+    source.winnerClubId = null;
+    unresolved.rounds.find((round) => round.id === 'KO-QF')!.ties[0].slotB.clubId = null;
+    for (const clubId of ['ve-zamora', 'pe-adt']) {
+      const changed = structuredClone(qfWindow);
+      changed.clubs.find((club) => club.clubId === 'pe-adt')!.clubId = clubId;
+      expect(validateQuarterfinalIntegrity(changed, unresolved, r16Window.matchSources).join()).toContain('conditional activation');
+    }
+  });
+
+  it('rejects retaining an eliminated conditional plan after qualification is settled', () => {
+    const changed = structuredClone(qfWindow);
+    changed.clubs.push({ ...changed.clubs.find((club) => club.clubId === 'pe-adt')!, clubId: 've-zamora', qualification: 'conditional', fixtures: [] });
+    expect(validateQuarterfinalIntegrity(changed, knockout, r16Window.matchSources).join()).toContain('conditional activation');
+  });
+
+  it('rejects slot remapping, missing candidate plans and invented QF results', () => {
+    const changed = structuredClone(knockout);
+    const qf = changed.rounds.find((round) => round.id === 'KO-QF')!;
+    qf.ties[0].slotA.clubId = 've-zamora';
+    qf.ties[0].winnerClubId = 've-zamora';
+    expect(validateQuarterfinalIntegrity(qfWindow, changed, r16Window.matchSources).join()).toContain('Inconsistent source winner');
+    expect(validateQuarterfinalIntegrity(qfWindow, changed, r16Window.matchSources).join()).toContain('Future result');
+    const missing = structuredClone(qfWindow);
+    missing.clubs = missing.clubs.filter((club) => club.clubId !== 'pe-adt');
+    expect(validateQuarterfinalIntegrity(missing, knockout, r16Window.matchSources).join()).toContain('Missing plan for pe-adt');
+  });
+
+  it('rejects altered window, duplicate, unsorted, postponed, outside-window and reused fixtures', () => {
+    const validate = (data: QuarterfinalWindowDocument) => validateQuarterfinalIntegrity(data, knockout, r16Window.matchSources);
+    const wrongWindow = structuredClone(qfWindow);
+    wrongWindow.windowEnd = '2026-10-11';
+    expect(validate(wrongWindow).join()).toContain('Unauthorized');
+    const fixtures = qfWindow.clubs.find((club) => club.clubId === 'cl-universidad-de-chile')!.fixtures;
+    for (const invalid of [
+      [fixtures[0], fixtures[0]], [...fixtures].reverse(),
+      [{ ...fixtures[0], status: 'postponed' }],
+      [{ ...fixtures[0], startTimestamp: Date.parse('2026-10-09T20:00:00Z') / 1000 }],
+      [{ ...fixtures[0], eventId: 16280829 }],
+    ]) {
+      const changed = structuredClone(qfWindow);
+      changed.clubs[0].fixtures = invalid;
+      expect(validate(changed).join()).toContain('Invalid first-two selection');
+    }
+    const third = structuredClone(qfWindow);
+    third.clubs[0].fixtures = [...fixtures, ...third.clubs[0].fixtures];
+    expect(validate(third).join()).toContain('Invalid first-two selection');
+  });
+
+  it('rejects mismatched source dates, provenance, invalid zones and fabricated future discipline', () => {
+    for (const replacement of [
+      { sourceDate: '2026-09-24' }, { sourceUrl: 'https://example.com/event#id:123' },
+      { timeZone: 'Invalid/Zone' }, { yellowCards: 0 },
+    ]) {
+      const changed = structuredClone(qfWindow);
+      Object.assign(changed.clubs[0].fixtures[0], replacement);
+      expect(validateQuarterfinalIntegrity(changed, knockout, r16Window.matchSources).length).toBeGreaterThan(0);
+    }
+  });
+
+  it('records eight confirmed R16 advancements and preserves the fixed QF source refs', () => {
+    const r16 = knockout.rounds.find((r) => r.id === 'KO-R16')!;
+    const qf = knockout.rounds.find((r) => r.id === 'KO-QF')!;
+    expect(r16.status).toBe('completed');
+    expect(r16.ties.filter((t) => t.winnerClubId)).toHaveLength(8);
+    expect(r16.ties.find((t) => t.id === 'R16-2')).toMatchObject({ winnerClubId: 'pe-adt', scoreA: -1.5, scoreB: 1 });
+    expect(qf.status).toBe('planned');
+    qf.ties.forEach((tie, i) => {
+      expect(tie.winnerClubId).toBeUndefined();
+      expect(tie.scoreA).toBeUndefined();
+      expect(tie.scoreB).toBeUndefined();
+      [tie.slotA, tie.slotB].forEach((slot, j) => {
+        expect(slot.sourceRef).toBe(`R16-${i * 2 + j + 1}`);
+        expect(slot.clubId).toBe(r16.ties.find((t) => t.id === slot.sourceRef)?.winnerClubId ?? null);
+      });
+    });
+  });
+
+  it('backs all eight advancements with complete results or the Potosi upper bound', () => {
+    const r16 = knockout.rounds.find((r) => r.id === 'KO-R16')!;
+    for (const tie of r16.ties.filter((t) => t.winnerClubId)) {
+      const rows = r16Window.matchSources.filter((m) => m.tieId === tie.id);
+      expect(rows).toHaveLength(4);
+      expect(rows.every((m) => m.status === 'played')).toBe(true);
+      const total = (clubId: string) => rows.filter((m) => m.clubId === clubId)
+        .reduce((sum, m) => sum + computeFantasyScore(m as OfficialMatchSource).total, 0);
+      const loser = tie.winnerClubId === tie.slotA.clubId ? tie.slotB.clubId : tie.slotA.clubId;
+      expect(total(tie.winnerClubId!)).toBeGreaterThan(total(loser!));
+      if (tie.id !== 'R16-8') expect(rows.every((m) => m.yellowCards != null && m.redCards != null)).toBe(true);
+    }
+    const unknown = r16Window.matchSources.find((m) => m.sourceUrl.endsWith('#id:16923847'))!;
+    expect(unknown.yellowCards).toBeNull();
+    expect(unknown.redCards).toBeNull();
+    expect(computeFantasyScore(unknown as OfficialMatchSource).total).toBe(4);
+    const potosi = r16.ties.find((t) => t.id === 'R16-8')!;
+    expect(potosi.winnerClubId).toBe('bo-nacional-potosi');
+    expect(potosi.scoreA).toBeUndefined();
+    expect(potosi.tiebreakReason).toContain('7');
+    expect(r16Window.matchSources.find((m) => m.id === 'KO-R16-pe-adt-1')).toMatchObject({
+      status: 'played', goalsFor: 2, goalsAgainst: 1, yellowCards: 3, redCards: 0,
+      sourceDate: '2026-09-23', sourceUrl: expect.stringContaining('#id:17059625'),
+    });
+  });
+
+  it('closes R16 by qualification, not by assuming all discipline has been verified', () => {
+    const ties = knockout.rounds.find((r) => r.id === 'KO-R16')!.ties;
+    expect(getRoundOf16Status(ties, 32)).toBe('completed');
+    expect(getRoundOf16Status(ties.slice(0, 7), 32)).toBe('in-progress');
+    const pending = structuredClone(ties);
+    pending[1].winnerClubId = null;
+    expect(getRoundOf16Status(pending, 32)).toBe('in-progress');
+    pending[1].winnerClubId = 'pe-alianza-lima';
+    expect(getRoundOf16Status(pending, 32)).toBe('in-progress');
+    expect(getRoundOf16Status([], 0)).toBe('planned');
+  });
+
+  it('scores the approved ADT exception without changing the general window or counting it in QF', () => {
+    const rows = r16Window.matchSources.filter((source) => source.tieId === 'R16-2');
+    const totals = (clubId: string) => rows.filter((source) => source.clubId === clubId)
+      .map((source) => computeFantasyScore(source as OfficialMatchSource).total);
+    expect(totals('pe-adt')).toEqual([2.25, -1.25]);
+    expect(totals('ve-zamora')).toEqual([-0.5, -1]);
+    expect(r16Window.windowEnd).toBe('2026-09-20');
+    expect(r16Window.extendedWindowEnd).toBe('2026-09-20');
+    expect(rows.every((source) => source.windowEnd === '2026-09-20')).toBe(true);
+    expect(r16Window.note).toContain('confirmadas expresamente por el usuario');
+    const rescheduled = fixture({ eventId: 17059625, sourceDate: '2026-09-23',
+      startTimestamp: Date.parse('2026-09-23T20:00:00Z') / 1000, timeZone: 'America/Lima' });
+    expect(selectQuarterfinalFixtures([rescheduled])).toEqual([null, null]);
+    expect(selectQuarterfinalFixtures([{ ...rescheduled, startTimestamp: Date.parse('2026-09-24T20:00:00Z') / 1000 }], new Set([17059625])))
+      .toEqual([null, null]);
   });
 });

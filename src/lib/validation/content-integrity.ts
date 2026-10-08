@@ -1,4 +1,114 @@
 import type { ConferenceEntryType, OfficialMatchSource } from '../tournaments/conference-league-sudamericana';
+import {
+  QUARTERFINAL_WINDOW,
+  quarterfinalLocalDate,
+  quarterfinalParticipantIssue,
+  selectQuarterfinalFixtures,
+  type QuarterfinalClubPlan,
+} from '../tournaments/conference-league-sudamericana';
+
+export interface QuarterfinalWindowDocument {
+  kind: 'qf-window';
+  edition: number;
+  roundId: string;
+  status: string;
+  windowStart: string;
+  windowEnd: string;
+  selectionPolicy: string;
+  clubs: QuarterfinalClubPlan[];
+}
+
+export interface KnockoutDocument {
+  rounds: Array<{
+    id: string;
+    status: string;
+    ties: Array<{
+      id: string;
+      slotA: { sourceRef: string; clubId: string | null };
+      slotB: { sourceRef: string; clubId: string | null };
+      winnerClubId?: string | null;
+      tiebreakReason?: string;
+      scoreA?: number;
+      scoreB?: number;
+    }>;
+  }>;
+}
+
+export function validateQuarterfinalIntegrity(
+  window: QuarterfinalWindowDocument,
+  knockout: KnockoutDocument,
+  r16Sources: Array<{ sourceUrl?: string }>,
+): string[] {
+  const issues: string[] = [];
+  const report = (message: string) => issues.push(`conference/qf-window: ${message}`);
+  if (window.edition !== 2026 || window.roundId !== 'KO-QF' || window.status !== 'planned' ||
+      window.windowStart !== QUARTERFINAL_WINDOW.start || window.windowEnd !== QUARTERFINAL_WINDOW.end ||
+      window.selectionPolicy !== 'first-two-official-local-dates') report('Unauthorized planning window or policy.');
+  const r16 = knockout.rounds.find((round) => round.id === 'KO-R16');
+  const qf = knockout.rounds.find((round) => round.id === 'KO-QF');
+  if (!r16 || !qf) return [...issues, 'conference/qf-window: Missing R16 or QF bracket.'];
+  if (qf.status !== 'planned') report('Quarterfinals must remain planned.');
+  const fixedSources = new Map<string, [string, string]>([
+    ['QF-1', ['R16-1', 'R16-2']],
+    ['QF-2', ['R16-3', 'R16-4']],
+    ['QF-3', ['R16-5', 'R16-6']],
+    ['QF-4', ['R16-7', 'R16-8']],
+  ]);
+  if (qf.ties.length !== 4) report(`Fixed bracket requires exactly four QF ties; found ${qf.ties.length}.`);
+  for (const id of fixedSources.keys()) {
+    const count = qf.ties.filter((tie) => tie.id === id).length;
+    if (count !== 1) report(`Fixed bracket requires exactly one ${id}; found ${count}.`);
+  }
+  const used = new Set(r16Sources.map((source) => Number(source.sourceUrl?.match(/#id:(\d+)/)?.[1])));
+  if (new Set(window.clubs.map((club) => club.clubId)).size !== window.clubs.length) report('Duplicate club plan.');
+  for (const tie of qf.ties) {
+    const expectedSources = fixedSources.get(tie.id);
+    if (!expectedSources) {
+      report(`${tie.id}: Unknown QF tie; expected QF-1 through QF-4.`);
+    } else if (tie.slotA.sourceRef !== expectedSources[0] || tie.slotB.sourceRef !== expectedSources[1]) {
+      report(`${tie.id}: Fixed bracket requires slotA=${expectedSources[0]}, slotB=${expectedSources[1]}.`);
+    }
+    if (tie.winnerClubId || tie.scoreA !== undefined || tie.scoreB !== undefined) report(`${tie.id}: Future result.`);
+    for (const slot of [tie.slotA, tie.slotB]) {
+      const source = r16.ties.find((source) => source.id === slot.sourceRef);
+      if (!source || slot.clubId !== (source.winnerClubId ?? null)) report(`${tie.id}: Inconsistent source winner.`);
+      const expected = source?.winnerClubId ? [source.winnerClubId] : [source?.slotA.clubId, source?.slotB.clubId];
+      for (const clubId of expected) {
+        if (!window.clubs.some((club) => club.clubId === clubId && club.tieId === tie.id && club.sourceRef === slot.sourceRef)) {
+          report(`${tie.id}: Missing plan for ${clubId}.`);
+        }
+      }
+    }
+  }
+  for (const club of window.clubs) {
+    const source = r16.ties.find((tie) => tie.id === club.sourceRef);
+    const target = qf.ties.find((tie) => tie.id === club.tieId);
+    const slot = target && [target.slotA, target.slotB].find((slot) => slot.sourceRef === club.sourceRef);
+    const confirmed = club.qualification === 'confirmed';
+    if (!source || !slot || (confirmed
+      ? source.winnerClubId !== club.clubId || slot.clubId !== club.clubId
+      : !!source.winnerClubId || slot.clubId !== null || ![source.slotA.clubId, source.slotB.clubId].includes(club.clubId))) {
+      report(`${club.clubId}: Invalid qualification or conditional activation.`);
+    }
+    try {
+      const selected = selectQuarterfinalFixtures(club.fixtures, used).filter(Boolean);
+      if (JSON.stringify(selected) !== JSON.stringify(club.fixtures)) report(`${club.clubId}: Invalid first-two selection.`);
+      for (const fixture of club.fixtures) {
+        const participantIssue = quarterfinalParticipantIssue(club.clubId, fixture);
+        if (participantIssue) report(participantIssue);
+        if (fixture.sourceDate !== quarterfinalLocalDate(fixture) || !fixture.sourceUrl.endsWith(`#id:${fixture.eventId}`)) {
+          report(`${club.clubId}: Invalid local date or event provenance.`);
+        }
+        if ([fixture.goalsFor, fixture.goalsAgainst, fixture.yellowCards, fixture.redCards].some((value) => value !== null)) {
+          report(`${club.clubId}: Future result or discipline must remain null.`);
+        }
+      }
+    } catch {
+      report(`${club.clubId}: Invalid fixture data.`);
+    }
+  }
+  return issues;
+}
 
 export interface TournamentFileInput {
   path: string;

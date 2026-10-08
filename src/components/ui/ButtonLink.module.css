@@ -5,9 +5,9 @@
   gap: var(--space-xs);
   min-height: 3rem;
   padding: 0.875rem var(--space-xl);
-  border: 2px solid var(--color-liga-primera);
-  background: var(--color-liga-primera);
-  color: var(--color-bg-primary);
+  border: 2px solid var(--color-orange);
+  background: var(--color-orange);
+  color: var(--color-ink);
   font-family: var(--font-display);
   font-size: 1rem;
   font-weight: 700;
@@ -15,10 +15,10 @@
   text-transform: uppercase;
   text-decoration: none;
   transition:
-    transform var(--transition-productive),
-    box-shadow var(--transition-productive),
-    background-color var(--transition-productive),
-    color var(--transition-productive);
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
 }
 
 .button:hover {
@@ -27,6 +27,8 @@
 }
 
 .button:focus-visible {
-  outline: none;
-  box-shadow: var(--focus-ring);
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
 }
+
+.button:active { transform: translateY(1px); }

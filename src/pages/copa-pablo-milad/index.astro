@@ -594,5 +594,122 @@ const currentHolderClub = currentHolder ? clubById.get(currentHolder) : undefine
           font-size: clamp(0.6rem, 2vw, 0.68rem);
         }
       }
-    </style>
+
+
+  /* Hallmark · tournament skin: Copa Redacted night broadcast · critique P5 H5 E4 S5 R4 V5 */
+
+  .milad-page { --page-accent: var(--color-red); --page-glow: color-mix(in oklch, var(--color-red) 22%, transparent); --color-liga-primera: var(--color-red); --color-liga-ascenso: var(--color-red); --color-liga-ascenso-dim: var(--color-red); --match-meta-accent: var(--color-red); }
+
+  .falopa-page,
+  .milad-page {
+    --color-bg-primary: var(--color-ink);
+    --color-bg-secondary: var(--color-ink-raised);
+    --color-bg-tertiary: var(--color-ink-soft);
+    --color-bg-elevated: var(--color-white-rule);
+    --color-text-primary: var(--color-white);
+    --color-text-secondary: var(--color-paper-muted);
+    --color-text-muted: var(--color-silver);
+    --color-holder: var(--color-lime);
+    --color-holder-bg: color-mix(in oklch, var(--color-lime) 10%, transparent);
+    --palmares-header-ink: var(--color-ink);
+    --badge-on-accent: var(--color-ink);
+    --score-bg: var(--color-ink);
+    --score-border: var(--color-white-rule);
+    --score-color: var(--color-lime);
+    min-height: 100vh;
+    background: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  .falopa-page main,
+  .milad-page main { padding-bottom: var(--space-4xl); }
+
+  .falopa-hero,
+  .milad-hero {
+    isolation: isolate;
+    min-height: min(68vh, 720px);
+    border-bottom: 1px solid var(--page-accent) !important;
+    background: var(--color-ink) !important;
+    color: var(--color-white);
+  }
+
+  .falopa-hero::before,
+  .milad-hero::before {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background:
+      linear-gradient(90deg, var(--color-black-alpha), transparent 58%),
+      repeating-linear-gradient(112deg, transparent 0 84px, var(--color-white-faint) 85px 86px),
+      radial-gradient(circle at 82% 28%, var(--page-glow), transparent 31%);
+    content: "";
+  }
+
+  .falopa-hero::after,
+  .milad-hero::after {
+    position: absolute;
+    inset: -10% -4% -18% 45%;
+    z-index: -1;
+    display: block;
+    background-image: url("/favicon.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    content: "";
+    filter: grayscale(1) brightness(3);
+    opacity: .07;
+    transform: rotate(-9deg);
+  }
+
+  .hero-pattern { display: none; }
+  .page-hero-inner { align-items: center; min-height: min(68vh, 720px); }
+  .page-hero-label { color: var(--page-accent) !important; }
+  .page-hero-title { color: var(--color-white) !important; overflow-wrap: anywhere; }
+  .page-hero-desc { color: var(--color-paper-muted) !important; }
+  .page-hero-desc strong { color: var(--page-accent) !important; }
+
+  .holder-note {
+    min-width: min(100%, 18rem);
+    border: var(--rule-soft);
+    border-top: 4px solid var(--page-accent);
+    border-left: var(--rule-soft);
+    padding: var(--space-lg);
+    background: var(--color-ink-raised);
+    box-shadow: 12px 12px 0 var(--page-glow);
+  }
+  .holder-note-name { color: var(--color-white); }
+  .holder-note-logo { width: 52px; height: 52px; border: var(--rule-soft); background: var(--color-white-faint); filter: grayscale(1); }
+  .section-kicker, .holder-note-label { color: var(--color-silver); }
+  .palmares-section { padding-top: var(--space-xl); border-top: var(--rule-soft); }
+
+  .season-nav {
+    position: sticky;
+    top: 96px;
+    z-index: 20;
+    border: var(--rule-soft);
+    background: var(--color-black-alpha);
+    backdrop-filter: blur(14px);
+  }
+  .season-tab { color: var(--color-silver); transition: color var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out); }
+  .season-tab:hover { border-color: var(--page-accent); background: var(--color-ink-soft); color: var(--color-white); }
+  .season-tab.active { border-color: var(--page-accent); background: var(--color-ink-raised); color: var(--page-accent); }
+  .season-tab.active .tab-count { color: var(--color-paper-muted); }
+  .season-tab:active { transform: translateY(1px); }
+  .season-tab:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -3px; }
+
+  .season-header { border-color: var(--color-white-rule); }
+  .season-year { color: var(--color-white); overflow-wrap: anywhere; }
+  .mini-stat { border-color: var(--color-white-rule); }
+  .mini-stat-num { color: var(--page-accent); }
+  .mini-stat-label { color: var(--color-silver); }
+  .season-chain { border-left: 3px solid var(--page-accent); }
+  .matches-list { gap: var(--space-md); }
+
+  @media (max-width: 700px) {
+    .falopa-hero, .milad-hero, .page-hero-inner { min-height: auto; }
+    .season-nav { top: 126px; }
+    .holder-note { box-shadow: 7px 7px 0 var(--page-glow); }
+  }
+
+</style>
 </Layout>

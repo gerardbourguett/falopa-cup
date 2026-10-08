@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
+import { QUARTERFINAL_WINDOW, quarterfinalLocalDate, quarterfinalParticipantIssue, selectQuarterfinalFixtures } from './lib/tournaments/conference-league-sudamericana';
 
 const blog = defineCollection({
 	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
@@ -233,6 +234,60 @@ const conferenceKnockoutSchema = z.object({
     })),
 });
 
+// Planning-only data deliberately cannot carry future results or scoring awards.
+const conferenceQfWindowSchema = z.object({
+    kind: z.literal('qf-window'),
+    edition: z.literal(2026),
+    roundId: z.literal('KO-QF'),
+    status: z.literal('planned'),
+    windowStart: z.literal(QUARTERFINAL_WINDOW.start),
+    windowEnd: z.literal(QUARTERFINAL_WINDOW.end),
+    selectionPolicy: z.literal('first-two-official-local-dates'),
+    verifiedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    note: z.string(),
+    clubs: z.array(z.object({
+        clubId: z.string(),
+        tieId: z.string(),
+        sourceRef: z.string(),
+        qualification: z.enum(['confirmed', 'conditional']),
+        scheduleSourceUrl: z.string().url(),
+        note: z.string().optional(),
+        fixtures: z.array(z.object({
+            eventId: z.number().int().positive(),
+            sourceDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+            startTimestamp: z.number().int().positive(),
+            timeZone: z.string(),
+            sourceCompetitionType: z.enum(['local-league', 'local-cup', 'conmebol']),
+            sourceCompetition: z.string(),
+            homeClub: z.string(),
+            awayClub: z.string(),
+            isHome: z.boolean(),
+            status: z.literal('scheduled'),
+            goalsFor: z.null(),
+            goalsAgainst: z.null(),
+            yellowCards: z.null(),
+            redCards: z.null(),
+            sourceUrl: z.string().url(),
+        }).strict()).max(2).superRefine((fixtures, ctx) => {
+            try {
+                const selected = selectQuarterfinalFixtures(fixtures).filter(Boolean);
+                if (JSON.stringify(selected) !== JSON.stringify(fixtures) || fixtures.some((fixture) =>
+                    fixture.sourceDate !== quarterfinalLocalDate(fixture) ||
+                    !fixture.sourceUrl.endsWith(`#id:${fixture.eventId}`))) {
+                    ctx.addIssue({ code: 'custom', message: 'Fixtures must be unique, chronological, sourced and inside the local-date QF window.' });
+                }
+            } catch {
+                ctx.addIssue({ code: 'custom', message: 'Invalid fixture timestamp or venue time zone.' });
+            }
+        }),
+    }).strict().superRefine((club, ctx) => {
+        club.fixtures.forEach((fixture, index) => {
+            const message = quarterfinalParticipantIssue(club.clubId, fixture);
+            if (message) ctx.addIssue({ code: 'custom', path: ['fixtures', index], message });
+        });
+    })).refine((clubs) => new Set(clubs.map((club) => club.clubId)).size === clubs.length, 'Duplicate QF club plan.'),
+}).strict();
+
 const conferenceWindowCutSchema = z.object({
     kind: z.literal('window-cut'),
     edition: z.number().int().positive(),
@@ -266,6 +321,7 @@ const conferenceLeagueSudamericana = defineCollection({
         conferenceGroupsSchema,
         conferenceKnockoutSchema,
         conferenceR16WindowSchema,
+        conferenceQfWindowSchema,
         conferenceWindowCutSchema,
     ]),
 });
