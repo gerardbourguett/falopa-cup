@@ -311,12 +311,22 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-09-09",
       "competition": "Liga de Ascenso - Fecha 25",
       "sourceUrl": "https://www.sofascore.com/football/match/deportes-magallanes-deportes-copiapo/gPKsiPK#id:16585972",
       "holderId": "deportes-copiapo",
-      "challengerId": "magallanes"
+      "challengerId": "magallanes",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-copiapo"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-09-26",
+      "competition": "Liga de Ascenso - Fecha 26",
+      "holderId": "deportes-copiapo",
+      "challengerId": "union-san-felipe"
     }
   ]
 }
