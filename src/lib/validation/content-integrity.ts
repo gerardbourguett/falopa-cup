@@ -6,7 +6,7 @@ import {
   quarterfinalLocalDate,
   quarterfinalParticipantIssue,
   selectQuarterfinalFixtures,
-  resolveQuarterfinalWinner,
+  resolveQuarterfinalResult,
   type QuarterfinalClubPlan,
 } from '../tournaments/conference-league-sudamericana';
 
@@ -31,6 +31,7 @@ export interface KnockoutDocument {
       slotA: { sourceRef: string; clubId: string | null };
       slotB: { sourceRef: string; clubId: string | null };
       winnerClubId?: string | null;
+      winnerBasis?: 'verified-total' | 'reported-discipline-scenarios';
       tiebreakReason?: string;
       scoreA?: number;
       scoreB?: number;
@@ -38,10 +39,15 @@ export interface KnockoutDocument {
   }>;
 }
 
+// Only the original evidence fields compared by QF reuse validation are required here.
+export type RoundOf16Evidence = Partial<Pick<OfficialMatchSource,
+  'id' | 'clubId' | 'sourceDate' | 'goalsFor' | 'goalsAgainst' | 'yellowCards' | 'redCards' | 'isHome' | 'homeClub' | 'awayClub'
+>> & { sourceUrl?: string };
+
 export function validateQuarterfinalIntegrity(
   window: QuarterfinalWindowDocument,
   knockout: KnockoutDocument,
-  r16Sources: Array<{ sourceUrl?: string }>,
+  r16Sources: RoundOf16Evidence[],
 ): string[] {
   const issues: string[] = [];
   const report = (message: string) => issues.push(`conference/qf-window: ${message}`);
@@ -75,9 +81,10 @@ export function validateQuarterfinalIntegrity(
     const planA = window.clubs.find((club) => club.clubId === tie.slotA.clubId);
     const planB = window.clubs.find((club) => club.clubId === tie.slotB.clubId);
     try {
-      const result = resolveQuarterfinalWinner(planA, planB, used);
-      if (tie.winnerClubId && tie.winnerClubId !== result) report(`${tie.id}: Future result or unsupported winner.`);
-      if (result && tie.winnerClubId !== result) report(`${tie.id}: Missing verified winner.`);
+      const result = resolveQuarterfinalResult(planA, planB, used);
+      if (tie.winnerClubId && tie.winnerClubId !== result.winnerClubId) report(`${tie.id}: Future result or unsupported winner.`);
+      if (result.winnerClubId && tie.winnerClubId !== result.winnerClubId) report(`${tie.id}: Missing verified winner.`);
+      if (tie.winnerClubId && tie.winnerBasis !== result.basis) report(`${tie.id}: Winner basis must preserve provisional discipline.`);
       for (const [score, plan] of [[tie.scoreA, planA], [tie.scoreB, planB]] as const) {
         if (score !== undefined && (!plan || buildQuarterfinalClubTotal(plan, used).total !== score)) {
           report(`${tie.id}: Future result or inconsistent score.`);
@@ -108,15 +115,20 @@ export function validateQuarterfinalIntegrity(
       report(`${club.clubId}: Invalid qualification or conditional activation.`);
     }
     try {
-      const selected = selectQuarterfinalFixtures(club.fixtures, used).filter(Boolean);
-      if (JSON.stringify(selected) !== JSON.stringify(club.fixtures)) report(`${club.clubId}: Invalid first-two selection.`);
+      const selected = selectQuarterfinalFixtures(club.fixtures, used, club).filter(Boolean);
+      if (JSON.stringify(selected) !== JSON.stringify(club.fixtures) || (club.selectionException && selected.length !== 2)) report(`${club.clubId}: Invalid first-two selection or unauthorized exception.`);
       for (const fixture of club.fixtures) {
         const participantIssue = quarterfinalParticipantIssue(club.clubId, fixture);
         if (participantIssue) report(participantIssue);
         if (fixture.sourceDate !== quarterfinalLocalDate(fixture)) {
           report(`${club.clubId}: Invalid local date or event provenance.`);
         }
-        quarterfinalFixtureIssues(fixture, window.verifiedAt).forEach((issue) => report(`${club.clubId}: ${issue}`));
+        quarterfinalFixtureIssues(fixture, window.verifiedAt, club).forEach((issue) => report(`${club.clubId}: ${issue}`));
+        if (fixture.reusedR16SourceId) {
+          const original = r16Sources.find((source) => source.id === fixture.reusedR16SourceId && source.clubId === club.clubId);
+          const fields = ['sourceDate', 'sourceUrl', 'goalsFor', 'goalsAgainst', 'yellowCards', 'redCards', 'isHome', fixture.isHome ? 'awayClub' : 'homeClub'] as const;
+          if (!original || fields.some((field) => original[field] !== fixture[field])) report(`${club.clubId}: Reused R16 source must preserve its original date, result and discipline.`);
+        }
       }
     } catch {
       report(`${club.clubId}: Invalid fixture data.`);
@@ -126,8 +138,16 @@ export function validateQuarterfinalIntegrity(
   const resolvedCount = qf.ties.filter((tie) => tie.winnerClubId).length;
   const expectedStatus = resolvedCount === 4 ? 'completed' : playedCount > 0 ? 'in-progress' : 'planned';
   if (window.status !== expectedStatus) report('Round status cannot anticipate played results or all four qualifications.');
-  for (const round of knockout.rounds.filter((round) => round.id === 'KO-SF')) {
+  const semifinalRounds = knockout.rounds.filter((round) => round.id === 'KO-SF');
+  if (semifinalRounds.length !== 1) report('Fixed bracket requires exactly one KO-SF round.');
+  for (const round of semifinalRounds) {
+    const fixed = new Map([['SF-1', ['QF-1', 'QF-2']], ['SF-2', ['QF-3', 'QF-4']]]);
+    if (round.ties.length !== 2 || [...fixed.keys()].some((id) => round.ties.filter((tie) => tie.id === id).length !== 1)) report('Fixed bracket requires SF-1 and SF-2 exactly once.');
+    if (round.status !== 'planned') report('Semifinals have no played results and must remain planned.');
     for (const tie of round.ties) {
+      const refs = fixed.get(tie.id);
+      if (!refs || tie.slotA.sourceRef !== refs[0] || tie.slotB.sourceRef !== refs[1]) report(`${tie.id}: Fixed semifinal source refs must be preserved.`);
+      if (tie.winnerClubId || tie.scoreA !== undefined || tie.scoreB !== undefined) report(`${tie.id}: Future semifinal result.`);
       for (const slot of [tie.slotA, tie.slotB]) {
         const source = qf.ties.find((source) => source.id === slot.sourceRef);
         if (slot.clubId !== (source?.winnerClubId ?? null)) report(`${tie.id}: Inconsistent QF source winner.`);

@@ -149,11 +149,27 @@ const OFFICIAL_COMPETITIONS = new Set<SourceCompetitionType>([
 
 // This planning policy is specific to the authorized 2026 quarterfinal window.
 export const QUARTERFINAL_WINDOW = { start: '2026-09-24', end: '2026-10-15' } as const;
+export const QUARTERFINAL_SELECTION_EXCEPTION = 'last-two-completed-before-2026-10-09' as const;
+// A deliberate user exception for six identified games, never a global fallback.
+const QF_EXCEPTION_MATCHES: Record<string, Array<{ date: string; eventId?: number; sourceUrl?: string; reusedR16SourceId?: string }>> = {
+  'pe-alianza-lima': [
+    { date: '2026-09-12', eventId: 16280820, reusedR16SourceId: 'KO-R16-pe-alianza-lima-1' },
+    { date: '2026-09-18', eventId: 16280829, reusedR16SourceId: 'KO-R16-pe-alianza-lima-2' },
+  ],
+  'ec-orense': [
+    { date: '2026-09-14', eventId: 15502691, reusedR16SourceId: 'KO-R16-ec-orense-2' },
+    { date: '2026-09-21', sourceUrl: 'https://footballnation.eu/match/ligapro-serie-a/2026/812232/' },
+  ],
+  've-metropolitanos': [
+    { date: '2026-09-16', eventId: 17093892, reusedR16SourceId: 'KO-R16-ve-metropolitanos-1' },
+    { date: '2026-09-20', eventId: 16774716, reusedR16SourceId: 'KO-R16-ve-metropolitanos-2' },
+  ],
+};
 
 export interface QuarterfinalFixture {
   eventId?: number;
   sourceDate: string;
-  startTimestamp: number;
+  startTimestamp?: number;
   timeZone: string;
   sourceCompetitionType: SourceCompetitionType;
   sourceCompetition: string;
@@ -168,6 +184,8 @@ export interface QuarterfinalFixture {
   redCards: number | null;
   verificationSources?: string[];
   note?: string;
+  reusedR16SourceId?: string;
+  yellowCardReports?: Array<{ count: number; sourceUrl: string; kind: 'listed-events' | 'reported-total' }>;
 }
 
 export interface QuarterfinalClubPlan {
@@ -178,6 +196,14 @@ export interface QuarterfinalClubPlan {
   scheduleSourceUrl: string;
   note?: string;
   fixtures: QuarterfinalFixture[];
+  selectionException?: typeof QUARTERFINAL_SELECTION_EXCEPTION;
+}
+
+export function quarterfinalExceptionFixtureAllowed(club: Pick<QuarterfinalClubPlan, 'clubId' | 'selectionException'> | undefined, fixture: QuarterfinalFixture): boolean {
+  return club?.selectionException === QUARTERFINAL_SELECTION_EXCEPTION && fixture.status === 'played' &&
+    fixture.sourceCompetitionType !== 'friendly' && (QF_EXCEPTION_MATCHES[club.clubId] || []).some((entry) =>
+      fixture.sourceDate === entry.date && fixture.eventId === entry.eventId &&
+      (!entry.sourceUrl || fixture.sourceUrl === entry.sourceUrl) && fixture.reusedR16SourceId === entry.reusedR16SourceId);
 }
 
 // Exact source/seed aliases only; normalization follows the R16 updater convention.
@@ -203,29 +229,39 @@ export function quarterfinalParticipantIssue(clubId: string, fixture: Quarterfin
   return null;
 }
 
-export function quarterfinalLocalDate(fixture: Pick<QuarterfinalFixture, 'startTimestamp' | 'timeZone'>): string {
-  return new Intl.DateTimeFormat('sv-SE', {
+export function quarterfinalLocalDate(fixture: Pick<QuarterfinalFixture, 'startTimestamp' | 'timeZone' | 'sourceDate'>): string {
+  // Date-only evidence for the approved historical games does not invent a time.
+  const formatter = new Intl.DateTimeFormat('sv-SE', {
     timeZone: fixture.timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
-  }).format(new Date(fixture.startTimestamp * 1000));
+  });
+  return fixture.startTimestamp == null ? fixture.sourceDate : formatter.format(new Date(fixture.startTimestamp * 1000));
 }
 
 export function selectQuarterfinalFixtures(
   candidates: QuarterfinalFixture[],
   previouslyUsedEventIds: ReadonlySet<number> = new Set(),
+  club?: Pick<QuarterfinalClubPlan, 'clubId' | 'selectionException'>,
 ): [QuarterfinalFixture | null, QuarterfinalFixture | null] {
   const seen = new Set<string>([...previouslyUsedEventIds].map((id) => `event:${id}`));
+  const selectedKeys = new Set<string>();
   const eligible = [...candidates]
     .filter((match) => ['scheduled', 'played'].includes(match.status) && OFFICIAL_COMPETITIONS.has(match.sourceCompetitionType))
     .filter((match) => {
+      if (club?.selectionException) return quarterfinalExceptionFixtureAllowed(club, match);
+      if (match.startTimestamp == null) return false;
       const date = quarterfinalLocalDate(match);
       return date >= QUARTERFINAL_WINDOW.start && date <= QUARTERFINAL_WINDOW.end;
     })
-    .sort((a, b) => a.startTimestamp - b.startTimestamp || (a.eventId ?? 0) - (b.eventId ?? 0))
+    .sort((a, b) => quarterfinalLocalDate(a).localeCompare(quarterfinalLocalDate(b)) ||
+      (a.startTimestamp ?? 0) - (b.startTimestamp ?? 0) || (a.eventId ?? 0) - (b.eventId ?? 0))
     .filter((match) => {
       // Official schedules can identify a fixture without publishing a provider ID.
       const key = match.eventId != null ? `event:${match.eventId}`
         : `${match.sourceDate}|${match.homeClub}|${match.awayClub}`;
-      if (seen.has(key)) return false;
+      if (seen.has(key) && !quarterfinalExceptionFixtureAllowed(club, match)) return false;
+      // A reused R16 game is allowed once, not twice within QF.
+      if (selectedKeys.has(key)) return false;
+      selectedKeys.add(key);
       seen.add(key);
       return true;
     });
@@ -233,9 +269,26 @@ export function selectQuarterfinalFixtures(
   return [eligible[0] ?? null, eligible[1] ?? null];
 }
 
-export function quarterfinalFixtureIssues(fixture: QuarterfinalFixture, verifiedAt: string): string[] {
+export function quarterfinalReportsHaveDistinctSources(reports: NonNullable<QuarterfinalFixture['yellowCardReports']>): boolean {
+  if (reports.length < 2) return false;
+  try {
+    const sources = reports.map((report) => {
+      const url = new URL(report.sourceUrl);
+      if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Unsupported report source.');
+      // Fragment, trailing slash, protocol and www variants are one report,
+      // even if its count or kind is duplicated with a different value.
+      url.searchParams.sort();
+      return `${url.hostname.replace(/^www\./, '')}:${url.port}${url.pathname.replace(/\/+$/, '')}${url.search}`;
+    });
+    return new Set(sources).size === reports.length;
+  } catch { return false; }
+}
+
+export function quarterfinalFixtureIssues(fixture: QuarterfinalFixture, verifiedAt: string, club?: Pick<QuarterfinalClubPlan, 'clubId' | 'selectionException'>): string[] {
   const issues: string[] = [];
   const count = (value: unknown) => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+  if (fixture.startTimestamp == null && !quarterfinalExceptionFixtureAllowed(club, fixture)) issues.push('Date-only evidence requires the specific authorized selection exception.');
+  if (fixture.reusedR16SourceId && !quarterfinalExceptionFixtureAllowed(club, fixture)) issues.push('Unauthorized R16 reuse.');
   if (fixture.eventId != null && !fixture.sourceUrl.endsWith(`#id:${fixture.eventId}`)) {
     issues.push('Invalid local date or event provenance.');
   }
@@ -256,6 +309,11 @@ export function quarterfinalFixtureIssues(fixture: QuarterfinalFixture, verified
   if ([fixture.yellowCards, fixture.redCards].some((value) => value !== null && !count(value))) {
     issues.push('Discipline must be a nonnegative integer or unknown.');
   }
+  if (fixture.yellowCardReports && (fixture.status !== 'played' || fixture.yellowCards !== null || !count(fixture.redCards) ||
+      !quarterfinalReportsHaveDistinctSources(fixture.yellowCardReports) || fixture.yellowCardReports.some((report) => !count(report.count) ||
+        !['listed-events', 'reported-total'].includes(report.kind) || !/^https?:\/\//.test(report.sourceUrl)))) {
+    issues.push('Reported discipline scenarios require unknown yellows, known reds and at least two distinct sourced reports without duplicates.');
+  }
   return issues;
 }
 
@@ -269,34 +327,54 @@ export function quarterfinalFantasyScore(clubId: string, fixture: QuarterfinalFi
 }
 
 export function buildQuarterfinalClubTotal(club: QuarterfinalClubPlan, used: ReadonlySet<number> = new Set()) {
-  const slots = selectQuarterfinalFixtures(club.fixtures, used);
+  const slots = selectQuarterfinalFixtures(club.fixtures, used, club);
   const played = slots.filter((fixture): fixture is QuarterfinalFixture => fixture?.status === 'played');
   const scores = played.map((fixture) => quarterfinalFantasyScore(club.clubId, fixture)).filter((score) => score != null);
   const disciplinePending = played.some((fixture) => fixture.yellowCards == null || fixture.redCards == null);
+  const perMatchReports = played.map((fixture) => {
+    if (fixture.redCards == null) return null;
+    const yellows = fixture.yellowCards != null ? [fixture.yellowCards] : fixture.yellowCardReports?.map((report) => report.count);
+    if (!yellows?.length || quarterfinalFixtureIssues(fixture, '9999-12-31', club).length) return null;
+    return yellows.map((yellowCards) => quarterfinalFantasyScore(club.clubId, { ...fixture, yellowCards })?.total ?? null);
+  });
+  const reportedTotals = scores.length === 2 && perMatchReports.every((reports) => reports && reports.every((score) => score != null))
+    ? [...new Set(perMatchReports[0]!.flatMap((a) => perMatchReports[1]!.map((b) => a! + b!)))].sort((a, b) => a - b)
+    : null;
   return {
     slots,
     total: scores.length ? scores.reduce((sum, score) => sum + score.total, 0) : null,
     played: scores.length,
     missingSlots: slots.filter((fixture) => fixture == null).length,
     disciplinePending,
+    reportedTotals,
     kind: scores.length === 0 ? 'pending' : scores.length < 2 ? 'partial' : disciplinePending ? 'upper-bound' : 'verified',
   } as const;
 }
 
 /** Missing matches are unbounded; unknown cards only bound two played matches. */
-export function resolveQuarterfinalWinner(
+export function resolveQuarterfinalResult(
   clubA: QuarterfinalClubPlan | undefined,
   clubB: QuarterfinalClubPlan | undefined,
   used: ReadonlySet<number> = new Set(),
-): string | null {
-  if (!clubA || !clubB) return null;
+): { winnerClubId: string | null; basis: 'verified-total' | 'reported-discipline-scenarios' | null } {
+  const unresolved = { winnerClubId: null, basis: null };
+  if (!clubA || !clubB) return unresolved;
   const a = buildQuarterfinalClubTotal(clubA, used);
   const b = buildQuarterfinalClubTotal(clubB, used);
-  if (a.played !== 2 || b.played !== 2 || a.total == null || b.total == null) return null;
-  if (a.kind === 'verified' && a.total > b.total) return clubA.clubId;
-  if (b.kind === 'verified' && b.total > a.total) return clubB.clubId;
+  if (a.played !== 2 || b.played !== 2 || a.total == null || b.total == null) return unresolved;
+  if (a.kind === 'verified' && a.total > b.total) return { winnerClubId: clubA.clubId, basis: 'verified-total' };
+  if (b.kind === 'verified' && b.total > a.total) return { winnerClubId: clubB.clubId, basis: 'verified-total' };
+  // These are reported scenarios, not bounds on every possible future acta.
+  if (a.reportedTotals && b.reportedTotals) {
+    if (Math.min(...a.reportedTotals) > Math.max(...b.reportedTotals)) return { winnerClubId: clubA.clubId, basis: 'reported-discipline-scenarios' };
+    if (Math.min(...b.reportedTotals) > Math.max(...a.reportedTotals)) return { winnerClubId: clubB.clubId, basis: 'reported-discipline-scenarios' };
+  }
   // Equal totals and overlapping discipline bounds do not authorize a winner.
-  return null;
+  return unresolved;
+}
+
+export function resolveQuarterfinalWinner(clubA: QuarterfinalClubPlan | undefined, clubB: QuarterfinalClubPlan | undefined, used: ReadonlySet<number> = new Set()): string | null {
+  return resolveQuarterfinalResult(clubA, clubB, used).winnerClubId;
 }
 
 function parseDate(value: string): number {

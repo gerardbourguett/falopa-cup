@@ -34,6 +34,8 @@ const knockoutDoc = entries.find((entry) => entry.data.kind === 'knockout')?.dat
 const r16WindowDoc = entries.find((entry) => entry.data.kind === 'r16-window')?.data as any;
 const qfEntry = entries.find((entry) => entry.data.kind === 'qf-window');
 const qfWindowDoc = qfEntry?.data.kind === 'qf-window' ? qfEntry.data : undefined;
+const sfEntry = entries.find((entry) => entry.data.kind === 'sf-window');
+const sfWindowDoc = sfEntry?.data.kind === 'sf-window' ? sfEntry.data : undefined;
 const r16EventIds = new Set<number>((r16WindowDoc?.matchSources || []).map(
   (source: { sourceUrl?: string }) => Number(source.sourceUrl?.match(/#id:(\d+)/)?.[1]),
 ));
@@ -863,7 +865,9 @@ const reviewMissingCards = reviewBuckets.missingCards;
             <p class="r16-audit-note">
               <strong>Ventana: 24 de septiembre al 15 de octubre de 2026.</strong> Ambas fechas incluidas,
               según la sede. Primeros dos partidos oficiales de todas las competiciones por club, sin amistosos.
-              Cierre ampliado solo para cuartos. Corte: {qfWindowDoc.verifiedAt}. Programación sujeta a cambios.
+              Cierre ampliado solo para cuartos. Excepción autorizada: Alianza Lima, Orense y Metropolitanos usan
+              sus dos últimos oficiales jugados antes del 9 de octubre; cinco partidos se reutilizan desde octavos,
+              conservando sus fechas reales. Corte: {qfWindowDoc.verifiedAt}. Programación sujeta a cambios.
               Un partido futuro o espacio pendiente no otorga puntos. * Máximo provisional: faltan tarjetas.
               Un total parcial corresponde solo a los partidos jugados y no limita el total final.
             </p>
@@ -878,7 +882,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
                 )}
                 <div class="table-wrap" role="region" aria-label={group.title} tabindex="0">
                   <table class="r16-table">
-                    <caption class="sr-only">{group.title}: primeros dos partidos oficiales dentro de la ventana de cuartos.</caption>
+                    <caption class="sr-only">{group.title}: partidos oficiales seleccionados para cuartos, con la excepción histórica autorizada.</caption>
                     <thead>
                       <tr>
                         <th scope="col">Llave</th><th scope="col" class="col-club">Club</th>
@@ -934,6 +938,64 @@ const reviewMissingCards = reviewBuckets.missingCards;
                     </li>
                   ))}
                 </ul>
+              </div>
+            </details>
+          </div>
+        )}
+
+        {round.id === 'KO-SF' && sfWindowDoc && (
+          <div class="r16-audit" data-sf-plan>
+            <div class="phase-subhead"><h3>Próximos partidos oficiales</h3></div>
+            <p class="r16-audit-note">
+              <strong>Desde el 9 de octubre de 2026 inclusive, sin fecha límite.</strong> Dos próximos oficiales
+              de todas las competiciones por semifinalista. Corte: {sfWindowDoc.verifiedAt}. La programación puede cambiar.
+              Fecha u hora pendiente no equivale a un partido sin puntos: todavía no hay resultados.
+            </p>
+            <p class="r16-audit-note">
+              <strong>Encarnación: fecha y hora pendientes.</strong> Rival y orden de General Caballero corroborados;
+              estadio sin confirmar. <strong>Bolívar: segundo programado provisional.</strong> Copa Bolivia ante
+              Oriente Petrolero sigue sin fecha y podría intercalarse; aún no es el segundo oficial definitivo de Potosí.
+            </p>
+            <div class="table-wrap" role="region" aria-label="Programación de semifinales" tabindex="0">
+              <table class="r16-table">
+                <caption class="sr-only">Próximos partidos de semifinales, con fechas pendientes y selección provisional identificadas.</caption>
+                <thead><tr>
+                  <th scope="col">Llave</th><th scope="col" class="col-club">Club</th><th scope="col">#</th>
+                  <th scope="col">Fecha local</th><th scope="col">Hora local</th><th scope="col">Condición</th>
+                  <th scope="col" class="col-club">Rival</th><th scope="col" class="col-club">Competición</th>
+                  <th scope="col">Marcador</th><th scope="col">TA</th><th scope="col">TR</th><th scope="col">FX</th>
+                  <th scope="col">Programación</th><th scope="col">Fuente</th>
+                </tr></thead>
+                <tbody>{sfWindowDoc.clubs.flatMap((club) => club.fixtures.map((fixture, index) => (
+                  <tr class={fixture.status === 'tbd' ? 'is-tbd' : 'is-scheduled'}>
+                    <td>{club.tieId}</td><td class="col-club">{clubMeta(club.clubId).name}</td><td>{index + 1}</td>
+                    <td>{fixture.sourceDate ? formatRoundDate(fixture.sourceDate) : 'Fecha pendiente'}</td>
+                    <td>{fixture.startTimestamp != null ? new Date(fixture.startTimestamp * 1000).toLocaleTimeString('es-CL', { timeZone: fixture.timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }) : 'Hora pendiente'}</td>
+                    <td>{fixture.isHome ? 'Local' : 'Visita'}</td><td class="col-club">{fixture.isHome ? fixture.awayClub : fixture.homeClub}</td>
+                    <td class="col-club">{fixture.sourceCompetition}</td>
+                    <td>—</td><td>—</td><td>—</td><td>—</td>
+                    <td>{fixture.selectionStatus === 'provisional' ? 'Segundo programado provisional' : fixture.status === 'tbd' ? 'Fecha y hora pendientes' : 'Programado'}
+                      {fixture.venue && <small> · {fixture.venue}</small>}</td>
+                    <td><a href={fixture.sourceUrl} target="_blank" rel="noreferrer">Ver fuente</a></td>
+                  </tr>
+                )))}</tbody>
+              </table>
+            </div>
+            <details class="audit-block">
+              <summary>Fuentes y certeza de la programación de semifinales</summary>
+              <div class="audit-body"><p class="r16-audit-note">{sfWindowDoc.note}</p>
+                <ul class="audit-list">{sfWindowDoc.clubs.map((club) => (
+                  <li><strong>{clubMeta(club.clubId).name}:</strong> {club.note}{' '}
+                    <a href={club.scheduleSourceUrl} target="_blank" rel="noreferrer">Calendario</a>
+                    {club.pendingCompetition && <p><strong>Copa pendiente de programación:</strong> {club.pendingCompetition.sourceCompetition}, ante {club.pendingCompetition.opponent}.{' '}
+                      <a href={club.pendingCompetition.sourceUrl} target="_blank" rel="noreferrer">Ver aviso</a></p>}
+                    {club.fixtures.map((fixture) => (
+                      <p>{fixture.sourceDate ?? 'Fecha pendiente'}: {fixture.note}{' '}
+                        {fixture.verificationSources.map((source, index) => <a href={source} target="_blank" rel="noreferrer">Fuente {index + 1}{' '}</a>)}
+                      </p>
+                    ))}
+                  </li>
+                ))}</ul>
               </div>
             </details>
           </div>
