@@ -2,25 +2,25 @@
   "kind": "qf-window",
   "edition": 2026,
   "roundId": "KO-QF",
-  "status": "planned",
+  "status": "in-progress",
   "windowStart": "2026-09-24",
-  "windowEnd": "2026-10-08",
+  "windowEnd": "2026-10-15",
   "selectionPolicy": "first-two-official-local-dates",
-  "verifiedAt": "2026-09-21",
-  "note": "Primeros dos partidos oficiales por club dentro del 24 de septiembre al 8 de octubre de 2026, inclusive y por fecha local de la sede. Sin amistosos ni extensión. Calendarios públicos de todas las competiciones y detalles /api/v1/event/{id} de Sofascore contrastados el 21 de septiembre; programación sujeta a cambios. Los espacios pendientes indican falta de un partido verificable en esta ventana, no ausencia definitiva de actividad ni puntos otorgados. No hay resultados de cuartos. El 25 de septiembre se confirma a ADT como ganador de R16-2 y se activa su planificación frente a Alianza Lima. Zamora queda fuera de los planes activos; no se modifica el calendario seleccionado.",
+  "verifiedAt": "2026-10-09",
+  "note": "Ventana de cuartos: 24 de septiembre al 15 de octubre de 2026 inclusive, según la fecha local de la sede. El usuario amplió únicamente el cierre de cuartos; no cambia el inicio, las otras fases ni la excepción ADT–Cienciano de octavos. Primeros dos partidos oficiales de todas las competiciones, sin amistosos. Corte de verificación: 9 de octubre. Diez partidos jugados, tres programados y tres espacios sin programación verificable. Los programados y espacios pendientes no reciben resultados ni puntos; tarjetas desconocidas permanecen null y generan una cota superior cuando ambos partidos están jugados. QF-4 resuelta a favor de Nacional Potosí; las otras tres llaves siguen pendientes.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
       "tieId": "QF-1",
       "sourceRef": "R16-1",
       "qualification": "confirmed",
-      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/2311/events/next/0",
-      "note": "Solo un partido verificado dentro de la ventana. Atlético Grau, del 17 de octubre, queda fuera; segundo espacio pendiente.",
+      "scheduleSourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
+      "note": "Cusco–Alianza reprogramado al 11 de octubre. Atlético Grau (17 de octubre) queda fuera; segundo espacio pendiente de verificación.",
       "fixtures": [
         {
           "eventId": 16280833,
-          "sourceDate": "2026-10-08",
-          "startTimestamp": 1791489600,
+          "sourceDate": "2026-10-11",
+          "startTimestamp": 1791761400,
           "timeZone": "America/Lima",
           "sourceCompetitionType": "local-league",
           "sourceCompetition": "Liga 1 · Clausura F11",
@@ -32,7 +32,11 @@
           "goalsAgainst": null,
           "yellowCards": null,
           "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/cusco-fc-alianza-lima/lWskAA#id:16280833"
+          "sourceUrl": "https://www.sofascore.com/football/match/cusco-fc-alianza-lima/lWskAA#id:16280833",
+          "verificationSources": [
+            "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
+          ],
+          "note": "Programación oficial de Liga 1; ID histórico conservado, sin reextraer API Sofascore."
         }
       ]
     },
@@ -41,16 +45,33 @@
       "tieId": "QF-2",
       "sourceRef": "R16-3",
       "qualification": "confirmed",
-      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/277525/events/next/0",
-      "note": "Dos espacios pendientes. Manta (17102430) sigue aplazado con fecha anterior a la ventana, sin nueva fecha verificada; Cuenca (11 de octubre) y Mushuc Runa (18 de octubre) quedan fuera. El calendario consultado no publica otro partido oficial elegible.",
-      "fixtures": []
+      "scheduleSourceUrl": "https://www.ecuavisa.com/amp/futbol-nacional/orense-deportivo-cuenca-fecha-hora-ecuavisa-fecha2-hexagonal-descenso-ligapro-20261007-0094.html",
+      "note": "Cuenca entra por el cierre ampliado. Manta–Orense se jugó el 21 de septiembre y queda fuera por el inicio; Mushuc Runa (19 de octubre) queda fuera por el cierre. Segundo espacio pendiente. No se inventa un ID de Sofascore para el encuentro nuevo.",
+      "fixtures": [
+        {
+          "sourceDate": "2026-10-11",
+          "startTimestamp": 1791744300,
+          "timeZone": "America/Guayaquil",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "LigaPro · Hexagonal de descenso F2",
+          "homeClub": "Orense",
+          "awayClub": "Deportivo Cuenca",
+          "isHome": true,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.ecuavisa.com/amp/futbol-nacional/orense-deportivo-cuenca-fecha-hora-ecuavisa-fecha2-hexagonal-descenso-ligapro-20261007-0094.html"
+        }
+      ]
     },
     {
       "clubId": "py-general-caballero",
       "tieId": "QF-2",
       "sourceRef": "R16-4",
       "qualification": "confirmed",
-      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/387619/events/next/0",
+      "scheduleSourceUrl": "https://www.besoccer.es/equipo/partidos/general-caballero-jlm",
       "fixtures": [
         {
           "eventId": 17146932,
@@ -62,12 +83,17 @@
           "homeClub": "General Caballero",
           "awayClub": "3 de Noviembre",
           "isHome": true,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
+          "status": "played",
+          "goalsFor": 1,
+          "goalsAgainst": 3,
           "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/club-3-de-noviembre-general-caballero/ucfdsbCQd#id:17146932"
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/club-3-de-noviembre-general-caballero/ucfdsbCQd#id:17146932",
+          "verificationSources": [
+            "https://www.apf.org.py/noticias/el-3-sale-victorioso-de-ka-arendy",
+            "https://betmines.com/es/partidos/pronosticos-general-caballero-jlm-3-de-noviembre_19885258"
+          ],
+          "note": "APF confirma 1–3 y enumera dos amarillas; fuentes secundarias discrepan con tres/cuatro. Sin acta exhaustiva, amarillas desconocidas. Cero rojas explícito en fuente secundaria."
         },
         {
           "eventId": 17146922,
@@ -79,30 +105,53 @@
           "homeClub": "Fernando de la Mora",
           "awayClub": "General Caballero",
           "isHome": false,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
+          "status": "played",
+          "goalsFor": 2,
+          "goalsAgainst": 0,
           "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/general-caballero-club-fernando-de-la-mora/Tucsucfd#id:17146922"
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/general-caballero-club-fernando-de-la-mora/Tucsucfd#id:17146922",
+          "verificationSources": [
+            "https://www.apf.org.py/noticias/el-rojo-mallorquino-festeja-en-el-barrio-palomar",
+            "https://www.sportscore.mx/football/match/club-fernando-de-la-mora-vs-general-caballero-jlm/6ypq3nhk64evmd7/"
+          ],
+          "note": "APF confirma 0–2 y enumera una amarilla; SportScore indica dos. Sin acta exhaustiva, amarillas desconocidas. Cero rojas explícito en fuente secundaria."
         }
-      ]
+      ],
+      "note": "Dos resultados oficiales contrastados con APF. Las amarillas discrepantes impiden confirmar el total; máximo 5 puntos, no 4.25 confirmado."
     },
     {
       "clubId": "ve-metropolitanos",
       "tieId": "QF-3",
       "sourceRef": "R16-5",
       "qualification": "confirmed",
-      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/162480/events/next/0",
-      "note": "Dos espacios pendientes. El calendario de todas las competiciones consultado solo publica Rayo Zuliano (11 de octubre) y Estudiantes de Mérida (18 de octubre), fuera de la ventana. No se verificó un partido de copa dentro del período; no se presume ausencia definitiva de actividad.",
-      "fixtures": []
+      "scheduleSourceUrl": "https://comunidadfutve.com/club/deportivo-rayo-zuliano/",
+      "note": "Rayo Zuliano se programa para el 10 de octubre a las 19:30 en Caracas. Segundo espacio pendiente. Copa Venezuela está en fase de grupos y Metropolitanos entra en octavos; no se confirmó otro partido elegible. No se inventa un ID de Sofascore.",
+      "fixtures": [
+        {
+          "sourceDate": "2026-10-10",
+          "startTimestamp": 1791675000,
+          "timeZone": "America/Caracas",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga FUTVE · Clausura F12",
+          "homeClub": "Metropolitanos",
+          "awayClub": "Deportivo Rayo Zuliano",
+          "isHome": true,
+          "status": "scheduled",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://comunidadfutve.com/partido/metropolitanos-fc-vs-deportivo-rayo-zuliano-cl2026/"
+        }
+      ]
     },
     {
       "clubId": "co-atletico-bucaramanga",
       "tieId": "QF-3",
       "sourceRef": "R16-6",
       "qualification": "confirmed",
-      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/6103/events/next/0",
+      "scheduleSourceUrl": "https://es.besoccer.com/equipo/partidos/atletico-bucar",
       "fixtures": [
         {
           "eventId": 16390759,
@@ -114,12 +163,18 @@
           "homeClub": "Once Caldas",
           "awayClub": "Atlético Bucaramanga",
           "isHome": false,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/once-caldas-atletico-bucaramanga/dxcstxc#id:16390759"
+          "status": "played",
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "yellowCards": 5,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/once-caldas-atletico-bucaramanga/dxcstxc#id:16390759",
+          "verificationSources": [
+            "https://www.fotmob.com/es/matches/bucaramanga-vs-once-caldas/wcxx9",
+            "https://www.tycsports.com/colombia/futbol-de-colombia/colombia-primera-division-ii-2026-once-caldas-vs-bucaramanga-fecha-12-id762663.html",
+            "https://betora.app/es/resultado/colombia-primera-a/once-caldas-vs-bucaramanga-2026-09-26"
+          ],
+          "note": "Cinco amarillas a jugadores; se excluye la del entrenador Javier Tetes. Fecha local 25 de septiembre, 26 en UTC."
         },
         {
           "eventId": 16390774,
@@ -131,14 +186,21 @@
           "homeClub": "Atlético Bucaramanga",
           "awayClub": "Junior Barranquilla",
           "isHome": true,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/junior-barranquilla-atletico-bucaramanga/dxcsfxc#id:16390774"
+          "status": "played",
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "yellowCards": 2,
+          "redCards": 1,
+          "sourceUrl": "https://www.sofascore.com/football/match/junior-barranquilla-atletico-bucaramanga/dxcsfxc#id:16390774",
+          "verificationSources": [
+            "https://caracol.com.co/2026/10/04/en-vivo-bucaramanga-contra-junior-por-liga-colombiana-hoy-transmision-y-minuto-a-minuto/?omnil=mod_resul",
+            "https://betora.app/es/resultado/colombia-primera-a/bucaramanga-vs-junior-2026-10-04",
+            "https://dimayor.com.co/2026/10/05/atletico-bucaramanga-vs-junior-fc-2/"
+          ],
+          "note": "Roja directa a José García; dos amarillas a jugadores."
         }
-      ]
+      ],
+      "note": "Primeros dos encuentros oficiales; disciplina de jugadores, sin sanciones del cuerpo técnico."
     },
     {
       "clubId": "cl-universidad-de-chile",
@@ -153,16 +215,22 @@
           "startTimestamp": 1790292600,
           "timeZone": "America/Santiago",
           "sourceCompetitionType": "local-cup",
-          "sourceCompetition": "Copa Chile · Dieciseisavos, ida",
+          "sourceCompetition": "Copa Chile · Octavos, ida",
           "homeClub": "Everton de Viña del Mar",
           "awayClub": "Universidad de Chile",
           "isHome": false,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/everton-de-vina-del-mar-universidad-de-chile/lnbsHac#id:16997888"
+          "status": "played",
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "yellowCards": 4,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/everton-de-vina-del-mar-universidad-de-chile/lnbsHac#id:16997888",
+          "verificationSources": [
+            "https://www.campeonatochileno.cl/match/everton-universidad-de-chile-2026-09-24/",
+            "https://www.campeonatochileno.cl/wp-content/uploads/2026/09/Informe-Arbitro-COPA-CHILE-EVERTON-UNIVERSIDAD-DE-CHILE.pdf",
+            "https://www.udechile.cl/noticias/copa-chile-con-un-gol-de-juan-martin-lucero-tomamos-la-ventaja-en-la-llave-ante-everton"
+          ],
+          "note": "Inicio oficial el 24 de septiembre; suspendido y completado el 27 antes de la vuelta. Se conserva la fecha de inicio, sin excepción de ventana."
         },
         {
           "eventId": 16997892,
@@ -170,18 +238,23 @@
           "startTimestamp": 1790541000,
           "timeZone": "America/Santiago",
           "sourceCompetitionType": "local-cup",
-          "sourceCompetition": "Copa Chile · Dieciseisavos, vuelta",
+          "sourceCompetition": "Copa Chile · Octavos, vuelta",
           "homeClub": "Universidad de Chile",
           "awayClub": "Everton de Viña del Mar",
           "isHome": true,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/everton-de-vina-del-mar-universidad-de-chile/lnbsHac#id:16997892"
+          "status": "played",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "yellowCards": 2,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/everton-de-vina-del-mar-universidad-de-chile/lnbsHac#id:16997892",
+          "verificationSources": [
+            "https://www.campeonatochileno.cl/wp-content/uploads/2026/09/Informe-Arbitro-COPA-CHILE-UNIVERSIDAD-DE-CHILE-EVERTON.pdf"
+          ],
+          "note": "Acta: Hormazábal 77 y Marcelo Díaz 88. Fernando Gago 63 figura como cuerpo técnico y no cuenta. Sin rojas a jugadores."
         }
-      ]
+      ],
+      "note": "Dos partidos de Copa Chile confirmados por actas. Antofagasta (7 de octubre) es posterior y no reemplaza los primeros dos."
     },
     {
       "clubId": "bo-nacional-potosi",
@@ -201,12 +274,17 @@
           "homeClub": "Nacional Potosí",
           "awayClub": "Always Ready",
           "isHome": true,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/club-always-ready-nacional-potosi/aeusIlhc#id:16767470"
+          "status": "played",
+          "goalsFor": 9,
+          "goalsAgainst": 0,
+          "yellowCards": 0,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/club-always-ready-nacional-potosi/aeusIlhc#id:16767470",
+          "verificationSources": [
+            "https://brujuladigital.net/deportes/2026/09/25/always-ready-pasa-vergenza-nacional-le-aplasta-con-un-9-a-0--66893",
+            "https://tribuna.com/es/match/102903336/"
+          ],
+          "note": "Cero amarillas y cero rojas explícitos en el registro secundario de Tribuna; no se dispone de acta FBF."
         },
         {
           "eventId": 16767482,
@@ -218,12 +296,18 @@
           "homeClub": "Real Tomayapo",
           "awayClub": "Nacional Potosí",
           "isHome": false,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/cd-real-tomayapo-nacional-potosi/aeusKnJc#id:16767482"
+          "status": "played",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "yellowCards": 0,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/cd-real-tomayapo-nacional-potosi/aeusKnJc#id:16767482",
+          "verificationSources": [
+            "https://diez.bo/futbol/tomayapo-ganaba-a-nacional-pero-cede-un-empate-a-los-100-minutos_1790815652",
+            "https://tribuna.com/es/match/102903346/",
+            "https://www.sportscore.mx/football/match/nacional-potosi-vs-real-tomayapo/pxwrxlhyk4l8ryk/"
+          ],
+          "note": "Cero amarillas y cero rojas explícitos en registros secundarios; no se dispone de acta FBF."
         }
       ]
     },
@@ -232,26 +316,9 @@
       "tieId": "QF-1",
       "sourceRef": "R16-2",
       "qualification": "confirmed",
-      "scheduleSourceUrl": "https://www.sofascore.com/api/v1/team/335557/events/next/0",
-      "note": "ADT clasifica por R16-2. Cienciano (23 de septiembre, 17059625) cuenta exclusivamente en octavos por excepción autorizada y queda fuera de esta ventana. La vuelta ante Sporting Cristal del 1 de octubre es posterior a los dos seleccionados.",
+      "scheduleSourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
+      "note": "Cajamarca fue reprogramado al 10 de octubre y pasa a ser tercero. Los primeros dos son las semifinales de Copa de la Liga del 27 de septiembre y 1 de octubre. ADT–Cienciano del 23 de septiembre permanece exclusivamente en octavos por la excepción autorizada.",
       "fixtures": [
-        {
-          "eventId": 16281140,
-          "sourceDate": "2026-09-26",
-          "startTimestamp": 1790452800,
-          "timeZone": "America/Lima",
-          "sourceCompetitionType": "local-league",
-          "sourceCompetition": "Liga 1 · Clausura F11",
-          "homeClub": "ADT",
-          "awayClub": "FC Cajamarca",
-          "isHome": true,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/fc-cajamarca-asociacion-deportiva-tarma/hlJcscPHi#id:16281140"
-        },
         {
           "eventId": 17034085,
           "sourceDate": "2026-09-27",
@@ -262,12 +329,39 @@
           "homeClub": "ADT",
           "awayClub": "Sporting Cristal",
           "isHome": true,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/asociacion-deportiva-tarma-club-sporting-cristal/cWshlJc#id:17034085"
+          "status": "played",
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "yellowCards": 1,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/asociacion-deportiva-tarma-club-sporting-cristal/cWshlJc#id:17034085",
+          "verificationSources": [
+            "https://scores24.live/es/soccer/m-23-09-2026-sporting-cristal-ad-tarma",
+            "https://libero.pe/futbol-peruano/sporting-cristal/2026/09/26/sporting-cristal-vs-adt-en-vivo-gratis-partido-de-copa-de-liga-caliente-via-bicolor-1258894"
+          ],
+          "note": "La ruta de Scores24 conserva una fecha antigua; el contenido identifica el 27 de septiembre."
+        },
+        {
+          "sourceDate": "2026-10-01",
+          "startTimestamp": 1790884800,
+          "timeZone": "America/Lima",
+          "sourceCompetitionType": "local-cup",
+          "sourceCompetition": "Copa de la Liga · Semifinal, vuelta",
+          "homeClub": "Sporting Cristal",
+          "awayClub": "ADT",
+          "isHome": false,
+          "status": "played",
+          "goalsFor": 0,
+          "goalsAgainst": 5,
+          "yellowCards": 2,
+          "redCards": 0,
+          "sourceUrl": "https://www.zerozero.pe/en-vivo/2026-10-01-sporting-cristal-adt/12650876",
+          "verificationSources": [
+            "https://www.clubsportingcristal.pe/futbol-profesional/941-estamos-en-la-final",
+            "https://www.zerozero.pe/en-vivo/2026-10-01-sporting-cristal-adt/12650876",
+            "https://www.365scores.com/es/football/match/league-cup-9051/adt-tarma-sporting-cristal-8420-57393-9051"
+          ],
+          "note": "Narváez 18 y Rugel 36; no se reusa el ID de la ida ni se inventa uno para la vuelta."
         }
       ]
     }

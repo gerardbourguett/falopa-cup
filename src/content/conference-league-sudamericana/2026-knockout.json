@@ -371,8 +371,8 @@
     {
       "id": "KO-QF",
       "name": "Cuartos de final",
-      "status": "planned",
-      "description": "Cruces fijados por el cuadro, sin reordenamiento. Primeros dos partidos oficiales por club del 24 de septiembre al 8 de octubre de 2026, ambas fechas incluidas según la sede. Sin extensión. Los ocho clasificados están confirmados; Alianza Lima enfrenta a ADT en QF-1.",
+      "status": "in-progress",
+      "description": "Cruces fijados por el cuadro, sin reordenamiento. Primeros dos partidos oficiales de todas las competiciones por club del 24 de septiembre al 15 de octubre de 2026, ambas fechas incluidas según la sede. Ampliación del cierre autorizada solo para cuartos. QF-4 resuelta; las otras tres llaves permanecen pendientes.",
       "ties": [
         {
           "id": "QF-1",
@@ -424,7 +424,9 @@
             "sourceType": "tie-winner",
             "sourceRef": "R16-8",
             "clubId": "bo-nacional-potosi"
-          }
+          },
+          "winnerClubId": "bo-nacional-potosi",
+          "tiebreakReason": "Puntaje fantasy tras los primeros dos partidos oficiales: Nacional Potosí 13, Universidad de Chile 3.5. Disciplina de jugadores verificada; ceros de Potosí explícitos en fuentes secundarias, sin acta FBF."
         }
       ]
     },
@@ -456,7 +458,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "QF-4",
-            "clubId": null
+            "clubId": "bo-nacional-potosi"
           }
         }
       ]
