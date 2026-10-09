@@ -1,9 +1,12 @@
 import type { ConferenceEntryType, OfficialMatchSource } from '../tournaments/conference-league-sudamericana';
 import {
   QUARTERFINAL_WINDOW,
+  buildQuarterfinalClubTotal,
+  quarterfinalFixtureIssues,
   quarterfinalLocalDate,
   quarterfinalParticipantIssue,
   selectQuarterfinalFixtures,
+  resolveQuarterfinalWinner,
   type QuarterfinalClubPlan,
 } from '../tournaments/conference-league-sudamericana';
 
@@ -15,6 +18,7 @@ export interface QuarterfinalWindowDocument {
   windowStart: string;
   windowEnd: string;
   selectionPolicy: string;
+  verifiedAt: string;
   clubs: QuarterfinalClubPlan[];
 }
 
@@ -41,13 +45,13 @@ export function validateQuarterfinalIntegrity(
 ): string[] {
   const issues: string[] = [];
   const report = (message: string) => issues.push(`conference/qf-window: ${message}`);
-  if (window.edition !== 2026 || window.roundId !== 'KO-QF' || window.status !== 'planned' ||
+  if (window.edition !== 2026 || window.roundId !== 'KO-QF' || !['planned', 'in-progress', 'completed'].includes(window.status) ||
       window.windowStart !== QUARTERFINAL_WINDOW.start || window.windowEnd !== QUARTERFINAL_WINDOW.end ||
       window.selectionPolicy !== 'first-two-official-local-dates') report('Unauthorized planning window or policy.');
   const r16 = knockout.rounds.find((round) => round.id === 'KO-R16');
   const qf = knockout.rounds.find((round) => round.id === 'KO-QF');
   if (!r16 || !qf) return [...issues, 'conference/qf-window: Missing R16 or QF bracket.'];
-  if (qf.status !== 'planned') report('Quarterfinals must remain planned.');
+  if (qf.status !== window.status) report('Quarterfinal status must match the result window.');
   const fixedSources = new Map<string, [string, string]>([
     ['QF-1', ['R16-1', 'R16-2']],
     ['QF-2', ['R16-3', 'R16-4']],
@@ -68,7 +72,20 @@ export function validateQuarterfinalIntegrity(
     } else if (tie.slotA.sourceRef !== expectedSources[0] || tie.slotB.sourceRef !== expectedSources[1]) {
       report(`${tie.id}: Fixed bracket requires slotA=${expectedSources[0]}, slotB=${expectedSources[1]}.`);
     }
-    if (tie.winnerClubId || tie.scoreA !== undefined || tie.scoreB !== undefined) report(`${tie.id}: Future result.`);
+    const planA = window.clubs.find((club) => club.clubId === tie.slotA.clubId);
+    const planB = window.clubs.find((club) => club.clubId === tie.slotB.clubId);
+    try {
+      const result = resolveQuarterfinalWinner(planA, planB, used);
+      if (tie.winnerClubId && tie.winnerClubId !== result) report(`${tie.id}: Future result or unsupported winner.`);
+      if (result && tie.winnerClubId !== result) report(`${tie.id}: Missing verified winner.`);
+      for (const [score, plan] of [[tie.scoreA, planA], [tie.scoreB, planB]] as const) {
+        if (score !== undefined && (!plan || buildQuarterfinalClubTotal(plan, used).total !== score)) {
+          report(`${tie.id}: Future result or inconsistent score.`);
+        }
+      }
+    } catch {
+      report(`${tie.id}: Invalid fixture data prevents result verification.`);
+    }
     for (const slot of [tie.slotA, tie.slotB]) {
       const source = r16.ties.find((source) => source.id === slot.sourceRef);
       if (!source || slot.clubId !== (source.winnerClubId ?? null)) report(`${tie.id}: Inconsistent source winner.`);
@@ -96,15 +113,25 @@ export function validateQuarterfinalIntegrity(
       for (const fixture of club.fixtures) {
         const participantIssue = quarterfinalParticipantIssue(club.clubId, fixture);
         if (participantIssue) report(participantIssue);
-        if (fixture.sourceDate !== quarterfinalLocalDate(fixture) || !fixture.sourceUrl.endsWith(`#id:${fixture.eventId}`)) {
+        if (fixture.sourceDate !== quarterfinalLocalDate(fixture)) {
           report(`${club.clubId}: Invalid local date or event provenance.`);
         }
-        if ([fixture.goalsFor, fixture.goalsAgainst, fixture.yellowCards, fixture.redCards].some((value) => value !== null)) {
-          report(`${club.clubId}: Future result or discipline must remain null.`);
-        }
+        quarterfinalFixtureIssues(fixture, window.verifiedAt).forEach((issue) => report(`${club.clubId}: ${issue}`));
       }
     } catch {
       report(`${club.clubId}: Invalid fixture data.`);
+    }
+  }
+  const playedCount = window.clubs.reduce((sum, club) => sum + club.fixtures.filter((fixture) => fixture.status === 'played').length, 0);
+  const resolvedCount = qf.ties.filter((tie) => tie.winnerClubId).length;
+  const expectedStatus = resolvedCount === 4 ? 'completed' : playedCount > 0 ? 'in-progress' : 'planned';
+  if (window.status !== expectedStatus) report('Round status cannot anticipate played results or all four qualifications.');
+  for (const round of knockout.rounds.filter((round) => round.id === 'KO-SF')) {
+    for (const tie of round.ties) {
+      for (const slot of [tie.slotA, tie.slotB]) {
+        const source = qf.ties.find((source) => source.id === slot.sourceRef);
+        if (slot.clubId !== (source?.winnerClubId ?? null)) report(`${tie.id}: Inconsistent QF source winner.`);
+      }
     }
   }
   return issues;

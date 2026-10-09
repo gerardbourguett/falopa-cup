@@ -35,6 +35,18 @@
 - Si no hay partido en ventana base: extender +3 días.
 - Si sigue sin partido: score total `0` con política `no-match`.
 
+## Excepción de fase: cuartos de final 2026
+
+La ventana específica de cuartos va del **24 de septiembre al 15 de octubre de 2026 inclusive**, por fecha local de la sede. El usuario autorizó ampliar únicamente el cierre original del 8 de octubre al 15; el inicio y las ventanas de las demás fases permanecen iguales. La excepción ADT–Cienciano de octavos no se traslada a cuartos.
+
+Se cuentan los **primeros dos partidos oficiales de todas las competiciones** por club, en orden cronológico, sin amistosos. Una reprogramación puede modificar esa selección. No se sustituyen partidos ya seleccionados por otros posteriores, aunque tengan un resultado más favorable.
+
+Un partido futuro o espacio sin programación verificada queda pendiente, sin marcador ni puntos. No se aplica automáticamente la regla general de extensión o `no-match = 0`. Las tarjetas desconocidas quedan `null`: el puntaje de un partido jugado es una cota superior hasta verificar la disciplina. El total de ronda solo es una cota superior si ambos partidos están jugados; con un partido faltante es parcial y no limita el resultado final.
+
+Solo se confirma un ganador cuando ambos clubes completaron sus dos partidos y un total verificado supera el total rival verificado o su cota superior. Igualdad o cotas superpuestas requieren revisión de los desempates y permanecen pendientes. Las sanciones del cuerpo técnico no se incluyen en las tarjetas de jugadores.
+
+Auditoría y fuentes: [cuartos al 9 de octubre](CONFERENCE_CUARTOS_2026-10-09.md).
+
 ## Puntaje fantasy
 
 - Victoria: +3

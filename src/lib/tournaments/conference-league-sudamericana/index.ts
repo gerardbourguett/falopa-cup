@@ -148,10 +148,10 @@ const OFFICIAL_COMPETITIONS = new Set<SourceCompetitionType>([
 ]);
 
 // This planning policy is specific to the authorized 2026 quarterfinal window.
-export const QUARTERFINAL_WINDOW = { start: '2026-09-24', end: '2026-10-08' } as const;
+export const QUARTERFINAL_WINDOW = { start: '2026-09-24', end: '2026-10-15' } as const;
 
 export interface QuarterfinalFixture {
-  eventId: number;
+  eventId?: number;
   sourceDate: string;
   startTimestamp: number;
   timeZone: string;
@@ -162,10 +162,12 @@ export interface QuarterfinalFixture {
   isHome: boolean;
   status: string;
   sourceUrl: string;
-  goalsFor: null;
-  goalsAgainst: null;
-  yellowCards: null;
-  redCards: null;
+  goalsFor: number | null;
+  goalsAgainst: number | null;
+  yellowCards: number | null;
+  redCards: number | null;
+  verificationSources?: string[];
+  note?: string;
 }
 
 export interface QuarterfinalClubPlan {
@@ -211,21 +213,90 @@ export function selectQuarterfinalFixtures(
   candidates: QuarterfinalFixture[],
   previouslyUsedEventIds: ReadonlySet<number> = new Set(),
 ): [QuarterfinalFixture | null, QuarterfinalFixture | null] {
-  const seen = new Set(previouslyUsedEventIds);
+  const seen = new Set<string>([...previouslyUsedEventIds].map((id) => `event:${id}`));
   const eligible = [...candidates]
-    .filter((match) => match.status === 'scheduled' && OFFICIAL_COMPETITIONS.has(match.sourceCompetitionType))
+    .filter((match) => ['scheduled', 'played'].includes(match.status) && OFFICIAL_COMPETITIONS.has(match.sourceCompetitionType))
     .filter((match) => {
       const date = quarterfinalLocalDate(match);
       return date >= QUARTERFINAL_WINDOW.start && date <= QUARTERFINAL_WINDOW.end;
     })
-    .sort((a, b) => a.startTimestamp - b.startTimestamp || a.eventId - b.eventId)
+    .sort((a, b) => a.startTimestamp - b.startTimestamp || (a.eventId ?? 0) - (b.eventId ?? 0))
     .filter((match) => {
-      if (seen.has(match.eventId)) return false;
-      seen.add(match.eventId);
+      // Official schedules can identify a fixture without publishing a provider ID.
+      const key = match.eventId != null ? `event:${match.eventId}`
+        : `${match.sourceDate}|${match.homeClub}|${match.awayClub}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
       return true;
     });
   // Missing published fixtures are unknown, not a no-match scoring decision.
   return [eligible[0] ?? null, eligible[1] ?? null];
+}
+
+export function quarterfinalFixtureIssues(fixture: QuarterfinalFixture, verifiedAt: string): string[] {
+  const issues: string[] = [];
+  const count = (value: unknown) => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+  if (fixture.eventId != null && !fixture.sourceUrl.endsWith(`#id:${fixture.eventId}`)) {
+    issues.push('Invalid local date or event provenance.');
+  }
+  if (fixture.eventId == null && /(^|\.)sofascore\.com$/i.test(new URL(fixture.sourceUrl).hostname)) {
+    issues.push('Sofascore fixtures require an exact event ID.');
+  }
+  if (fixture.status === 'scheduled') {
+    if ([fixture.goalsFor, fixture.goalsAgainst, fixture.yellowCards, fixture.redCards].some((value) => value !== null)) {
+      issues.push('Future result or discipline must remain null.');
+    }
+  } else if (fixture.status === 'played') {
+    if (!count(fixture.goalsFor) || !count(fixture.goalsAgainst)) issues.push('Played fixture requires final scores.');
+    if (fixture.sourceDate > verifiedAt) issues.push('Played fixture is after the verification date.');
+    if (!fixture.verificationSources?.length) issues.push('Played fixture requires result verification sources.');
+  } else {
+    issues.push('Unsupported fixture status.');
+  }
+  if ([fixture.yellowCards, fixture.redCards].some((value) => value !== null && !count(value))) {
+    issues.push('Discipline must be a nonnegative integer or unknown.');
+  }
+  return issues;
+}
+
+export function quarterfinalFantasyScore(clubId: string, fixture: QuarterfinalFixture) {
+  if (fixture.status !== 'played' || fixture.goalsFor == null || fixture.goalsAgainst == null) return null;
+  return computeFantasyScore({
+    ...fixture, id: `QF-${fixture.eventId ?? fixture.sourceDate}`, clubId, roundId: 'KO-QF',
+    windowStart: QUARTERFINAL_WINDOW.start, windowEnd: QUARTERFINAL_WINDOW.end,
+    goalsFor: fixture.goalsFor, goalsAgainst: fixture.goalsAgainst, counted: true,
+  });
+}
+
+export function buildQuarterfinalClubTotal(club: QuarterfinalClubPlan, used: ReadonlySet<number> = new Set()) {
+  const slots = selectQuarterfinalFixtures(club.fixtures, used);
+  const played = slots.filter((fixture): fixture is QuarterfinalFixture => fixture?.status === 'played');
+  const scores = played.map((fixture) => quarterfinalFantasyScore(club.clubId, fixture)).filter((score) => score != null);
+  const disciplinePending = played.some((fixture) => fixture.yellowCards == null || fixture.redCards == null);
+  return {
+    slots,
+    total: scores.length ? scores.reduce((sum, score) => sum + score.total, 0) : null,
+    played: scores.length,
+    missingSlots: slots.filter((fixture) => fixture == null).length,
+    disciplinePending,
+    kind: scores.length === 0 ? 'pending' : scores.length < 2 ? 'partial' : disciplinePending ? 'upper-bound' : 'verified',
+  } as const;
+}
+
+/** Missing matches are unbounded; unknown cards only bound two played matches. */
+export function resolveQuarterfinalWinner(
+  clubA: QuarterfinalClubPlan | undefined,
+  clubB: QuarterfinalClubPlan | undefined,
+  used: ReadonlySet<number> = new Set(),
+): string | null {
+  if (!clubA || !clubB) return null;
+  const a = buildQuarterfinalClubTotal(clubA, used);
+  const b = buildQuarterfinalClubTotal(clubB, used);
+  if (a.played !== 2 || b.played !== 2 || a.total == null || b.total == null) return null;
+  if (a.kind === 'verified' && a.total > b.total) return clubA.clubId;
+  if (b.kind === 'verified' && b.total > a.total) return clubB.clubId;
+  // Equal totals and overlapping discipline bounds do not authorize a winner.
+  return null;
 }
 
 function parseDate(value: string): number {

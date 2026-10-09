@@ -567,3 +567,11 @@ Y recién después:
 - grupos completos
 - tablas derivadas
 - CLI editorial específico
+
+## 14. Resultados de cuartos 2026
+
+`2026-qf-window.json` identifica la ventana local autorizada, `verifiedAt` y estado `planned`, `in-progress` o `completed`. Cada club conserva dos espacios seleccionados con `selectQuarterfinalFixtures`; la ausencia de un encuentro es `null`, sin partido sintético ni puntos.
+
+Un fixture `scheduled` conserva goles y tarjetas `null`. Un fixture `played` exige goles enteros, fecha no posterior al corte de verificación y `verificationSources`; tarjetas desconocidas pueden permanecer `null`. `note` documenta reprogramaciones, discrepancias y límites de las fuentes. El `eventId` es opcional para fuentes externas que no publican un ID de Sofascore. Si la fuente es Sofascore, exige el ID exacto y su fragmento; nunca se reusa un ID de otra fecha/ida/vuelta.
+
+`quarterfinalFantasyScore` calcula solo partidos jugados. `buildQuarterfinalClubTotal` distingue `pending` (sin jugados), `partial` (un jugado), `upper-bound` (dos jugados con disciplina desconocida) y `verified` (dos completos). `resolveQuarterfinalWinner` no resuelve encuentros faltantes, igualdad o cotas superpuestas. La validación compara el ganador almacenado con esa resolución y conserva la relación fija con el slot de semifinales. El frontend deriva los puntajes de las mismas funciones, muestra `?` para tarjetas desconocidas y `≤`/asterisco para cotas.
