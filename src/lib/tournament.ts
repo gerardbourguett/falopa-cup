@@ -10,6 +10,25 @@ export interface PenaltyScore {
   challenger: number;
 }
 
+/** Falopa transfers on a holder loss; REDACTED transfers on a holder win. */
+export function computeNewHolder(
+  tournament: 'falopa-cup' | 'copa-pablo-milad',
+  holderId: string,
+  challengerId: string,
+  scoreHolder: number,
+  scoreChallenger: number,
+  penaltiesHolder?: number,
+  penaltiesChallenger?: number,
+): string {
+  const usePenalties = scoreHolder === scoreChallenger &&
+    penaltiesHolder !== undefined && penaltiesChallenger !== undefined;
+  const difference = usePenalties
+    ? penaltiesHolder! - penaltiesChallenger!
+    : scoreHolder - scoreChallenger;
+  const transfers = tournament === 'falopa-cup' ? difference < 0 : difference > 0;
+  return transfers ? challengerId : holderId;
+}
+
 export interface MatchEntry {
   type: 'seeding' | 'match';
   status?: 'played' | 'pending';

@@ -39,7 +39,7 @@ const truncated = maxVisible > 0 && chain.length > maxVisible;
 function fmtDate(d: string | Date | null): string {
   if (!d) return 'Hoy';
   const date = d instanceof Date ? d : new Date(d);
-  return date.toLocaleDateString('es-CL', { day: 'numeric', month: 'short' });
+  return date.toLocaleDateString('es-CL', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 }
 ---
 

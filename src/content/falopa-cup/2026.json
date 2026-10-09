@@ -404,6 +404,8 @@
     {
       "type": "match",
       "date": "2026-09-22",
+      "competition": "Copa Chile · Octavos de final · Ida",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/audax-italiano-colo-colo-2026-09-22/",
       "holderId": "audax-italiano",
       "challengerId": "colo-colo",
       "scoreHolder": 0,
@@ -413,7 +415,8 @@
     {
       "type": "match",
       "date": "2026-09-25",
-      "competition": "Liga de Primera · Fecha 24",
+      "competition": "Copa Chile · Octavos de final · Vuelta",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/colo-colo-audax-italiano-2026-09-25/",
       "holderId": "audax-italiano",
       "challengerId": "colo-colo",
       "scoreHolder": 0,
@@ -422,9 +425,31 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-09-29",
-      "competition": "Copa Chile",
+      "competition": "Copa Chile · Cuartos de final · Ida",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/deportes-puerto-montt-colo-colo-2026-09-29/",
+      "holderId": "colo-colo",
+      "challengerId": "deportes-puerto-montt",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "colo-colo"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-10-11",
+      "competition": "Liga de Primera",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/coquimbo-unido-colo-colo-2026-10-11/",
+      "holderId": "colo-colo",
+      "challengerId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-10-20",
+      "competition": "Copa Chile · Cuartos de final · Vuelta",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/colo-colo-deportes-puerto-montt-2026-10-20/",
+      "reason": "Suspendido al descanso el 6 de octubre con 1-0 parcial. Reanudación programada para el 20 de octubre; sin resultado final. La disputa del título depende de quién sea su portador en esa fecha.",
       "holderId": "colo-colo",
       "challengerId": "deportes-puerto-montt"
     }

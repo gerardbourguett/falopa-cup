@@ -332,10 +332,34 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-09-30",
+      "competition": "Liga de Ascenso · Fecha 25 (aplazada)",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/uni%C3%B3n-san-felipe-san-luis-2026-09-30/",
       "holderId": "union-san-felipe",
-      "challengerId": "san-luis-de-quillota"
+      "challengerId": "san-luis-de-quillota",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "date": "2026-10-04",
+      "competition": "Liga de Ascenso · Fecha 16 (aplazada)",
+      "sourceUrl": "https://www.unionsanfelipe.com/sport-event/union-san-felipe-vs-iquique-2/",
+      "holderId": "union-san-felipe",
+      "challengerId": "deportes-iquique",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-10-12",
+      "competition": "Liga de Ascenso",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/rangers-de-talca-uni%C3%B3n-san-felipe-2026-10-12/",
+      "holderId": "union-san-felipe",
+      "challengerId": "rangers"
     }
   ]
 }
