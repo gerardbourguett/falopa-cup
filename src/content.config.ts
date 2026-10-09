@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { QUARTERFINAL_WINDOW, quarterfinalFixtureIssues, quarterfinalLocalDate, quarterfinalParticipantIssue, selectQuarterfinalFixtures } from './lib/tournaments/conference-league-sudamericana';
+import { QUARTERFINAL_WINDOW, quarterfinalFixtureIssues, quarterfinalLocalDate, quarterfinalParticipantIssue, quarterfinalReportsHaveDistinctSources, selectQuarterfinalFixtures } from './lib/tournaments/conference-league-sudamericana';
 import { SEMIFINAL_WINDOW_START, semifinalPlanIssues } from './lib/tournaments/conference-league-sudamericana/semifinals';
 
 const blog = defineCollection({
@@ -278,7 +278,7 @@ const conferenceQfWindowSchema = z.object({
                 count: z.number().int().nonnegative(),
                 sourceUrl: z.string().url(),
                 kind: z.enum(['listed-events', 'reported-total']),
-            }).strict()).min(2).optional(),
+            }).strict()).min(2).refine(quarterfinalReportsHaveDistinctSources, 'Discipline reports require distinct sources without duplicates.').optional(),
         }).strict()).max(2),
     }).strict().superRefine((club, ctx) => {
         try {

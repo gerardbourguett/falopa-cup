@@ -559,6 +559,47 @@ describe('quarterfinal planning', () => {
     expect(quarterfinalFixtureIssues(caballero.fixtures[1], qfWindow.verifiedAt).join()).toContain('known reds');
   });
 
+  it('requires exactly one semifinal round even without a separate semifinal schedule document', () => {
+    for (const mutation of ['missing', 'duplicate']) {
+      const changed = structuredClone(knockout);
+      if (mutation === 'missing') changed.rounds = changed.rounds.filter((round) => round.id !== 'KO-SF');
+      else changed.rounds.push(structuredClone(changed.rounds.find((round) => round.id === 'KO-SF')!));
+      expect(validateQuarterfinalIntegrity(qfWindow, changed, r16Window.matchSources).join()).toContain('exactly one KO-SF round');
+    }
+  });
+
+  it('rejects duplicated report evidence consistently in schema, fixtures, totals and resolution', () => {
+    for (const duplicate of [
+      { count: 2, sourceUrl: 'https://example.com/report', kind: 'listed-events' as const },
+      { count: 4, sourceUrl: 'https://example.com/report', kind: 'reported-total' as const },
+      { count: 4, sourceUrl: 'http://www.example.com/report/#cards', kind: 'reported-total' as const },
+    ]) {
+      const changed = structuredClone(qfWindow);
+      const caballero = changed.clubs.find((club) => club.clubId === 'py-general-caballero')!;
+      caballero.fixtures[0].yellowCards = null;
+      caballero.fixtures[0].yellowCardReports = [{ count: 2, sourceUrl: 'https://example.com/report', kind: 'listed-events' }, duplicate];
+      expect(conferenceSchema.safeParse(changed).success).toBe(false);
+      expect(quarterfinalFixtureIssues(caballero.fixtures[0], changed.verifiedAt).join()).toContain('distinct sourced reports');
+      expect(validateQuarterfinalIntegrity(changed, knockout, r16Window.matchSources).join()).toContain('distinct sourced reports');
+      expect(buildQuarterfinalClubTotal(caballero)).toMatchObject({ total: 4.5, kind: 'upper-bound', reportedTotals: null });
+      expect(resolveQuarterfinalResult(caballero, changed.clubs.find((club) => club.clubId === 'ec-orense'))).toEqual({ winnerClubId: null, basis: null });
+    }
+  });
+
+  it('accepts independent report sources, including equal counts, for a corroborated scenario winner', () => {
+    const changed = structuredClone(qfWindow);
+    const caballero = changed.clubs.find((club) => club.clubId === 'py-general-caballero')!;
+    caballero.fixtures[0].yellowCards = null;
+    caballero.fixtures[0].yellowCardReports = [
+      { count: 3, sourceUrl: 'https://primary.example/report', kind: 'listed-events' },
+      { count: 3, sourceUrl: 'https://secondary.example/report', kind: 'reported-total' },
+    ];
+    expect(conferenceSchema.safeParse(changed).success).toBe(true);
+    expect(quarterfinalFixtureIssues(caballero.fixtures[0], changed.verifiedAt)).toEqual([]);
+    expect(buildQuarterfinalClubTotal(caballero).reportedTotals).toEqual([3.75]);
+    expect(resolveQuarterfinalResult(caballero, changed.clubs.find((club) => club.clubId === 'ec-orense'))).toEqual({ winnerClubId: 'py-general-caballero', basis: 'reported-discipline-scenarios' });
+  });
+
   it('rejects coordinated semifinal rewiring and any fabricated semifinal scores or winners', () => {
     const changed = structuredClone(knockout);
     const sf = changed.rounds.find((round) => round.id === 'KO-SF')!;

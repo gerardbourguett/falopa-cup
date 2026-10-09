@@ -88,3 +88,9 @@ Fuentes y límites:
 Ocho cupos, siete fechas publicadas y una pendiente. Todos los goles y tarjetas son `null`; la interfaz muestra guiones en marcador, TA, TR y FX. Semifinales sigue `planned`, sin ganadores; la final continúa abierta.
 
 Verificación del incremento de programación: integridad correcta; **175 pruebas en 6 archivos**; Astro check con **0 errores, 0 warnings y los mismos 3 hints**; build de **12 páginas**. HTML comprobado: ocho cupos, siete fechas y una pendiente; horas locales 18:30/20:30/10:00; resultados, tarjetas y FX sin puntuar; aviso de Copa Bolivia visible y Bolívar provisional. Los cuartos y las regresiones de octavos, Falopa Cup y REDACTED se mantienen. Los wrappers `pnpm test` y `pnpm check` reprodujeron `ERR_PNPM_IGNORED_BUILDS`; los gates equivalentes pasaron con binarios locales, sin aprobar scripts ni alterar controles.
+
+## Correcciones de revisión P2
+
+Por autorización del usuario, se corrigen los dos puntos de revisión del PR 71: el validador de cuartos exige exactamente una ronda `KO-SF`, incluso cuando no hay un documento separado de programación de semifinales; ausencia o duplicado fallan. Los informes disciplinarios exigen al menos dos fuentes con URLs distintas tras normalizar protocolo, alias `www`, fragmentos, barras finales y orden de parámetros. Copias de una misma fuente, aunque cambien conteo o tipo de informe, son rechazadas. Esquema, validación de fixtures, totales por escenarios y resolución utilizan la misma regla. Dos fuentes distintas pueden corroborar un conteo igual, sin fingir que son un dato disciplinario definitivo.
+
+Regresiones finales: **178 pruebas en 6 archivos**, integridad correcta, Astro check **0 errores / 0 warnings / 3 hints previos**, build **12 páginas**. Datos, programación y ganadores actuales permanecen intactos; Caballero conserva 3/2 amarillas, cero rojas y total 3,75. El soporte de incertidumbre se conserva.

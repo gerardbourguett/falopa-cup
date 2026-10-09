@@ -138,7 +138,9 @@ export function validateQuarterfinalIntegrity(
   const resolvedCount = qf.ties.filter((tie) => tie.winnerClubId).length;
   const expectedStatus = resolvedCount === 4 ? 'completed' : playedCount > 0 ? 'in-progress' : 'planned';
   if (window.status !== expectedStatus) report('Round status cannot anticipate played results or all four qualifications.');
-  for (const round of knockout.rounds.filter((round) => round.id === 'KO-SF')) {
+  const semifinalRounds = knockout.rounds.filter((round) => round.id === 'KO-SF');
+  if (semifinalRounds.length !== 1) report('Fixed bracket requires exactly one KO-SF round.');
+  for (const round of semifinalRounds) {
     const fixed = new Map([['SF-1', ['QF-1', 'QF-2']], ['SF-2', ['QF-3', 'QF-4']]]);
     if (round.ties.length !== 2 || [...fixed.keys()].some((id) => round.ties.filter((tie) => tie.id === id).length !== 1)) report('Fixed bracket requires SF-1 and SF-2 exactly once.');
     if (round.status !== 'planned') report('Semifinals have no played results and must remain planned.');

@@ -269,6 +269,21 @@ export function selectQuarterfinalFixtures(
   return [eligible[0] ?? null, eligible[1] ?? null];
 }
 
+export function quarterfinalReportsHaveDistinctSources(reports: NonNullable<QuarterfinalFixture['yellowCardReports']>): boolean {
+  if (reports.length < 2) return false;
+  try {
+    const sources = reports.map((report) => {
+      const url = new URL(report.sourceUrl);
+      if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Unsupported report source.');
+      // Fragment, trailing slash, protocol and www variants are one report,
+      // even if its count or kind is duplicated with a different value.
+      url.searchParams.sort();
+      return `${url.hostname.replace(/^www\./, '')}:${url.port}${url.pathname.replace(/\/+$/, '')}${url.search}`;
+    });
+    return new Set(sources).size === reports.length;
+  } catch { return false; }
+}
+
 export function quarterfinalFixtureIssues(fixture: QuarterfinalFixture, verifiedAt: string, club?: Pick<QuarterfinalClubPlan, 'clubId' | 'selectionException'>): string[] {
   const issues: string[] = [];
   const count = (value: unknown) => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
@@ -295,9 +310,9 @@ export function quarterfinalFixtureIssues(fixture: QuarterfinalFixture, verified
     issues.push('Discipline must be a nonnegative integer or unknown.');
   }
   if (fixture.yellowCardReports && (fixture.status !== 'played' || fixture.yellowCards !== null || !count(fixture.redCards) ||
-      fixture.yellowCardReports.length < 2 || fixture.yellowCardReports.some((report) => !count(report.count) ||
+      !quarterfinalReportsHaveDistinctSources(fixture.yellowCardReports) || fixture.yellowCardReports.some((report) => !count(report.count) ||
         !['listed-events', 'reported-total'].includes(report.kind) || !/^https?:\/\//.test(report.sourceUrl)))) {
-    issues.push('Reported discipline scenarios require unknown yellows, known reds and at least two sourced reports.');
+    issues.push('Reported discipline scenarios require unknown yellows, known reds and at least two distinct sourced reports without duplicates.');
   }
   return issues;
 }
