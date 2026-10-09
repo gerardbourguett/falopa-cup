@@ -523,11 +523,11 @@ function scoreBreakdownText(wc: any): string {
             <div class="fecha-body">
               <strong>{rw.roundId}</strong>
               <span class="fecha-range">
-                {new Date(rw.windowStart).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}
+                {new Date(rw.windowStart).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', timeZone: 'UTC' })}
                 {' – '}
-                {new Date(rw.windowEnd).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}
+                {new Date(rw.windowEnd).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', timeZone: 'UTC' })}
               </span>
-              <small class="fecha-ext">ext. hasta {new Date(rw.extendedWindowEnd).toLocaleDateString('es-AR', { day: 'numeric', month: 'long' })}</small>
+              <small class="fecha-ext">ext. hasta {new Date(rw.extendedWindowEnd).toLocaleDateString('es-AR', { day: 'numeric', month: 'long', timeZone: 'UTC' })}</small>
               <span class:list={['fecha-status', rw.fantasyScores?.length > 0 ? 'status-done' : 'status-pending']}>
                 {rw.fantasyScores?.length > 0 ? 'Jugada' : 'Pendiente'}
               </span>

@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
 import {
+  computeNewHolder,
   getCurrentReign,
   getCurrentHolder,
   getHolderChain,
@@ -7,6 +9,54 @@ import {
   type MatchEntry,
   type ClubData,
 } from './tournament';
+
+describe('distinct title transfer rules', () => {
+  it.each([
+    [2, 1, undefined, undefined, 'holder', 'challenger'],
+    [0, 1, undefined, undefined, 'challenger', 'holder'],
+    [1, 1, undefined, undefined, 'holder', 'holder'],
+    [0, 0, 8, 7, 'holder', 'challenger'],
+    [0, 0, 2, 4, 'challenger', 'holder'],
+  ])('resolves %s–%s (%s–%s penalties) for each cup', (gf, ga, ph, pc, falopa, redacted) => {
+    expect(computeNewHolder('falopa-cup', 'holder', 'challenger', gf, ga, ph, pc)).toBe(falopa);
+    expect(computeNewHolder('copa-pablo-milad', 'holder', 'challenger', gf, ga, ph, pc)).toBe(redacted);
+  });
+
+  it('retains both holders through the verified September/October results', () => {
+    const load = (cup: string): MatchEntry[] => JSON.parse(readFileSync(
+      new URL(`../content/${cup}/2026.json`, import.meta.url), 'utf8',
+    )).matches;
+    const falopa = load('falopa-cup');
+    const redacted = load('copa-pablo-milad');
+    expect(falopa.find((m) => m.date === '2026-09-29')).toMatchObject({
+      holderId: 'colo-colo', scoreHolder: 1, scoreChallenger: 0, newHolderId: 'colo-colo',
+    });
+    expect(redacted.filter((m) => m.date >= '2026-09-30' && m.status !== 'pending')).toMatchObject([
+      { date: '2026-09-30', scoreHolder: 0, scoreChallenger: 1, newHolderId: 'union-san-felipe' },
+      { date: '2026-10-04', scoreHolder: 0, scoreChallenger: 2, newHolderId: 'union-san-felipe' },
+    ]);
+    for (const [cup, entries] of [['falopa-cup', falopa], ['copa-pablo-milad', redacted]] as const) {
+      for (const m of entries.filter((m) => m.type === 'match' && m.status !== 'pending' && m.date >= '2026-09-22')) {
+        expect(m.newHolderId).toBe(computeNewHolder(cup, m.holderId!, m.challengerId!,
+          m.scoreHolder!, m.scoreChallenger!, m.penalties?.holder, m.penalties?.challenger));
+      }
+    }
+    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'colo-colo', since: '2026-09-25' });
+    expect(getCurrentReign(redacted)).toMatchObject({ holderId: 'union-san-felipe', since: '2026-09-26' });
+    expect(falopa.find((m) => m.date === '2026-10-11')).toMatchObject({
+      status: 'pending', holderId: 'colo-colo', challengerId: 'coquimbo-unido',
+    });
+    expect(redacted.find((m) => m.date === '2026-10-12')).toMatchObject({
+      status: 'pending', holderId: 'union-san-felipe', challengerId: 'rangers',
+    });
+    const suspended = falopa.find((m) => m.date === '2026-10-20')!;
+    expect(suspended.date).toBe('2026-10-20');
+    expect(suspended.reason).toContain('Suspendido');
+    expect(suspended.scoreHolder).toBeUndefined();
+    expect(suspended.scoreChallenger).toBeUndefined();
+    expect(suspended.newHolderId).toBeUndefined();
+  });
+});
 
 // ─── Fixtures ─────────────────────────────────────────────────────────────────
 
@@ -192,11 +242,10 @@ describe('getHolderChain', () => {
     expect(chain[3].until).toBeNull();
   });
 
-  it('Copa Pablo Milad: holder wins = NO new entry (defender wins = keeps title)', () => {
-    // In Copa Pablo Milad, when defender wins, they keep the title = same holderId
+  it('uses stored newHolderId rather than inferring a transfer from the score', () => {
     const matches: MatchEntry[] = [
       seeding('coqu', '2025-01-01'),
-      // Defender (coqu) wins — newHolderId stays coqu
+      // This helper trusts the stored decision; cup rules are checked separately.
       match('coqu', 'udec', 2, 0, 'coqu', '2025-03-01'),
     ];
     const chain = getHolderChain(matches);

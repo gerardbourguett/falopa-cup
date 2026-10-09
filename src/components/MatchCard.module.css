@@ -145,6 +145,15 @@
   color: var(--badge-on-accent, #000);
 }
 
+.pendingReason {
+  margin: 0;
+  padding: 0 var(--space-md) var(--space-sm);
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
 /* ─── Seeding body ─── */
 
 .seedingBody {

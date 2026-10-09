@@ -15,7 +15,7 @@ import { input, select, confirm, number } from '@inquirer/prompts';
 import { readdir, readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { getCurrentHolder, type ClubData, type MatchEntry } from '../src/lib/tournament.js';
+import { computeNewHolder, getCurrentHolder, type ClubData, type MatchEntry } from '../src/lib/tournament.js';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -84,42 +84,6 @@ async function loadClubs(): Promise<ClubData[]> {
     clubs.push(JSON.parse(raw) as ClubData);
   }
   return clubs.sort((a, b) => a.name.localeCompare(b.name, 'es'));
-}
-
-// ─── Title transfer logic ─────────────────────────────────────────────────────
-
-function computeNewHolder(
-  tournament: Tournament,
-  holderId: string,
-  challengerId: string,
-  scoreHolder: number,
-  scoreChallenger: number,
-  penaltiesHolder?: number,
-  penaltiesChallenger?: number
-): string {
-  const draw = scoreHolder === scoreChallenger;
-  const challengerWins = scoreChallenger > scoreHolder;
-
-  // If draw and there are penalties, use them
-  if (draw && penaltiesHolder !== undefined && penaltiesChallenger !== undefined) {
-    const holderWinsPenalties = penaltiesHolder > penaltiesChallenger;
-    if (tournament === 'falopa-cup') {
-      // Falopa Cup: title changes if holder loses overall (penalties count)
-      return holderWinsPenalties ? holderId : challengerId;
-    } else {
-      // Copa Pablo Milad: title changes ONLY if challenger wins overall
-      return holderWinsPenalties ? holderId : challengerId;
-    }
-  }
-
-  if (tournament === 'falopa-cup') {
-    // Title changes if holder does NOT win (loss OR draw without penalties counts as "no win"? 
-    // Per spec: title changes if holder LOSES. Draw = holder retains.
-    return challengerWins ? challengerId : holderId;
-  } else {
-    // Copa Pablo Milad: title changes ONLY if challenger wins
-    return challengerWins ? challengerId : holderId;
-  }
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────

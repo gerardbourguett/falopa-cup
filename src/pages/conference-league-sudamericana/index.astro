@@ -68,7 +68,7 @@ function flagClass(country: string) {
 
 function formatRoundDate(value: string | Date) {
   const date = value instanceof Date ? value : new Date(value);
-  return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit' });
+  return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', timeZone: 'UTC' });
 }
 
 function getSeed(clubId: string) {
@@ -634,7 +634,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
                                     <span class="f1-match-cond">{s.isHome ? 'L' : 'V'}</span>
                                     <span class="f1-match-vs">vs {s.isHome ? s.awayClub : s.homeClub}</span>
                                     <span class="f1-match-comp">
-                                      {s.sourceCompetition} · {new Date(s.sourceDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}
+                                      {s.sourceCompetition} · {new Date(s.sourceDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', timeZone: 'UTC' })}
                                       {s.yellowCards != null && s.yellowCards > 0 && <span class="f1-cards"> · TA:{s.yellowCards}</span>}
                                       {s.redCards != null && s.redCards > 0 && <span class="f1-cards f1-cards-red"> · TR:{s.redCards}</span>}
                                     </span>
@@ -655,7 +655,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
                                   </>
                                 ) : (
                                   <>
-                                    <span class="f1-match-date">{new Date(s.sourceDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'short' })}</span>
+                                    <span class="f1-match-date">{new Date(s.sourceDate).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', timeZone: 'UTC' })}</span>
                                     <span class="f1-match-cond">{s.isHome ? 'L' : 'V'}</span>
                                     <span class="f1-match-vs">vs {s.isHome ? s.awayClub : s.homeClub}</span>
                                     <span class="f1-match-comp">{s.sourceCompetition}</span>
@@ -924,8 +924,8 @@ const reviewMissingCards = reviewBuckets.missingCards;
             </div>
             <p class="r16-audit-note">{r16WindowDoc.note}</p>
             <p class="r16-audit-note">
-              * Límite superior provisional: incluye resultado y bonificaciones deportivas, pero todavía no descuenta tarjetas cuando el acta disciplinaria está pendiente. No es un total verificado.
-              {r16ResolvedCount} de {roundOf16?.ties.length || 0} clasificados confirmados en el cuadro. La disciplina pendiente de U. Católica no impide la clasificación de Nacional Potosí por su ventaja sobre el límite superior. Se conserva la selección original de partidos, con las fuentes reprogramadas documentadas.
+              * Límite superior provisional: incluye resultado, bonificaciones y tarjetas confirmadas. Las tarjetas desconocidas aún no se descuentan. No es un total verificado.
+              {r16ResolvedCount} de {roundOf16?.ties.length || 0} clasificados confirmados en el cuadro. Las amarillas pendientes de Racing y U. Católica no impiden la clasificación de Atlético Bucaramanga y Nacional Potosí por sus ventajas sobre los límites superiores. Se conserva la selección original de partidos, con las fuentes reprogramadas documentadas.
             </p>
 
             <div class="table-wrap">

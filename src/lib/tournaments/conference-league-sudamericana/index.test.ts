@@ -673,7 +673,7 @@ describe('quarterfinal planning', () => {
     });
   });
 
-  it('backs all eight advancements with complete results or the Potosi upper bound', () => {
+  it('backs all eight advancements with verified winner totals above loser upper bounds', () => {
     const r16 = knockout.rounds.find((r) => r.id === 'KO-R16')!;
     for (const tie of r16.ties.filter((t) => t.winnerClubId)) {
       const rows = r16Window.matchSources.filter((m) => m.tieId === tie.id);
@@ -682,21 +682,50 @@ describe('quarterfinal planning', () => {
       const total = (clubId: string) => rows.filter((m) => m.clubId === clubId)
         .reduce((sum, m) => sum + computeFantasyScore(m as OfficialMatchSource).total, 0);
       const loser = tie.winnerClubId === tie.slotA.clubId ? tie.slotB.clubId : tie.slotA.clubId;
+      expect(rows.filter((m) => m.clubId === tie.winnerClubId)
+        .every((m) => m.yellowCards != null && m.redCards != null)).toBe(true);
       expect(total(tie.winnerClubId!)).toBeGreaterThan(total(loser!));
-      if (tie.id !== 'R16-8') expect(rows.every((m) => m.yellowCards != null && m.redCards != null)).toBe(true);
     }
+    expect(r16Window.matchSources.filter((m) => m.yellowCards == null || m.redCards == null)
+      .map((m) => m.id).sort()).toEqual(['KO-R16-ec-universidad-catolica-1', 'KO-R16-uy-racing-club-1']);
     const unknown = r16Window.matchSources.find((m) => m.sourceUrl.endsWith('#id:16923847'))!;
     expect(unknown.yellowCards).toBeNull();
-    expect(unknown.redCards).toBeNull();
-    expect(computeFantasyScore(unknown as OfficialMatchSource).total).toBe(4);
+    expect(unknown.redCards).toBe(1);
+    expect(computeFantasyScore(unknown as OfficialMatchSource).total).toBe(3);
     const potosi = r16.ties.find((t) => t.id === 'R16-8')!;
     expect(potosi.winnerClubId).toBe('bo-nacional-potosi');
     expect(potosi.scoreA).toBeUndefined();
-    expect(potosi.tiebreakReason).toContain('7');
+    expect(potosi.tiebreakReason).toContain('máximo de 6');
+    const racing = r16Window.matchSources.find((m) => m.sourceUrl.endsWith('#id:16873750'))!;
+    expect(racing).toMatchObject({ goalsFor: 2, goalsAgainst: 4, yellowCards: null, redCards: 0 });
+    expect(computeFantasyScore(racing as OfficialMatchSource).total).toBe(0);
+    expect(r16.ties.find((t) => t.id === 'R16-6')!.tiebreakReason).toContain('máximo de 2.75');
     expect(r16Window.matchSources.find((m) => m.id === 'KO-R16-pe-adt-1')).toMatchObject({
       status: 'played', goalsFor: 2, goalsAgainst: 1, yellowCards: 3, redCards: 0,
       sourceDate: '2026-09-23', sourceUrl: expect.stringContaining('#id:17059625'),
     });
+  });
+
+  it('reconciles the five audited scores and discipline without changing selected events', () => {
+    const expected = [
+      ['15502678', 4, 3, 2, 0, 2.5],
+      ['17032436', 2, 1, 2, 0, 2.5],
+      ['16873750', 2, 4, null, 0, 0],
+      ['16923847', 1, 0, null, 1, 3],
+      ['16767455', 2, 0, 1, 0, 4.75],
+    ];
+    for (const [id, goalsFor, goalsAgainst, yellowCards, redCards, total] of expected) {
+      const source = r16Window.matchSources.find((m) => m.sourceUrl.endsWith(`#id:${id}`))!;
+      expect(source).toMatchObject({ goalsFor, goalsAgainst, yellowCards, redCards });
+      expect(computeFantasyScore(source as OfficialMatchSource).total).toBe(total);
+    }
+    const total = (clubId: string) => r16Window.matchSources.filter((m) => m.clubId === clubId)
+      .reduce((sum, m) => sum + computeFantasyScore(m as OfficialMatchSource).total, 0);
+    expect(total('ec-orense')).toBe(1.75);
+    expect(total('py-general-caballero')).toBe(5);
+    expect(total('uy-racing-club')).toBe(2.75); // Upper bound while yellows are unknown.
+    expect(total('ec-universidad-catolica')).toBe(6); // Includes the confirmed red.
+    expect(total('bo-nacional-potosi')).toBe(10.5);
   });
 
   it('closes R16 by qualification, not by assuming all discipline has been verified', () => {

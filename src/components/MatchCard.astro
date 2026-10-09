@@ -54,6 +54,7 @@ const compColor = isLigaPrimera
     : defaultAccentColor;
 
 const dateStr = match.date.toLocaleDateString('es-CL', {
+  timeZone: 'UTC', // Content dates are calendar days, parsed at UTC midnight.
   day: 'numeric',
   month: 'short',
 });
@@ -131,7 +132,7 @@ const dateStr = match.date.toLocaleDateString('es-CL', {
             )}
           </div>
           {isPending && (
-            <span class={styles.penalties}>Por jugar</span>
+            <span class={styles.penalties}>{match.reason?.startsWith('Suspendido') ? 'Suspendido' : 'Por jugar'}</span>
           )}
           {match.penalties && !isPending && (
             <span class={styles.penalties}>({match.penalties.holder}-{match.penalties.challenger} pen)</span>
@@ -146,6 +147,8 @@ const dateStr = match.date.toLocaleDateString('es-CL', {
           )}
         </div>
       </div>
+
+      {isPending && match.reason && <p class={styles.pendingReason}>{match.reason}</p>}
 
       {challengerWon && newHolder && !isPending && (
         <div class={styles.newHolder}>

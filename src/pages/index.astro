@@ -59,6 +59,7 @@ function formatUpcomingDuel(match: any) {
   const challenger = getClub(match.challengerId);
   const d = match.date instanceof Date ? match.date : new Date(match.date);
   const dateLabel = d.toLocaleDateString("es-CL", {
+    timeZone: "UTC",
     day: "numeric",
     month: "short",
   });
@@ -88,6 +89,7 @@ function formatShortDate(value?: string | Date | null) {
   if (!value) return "";
   const d = value instanceof Date ? value : new Date(value);
   return d.toLocaleDateString("es-CL", {
+    timeZone: "UTC",
     day: "numeric",
     month: "short",
   });
@@ -129,6 +131,7 @@ function formatSinceDate(value?: string | Date | null) {
   if (!value) return "";
   const d = value instanceof Date ? value : new Date(value);
   return d.toLocaleDateString("es-CL", {
+    timeZone: "UTC",
     day: "numeric",
     month: "short",
     year: "2-digit",

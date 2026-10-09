@@ -334,7 +334,7 @@
             "clubId": "uy-racing-club"
           },
           "winnerClubId": "co-atletico-bucaramanga",
-          "tiebreakReason": "Puntaje fantasy tras dos partidos: Atlético Bucaramanga 7.75, Racing 2."
+          "tiebreakReason": "Clasificación matemáticamente asegurada: Atlético Bucaramanga 7.75 supera el máximo de 2.75 de Racing (2.75 verificados ante Boston River menos amarillas pendientes ante Central Español). El 2.75 es un límite superior, no un total confirmado."
         },
         {
           "id": "R16-7",
@@ -364,7 +364,7 @@
             "clubId": "bo-nacional-potosi"
           },
           "winnerClubId": "bo-nacional-potosi",
-          "tiebreakReason": "Clasificación matemáticamente asegurada: Nacional Potosí 10.5 supera el máximo de 7 de U. Católica (3 verificados + 4 menos disciplina pendiente ante Astillero). El 7 es un límite superior, no un total confirmado; las tarjetas siguen sin verificar."
+          "tiebreakReason": "Clasificación matemáticamente asegurada: Nacional Potosí 10.5 supera el máximo de 6 de U. Católica (3 verificados + 3 menos amarillas pendientes ante Astillero; roja directa de Luis Cangá confirmada). El 6 es un límite superior, no un total confirmado."
         }
       ]
     },
