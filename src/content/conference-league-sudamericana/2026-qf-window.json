@@ -7,7 +7,7 @@
   "windowEnd": "2026-10-15",
   "selectionPolicy": "first-two-official-local-dates",
   "verifiedAt": "2026-10-09",
-  "note": "Cuartos resueltos por clasificación al 9 de octubre. Regla general: primeros dos oficiales de todas las competiciones del 24 de septiembre al 15 de octubre inclusive, por fecha local. Excepción explícita del usuario exclusivamente para Alianza Lima, Orense y Metropolitanos: sus dos últimos oficiales terminados antes del 9 de octubre, con fechas reales fuera de ventana y reutilización declarada de cinco fuentes de octavos. Dieciséis encuentros jugados. General Caballero suma 3.75 tras la corrección explícita del usuario (3 y 2 amarillas); no quedan tarjetas pendientes para estos dos partidos. Semifinales solo recibe los cuatro clasificados; no hay partidos, fechas ni resultados reales de esa fase cargados.",
+  "note": "Cuartos resueltos por clasificación al 9 de octubre. Regla general: primeros dos oficiales de todas las competiciones del 24 de septiembre al 15 de octubre inclusive, por fecha local. Excepción explícita del usuario exclusivamente para Alianza Lima, Orense y Metropolitanos: sus dos últimos oficiales terminados antes del 9 de octubre, con fechas reales fuera de ventana y reutilización declarada de cinco fuentes de octavos. Dieciséis encuentros jugados. General Caballero suma 3.75 tras la corrección explícita del usuario (3 y 2 amarillas); no quedan tarjetas pendientes para estos dos partidos. Semifinales recibe los cuatro clasificados; su programación posterior se conserva por separado, sin resultados anticipados.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",

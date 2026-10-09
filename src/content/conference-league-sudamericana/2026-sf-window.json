@@ -1,0 +1,231 @@
+{
+  "kind": "sf-window",
+  "edition": 2026,
+  "roundId": "KO-SF",
+  "status": "planned",
+  "windowStart": "2026-10-09",
+  "selectionPolicy": "next-two-official-local-dates",
+  "verifiedAt": "2026-10-09",
+  "note": "Semifinales: los dos próximos partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Programación al corte, sujeta a cambios. No se encontraron partidos de estos cuatro clubes el 9 de octubre. Siete fechas publicadas y una fecha pendiente. Encarnación no tiene fecha ni hora confirmadas. Bolívar es segundo programado provisional de Potosí: Copa Bolivia ante Oriente Petrolero, sin fecha, podría intercalarse. Todos los resultados, tarjetas y puntos permanecen pendientes; no se aplica la excepción histórica de cuartos.",
+  "clubs": [
+    {
+      "clubId": "pe-alianza-lima",
+      "tieId": "SF-1",
+      "sourceRef": "QF-1",
+      "scheduleSourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
+      "note": "Dos próximos oficiales confirmados en el calendario Liga 1, con fecha y hora local de Perú.",
+      "fixtures": [
+        {
+          "sourceDate": "2026-10-11",
+          "timeZone": "America/Lima",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga 1 · Clausura F11",
+          "homeClub": "Cusco FC",
+          "awayClub": "Alianza Lima",
+          "isHome": false,
+          "status": "scheduled",
+          "selectionStatus": "confirmed",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
+          "verificationSources": [
+            "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
+          ],
+          "startTimestamp": 1791761400,
+          "venue": "Inca Garcilaso de la Vega",
+          "note": "18:30 de Perú (UTC−5), programación oficial."
+        },
+        {
+          "sourceDate": "2026-10-17",
+          "timeZone": "America/Lima",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga 1 · Clausura F12",
+          "homeClub": "Alianza Lima",
+          "awayClub": "Atlético Grau",
+          "isHome": true,
+          "status": "scheduled",
+          "selectionStatus": "confirmed",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
+          "verificationSources": [
+            "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
+          ],
+          "startTimestamp": 1792287000,
+          "venue": "Alejandro Villanueva",
+          "note": "20:30 de Perú (UTC−5); la fecha local es el 17, aunque UTC sea el 18."
+        }
+      ]
+    },
+    {
+      "clubId": "py-general-caballero",
+      "tieId": "SF-1",
+      "sourceRef": "QF-2",
+      "scheduleSourceUrl": "https://www.apf.org.py/noticias/autoridades-para-la-fecha-28-de-la-intermedia",
+      "note": "Santaní confirmado el 11 de octubre. Encarnación FC es el siguiente rival, jornada 29, con fecha y hora pendientes. Caballero está eliminado de Copa Paraguay; no se inventa estadio para Encarnación.",
+      "fixtures": [
+        {
+          "sourceDate": "2026-10-11",
+          "timeZone": "America/Asuncion",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "División Intermedia F28",
+          "homeClub": "General Caballero",
+          "awayClub": "Deportivo Santaní",
+          "isHome": true,
+          "status": "scheduled",
+          "selectionStatus": "confirmed",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.apf.org.py/noticias/autoridades-para-la-fecha-28-de-la-intermedia",
+          "verificationSources": [
+            "https://www.apf.org.py/noticias/autoridades-para-la-fecha-28-de-la-intermedia"
+          ],
+          "startTimestamp": 1791723600,
+          "venue": "Ka’arendy",
+          "note": "10:00 de Paraguay (UTC−3), según programación APF."
+        },
+        {
+          "sourceDate": null,
+          "timeZone": "America/Asuncion",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "División Intermedia F29",
+          "homeClub": "Encarnación FC",
+          "awayClub": "General Caballero",
+          "isHome": false,
+          "status": "tbd",
+          "selectionStatus": "confirmed",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.latribuna.com.py/deportes/2026/10/09/definicion-infartante-en-la-division-intermedia/",
+          "verificationSources": [
+            "https://www.latribuna.com.py/deportes/2026/10/09/definicion-infartante-en-la-division-intermedia/",
+            "https://www.apf.org.py/noticias/rubio-nu-se-mete-a-la-siguiente-ronda"
+          ],
+          "note": "Rival y orden corroborados. Fecha, hora y estadio pendientes; no asignar 17 ni 18 de octubre."
+        }
+      ]
+    },
+    {
+      "clubId": "ve-metropolitanos",
+      "tieId": "SF-2",
+      "sourceRef": "QF-3",
+      "scheduleSourceUrl": "https://ligafutve.org/",
+      "note": "Rivales y orden respaldados por Liga FUTVE; fechas locales corroboradas por fuentes secundarias. Horas pendientes por discrepancia de zonas: la web oficial muestra fechas/horas sin zona explícita. Copa Venezuela vuelve el 21 de octubre, después de estos encuentros.",
+      "fixtures": [
+        {
+          "sourceDate": "2026-10-10",
+          "timeZone": "America/Caracas",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga FUTVE · Clausura",
+          "homeClub": "Metropolitanos",
+          "awayClub": "Deportivo Rayo Zuliano",
+          "isHome": true,
+          "status": "scheduled",
+          "selectionStatus": "confirmed",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://comunidadfutve.com/partido/metropolitanos-fc-vs-deportivo-rayo-zuliano-cl2026/",
+          "verificationSources": [
+            "https://ligafutve.org/",
+            "https://comunidadfutve.com/partido/metropolitanos-fc-vs-deportivo-rayo-zuliano-cl2026/"
+          ],
+          "venue": "Olímpico UCV",
+          "note": "Fecha local 10 de octubre; hora pendiente. La web oficial muestra 11/10 00:30 sin zona explícita; no se interpreta como hora local."
+        },
+        {
+          "sourceDate": "2026-10-17",
+          "timeZone": "America/Caracas",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga FUTVE · Clausura",
+          "homeClub": "Estudiantes de Mérida",
+          "awayClub": "Metropolitanos",
+          "isHome": false,
+          "status": "scheduled",
+          "selectionStatus": "confirmed",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.academiadeapuestaslatam.com/stats/match/venezuela/primera-division/estudiantes-m/metropolitanos/qxRQ5lwLlm7Ee/live",
+          "verificationSources": [
+            "https://ligafutve.org/",
+            "https://www.academiadeapuestaslatam.com/stats/match/venezuela/primera-division/estudiantes-m/metropolitanos/qxRQ5lwLlm7Ee/live",
+            "https://www.lavinotinto.com/la-copa-venezuela-se-reanudara-el-19-de-agosto/"
+          ],
+          "venue": "Metropolitano de Mérida",
+          "note": "Fecha local 17 de octubre; hora pendiente. La web oficial muestra 18/10 00:00 sin zona explícita; no se inventa una hora local."
+        }
+      ]
+    },
+    {
+      "clubId": "bo-nacional-potosi",
+      "tieId": "SF-2",
+      "sourceRef": "QF-4",
+      "scheduleSourceUrl": "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
+      "note": "Aurora y Bolívar son los próximos programados de liga según fuentes secundarias; no se encontró calendario primario. Bolívar es segundo programado provisional, no segundo oficial definitivamente seleccionado: Copa Bolivia ante Oriente Petrolero sigue sin fecha y puede intercalarse. Horarios pendientes.",
+      "fixtures": [
+        {
+          "sourceDate": "2026-10-11",
+          "timeZone": "America/La_Paz",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "División Profesional · Liga",
+          "homeClub": "Aurora",
+          "awayClub": "Nacional Potosí",
+          "isHome": false,
+          "status": "scheduled",
+          "selectionStatus": "confirmed",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
+          "verificationSources": [
+            "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
+            "https://www.futboldebolivia.net/2026/04/liga-de-la-division-profesional-2026.html"
+          ],
+          "venue": "Félix Capriles",
+          "note": "Fecha de fuentes secundarias, sin horario confirmado; revisar posibles reprogramaciones de Copa Bolivia."
+        },
+        {
+          "sourceDate": "2026-10-18",
+          "timeZone": "America/La_Paz",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "División Profesional · Liga",
+          "homeClub": "Nacional Potosí",
+          "awayClub": "Bolívar",
+          "isHome": true,
+          "status": "scheduled",
+          "selectionStatus": "provisional",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null,
+          "sourceUrl": "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
+          "verificationSources": [
+            "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
+            "https://www.futboldebolivia.net/2026/04/liga-de-la-division-profesional-2026.html"
+          ],
+          "venue": "Víctor Agustín Ugarte",
+          "note": "Segundo programado provisional de liga. Copa Bolivia ante Oriente Petrolero, sin fecha, podría intercalarse y cambiar los dos oficiales seleccionados."
+        }
+      ],
+      "pendingCompetition": {
+        "sourceCompetition": "Copa Bolivia · Cuartos de final, ida",
+        "opponent": "Oriente Petrolero",
+        "isHome": false,
+        "sourceUrl": "https://elpotosi.net/deporte/20261009_nacional-arranca-de-visitante-la-fase-de-cuartos-de-final.html",
+        "note": "Fecha y hora por definir. Nacional arranca de visitante; no cuenta como un encuentro seleccionado ni como cero puntos. La programación puede intercalarse antes de Bolívar. Fuente adicional: https://larazon.bo/marcas/2026/10/09/los-cuartos-de-final-de-la-copa-tiene-llaves-definidas/"
+      }
+    }
+  ]
+}

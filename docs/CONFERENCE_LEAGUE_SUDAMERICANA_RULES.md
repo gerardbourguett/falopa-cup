@@ -51,6 +51,10 @@ El 9 de octubre el usuario autorizó una excepción adicional **solo para Alianz
 
 El modelo conserva también una resolución por escenarios disciplinarios informados cuando ambos equipos completaron sus dos partidos y todos los escenarios sustentados dan el mismo ganador. Se identifica como `reported-discipline-scenarios`, distinta de `verified-total`; no confirma un puntaje exacto ni fija límites para una futura acta. Una cota superior por sí sola nunca autoriza clasificar a ese equipo. Ninguna llave vigente necesita este criterio después de la corrección de Caballero.
 
+## Selección de semifinales 2026
+
+Por autorización posterior del usuario, se toman los **dos próximos partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite**. Se mantiene el cuadro fijo. Programación no es resultado: goles, tarjetas y puntos siguen pendientes. Un siguiente rival conocido sin fecha conserva `tbd`, sin fecha, hora o estadio inventados. Si una copa sin programación puede intercalarse, el segundo encuentro publicado de liga queda como selección provisional y se revisa cuando se publique el calendario completo. La excepción de reutilización de cuartos no aplica a semifinales.
+
 ## Puntaje fantasy
 
 - Victoria: +3

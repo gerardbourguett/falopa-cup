@@ -1,6 +1,6 @@
 # Conference: actualización de semifinalistas al 9 de octubre de 2026
 
-Base: `origin/main` d0c43b139880840662c95d2fa0dbfc750f6e53c1, después del merge de PR 70. Rama local: `fix/conference-semifinalists-2026-10-09`. Incremento local, sin publicación autorizada.
+Base: `origin/main` d0c43b139880840662c95d2fa0dbfc750f6e53c1, después del merge de PR 70. Rama: `fix/conference-semifinalists-2026-10-09`. Publicación y PR en borrador autorizados posteriormente por el usuario: [PR 71](https://github.com/gerardbourguett/falopa-cup/pull/71). Sin merge ni despliegue manual.
 
 ## Excepción de selección autorizada
 
@@ -54,7 +54,7 @@ Se conserva el soporte de incertidumbre: `null` no confirma cero; dos partidos c
 
 La auditoría anterior en `CONFERENCE_CUARTOS_2026-10-09.md` queda como historial. Las pruebas comprueban los ocho totales, los seis encuentros autorizados, las cinco reutilizaciones, los cruces fijos y el rechazo de resultados futuros o evidencia alterada.
 
-Verificación final del 9 de octubre:
+Verificación del incremento de cuartos, commit `03e7013`, el 9 de octubre:
 
 - `tsx scripts/validate-content.ts`: integridad correcta.
 - `vitest run`: 5 archivos, **165 pruebas aprobadas**.
@@ -62,3 +62,29 @@ Verificación final del 9 de octubre:
 - `astro build`: **12 páginas**, correcto.
 - Comprobación del HTML generado: 16 partidos jugados, ocho totales, Caballero TA 3/2 y FX −0,75/4,50; semifinales con participantes y sin puntajes. Regresión de Falopa Cup, REDACTED y octavos correcta. Comparación con main: intactos los otros cuatro clubes de cuartos, fechas/marcadores/rojas de Caballero y fases ajenas.
 - `git diff --check`: correcto. El repositorio no define un script de lint separado. Se ejecutaron los binarios locales equivalentes de los gates; el wrapper de pnpm había quedado bloqueado por scripts de dependencias no aprobados, sin modificar esa configuración. No se realizó inspección de píxeles en navegador.
+
+## Programación de semifinales autorizada posteriormente
+
+El usuario amplió el trabajo: **dos próximos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite**. No se encontraron encuentros de estos clubes el día 9. La programación se conserva en `2026-sf-window.json`, separada de la excepción histórica de cuartos. No se reutilizan partidos de octavos o cuartos.
+
+| Semifinalista | Fecha local | Rival / condición | Hora local | Certeza |
+|---|---|---|---|---|
+| Alianza Lima | 11 octubre | Cusco FC / visita | 18:30 Perú | Oficial, Inca Garcilaso de la Vega |
+| Alianza Lima | 17 octubre | Atlético Grau / local | 20:30 Perú | Oficial, Alejandro Villanueva |
+| General Caballero | 11 octubre | Deportivo Santaní / local | 10:00 Paraguay | Oficial APF, Ka’arendy |
+| General Caballero | Pendiente | Encarnación FC / visita | Pendiente | Rival y orden corroborados, estadio pendiente |
+| Metropolitanos | 10 octubre | Rayo Zuliano / local | Pendiente | Olímpico UCV; fecha local corroborada |
+| Metropolitanos | 17 octubre | Estudiantes de Mérida / visita | Pendiente | Metropolitano de Mérida; fecha local corroborada |
+| Nacional Potosí | 11 octubre | Aurora / visita | Pendiente | Fuentes secundarias, Félix Capriles |
+| Nacional Potosí | 18 octubre | Bolívar / local | Pendiente | **Segundo programado provisional**, Víctor Agustín Ugarte |
+
+Fuentes y límites:
+
+- Alianza: [Liga 1, calendario oficial](https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/). Hora de Perú UTC−5; el 17 a las 20:30 es el 18 a las 01:30 UTC, sin cambiar la fecha local.
+- Caballero: [APF, fecha 28](https://www.apf.org.py/noticias/autoridades-para-la-fecha-28-de-la-intermedia), [La Tribuna, siguiente jornada](https://www.latribuna.com.py/deportes/2026/10/09/definicion-infartante-en-la-division-intermedia/) y [eliminación de Copa Paraguay](https://www.apf.org.py/noticias/rubio-nu-se-mete-a-la-siguiente-ronda). No se asignan 17/18 de octubre ni estadio al partido de Encarnación.
+- Metropolitanos: [Liga FUTVE](https://ligafutve.org/) respalda rivales y orden; [Comunidad FUTVE](https://comunidadfutve.com/partido/metropolitanos-fc-vs-deportivo-rayo-zuliano-cl2026/) y [Academia de Apuestas](https://www.academiadeapuestaslatam.com/stats/match/venezuela/primera-division/estudiantes-m/metropolitanos/qxRQ5lwLlm7Ee/live) corroboran fechas locales. La web oficial muestra 11/10 00:30 y 18/10 00:00 sin zona explícita: no se convierten en horas locales confirmadas. [Copa Venezuela](https://www.lavinotinto.com/la-copa-venezuela-se-reanudara-el-19-de-agosto/) vuelve el 21 de octubre, después de estos dos encuentros.
+- Potosí: [Bolivia.com](https://www.bolivia.com/futbol/equipos/nacional-potosi/) y [Fútbol de Bolivia](https://www.futboldebolivia.net/2026/04/liga-de-la-division-profesional-2026.html). No se encontró calendario primario ni horarios confirmados. [La Razón](https://larazon.bo/marcas/2026/10/09/los-cuartos-de-final-de-la-copa-tiene-llaves-definidas/) y [El Potosí](https://elpotosi.net/deporte/20261009_nacional-arranca-de-visitante-la-fase-de-cuartos-de-final.html) indican Copa Bolivia ante Oriente Petrolero, empezando de visitante, todavía sin fecha ni hora. Puede intercalarse y alterar la selección: **Bolívar no es segundo oficial definitivamente seleccionado**. Esta advertencia se muestra fuera del bloque plegable de fuentes, además de guardarse en datos y pruebas.
+
+Ocho cupos, siete fechas publicadas y una pendiente. Todos los goles y tarjetas son `null`; la interfaz muestra guiones en marcador, TA, TR y FX. Semifinales sigue `planned`, sin ganadores; la final continúa abierta.
+
+Verificación del incremento de programación: integridad correcta; **175 pruebas en 6 archivos**; Astro check con **0 errores, 0 warnings y los mismos 3 hints**; build de **12 páginas**. HTML comprobado: ocho cupos, siete fechas y una pendiente; horas locales 18:30/20:30/10:00; resultados, tarjetas y FX sin puntuar; aviso de Copa Bolivia visible y Bolívar provisional. Los cuartos y las regresiones de octavos, Falopa Cup y REDACTED se mantienen. Los wrappers `pnpm test` y `pnpm check` reprodujeron `ERR_PNPM_IGNORED_BUILDS`; los gates equivalentes pasaron con binarios locales, sin aprobar scripts ni alterar controles.

@@ -576,6 +576,8 @@ El soporte opcional `yellowCardReports` conserva conteos y fuentes cuando las am
 
 Semifinales mantiene cruces fijos SF-1 = QF-1/QF-2 y SF-2 = QF-3/QF-4. Poblar los participantes no crea resultados: la fase sigue `planned`, sin ganadores ni puntajes.
 
+La programación posterior usa `2026-sf-window.json`, `kind: sf-window`, inicio inclusivo `2026-10-09` y política `next-two-official-local-dates`, sin campo de fecha final. Los ocho cupos pueden ser `scheduled` con fecha o `tbd` con `sourceDate: null`; solo las horas confirmadas tienen `startTimestamp`. `selectionStatus: provisional` y `pendingCompetition` preservan la incertidumbre cuando otra competición sin fecha puede intercalarse. El esquema y la integridad exigen que una copa pendiente conserve el aviso y el segundo cupo provisional. Resultados y tarjetas son `null`; el frontend no calcula ni muestra ceros como puntajes de partidos programados.
+
 `2026-qf-window.json` identifica la ventana local autorizada, `verifiedAt` y estado `planned`, `in-progress` o `completed`. Cada club conserva dos espacios seleccionados con `selectQuarterfinalFixtures`; la ausencia de un encuentro es `null`, sin partido sintético ni puntos.
 
 Un fixture `scheduled` conserva goles y tarjetas `null`. Un fixture `played` exige goles enteros, fecha no posterior al corte de verificación y `verificationSources`; tarjetas desconocidas pueden permanecer `null`. `note` documenta reprogramaciones, discrepancias y límites de las fuentes. El `eventId` es opcional para fuentes externas que no publican un ID de Sofascore. Si la fuente es Sofascore, exige el ID exacto y su fragmento; nunca se reusa un ID de otra fecha/ida/vuelta.
