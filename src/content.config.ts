@@ -229,6 +229,7 @@ const conferenceKnockoutSchema = z.object({
             cardDeductionsA: z.number().nonnegative().optional(),
             cardDeductionsB: z.number().nonnegative().optional(),
             winnerClubId: z.string().nullable().optional(),
+            winnerBasis: z.enum(['verified-total', 'reported-discipline-scenarios']).optional(),
             tiebreakReason: z.string().optional(),
         })),
     })),
@@ -250,12 +251,13 @@ const conferenceQfWindowSchema = z.object({
         tieId: z.string(),
         sourceRef: z.string(),
         qualification: z.enum(['confirmed', 'conditional']),
+        selectionException: z.literal('last-two-completed-before-2026-10-09').optional(),
         scheduleSourceUrl: z.string().url(),
         note: z.string().optional(),
         fixtures: z.array(z.object({
             eventId: z.number().int().positive().optional(),
             sourceDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-            startTimestamp: z.number().int().positive(),
+            startTimestamp: z.number().int().positive().optional(),
             timeZone: z.string(),
             sourceCompetitionType: z.enum(['local-league', 'local-cup', 'conmebol']),
             sourceCompetition: z.string(),
@@ -270,18 +272,24 @@ const conferenceQfWindowSchema = z.object({
             sourceUrl: z.string().url(),
             verificationSources: z.array(z.string().url()).min(1).optional(),
             note: z.string().optional(),
-        }).strict()).max(2).superRefine((fixtures, ctx) => {
-            try {
-                const selected = selectQuarterfinalFixtures(fixtures).filter(Boolean);
-                if (JSON.stringify(selected) !== JSON.stringify(fixtures) || fixtures.some((fixture) =>
-                    fixture.sourceDate !== quarterfinalLocalDate(fixture))) {
-                    ctx.addIssue({ code: 'custom', message: 'Fixtures must be unique, chronological, sourced and inside the local-date QF window.' });
-                }
-            } catch {
-                ctx.addIssue({ code: 'custom', message: 'Invalid fixture timestamp or venue time zone.' });
-            }
-        }),
+            reusedR16SourceId: z.string().optional(),
+            yellowCardReports: z.array(z.object({
+                count: z.number().int().nonnegative(),
+                sourceUrl: z.string().url(),
+                kind: z.enum(['listed-events', 'reported-total']),
+            }).strict()).min(2).optional(),
+        }).strict()).max(2),
     }).strict().superRefine((club, ctx) => {
+        try {
+            const selected = selectQuarterfinalFixtures(club.fixtures, new Set(), club).filter(Boolean);
+            if (JSON.stringify(selected) !== JSON.stringify(club.fixtures) ||
+                (club.selectionException && selected.length !== 2) ||
+                club.fixtures.some((fixture) => fixture.sourceDate !== quarterfinalLocalDate(fixture))) {
+                ctx.addIssue({ code: 'custom', message: 'Fixtures must match the local-date QF policy or the six specifically authorized historical games.' });
+            }
+        } catch {
+            ctx.addIssue({ code: 'custom', message: 'Invalid fixture timestamp or venue time zone.' });
+        }
         club.fixtures.forEach((fixture, index) => {
             const message = quarterfinalParticipantIssue(club.clubId, fixture);
             if (message) ctx.addIssue({ code: 'custom', path: ['fixtures', index], message });
@@ -328,7 +336,7 @@ const conferenceLeagueSudamericana = defineCollection({
         if (window.kind !== 'qf-window') return;
         window.clubs.forEach((club, clubIndex) => club.fixtures.forEach((fixture, fixtureIndex) => {
             try {
-                quarterfinalFixtureIssues(fixture, window.verifiedAt).forEach((message) =>
+                quarterfinalFixtureIssues(fixture, window.verifiedAt, club).forEach((message) =>
                     ctx.addIssue({ code: 'custom', path: ['clubs', clubIndex, 'fixtures', fixtureIndex], message }));
             } catch {
                 ctx.addIssue({ code: 'custom', message: 'Invalid QF source URL.' });

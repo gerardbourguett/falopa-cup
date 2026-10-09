@@ -863,7 +863,9 @@ const reviewMissingCards = reviewBuckets.missingCards;
             <p class="r16-audit-note">
               <strong>Ventana: 24 de septiembre al 15 de octubre de 2026.</strong> Ambas fechas incluidas,
               según la sede. Primeros dos partidos oficiales de todas las competiciones por club, sin amistosos.
-              Cierre ampliado solo para cuartos. Corte: {qfWindowDoc.verifiedAt}. Programación sujeta a cambios.
+              Cierre ampliado solo para cuartos. Excepción autorizada: Alianza Lima, Orense y Metropolitanos usan
+              sus dos últimos oficiales jugados antes del 9 de octubre; cinco partidos se reutilizan desde octavos,
+              conservando sus fechas reales. Corte: {qfWindowDoc.verifiedAt}. Programación sujeta a cambios.
               Un partido futuro o espacio pendiente no otorga puntos. * Máximo provisional: faltan tarjetas.
               Un total parcial corresponde solo a los partidos jugados y no limita el total final.
             </p>
@@ -878,7 +880,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
                 )}
                 <div class="table-wrap" role="region" aria-label={group.title} tabindex="0">
                   <table class="r16-table">
-                    <caption class="sr-only">{group.title}: primeros dos partidos oficiales dentro de la ventana de cuartos.</caption>
+                    <caption class="sr-only">{group.title}: partidos oficiales seleccionados para cuartos, con la excepción histórica autorizada.</caption>
                     <thead>
                       <tr>
                         <th scope="col">Llave</th><th scope="col" class="col-club">Club</th>

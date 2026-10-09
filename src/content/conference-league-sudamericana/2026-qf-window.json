@@ -2,12 +2,12 @@
   "kind": "qf-window",
   "edition": 2026,
   "roundId": "KO-QF",
-  "status": "in-progress",
+  "status": "completed",
   "windowStart": "2026-09-24",
   "windowEnd": "2026-10-15",
   "selectionPolicy": "first-two-official-local-dates",
   "verifiedAt": "2026-10-09",
-  "note": "Ventana de cuartos: 24 de septiembre al 15 de octubre de 2026 inclusive, según la fecha local de la sede. El usuario amplió únicamente el cierre de cuartos; no cambia el inicio, las otras fases ni la excepción ADT–Cienciano de octavos. Primeros dos partidos oficiales de todas las competiciones, sin amistosos. Corte de verificación: 9 de octubre. Diez partidos jugados, tres programados y tres espacios sin programación verificable. Los programados y espacios pendientes no reciben resultados ni puntos; tarjetas desconocidas permanecen null y generan una cota superior cuando ambos partidos están jugados. QF-4 resuelta a favor de Nacional Potosí; las otras tres llaves siguen pendientes.",
+  "note": "Cuartos resueltos por clasificación al 9 de octubre. Regla general: primeros dos oficiales de todas las competiciones del 24 de septiembre al 15 de octubre inclusive, por fecha local. Excepción explícita del usuario exclusivamente para Alianza Lima, Orense y Metropolitanos: sus dos últimos oficiales terminados antes del 9 de octubre, con fechas reales fuera de ventana y reutilización declarada de cinco fuentes de octavos. Dieciséis encuentros jugados. General Caballero suma 3.75 tras la corrección explícita del usuario (3 y 2 amarillas); no quedan tarjetas pendientes para estos dos partidos. Semifinales solo recibe los cuatro clasificados; no hay partidos, fechas ni resultados reales de esa fase cargados.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
@@ -15,30 +15,54 @@
       "sourceRef": "R16-1",
       "qualification": "confirmed",
       "scheduleSourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
-      "note": "Cusco–Alianza reprogramado al 11 de octubre. Atlético Grau (17 de octubre) queda fuera; segundo espacio pendiente de verificación.",
+      "note": "Excepción autorizada únicamente para pe-alianza-lima: los dos últimos oficiales terminados antes del 9 de octubre, con fechas originales anteriores a la ventana. La reutilización de octavos se declara por encuentro. Sustituye los cupos futuros o no asignados del PR 70; no cambia la regla general ni las otras fases.",
       "fixtures": [
         {
-          "eventId": 16280833,
-          "sourceDate": "2026-10-11",
-          "startTimestamp": 1791761400,
-          "timeZone": "America/Lima",
+          "eventId": 16280820,
+          "sourceDate": "2026-09-12",
           "sourceCompetitionType": "local-league",
-          "sourceCompetition": "Liga 1 · Clausura F11",
-          "homeClub": "Cusco FC",
-          "awayClub": "Alianza Lima",
-          "isHome": false,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.sofascore.com/football/match/cusco-fc-alianza-lima/lWskAA#id:16280833",
+          "sourceCompetition": "Liga 1 · Clausura F9",
+          "homeClub": "Alianza Lima",
+          "awayClub": "Universitario",
+          "isHome": true,
+          "status": "played",
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "yellowCards": 2,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/alianza-lima-universitario-de-deportes/fWslW#id:16280820",
+          "timeZone": "America/Lima",
+          "reusedR16SourceId": "KO-R16-pe-alianza-lima-1",
           "verificationSources": [
+            "https://www.sofascore.com/football/match/alianza-lima-universitario-de-deportes/fWslW#id:16280820",
             "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
           ],
-          "note": "Programación oficial de Liga 1; ID histórico conservado, sin reextraer API Sofascore."
+          "note": "Excepción específica autorizada el 9 de octubre: encuentro anterior a la ventana, reutilizado de KO-R16-pe-alianza-lima-1. Se conserva la fecha local original. No se inventa una hora de inicio. "
+        },
+        {
+          "eventId": 16280829,
+          "sourceDate": "2026-09-18",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga 1 · Clausura F10",
+          "homeClub": "Alianza Lima",
+          "awayClub": "ADT",
+          "isHome": true,
+          "status": "played",
+          "goalsFor": 2,
+          "goalsAgainst": 0,
+          "yellowCards": 0,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/asociacion-deportiva-tarma-alianza-lima/lWshlJc#id:16280829",
+          "timeZone": "America/Lima",
+          "reusedR16SourceId": "KO-R16-pe-alianza-lima-2",
+          "verificationSources": [
+            "https://www.sofascore.com/football/match/asociacion-deportiva-tarma-alianza-lima/lWshlJc#id:16280829",
+            "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
+          ],
+          "note": "Excepción específica autorizada el 9 de octubre: encuentro anterior a la ventana, reutilizado de KO-R16-pe-alianza-lima-2. Se conserva la fecha local original. No se inventa una hora de inicio. "
         }
-      ]
+      ],
+      "selectionException": "last-two-completed-before-2026-10-09"
     },
     {
       "clubId": "ec-orense",
@@ -46,25 +70,53 @@
       "sourceRef": "R16-3",
       "qualification": "confirmed",
       "scheduleSourceUrl": "https://www.ecuavisa.com/amp/futbol-nacional/orense-deportivo-cuenca-fecha-hora-ecuavisa-fecha2-hexagonal-descenso-ligapro-20261007-0094.html",
-      "note": "Cuenca entra por el cierre ampliado. Manta–Orense se jugó el 21 de septiembre y queda fuera por el inicio; Mushuc Runa (19 de octubre) queda fuera por el cierre. Segundo espacio pendiente. No se inventa un ID de Sofascore para el encuentro nuevo.",
+      "note": "Excepción autorizada únicamente para ec-orense: los dos últimos oficiales terminados antes del 9 de octubre, con fechas originales anteriores a la ventana. La reutilización de octavos se declara por encuentro. Sustituye los cupos futuros o no asignados del PR 70; no cambia la regla general ni las otras fases.",
       "fixtures": [
         {
-          "sourceDate": "2026-10-11",
-          "startTimestamp": 1791744300,
+          "eventId": 15502691,
+          "sourceDate": "2026-09-14",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "LigaPro Serie A · Primera Etapa F30",
+          "homeClub": "Universidad Católica del Ecuador",
+          "awayClub": "Orense SC",
+          "isHome": false,
+          "status": "played",
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "yellowCards": 3,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/orense-sc-universidad-catolica-del-ecuador/RNisAalc#id:15502691",
+          "timeZone": "America/Guayaquil",
+          "reusedR16SourceId": "KO-R16-ec-orense-2",
+          "verificationSources": [
+            "https://www.sofascore.com/football/match/orense-sc-universidad-catolica-del-ecuador/RNisAalc#id:15502691",
+            "https://www.primicias.ec/deportes/ligapro/universidad-catolica/envivo-orense-resultado-ver-partido-tv-132538/"
+          ],
+          "note": "Excepción específica autorizada el 9 de octubre: encuentro anterior a la ventana, reutilizado de KO-R16-ec-orense-2. Se conserva la fecha local original. No se inventa una hora de inicio. "
+        },
+        {
+          "sourceDate": "2026-09-21",
           "timeZone": "America/Guayaquil",
           "sourceCompetitionType": "local-league",
-          "sourceCompetition": "LigaPro · Hexagonal de descenso F2",
-          "homeClub": "Orense",
-          "awayClub": "Deportivo Cuenca",
-          "isHome": true,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.ecuavisa.com/amp/futbol-nacional/orense-deportivo-cuenca-fecha-hora-ecuavisa-fecha2-hexagonal-descenso-ligapro-20261007-0094.html"
+          "sourceCompetition": "LigaPro · Hexagonal de descenso F1",
+          "homeClub": "Manta",
+          "awayClub": "Orense SC",
+          "isHome": false,
+          "status": "played",
+          "goalsFor": 1,
+          "goalsAgainst": 2,
+          "yellowCards": 3,
+          "redCards": 0,
+          "sourceUrl": "https://footballnation.eu/match/ligapro-serie-a/2026/812232/",
+          "verificationSources": [
+            "https://www.primicias.ec/deportes/ligapro/manta/envivo-orense-fecha1-hexagonal-descenso-resultado-ver-partido-tv-132845/",
+            "https://footballnation.eu/match/ligapro-serie-a/2026/812232/",
+            "https://www.livesoccertv.com/match/manta-vs-orense/1oa6sw"
+          ],
+          "note": "Excepción específica autorizada: segundo de los últimos dos oficiales terminados antes del 9 de octubre. Fecha local real 21 de septiembre; no usado en octavos. Tres amarillas a jugadores: Velasco, Achilier y Parrales. Sin ID Sofascore ni hora de inicio inventados."
         }
-      ]
+      ],
+      "selectionException": "last-two-completed-before-2026-10-09"
     },
     {
       "clubId": "py-general-caballero",
@@ -86,14 +138,14 @@
           "status": "played",
           "goalsFor": 1,
           "goalsAgainst": 3,
-          "yellowCards": null,
+          "yellowCards": 3,
           "redCards": 0,
           "sourceUrl": "https://www.sofascore.com/football/match/club-3-de-noviembre-general-caballero/ucfdsbCQd#id:17146932",
           "verificationSources": [
             "https://www.apf.org.py/noticias/el-3-sale-victorioso-de-ka-arendy",
             "https://betmines.com/es/partidos/pronosticos-general-caballero-jlm-3-de-noviembre_19885258"
           ],
-          "note": "APF confirma 1–3 y enumera dos amarillas; fuentes secundarias discrepan con tres/cuatro. Sin acta exhaustiva, amarillas desconocidas. Cero rojas explícito en fuente secundaria."
+          "note": "Amarillas fijadas por corrección explícita del usuario el 9 de octubre de 2026: 3. No es una nueva acta oficial; se conservan las fuentes históricas discrepantes. Cero rojas según las fuentes anteriores."
         },
         {
           "eventId": 17146922,
@@ -108,17 +160,17 @@
           "status": "played",
           "goalsFor": 2,
           "goalsAgainst": 0,
-          "yellowCards": null,
+          "yellowCards": 2,
           "redCards": 0,
           "sourceUrl": "https://www.sofascore.com/football/match/general-caballero-club-fernando-de-la-mora/Tucsucfd#id:17146922",
           "verificationSources": [
             "https://www.apf.org.py/noticias/el-rojo-mallorquino-festeja-en-el-barrio-palomar",
             "https://www.sportscore.mx/football/match/club-fernando-de-la-mora-vs-general-caballero-jlm/6ypq3nhk64evmd7/"
           ],
-          "note": "APF confirma 0–2 y enumera una amarilla; SportScore indica dos. Sin acta exhaustiva, amarillas desconocidas. Cero rojas explícito en fuente secundaria."
+          "note": "Amarillas fijadas por corrección explícita del usuario el 9 de octubre de 2026: 2. No es una nueva acta oficial; se conservan las fuentes históricas discrepantes. Cero rojas según las fuentes anteriores."
         }
       ],
-      "note": "Dos resultados oficiales contrastados con APF. Las amarillas discrepantes impiden confirmar el total; máximo 5 puntos, no 4.25 confirmado."
+      "note": "Corrección explícita del usuario el 9 de octubre: 3 amarillas ante 3 de Noviembre y 2 ante Fernando de la Mora. Total del proyecto: 3.75, sin tarjetas pendientes. Las fuentes históricas discrepantes se conservan; no se atribuye la corrección a una nueva acta oficial."
     },
     {
       "clubId": "ve-metropolitanos",
@@ -126,25 +178,58 @@
       "sourceRef": "R16-5",
       "qualification": "confirmed",
       "scheduleSourceUrl": "https://comunidadfutve.com/club/deportivo-rayo-zuliano/",
-      "note": "Rayo Zuliano se programa para el 10 de octubre a las 19:30 en Caracas. Segundo espacio pendiente. Copa Venezuela está en fase de grupos y Metropolitanos entra en octavos; no se confirmó otro partido elegible. No se inventa un ID de Sofascore.",
+      "note": "Excepción autorizada únicamente para ve-metropolitanos: los dos últimos oficiales terminados antes del 9 de octubre, con fechas originales anteriores a la ventana. La reutilización de octavos se declara por encuentro. Sustituye los cupos futuros o no asignados del PR 70; no cambia la regla general ni las otras fases.",
       "fixtures": [
         {
-          "sourceDate": "2026-10-10",
-          "startTimestamp": 1791675000,
-          "timeZone": "America/Caracas",
+          "eventId": 17093892,
+          "sourceDate": "2026-09-16",
           "sourceCompetitionType": "local-league",
-          "sourceCompetition": "Liga FUTVE · Clausura F12",
+          "sourceCompetition": "Liga FUTVE · Clausura F10",
           "homeClub": "Metropolitanos",
-          "awayClub": "Deportivo Rayo Zuliano",
+          "awayClub": "Caracas",
           "isHome": true,
-          "status": "scheduled",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://comunidadfutve.com/partido/metropolitanos-fc-vs-deportivo-rayo-zuliano-cl2026/"
+          "status": "played",
+          "goalsFor": 3,
+          "goalsAgainst": 0,
+          "yellowCards": 2,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/es/football/match/metropolitanos-caracasc/FzcsFZob#id:17093892",
+          "timeZone": "America/Caracas",
+          "reusedR16SourceId": "KO-R16-ve-metropolitanos-1",
+          "verificationSources": [
+            "https://www.sofascore.com/es/football/match/metropolitanos-caracasc/FzcsFZob#id:17093892",
+            "https://www.caracasfutbolclub.com/read/caracas-tropezo-ante-metropolitanos-en-el-olimpico",
+            "https://ligafutve.org/metropolitanos-no-dudo-y-esta-a-punto-de-amarrar-la-acumulada/",
+            "https://comunidadfutve.com/partido/zamora-fc-vs-metropolitanos-fc-cl2026/"
+          ],
+          "note": "Excepción específica autorizada el 9 de octubre: encuentro anterior a la ventana, reutilizado de KO-R16-ve-metropolitanos-1. Se conserva la fecha local original. No se inventa una hora de inicio. La roja al DT Stifano ante Zamora no es una sanción a jugador."
+        },
+        {
+          "eventId": 16774716,
+          "sourceDate": "2026-09-20",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Primera División · Clausura F11",
+          "homeClub": "Zamora",
+          "awayClub": "Metropolitanos",
+          "isHome": false,
+          "status": "played",
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "yellowCards": 4,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/metropolitanos-zamora/MzcsFZob#id:16774716",
+          "timeZone": "America/Caracas",
+          "reusedR16SourceId": "KO-R16-ve-metropolitanos-2",
+          "verificationSources": [
+            "https://www.sofascore.com/football/match/metropolitanos-zamora/MzcsFZob#id:16774716",
+            "https://www.caracasfutbolclub.com/read/caracas-tropezo-ante-metropolitanos-en-el-olimpico",
+            "https://ligafutve.org/metropolitanos-no-dudo-y-esta-a-punto-de-amarrar-la-acumulada/",
+            "https://comunidadfutve.com/partido/zamora-fc-vs-metropolitanos-fc-cl2026/"
+          ],
+          "note": "Excepción específica autorizada el 9 de octubre: encuentro anterior a la ventana, reutilizado de KO-R16-ve-metropolitanos-2. Se conserva la fecha local original. No se inventa una hora de inicio. La roja al DT Stifano ante Zamora no es una sanción a jugador."
         }
-      ]
+      ],
+      "selectionException": "last-two-completed-before-2026-10-09"
     },
     {
       "clubId": "co-atletico-bucaramanga",

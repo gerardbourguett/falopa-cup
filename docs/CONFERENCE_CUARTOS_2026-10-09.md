@@ -1,5 +1,7 @@
 # Conference League Sudamericana: cuartos al 9 de octubre de 2026
 
+Auditoría histórica previa a la excepción autorizada para Alianza, Orense y Metropolitanos y a la corrección de tarjetas de Caballero por el usuario. Estado vigente: [actualización de semifinalistas](CONFERENCE_SEMIFINALES_2026-10-09.md).
+
 Base de trabajo: `origin/main` 836859580c926a21da6fa79e89e65dc020156dc5, posterior al merge de PR 69. Rama local: `fix/conference-quarterfinals-2026-10-09`. Este incremento solo afecta cuartos de Conference; los cambios de Falopa Cup, Copa REDACTED/Pablo Milad y octavos de PR 69 se conservan. No se publica este incremento.
 
 ## Alcance autorizado y selección

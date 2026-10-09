@@ -570,6 +570,12 @@ Y recién después:
 
 ## 14. Resultados de cuartos 2026
 
+Actualización del 9 de octubre: `selectionException: last-two-completed-before-2026-10-09` solo admite seis encuentros identificados para Alianza Lima, Orense y Metropolitanos. Los cinco reutilizados llevan `reusedR16SourceId`, validado contra fecha, URL, marcador, disciplina, condición y rival originales de octavos. `startTimestamp` puede faltar únicamente en estos partidos históricos autorizados: se preserva la fecha local sin inventar una hora. Los encuentros ordinarios siguen requiriendo timestamp y ventana 24 de septiembre–15 de octubre.
+
+El soporte opcional `yellowCardReports` conserva conteos y fuentes cuando las amarillas son desconocidas y las rojas conocidas. `reportedTotals` enumera combinaciones informadas; `winnerBasis` distingue `verified-total` de `reported-discipline-scenarios`. Los escenarios no son límites universales para futuras actas. Las amarillas de Caballero ahora son 3/2 por corrección del usuario: sus registros no usan informes provisionales para resolver la llave y su total es 3,75.
+
+Semifinales mantiene cruces fijos SF-1 = QF-1/QF-2 y SF-2 = QF-3/QF-4. Poblar los participantes no crea resultados: la fase sigue `planned`, sin ganadores ni puntajes.
+
 `2026-qf-window.json` identifica la ventana local autorizada, `verifiedAt` y estado `planned`, `in-progress` o `completed`. Cada club conserva dos espacios seleccionados con `selectQuarterfinalFixtures`; la ausencia de un encuentro es `null`, sin partido sintético ni puntos.
 
 Un fixture `scheduled` conserva goles y tarjetas `null`. Un fixture `played` exige goles enteros, fecha no posterior al corte de verificación y `verificationSources`; tarjetas desconocidas pueden permanecer `null`. `note` documenta reprogramaciones, discrepancias y límites de las fuentes. El `eventId` es opcional para fuentes externas que no publican un ID de Sofascore. Si la fuente es Sofascore, exige el ID exacto y su fragmento; nunca se reusa un ID de otra fecha/ida/vuelta.
