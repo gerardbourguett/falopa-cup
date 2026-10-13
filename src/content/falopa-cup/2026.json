@@ -436,22 +436,23 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-10-11",
-      "competition": "Liga de Primera",
-      "sourceUrl": "https://www.campeonatochileno.cl/match/coquimbo-unido-colo-colo-2026-10-11/",
+      "competition": "Liga de Primera · Fecha 24",
+      "sourceUrl": "https://www.radioagricultura.cl/deportes/torneo-nacional/coquimbo-unido-aplasto-a-colo-colo-con-un-contundente-5-2-por-la-liga-de-primera_20261011/",
       "holderId": "colo-colo",
-      "challengerId": "coquimbo-unido"
+      "challengerId": "coquimbo-unido",
+      "scoreHolder": 2,
+      "scoreChallenger": 5,
+      "newHolderId": "coquimbo-unido"
     },
     {
       "type": "match",
       "status": "pending",
-      "date": "2026-10-20",
-      "competition": "Copa Chile · Cuartos de final · Vuelta",
-      "sourceUrl": "https://www.campeonatochileno.cl/match/colo-colo-deportes-puerto-montt-2026-10-20/",
-      "reason": "Suspendido al descanso el 6 de octubre con 1-0 parcial. Reanudación programada para el 20 de octubre; sin resultado final. La disputa del título depende de quién sea su portador en esa fecha.",
-      "holderId": "colo-colo",
-      "challengerId": "deportes-puerto-montt"
+      "date": "2026-10-16",
+      "competition": "Copa de La Liga · Final",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/coquimbo-unido-ohiggins-2026-10-16/",
+      "holderId": "coquimbo-unido",
+      "challengerId": "ohiggins"
     }
   ]
 }
