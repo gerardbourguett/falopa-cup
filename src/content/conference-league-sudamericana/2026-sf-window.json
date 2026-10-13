@@ -6,7 +6,7 @@
   "windowStart": "2026-10-09",
   "selectionPolicy": "next-two-official-local-dates",
   "verifiedAt": "2026-10-13",
-  "note": "Semifinales: los dos primeros partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Al corte del 13 de octubre hay cuatro partidos jugados (uno por semifinalista) y cuatro por jugar: tres programados y uno con fecha pendiente (General Caballero en Encarnación). Cada marcador se contrastó en al menos dos medios. Las tarjetas no pudieron contrastarse en dos fuentes y permanecen desconocidas, no en cero: cada total jugado es un máximo provisional, no un total verificado, y un total parcial no limita el resultado final. No se declara ganador de ninguna llave.",
+  "note": "Semifinales: los dos primeros partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Al corte del 13 de octubre hay cuatro partidos jugados (uno por semifinalista) y cuatro por jugar: tres programados y uno con fecha pendiente (General Caballero en Encarnación). Marcadores y tarjetas se contrastaron en dos fuentes independientes: estadísticas de Sofascore y de 365Scores (en General Caballero, 365Scores y ABC Color, porque Sofascore no publica tarjetas de ese partido). Con un solo partido jugado por club, cada total es parcial y no limita el resultado final. No se declara ganador de ninguna llave.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
@@ -27,17 +27,20 @@
           "selectionStatus": "confirmed",
           "goalsFor": 2,
           "goalsAgainst": 1,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.infobae.com/peru/deportes/2026/10/11/alianza-lima-vs-cusco-fc-en-vivo-hoy-minuto-a-minuto-partido-fecha-11-torneo-clausura-liga-1-2026-goles-resumen-resultado/",
+          "yellowCards": 1,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/cusco-fc-alianza-lima/lWskAA#id:16280833",
           "verificationSources": [
+            "https://www.sofascore.com/football/match/cusco-fc-alianza-lima/lWskAA#id:16280833",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4760817",
             "https://www.infobae.com/peru/deportes/2026/10/11/alianza-lima-vs-cusco-fc-en-vivo-hoy-minuto-a-minuto-partido-fecha-11-torneo-clausura-liga-1-2026-goles-resumen-resultado/",
             "https://libero.pe/futbol-peruano/alianza-lima/2026/10/10/alianza-lima-vs-cusco-fc-en-vivo-gratis-partido-del-torneo-clausura-via-liga-1-max-internet-373240",
             "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
           ],
           "startTimestamp": 1791761400,
           "venue": "Inca Garcilaso de la Vega",
-          "note": "Cusco FC 1-2 Alianza Lima, 18:30 de Perú (UTC−5), Inca Garcilaso de la Vega. Dos autogoles (Pedro Díaz, arquero de Cusco, y Álvaro Ampuero) y un gol de Diego Soto para Cusco; los minutos difieren entre medios. Tarjetas sin verificar: Infobae no registra amarillas; Líbero informa una amarilla de Alianza sin nombrar y la roja a Aldair Fuentes, de Cusco, que no cuenta para Alianza. TA y TR de Alianza quedan desconocidas."
+          "note": "Cusco FC 1-2 Alianza Lima, 18:30 de Perú (UTC−5), Inca Garcilaso de la Vega. Dos autogoles (Pedro Díaz, arquero de Cusco, y Álvaro Ampuero) y un gol de Diego Soto para Cusco; los minutos difieren entre medios. Tarjetas: Sofascore y 365Scores coinciden en 1 amarilla y 0 rojas para Alianza (la amarilla fue para Jairo Vélez). La roja fue para Aldair Fuentes, de Cusco, y no cuenta para Alianza.",
+          "eventId": 16280833
         },
         {
           "sourceDate": "2026-10-17",
@@ -82,17 +85,20 @@
           "selectionStatus": "confirmed",
           "goalsFor": 2,
           "goalsAgainst": 1,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.abc.com.py/deportes/futbol/intermedia/2026/10/11/general-caballero-jlm-pasa-al-frente-y-se-acerca-al-ascenso-a-primera/",
+          "yellowCards": 1,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/general-caballero-deportivo-santani/muLsucfd#id:17266233",
           "verificationSources": [
+            "https://www.sofascore.com/football/match/general-caballero-deportivo-santani/muLsucfd#id:17266233",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4874478",
             "https://www.abc.com.py/deportes/futbol/intermedia/2026/10/11/general-caballero-jlm-pasa-al-frente-y-se-acerca-al-ascenso-a-primera/",
             "https://www.vssports.com.py/versus/2026/10/11/al-rojo-vivo-general-caballero-deja-sin-ascenso-a-santani-y-vuelve-a-liderar-la-intermedia",
             "https://www.apf.org.py/noticias/autoridades-para-la-fecha-28-de-la-intermedia"
           ],
           "startTimestamp": 1791723600,
           "venue": "Ka’arendy",
-          "note": "General Caballero 2-1 Deportivo Santaní, 10:00 de Paraguay (UTC−3), Ka’arendy. Goles de Míller Mareco y Juan Ángel Martínez; Fernando Arce descontó para Santaní. Tarjetas sin verificar: ABC Color lista una amarilla de jugador de Caballero (Enzo Alegre) y otra al técnico Humberto Ovelar, que no cuenta; Versus no informa tarjetas, así que no hay segunda fuente. TA y TR quedan desconocidas."
+          "note": "General Caballero 2-1 Deportivo Santaní, 10:00 de Paraguay (UTC−3), Ka’arendy. Goles de Míller Mareco y Juan Ángel Martínez; Fernando Arce descontó para Santaní. Tarjetas: Sofascore no publica tarjetas de este partido (sin estadísticas ni incidentes de tarjeta), así que no sirve de contraste. 365Scores informa 1 amarilla y 0 rojas para Caballero, y ABC Color lista una amarilla de jugador (Enzo Alegre) más otra al técnico Humberto Ovelar, que no cuenta como jugador: ambas fuentes coinciden en 1 amarilla y 0 rojas.",
+          "eventId": 17266233
         },
         {
           "sourceDate": null,
@@ -122,7 +128,7 @@
       "tieId": "SF-2",
       "sourceRef": "QF-3",
       "scheduleSourceUrl": "https://ligafutve.org/",
-      "note": "Primer oficial jugado el 10 de octubre (Liga FUTVE, Clausura). El segundo, ante Estudiantes de Mérida, tiene fecha local del 17 de octubre. Rivales y orden respaldados por Liga FUTVE; fechas locales corroboradas por fuentes secundarias. Horas pendientes por discrepancia de zonas: la web oficial muestra fechas/horas sin zona explícita. Copa Venezuela vuelve el 21 de octubre, después de estos encuentros.",
+      "note": "Primer oficial jugado el 10 de octubre (Liga FUTVE, Clausura). El segundo, ante Estudiantes de Mérida, tiene fecha local del 17 de octubre. La hora del primero (19:30 de Venezuela) la confirman Sofascore y 365Scores; la del segundo sigue pendiente porque la web oficial muestra fechas/horas sin zona explícita. Rivales y orden respaldados por Liga FUTVE; fechas locales corroboradas por fuentes secundarias. Copa Venezuela vuelve el 21 de octubre, después de estos encuentros.",
       "fixtures": [
         {
           "sourceDate": "2026-10-10",
@@ -136,17 +142,21 @@
           "selectionStatus": "confirmed",
           "goalsFor": 4,
           "goalsAgainst": 0,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.balonazos.com/metropolitanos-golea-a-rayo-zuliano-y-sella-su-boleto-a-la-copa-libertadores-2027/",
+          "yellowCards": 0,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/deportivo-rayo-zuliano-metropolitanos/FZobskBed#id:16774729",
           "verificationSources": [
+            "https://www.sofascore.com/football/match/deportivo-rayo-zuliano-metropolitanos/FZobskBed#id:16774729",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4801374",
             "https://www.balonazos.com/metropolitanos-golea-a-rayo-zuliano-y-sella-su-boleto-a-la-copa-libertadores-2027/",
             "https://meridiano.net/futbol/futbol-venezolano/metropolitanos-impone-su-ley-y-tachira-celebra-asi-queda-la-lucha-en-la-liga-futve-2026101217260",
             "https://comunidadfutve.com/partido/metropolitanos-fc-vs-deportivo-rayo-zuliano-cl2026/",
             "https://ligafutve.org/"
           ],
           "venue": "Olímpico UCV",
-          "note": "Metropolitanos 4-0 Deportivo Rayo Zuliano, jornada 12 del Clausura, Olímpico UCV. Según Balonazos: autogol de Santiago Garcés (29'), doblete de Kavier Ortiz (32', 59') y gol de José Riasco (89'); Meridiano confirma el 4-0 sin detallar goleadores. La fecha local del 10 de octubre proviene de la programación (la web oficial muestra 11/10 00:30 sin zona explícita) y ninguna crónica la fija; hora local pendiente. Tarjetas sin verificar: Balonazos solo lista una amonestación de Rayo Zuliano (Jhan Vélez) y nada de Metropolitanos, lo que no prueba cero. TA y TR quedan desconocidas."
+          "note": "Metropolitanos 4-0 Deportivo Rayo Zuliano, jornada 12 del Clausura, Olímpico UCV, 19:30 de Venezuela (UTC−4) el 10 de octubre según Sofascore y 365Scores. Según Balonazos: autogol de Santiago Garcés (29'), doblete de Kavier Ortiz (32', 59') y gol de José Riasco (89'); Meridiano confirma el 4-0 sin detallar goleadores. Tarjetas: Sofascore y 365Scores coinciden en 0 amarillas y 0 rojas para Metropolitanos; la única amarilla fue para Jhan Vélez, de Rayo Zuliano, como lista Balonazos. Sofascore no incluye el ítem de rojas en estadísticas completas, lo que el repo trata como cero, y 365Scores informa 0.",
+          "eventId": 16774729,
+          "startTimestamp": 1791675000
         },
         {
           "sourceDate": "2026-10-17",
@@ -178,7 +188,7 @@
       "tieId": "SF-2",
       "sourceRef": "QF-4",
       "scheduleSourceUrl": "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
-      "note": "Primer oficial jugado el 11 de octubre en Cochabamba (Liga, fecha 21). Segundo programado: Bolívar, 18 de octubre en Potosí. Copa Bolivia ante Oriente Petrolero ya tiene fechas (ida 21 de octubre y vuelta 4 de noviembre, según Diez.bo), ambas posteriores, por lo que no puede intercalarse antes de Bolívar. Las fechas de liga provienen de fuentes secundarias (no se encontró calendario primario); horarios pendientes.",
+      "note": "Primer oficial jugado el 11 de octubre en Cochabamba (Liga, fecha 21). Segundo programado: Bolívar, 18 de octubre en Potosí. Copa Bolivia ante Oriente Petrolero ya tiene fechas (ida 21 de octubre y vuelta 4 de noviembre, según Diez.bo), ambas posteriores, por lo que no puede intercalarse antes de Bolívar. Las fechas de liga provienen de fuentes secundarias (no se encontró calendario primario); la hora del segundo partido sigue pendiente.",
       "fixtures": [
         {
           "sourceDate": "2026-10-11",
@@ -192,17 +202,21 @@
           "selectionStatus": "confirmed",
           "goalsFor": 2,
           "goalsAgainst": 2,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://www.reduno.com.bo/deportes/reparto-de-puntos-en-cochabamba-aurora-y-nacional-potosi-igualan-2-2-20261011212235",
+          "yellowCards": 4,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/nacional-potosi-club-aurora/oznsaeu#id:17255656",
           "verificationSources": [
+            "https://www.sofascore.com/football/match/nacional-potosi-club-aurora/oznsaeu#id:17255656",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4806224",
             "https://www.reduno.com.bo/deportes/reparto-de-puntos-en-cochabamba-aurora-y-nacional-potosi-igualan-2-2-20261011212235",
             "https://lapatria.bo/deportes/futbol/aurora-nacional-potosi-empatan-cochabamba/",
             "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
             "https://www.futboldebolivia.net/2026/04/liga-de-la-division-profesional-2026.html"
           ],
           "venue": "Félix Capriles",
-          "note": "Aurora 2-2 Nacional Potosí, Félix Capriles (Cochabamba), 11 de octubre; horario sin confirmar. Goles de Aurora: Alan Terrazas (penal) y Rodrigo Ramallo; de Potosí: Pedro Azogue y Mirko Tomianovic (los minutos difieren entre fuentes). Tarjetas sin verificar: La Patria informa la expulsión de Damián Villalba (69', desde la banca) sin precisar si cuenta como jugador; Red Uno no informa tarjetas. TA y TR quedan desconocidas."
+          "note": "Aurora 2-2 Nacional Potosí, Félix Capriles (Cochabamba), 17:15 de Bolivia (UTC−4) el 11 de octubre según Sofascore y 365Scores. Goles de Aurora: Alan Terrazas (penal) y Rodrigo Ramallo; de Potosí: Pedro Azogue y Mirko Tomianovic (los minutos difieren entre fuentes). Tarjetas: Sofascore y 365Scores coinciden en 4 amarillas y 0 rojas para Potosí. Una de las 4 se mostró a un suplente que no ingresó (Óscar Villalba, desde la banca, según Sofascore); se cuenta como tarjeta de jugador y, si se excluyera, quedarían 3. La Patria habló de una expulsión de «Damián Villalba» desde la banca (69'), probablemente el mismo incidente, pero ambas fuentes estadísticas registran 0 rojas y Red Uno, Diez y eju.tv no la mencionan: no se carga.",
+          "eventId": 17255656,
+          "startTimestamp": 1791753300
         },
         {
           "sourceDate": "2026-10-18",
