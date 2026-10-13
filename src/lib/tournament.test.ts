@@ -22,7 +22,7 @@ describe('distinct title transfer rules', () => {
     expect(computeNewHolder('copa-pablo-milad', 'holder', 'challenger', gf, ga, ph, pc)).toBe(redacted);
   });
 
-  it('retains both holders through the verified September/October results', () => {
+  it('tracks both holders through the verified September/October results', () => {
     const load = (cup: string): MatchEntry[] => JSON.parse(readFileSync(
       new URL(`../content/${cup}/2026.json`, import.meta.url), 'utf8',
     )).matches;
@@ -34,6 +34,7 @@ describe('distinct title transfer rules', () => {
     expect(redacted.filter((m) => m.date >= '2026-09-30' && m.status !== 'pending')).toMatchObject([
       { date: '2026-09-30', scoreHolder: 0, scoreChallenger: 1, newHolderId: 'union-san-felipe' },
       { date: '2026-10-04', scoreHolder: 0, scoreChallenger: 2, newHolderId: 'union-san-felipe' },
+      { date: '2026-10-12', scoreHolder: 0, scoreChallenger: 4, newHolderId: 'union-san-felipe' },
     ]);
     for (const [cup, entries] of [['falopa-cup', falopa], ['copa-pablo-milad', redacted]] as const) {
       for (const m of entries.filter((m) => m.type === 'match' && m.status !== 'pending' && m.date >= '2026-09-22')) {
@@ -41,20 +42,22 @@ describe('distinct title transfer rules', () => {
           m.scoreHolder!, m.scoreChallenger!, m.penalties?.holder, m.penalties?.challenger));
       }
     }
-    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'colo-colo', since: '2026-09-25' });
-    expect(getCurrentReign(redacted)).toMatchObject({ holderId: 'union-san-felipe', since: '2026-09-26' });
+    // Colo Colo's 2-5 loss at Coquimbo on 11 Oct moves the Falopa title; San Felipe
+    // loses 0-4 at Rangers on 12 Oct, which in REDACTED keeps the title with the holder.
     expect(falopa.find((m) => m.date === '2026-10-11')).toMatchObject({
-      status: 'pending', holderId: 'colo-colo', challengerId: 'coquimbo-unido',
+      holderId: 'colo-colo', challengerId: 'coquimbo-unido', scoreHolder: 2, scoreChallenger: 5,
+      newHolderId: 'coquimbo-unido',
     });
-    expect(redacted.find((m) => m.date === '2026-10-12')).toMatchObject({
-      status: 'pending', holderId: 'union-san-felipe', challengerId: 'rangers',
-    });
-    const suspended = falopa.find((m) => m.date === '2026-10-20')!;
-    expect(suspended.date).toBe('2026-10-20');
-    expect(suspended.reason).toContain('Suspendido');
-    expect(suspended.scoreHolder).toBeUndefined();
-    expect(suspended.scoreChallenger).toBeUndefined();
-    expect(suspended.newHolderId).toBeUndefined();
+    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'coquimbo-unido', since: '2026-10-11' });
+    expect(getCurrentReign(redacted)).toMatchObject({ holderId: 'union-san-felipe', since: '2026-09-26' });
+    // The suspended Colo Colo–Puerto Montt resumption is no longer a title match.
+    expect(falopa.find((m) => m.date === '2026-10-20')).toBeUndefined();
+    expect(falopa.filter((m) => m.status === 'pending')).toMatchObject([
+      { date: '2026-10-16', holderId: 'coquimbo-unido', challengerId: 'ohiggins' },
+    ]);
+    expect(redacted.filter((m) => m.status === 'pending')).toMatchObject([
+      { date: '2026-10-18', holderId: 'union-san-felipe', challengerId: 'deportes-temuco' },
+    ]);
   });
 });
 

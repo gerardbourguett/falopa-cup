@@ -354,12 +354,23 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-10-12",
-      "competition": "Liga de Ascenso",
-      "sourceUrl": "https://www.campeonatochileno.cl/match/rangers-de-talca-uni%C3%B3n-san-felipe-2026-10-12/",
+      "competition": "Liga de Ascenso · Fecha 27",
+      "sourceUrl": "https://www.biobiochile.cl/noticias/deportes/futbol/futbol-nacional/2026/10/12/rangers-vapuleo-a-san-felipe-en-final-por-permanencia-en-la-b-y-acecha-en-lucha-por-la-salvacion.shtml",
       "holderId": "union-san-felipe",
-      "challengerId": "rangers"
+      "challengerId": "rangers",
+      "scoreHolder": 0,
+      "scoreChallenger": 4,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-10-18",
+      "competition": "Liga de Ascenso · Fecha 28",
+      "sourceUrl": "https://www.t13.cl/noticia/deportes13/primera-b-de-chile-2026-calendario-partidos-resultados",
+      "holderId": "union-san-felipe",
+      "challengerId": "deportes-temuco"
     }
   ]
 }
