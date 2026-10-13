@@ -34,7 +34,7 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     for (const game of games.filter((game) => game.status !== 'played')) expect([game.goalsFor, game.goalsAgainst, game.yellowCards, game.redCards]).toEqual([null, null, null, null]);
   });
 
-  it('records the four played results with unverified cards left unknown, never zero', () => {
+  it('records the four played results with cards cross-checked in two independent sources', () => {
     expect(window.status).toBe('in-progress');
     expect(knockout.rounds.find((round) => round.id === 'KO-SF')!.status).toBe('in-progress');
     expect(window.clubs.map((club) => club.fixtures[0])).toMatchObject([
@@ -43,21 +43,33 @@ describe('semifinal scheduling from October 9 without an end date', () => {
       { status: 'played', sourceDate: '2026-10-10', homeClub: 'Metropolitanos', awayClub: 'Deportivo Rayo Zuliano', goalsFor: 4, goalsAgainst: 0 },
       { status: 'played', sourceDate: '2026-10-11', homeClub: 'Aurora', awayClub: 'Nacional Potosí', goalsFor: 2, goalsAgainst: 2 },
     ]);
+    expect(window.clubs.map((club) => [club.fixtures[0].yellowCards, club.fixtures[0].redCards])).toEqual([[1, 0], [1, 0], [0, 0], [4, 0]]);
+    expect(window.clubs.map((club) => club.fixtures[0].eventId)).toEqual([16280833, 17266233, 16774729, 17255656]);
     for (const club of window.clubs) {
       const game = club.fixtures[0];
-      expect([game.yellowCards, game.redCards]).toEqual([null, null]);
-      expect(game.verificationSources.length).toBeGreaterThanOrEqual(2);
-      expect(game.note).toContain('Tarjetas sin verificar');
+      expect(game.sourceUrl.endsWith(`#id:${game.eventId}`)).toBe(true);
+      expect(game.verificationSources.filter((url) => url.includes('365scores')).length).toBe(1);
+      expect(game.verificationSources.length).toBeGreaterThanOrEqual(3);
+      expect(game.note).toContain('Tarjetas:');
       expect(club.fixtures[1].status).not.toBe('played');
     }
+    // Sofascore has no card data for Caballero: its count rests on 365Scores plus ABC Color, and the note says so.
+    expect(window.clubs[1].fixtures[0].note).toContain('Sofascore no publica tarjetas');
+    // Potosí's conflicting expulsion report is documented, not loaded.
+    expect(window.clubs[3].fixtures[0].note).toContain('Damián Villalba');
+    expect(window.clubs[3].fixtures[0].note).toContain('no se carga');
   });
 
-  it('scores each played slot as a provisional partial total that cannot decide a tie', () => {
+  it('scores each played slot as a partial total that cannot decide a tie', () => {
     const totals = window.clubs.map((club) => buildSemifinalClubTotal(club));
-    expect(totals.map((total) => total.total)).toEqual([3, 3, 7, 1]);
-    for (const total of totals) expect(total).toMatchObject({ played: 1, missingSlots: 0, disciplinePending: true, kind: 'partial' });
-    // 2-1 win = 3; 4-0 win = 3 + 3 margin + 1 clean sheet; 2-2 draw = 1.
-    expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[0])?.total)).toEqual([3, 3, 7, 1]);
+    expect(totals.map((total) => total.total)).toEqual([2.75, 2.75, 7, 0]);
+    for (const total of totals) expect(total).toMatchObject({ played: 1, missingSlots: 0, disciplinePending: false, kind: 'partial' });
+    // 2-1 win = 3 - 0.25 (1 yellow); 4-0 win = 3 + 3 margin + 1 clean sheet; 2-2 draw = 1 - 4 yellows * 0.25.
+    expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[0])?.total)).toEqual([2.75, 2.75, 7, 0]);
+    // Unknown cards would make the same slot a provisional maximum instead.
+    const unknown = structuredClone(window.clubs[0]);
+    Object.assign(unknown.fixtures[0], { yellowCards: null, redCards: null });
+    expect(buildSemifinalClubTotal(unknown)).toMatchObject({ total: 3, disciplinePending: true, kind: 'partial' });
     expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[1]))).toEqual([null, null, null, null]);
     expect(buildSemifinalClubTotal({ clubId: 'x', fixtures: [] })).toMatchObject({ total: null, played: 0, kind: 'pending', missingSlots: 2 });
     const known = structuredClone(window.clubs[0]);
@@ -79,7 +91,7 @@ describe('semifinal scheduling from October 9 without an end date', () => {
   });
 
   it('includes the start date and later official cup games without any artificial deadline', () => {
-    const template = window.clubs[0].fixtures[0];
+    const template = window.clubs[0].fixtures[1]; // a scheduled fixture without a provider event ID
     const game = (date: string, opponent: string, type: SemifinalFixture['sourceCompetitionType'] = 'local-league') => ({ ...template, startTimestamp: undefined, sourceDate: date, homeClub: opponent, sourceCompetitionType: type });
     const start = game('2026-10-09', 'Club A');
     const far = game('2027-02-01', 'Club B', 'local-cup');
@@ -93,9 +105,12 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     const alianza = window.clubs[0];
     expect(quarterfinalLocalDate({ ...alianza.fixtures[1], sourceDate: alianza.fixtures[1].sourceDate! })).toBe('2026-10-17');
     const times = window.clubs.flatMap((club) => club.fixtures).filter((game) => game.startTimestamp != null);
-    expect(times).toHaveLength(3);
-    expect(times.map((game) => new Date(game.startTimestamp! * 1000).toISOString())).toEqual(['2026-10-11T23:30:00.000Z', '2026-10-18T01:30:00.000Z', '2026-10-11T13:00:00.000Z']);
-    expect(window.clubs.slice(2).flatMap((club) => club.fixtures).every((game) => game.startTimestamp === undefined)).toBe(true);
+    expect(times).toHaveLength(5);
+    expect(times.map((game) => new Date(game.startTimestamp! * 1000).toISOString())).toEqual([
+      '2026-10-11T23:30:00.000Z', '2026-10-18T01:30:00.000Z', '2026-10-11T13:00:00.000Z', '2026-10-10T23:30:00.000Z', '2026-10-11T21:15:00.000Z',
+    ]);
+    // Only the two played games of Metropolitanos and Potosí got a confirmed kickoff; their next games still have no hour.
+    expect(window.clubs.slice(2).map((club) => [club.fixtures[0].startTimestamp != null, club.fixtures[1].startTimestamp === undefined])).toEqual([[true, true], [true, true]]);
   });
 
   it('keeps Encarnacion date, kickoff and venue unknown without fabricating a calendar value', () => {
