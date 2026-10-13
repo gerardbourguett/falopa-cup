@@ -2,18 +2,18 @@
   "kind": "sf-window",
   "edition": 2026,
   "roundId": "KO-SF",
-  "status": "planned",
+  "status": "in-progress",
   "windowStart": "2026-10-09",
   "selectionPolicy": "next-two-official-local-dates",
-  "verifiedAt": "2026-10-09",
-  "note": "Semifinales: los dos próximos partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Programación al corte, sujeta a cambios. No se encontraron partidos de estos cuatro clubes el 9 de octubre. Siete fechas publicadas y una fecha pendiente. Encarnación no tiene fecha ni hora confirmadas. Bolívar es segundo programado provisional de Potosí: Copa Bolivia ante Oriente Petrolero, sin fecha, podría intercalarse. Todos los resultados, tarjetas y puntos permanecen pendientes; no se aplica la excepción histórica de cuartos.",
+  "verifiedAt": "2026-10-13",
+  "note": "Semifinales: los dos primeros partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Al corte del 13 de octubre hay cuatro partidos jugados (uno por semifinalista) y cuatro por jugar: tres programados y uno con fecha pendiente (General Caballero en Encarnación). Cada marcador se contrastó en al menos dos medios. Las tarjetas no pudieron contrastarse en dos fuentes y permanecen desconocidas, no en cero: cada total jugado es un máximo provisional, no un total verificado, y un total parcial no limita el resultado final. No se declara ganador de ninguna llave.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
       "tieId": "SF-1",
       "sourceRef": "QF-1",
       "scheduleSourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
-      "note": "Dos próximos oficiales confirmados en el calendario Liga 1, con fecha y hora local de Perú.",
+      "note": "Primer oficial jugado el 11 de octubre en Cusco (Liga 1, Clausura F11). El segundo, ante Atlético Grau el 17 de octubre, está confirmado en el calendario de Liga 1, con fecha y hora local de Perú.",
       "fixtures": [
         {
           "sourceDate": "2026-10-11",
@@ -23,19 +23,21 @@
           "homeClub": "Cusco FC",
           "awayClub": "Alianza Lima",
           "isHome": false,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
-          "goalsFor": null,
-          "goalsAgainst": null,
+          "goalsFor": 2,
+          "goalsAgainst": 1,
           "yellowCards": null,
           "redCards": null,
-          "sourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
+          "sourceUrl": "https://www.infobae.com/peru/deportes/2026/10/11/alianza-lima-vs-cusco-fc-en-vivo-hoy-minuto-a-minuto-partido-fecha-11-torneo-clausura-liga-1-2026-goles-resumen-resultado/",
           "verificationSources": [
+            "https://www.infobae.com/peru/deportes/2026/10/11/alianza-lima-vs-cusco-fc-en-vivo-hoy-minuto-a-minuto-partido-fecha-11-torneo-clausura-liga-1-2026-goles-resumen-resultado/",
+            "https://libero.pe/futbol-peruano/alianza-lima/2026/10/10/alianza-lima-vs-cusco-fc-en-vivo-gratis-partido-del-torneo-clausura-via-liga-1-max-internet-373240",
             "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
           ],
           "startTimestamp": 1791761400,
           "venue": "Inca Garcilaso de la Vega",
-          "note": "18:30 de Perú (UTC−5), programación oficial."
+          "note": "Cusco FC 1-2 Alianza Lima, 18:30 de Perú (UTC−5), Inca Garcilaso de la Vega. Dos autogoles (Pedro Díaz, arquero de Cusco, y Álvaro Ampuero) y un gol de Diego Soto para Cusco; los minutos difieren entre medios. Tarjetas sin verificar: Infobae no registra amarillas; Líbero informa una amarilla de Alianza sin nombrar y la roja a Aldair Fuentes, de Cusco, que no cuenta para Alianza. TA y TR de Alianza quedan desconocidas."
         },
         {
           "sourceDate": "2026-10-17",
@@ -66,7 +68,7 @@
       "tieId": "SF-1",
       "sourceRef": "QF-2",
       "scheduleSourceUrl": "https://www.apf.org.py/noticias/autoridades-para-la-fecha-28-de-la-intermedia",
-      "note": "Santaní confirmado el 11 de octubre. Encarnación FC es el siguiente rival, jornada 29, con fecha y hora pendientes. Caballero está eliminado de Copa Paraguay; no se inventa estadio para Encarnación.",
+      "note": "Primer oficial jugado el 11 de octubre (Intermedia F28, ante Santaní). Encarnación FC sigue como siguiente rival, de visita, con fecha y hora pendientes: ABC Color (11/10) lo ubica en la fecha 29 y La Tribuna deja a 12 de Junio, en casa, para el cierre; Versus (11/10) menciona a 12 de Junio como próximo local y es la única que discrepa. Caballero está eliminado de Copa Paraguay; no se inventa estadio para Encarnación.",
       "fixtures": [
         {
           "sourceDate": "2026-10-11",
@@ -76,19 +78,21 @@
           "homeClub": "General Caballero",
           "awayClub": "Deportivo Santaní",
           "isHome": true,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
-          "goalsFor": null,
-          "goalsAgainst": null,
+          "goalsFor": 2,
+          "goalsAgainst": 1,
           "yellowCards": null,
           "redCards": null,
-          "sourceUrl": "https://www.apf.org.py/noticias/autoridades-para-la-fecha-28-de-la-intermedia",
+          "sourceUrl": "https://www.abc.com.py/deportes/futbol/intermedia/2026/10/11/general-caballero-jlm-pasa-al-frente-y-se-acerca-al-ascenso-a-primera/",
           "verificationSources": [
+            "https://www.abc.com.py/deportes/futbol/intermedia/2026/10/11/general-caballero-jlm-pasa-al-frente-y-se-acerca-al-ascenso-a-primera/",
+            "https://www.vssports.com.py/versus/2026/10/11/al-rojo-vivo-general-caballero-deja-sin-ascenso-a-santani-y-vuelve-a-liderar-la-intermedia",
             "https://www.apf.org.py/noticias/autoridades-para-la-fecha-28-de-la-intermedia"
           ],
           "startTimestamp": 1791723600,
           "venue": "Ka’arendy",
-          "note": "10:00 de Paraguay (UTC−3), según programación APF."
+          "note": "General Caballero 2-1 Deportivo Santaní, 10:00 de Paraguay (UTC−3), Ka’arendy. Goles de Míller Mareco y Juan Ángel Martínez; Fernando Arce descontó para Santaní. Tarjetas sin verificar: ABC Color lista una amarilla de jugador de Caballero (Enzo Alegre) y otra al técnico Humberto Ovelar, que no cuenta; Versus no informa tarjetas, así que no hay segunda fuente. TA y TR quedan desconocidas."
         },
         {
           "sourceDate": null,
@@ -118,7 +122,7 @@
       "tieId": "SF-2",
       "sourceRef": "QF-3",
       "scheduleSourceUrl": "https://ligafutve.org/",
-      "note": "Rivales y orden respaldados por Liga FUTVE; fechas locales corroboradas por fuentes secundarias. Horas pendientes por discrepancia de zonas: la web oficial muestra fechas/horas sin zona explícita. Copa Venezuela vuelve el 21 de octubre, después de estos encuentros.",
+      "note": "Primer oficial jugado el 10 de octubre (Liga FUTVE, Clausura). El segundo, ante Estudiantes de Mérida, tiene fecha local del 17 de octubre. Rivales y orden respaldados por Liga FUTVE; fechas locales corroboradas por fuentes secundarias. Horas pendientes por discrepancia de zonas: la web oficial muestra fechas/horas sin zona explícita. Copa Venezuela vuelve el 21 de octubre, después de estos encuentros.",
       "fixtures": [
         {
           "sourceDate": "2026-10-10",
@@ -128,19 +132,21 @@
           "homeClub": "Metropolitanos",
           "awayClub": "Deportivo Rayo Zuliano",
           "isHome": true,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
-          "goalsFor": null,
-          "goalsAgainst": null,
+          "goalsFor": 4,
+          "goalsAgainst": 0,
           "yellowCards": null,
           "redCards": null,
-          "sourceUrl": "https://comunidadfutve.com/partido/metropolitanos-fc-vs-deportivo-rayo-zuliano-cl2026/",
+          "sourceUrl": "https://www.balonazos.com/metropolitanos-golea-a-rayo-zuliano-y-sella-su-boleto-a-la-copa-libertadores-2027/",
           "verificationSources": [
-            "https://ligafutve.org/",
-            "https://comunidadfutve.com/partido/metropolitanos-fc-vs-deportivo-rayo-zuliano-cl2026/"
+            "https://www.balonazos.com/metropolitanos-golea-a-rayo-zuliano-y-sella-su-boleto-a-la-copa-libertadores-2027/",
+            "https://meridiano.net/futbol/futbol-venezolano/metropolitanos-impone-su-ley-y-tachira-celebra-asi-queda-la-lucha-en-la-liga-futve-2026101217260",
+            "https://comunidadfutve.com/partido/metropolitanos-fc-vs-deportivo-rayo-zuliano-cl2026/",
+            "https://ligafutve.org/"
           ],
           "venue": "Olímpico UCV",
-          "note": "Fecha local 10 de octubre; hora pendiente. La web oficial muestra 11/10 00:30 sin zona explícita; no se interpreta como hora local."
+          "note": "Metropolitanos 4-0 Deportivo Rayo Zuliano, jornada 12 del Clausura, Olímpico UCV. Según Balonazos: autogol de Santiago Garcés (29'), doblete de Kavier Ortiz (32', 59') y gol de José Riasco (89'); Meridiano confirma el 4-0 sin detallar goleadores. La fecha local del 10 de octubre proviene de la programación (la web oficial muestra 11/10 00:30 sin zona explícita) y ninguna crónica la fija; hora local pendiente. Tarjetas sin verificar: Balonazos solo lista una amonestación de Rayo Zuliano (Jhan Vélez) y nada de Metropolitanos, lo que no prueba cero. TA y TR quedan desconocidas."
         },
         {
           "sourceDate": "2026-10-17",
@@ -172,7 +178,7 @@
       "tieId": "SF-2",
       "sourceRef": "QF-4",
       "scheduleSourceUrl": "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
-      "note": "Aurora y Bolívar son los próximos programados de liga según fuentes secundarias; no se encontró calendario primario. Bolívar es segundo programado provisional, no segundo oficial definitivamente seleccionado: Copa Bolivia ante Oriente Petrolero sigue sin fecha y puede intercalarse. Horarios pendientes.",
+      "note": "Primer oficial jugado el 11 de octubre en Cochabamba (Liga, fecha 21). Segundo programado: Bolívar, 18 de octubre en Potosí. Copa Bolivia ante Oriente Petrolero ya tiene fechas (ida 21 de octubre y vuelta 4 de noviembre, según Diez.bo), ambas posteriores, por lo que no puede intercalarse antes de Bolívar. Las fechas de liga provienen de fuentes secundarias (no se encontró calendario primario); horarios pendientes.",
       "fixtures": [
         {
           "sourceDate": "2026-10-11",
@@ -182,19 +188,21 @@
           "homeClub": "Aurora",
           "awayClub": "Nacional Potosí",
           "isHome": false,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
-          "goalsFor": null,
-          "goalsAgainst": null,
+          "goalsFor": 2,
+          "goalsAgainst": 2,
           "yellowCards": null,
           "redCards": null,
-          "sourceUrl": "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
+          "sourceUrl": "https://www.reduno.com.bo/deportes/reparto-de-puntos-en-cochabamba-aurora-y-nacional-potosi-igualan-2-2-20261011212235",
           "verificationSources": [
+            "https://www.reduno.com.bo/deportes/reparto-de-puntos-en-cochabamba-aurora-y-nacional-potosi-igualan-2-2-20261011212235",
+            "https://lapatria.bo/deportes/futbol/aurora-nacional-potosi-empatan-cochabamba/",
             "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
             "https://www.futboldebolivia.net/2026/04/liga-de-la-division-profesional-2026.html"
           ],
           "venue": "Félix Capriles",
-          "note": "Fecha de fuentes secundarias, sin horario confirmado; revisar posibles reprogramaciones de Copa Bolivia."
+          "note": "Aurora 2-2 Nacional Potosí, Félix Capriles (Cochabamba), 11 de octubre; horario sin confirmar. Goles de Aurora: Alan Terrazas (penal) y Rodrigo Ramallo; de Potosí: Pedro Azogue y Mirko Tomianovic (los minutos difieren entre fuentes). Tarjetas sin verificar: La Patria informa la expulsión de Damián Villalba (69', desde la banca) sin precisar si cuenta como jugador; Red Uno no informa tarjetas. TA y TR quedan desconocidas."
         },
         {
           "sourceDate": "2026-10-18",
@@ -205,7 +213,7 @@
           "awayClub": "Bolívar",
           "isHome": true,
           "status": "scheduled",
-          "selectionStatus": "provisional",
+          "selectionStatus": "confirmed",
           "goalsFor": null,
           "goalsAgainst": null,
           "yellowCards": null,
@@ -213,19 +221,13 @@
           "sourceUrl": "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
           "verificationSources": [
             "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
-            "https://www.futboldebolivia.net/2026/04/liga-de-la-division-profesional-2026.html"
+            "https://www.futboldebolivia.net/2026/04/liga-de-la-division-profesional-2026.html",
+            "https://diez.bo/futbol/la-copa-bolivia-ya-tiene-calendario-para-definir-a-su-campeon-2026_1791576050"
           ],
           "venue": "Víctor Agustín Ugarte",
-          "note": "Segundo programado provisional de liga. Copa Bolivia ante Oriente Petrolero, sin fecha, podría intercalarse y cambiar los dos oficiales seleccionados."
+          "note": "Segundo programado de liga, 18 de octubre; horario pendiente. Copa Bolivia (Oriente Petrolero–Nacional Potosí) quedó fechada el 21 de octubre (ida) y el 4 de noviembre (vuelta), así que ya no puede intercalarse. Las mismas fuentes secundarias situaron correctamente el primer partido el 11 de octubre; no se encontró calendario primario."
         }
-      ],
-      "pendingCompetition": {
-        "sourceCompetition": "Copa Bolivia · Cuartos de final, ida",
-        "opponent": "Oriente Petrolero",
-        "isHome": false,
-        "sourceUrl": "https://elpotosi.net/deporte/20261009_nacional-arranca-de-visitante-la-fase-de-cuartos-de-final.html",
-        "note": "Fecha y hora por definir. Nacional arranca de visitante; no cuenta como un encuentro seleccionado ni como cero puntos. La programación puede intercalarse antes de Bolívar. Fuente adicional: https://larazon.bo/marcas/2026/10/09/los-cuartos-de-final-de-la-copa-tiene-llaves-definidas/"
-      }
+      ]
     }
   ]
 }

@@ -1,7 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { QUARTERFINAL_WINDOW, quarterfinalFixtureIssues, quarterfinalLocalDate, quarterfinalParticipantIssue, quarterfinalReportsHaveDistinctSources, selectQuarterfinalFixtures } from './lib/tournaments/conference-league-sudamericana';
-import { SEMIFINAL_WINDOW_START, semifinalPlanIssues } from './lib/tournaments/conference-league-sudamericana/semifinals';
+import { SEMIFINAL_WINDOW_START, semifinalPlanIssues, semifinalResultIssues } from './lib/tournaments/conference-league-sudamericana/semifinals';
 
 const blog = defineCollection({
 	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
@@ -302,7 +302,7 @@ const conferenceSfWindowSchema = z.object({
     kind: z.literal('sf-window'),
     edition: z.literal(2026),
     roundId: z.literal('KO-SF'),
-    status: z.literal('planned'),
+    status: z.enum(['planned', 'in-progress']),
     windowStart: z.literal(SEMIFINAL_WINDOW_START),
     selectionPolicy: z.literal('next-two-official-local-dates'),
     verifiedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -320,10 +320,12 @@ const conferenceSfWindowSchema = z.object({
             startTimestamp: z.number().int().positive().optional(), timeZone: z.string(),
             sourceCompetitionType: z.enum(['local-league', 'local-cup', 'conmebol']),
             sourceCompetition: z.string(), homeClub: z.string(), awayClub: z.string(), isHome: z.boolean(),
-            status: z.enum(['scheduled', 'tbd']), selectionStatus: z.enum(['confirmed', 'provisional']),
+            status: z.enum(['scheduled', 'tbd', 'played']), selectionStatus: z.enum(['confirmed', 'provisional']),
             venue: z.string().optional(), sourceUrl: z.string().url(),
             verificationSources: z.array(z.string().url()).min(1), note: z.string().optional(),
-            goalsFor: z.null(), goalsAgainst: z.null(), yellowCards: z.null(), redCards: z.null(),
+            // Results exist only for played fixtures; null cards are unknown, never zero.
+            goalsFor: z.number().int().nonnegative().nullable(), goalsAgainst: z.number().int().nonnegative().nullable(),
+            yellowCards: z.number().int().nonnegative().nullable(), redCards: z.number().int().nonnegative().nullable(),
         }).strict()).length(2),
     }).strict().superRefine((club, ctx) => {
         semifinalPlanIssues(club).forEach((message) => ctx.addIssue({ code: 'custom', message }));
@@ -367,6 +369,12 @@ const conferenceLeagueSudamericana = defineCollection({
         conferenceSfWindowSchema,
         conferenceWindowCutSchema,
     ]).superRefine((window, ctx) => {
+        if (window.kind === 'sf-window') {
+            window.clubs.forEach((club, clubIndex) => club.fixtures.forEach((fixture, fixtureIndex) =>
+                semifinalResultIssues(fixture, window.verifiedAt).forEach((message) =>
+                    ctx.addIssue({ code: 'custom', path: ['clubs', clubIndex, 'fixtures', fixtureIndex], message }))));
+            return;
+        }
         if (window.kind !== 'qf-window') return;
         window.clubs.forEach((club, clubIndex) => club.fixtures.forEach((fixture, fixtureIndex) => {
             try {

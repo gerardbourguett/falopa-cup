@@ -443,7 +443,7 @@
     {
       "id": "KO-SF",
       "name": "Semifinales",
-      "status": "planned",
+      "status": "in-progress",
       "ties": [
         {
           "id": "SF-1",
@@ -472,7 +472,7 @@
           }
         }
       ],
-      "description": "Cruces confirmados: Alianza Lima–General Caballero y Metropolitanos–Nacional Potosí. Próximos dos oficiales desde el 9 de octubre inclusive, sin fecha límite. Programación cargada, con fecha pendiente para Encarnación y segundo programado provisional para Potosí; sin resultados anticipados."
+      "description": "Cruces confirmados: Alianza Lima–General Caballero y Metropolitanos–Nacional Potosí. Próximos dos oficiales desde el 9 de octubre inclusive, sin fecha límite. Al 13 de octubre se jugó un partido por semifinalista; los puntajes son parciales y provisionales porque las tarjetas no están verificadas. Quedan tres partidos programados y uno con fecha pendiente (Encarnación); sin ganadores todavía."
     },
     {
       "id": "KO-F",
