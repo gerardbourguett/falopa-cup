@@ -6,8 +6,8 @@ import knockoutData from '../../../content/conference-league-sudamericana/2026-k
 import r16Data from '../../../content/conference-league-sudamericana/2026-r16-window.json';
 import qfData from '../../../content/conference-league-sudamericana/2026-qf-window.json';
 import { quarterfinalLocalDate } from './index';
-import { selectSemifinalFixtures, semifinalPlanIssues, validateSemifinalIntegrity, type SemifinalFixture, type SemifinalWindowDocument } from './semifinals';
-import type { KnockoutDocument } from '../../validation/content-integrity';
+import { buildSemifinalClubTotal, selectSemifinalFixtures, semifinalFantasyScore, semifinalPlanIssues, validateSemifinalIntegrity, type SemifinalFixture, type SemifinalWindowDocument } from './semifinals';
+import { validateQuarterfinalIntegrity, type KnockoutDocument, type QuarterfinalWindowDocument } from '../../validation/content-integrity';
 
 vi.mock('astro:content', async () => ({ z: (await import('astro/zod')).z, defineCollection: (definition: unknown) => definition }));
 const schema = collections['conference-league-sudamericana'].schema as z.ZodType;
@@ -19,7 +19,7 @@ const used = new Set([
 ]);
 
 describe('semifinal scheduling from October 9 without an end date', () => {
-  it('loads exactly the four fixed semifinalists and eight unplayed slots', () => {
+  it('loads exactly the four fixed semifinalists, four played slots and four pending ones', () => {
     expect(schema.safeParse(sfData).success).toBe(true);
     expect(validateSemifinalIntegrity(window, knockout, used)).toEqual([]);
     expect(window.clubs.map((club) => [club.clubId, club.tieId, club.sourceRef])).toEqual([
@@ -28,9 +28,45 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     ]);
     const games = window.clubs.flatMap((club) => club.fixtures);
     expect(games).toHaveLength(8);
-    expect(games.filter((game) => game.status === 'scheduled')).toHaveLength(7);
+    expect(games.filter((game) => game.status === 'played')).toHaveLength(4);
+    expect(games.filter((game) => game.status === 'scheduled')).toHaveLength(3);
     expect(games.filter((game) => game.status === 'tbd')).toHaveLength(1);
-    for (const game of games) expect([game.goalsFor, game.goalsAgainst, game.yellowCards, game.redCards]).toEqual([null, null, null, null]);
+    for (const game of games.filter((game) => game.status !== 'played')) expect([game.goalsFor, game.goalsAgainst, game.yellowCards, game.redCards]).toEqual([null, null, null, null]);
+  });
+
+  it('records the four played results with unverified cards left unknown, never zero', () => {
+    expect(window.status).toBe('in-progress');
+    expect(knockout.rounds.find((round) => round.id === 'KO-SF')!.status).toBe('in-progress');
+    expect(window.clubs.map((club) => club.fixtures[0])).toMatchObject([
+      { status: 'played', sourceDate: '2026-10-11', homeClub: 'Cusco FC', awayClub: 'Alianza Lima', goalsFor: 2, goalsAgainst: 1 },
+      { status: 'played', sourceDate: '2026-10-11', homeClub: 'General Caballero', awayClub: 'Deportivo Santaní', goalsFor: 2, goalsAgainst: 1 },
+      { status: 'played', sourceDate: '2026-10-10', homeClub: 'Metropolitanos', awayClub: 'Deportivo Rayo Zuliano', goalsFor: 4, goalsAgainst: 0 },
+      { status: 'played', sourceDate: '2026-10-11', homeClub: 'Aurora', awayClub: 'Nacional Potosí', goalsFor: 2, goalsAgainst: 2 },
+    ]);
+    for (const club of window.clubs) {
+      const game = club.fixtures[0];
+      expect([game.yellowCards, game.redCards]).toEqual([null, null]);
+      expect(game.verificationSources.length).toBeGreaterThanOrEqual(2);
+      expect(game.note).toContain('Tarjetas sin verificar');
+      expect(club.fixtures[1].status).not.toBe('played');
+    }
+  });
+
+  it('scores each played slot as a provisional partial total that cannot decide a tie', () => {
+    const totals = window.clubs.map((club) => buildSemifinalClubTotal(club));
+    expect(totals.map((total) => total.total)).toEqual([3, 3, 7, 1]);
+    for (const total of totals) expect(total).toMatchObject({ played: 1, missingSlots: 0, disciplinePending: true, kind: 'partial' });
+    // 2-1 win = 3; 4-0 win = 3 + 3 margin + 1 clean sheet; 2-2 draw = 1.
+    expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[0])?.total)).toEqual([3, 3, 7, 1]);
+    expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[1]))).toEqual([null, null, null, null]);
+    expect(buildSemifinalClubTotal({ clubId: 'x', fixtures: [] })).toMatchObject({ total: null, played: 0, kind: 'pending', missingSlots: 2 });
+    const known = structuredClone(window.clubs[0]);
+    Object.assign(known.fixtures[0], { yellowCards: 2, redCards: 1 });
+    expect(buildSemifinalClubTotal(known)).toMatchObject({ total: 1.5, disciplinePending: false, kind: 'partial' });
+    Object.assign(known.fixtures[1], { status: 'played', goalsFor: 0, goalsAgainst: 0, yellowCards: 0, redCards: 0 });
+    expect(buildSemifinalClubTotal(known)).toMatchObject({ total: 1.5 + 2, played: 2, disciplinePending: false, kind: 'verified' });
+    Object.assign(known.fixtures[1], { yellowCards: null });
+    expect(buildSemifinalClubTotal(known)).toMatchObject({ played: 2, disciplinePending: true, kind: 'upper-bound' });
   });
 
   it('preserves all researched local dates, opponents and home/away conditions', () => {
@@ -75,24 +111,60 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     }
   });
 
-  it('marks Bolivar provisional because undated Copa Bolivia can interleave', () => {
+  it('confirms Bolivar as second official because Copa Bolivia is now dated after it', () => {
     const potosi = window.clubs[3];
-    expect(potosi.fixtures[1].selectionStatus).toBe('provisional');
-    expect(potosi.pendingCompetition).toMatchObject({ opponent: 'Oriente Petrolero', isHome: false });
-    expect(potosi.note).toContain('no segundo oficial definitivamente seleccionado');
-    expect(potosi.fixtures[1].note).toContain('podría intercalarse');
+    expect(potosi.pendingCompetition).toBeUndefined();
+    expect(potosi.fixtures[1]).toMatchObject({ sourceDate: '2026-10-18', selectionStatus: 'confirmed' });
+    expect(potosi.fixtures[1].note).toContain('21 de octubre');
+    expect(potosi.fixtures[1].verificationSources.join()).toContain('diez.bo');
+    // An undated competing cup must still force a provisional, explained second selection.
     const changed = structuredClone(window);
-    changed.clubs[3].fixtures[1].selectionStatus = 'confirmed';
+    changed.clubs[3].pendingCompetition = { sourceCompetition: 'Copa Bolivia', opponent: 'Oriente Petrolero', isHome: false, sourceUrl: 'https://example.com/copa', note: 'Sin fecha.' };
     expect(schema.safeParse(changed).success).toBe(false);
     expect(validateSemifinalIntegrity(changed, knockout, used).join()).toContain('provisional second selection');
+    changed.clubs[3].fixtures[1].selectionStatus = 'provisional';
+    expect(schema.safeParse(changed).success).toBe(true);
+    expect(semifinalPlanIssues(changed.clubs[3])).toEqual([]);
   });
 
-  it('rejects any future goal, yellow, red or played status, including zero', () => {
+  it('rejects any future goal, yellow, red or played status without a score, including zero', () => {
     for (const replacement of [{ goalsFor: 0 }, { goalsAgainst: 1 }, { yellowCards: 0 }, { redCards: 0 }, { status: 'played' }]) {
+      const changed = structuredClone(window);
+      Object.assign(changed.clubs[0].fixtures[1], replacement);
+      expect(schema.safeParse(changed).success).toBe(false);
+      expect(validateSemifinalIntegrity(changed, knockout, used).length).toBeGreaterThan(0);
+    }
+  });
+
+  it('rejects malformed, unsourced or post-cutoff played results', () => {
+    for (const replacement of [{ goalsFor: null }, { goalsAgainst: null }, { goalsFor: -1 }, { goalsFor: 1.5 }, { yellowCards: -1 }, { redCards: 0.5 }, { verificationSources: [] }]) {
       const changed = structuredClone(window);
       Object.assign(changed.clubs[0].fixtures[0], replacement);
       expect(schema.safeParse(changed).success).toBe(false);
-      expect(validateSemifinalIntegrity(changed, knockout, used).length).toBeGreaterThan(0);
+    }
+    const early = { ...structuredClone(window), verifiedAt: '2026-10-10' };
+    expect(schema.safeParse(early).success).toBe(false);
+    expect(validateSemifinalIntegrity(early, knockout, used).join()).toContain('after the verification date');
+    const verified = structuredClone(window);
+    Object.assign(verified.clubs[0].fixtures[0], { yellowCards: 2, redCards: 0 });
+    expect(schema.safeParse(verified).success).toBe(true);
+    expect(validateSemifinalIntegrity(verified, knockout, used)).toEqual([]);
+  });
+
+  it('ties round status to the evidence and never completes without a verified winner', () => {
+    const planned = { ...structuredClone(window), status: 'planned' } as SemifinalWindowDocument;
+    expect(validateSemifinalIntegrity(planned, knockout, used).join()).toContain('must match the played fixtures');
+    const hidden = structuredClone(knockout);
+    hidden.rounds.find((round) => round.id === 'KO-SF')!.status = 'planned';
+    expect(validateSemifinalIntegrity(window, hidden, used).join()).toContain('must match the played fixtures');
+    const closed = structuredClone(knockout);
+    closed.rounds.find((round) => round.id === 'KO-SF')!.status = 'completed';
+    expect(validateSemifinalIntegrity(window, closed, used).length).toBeGreaterThan(0);
+    expect(validateQuarterfinalIntegrity(qfData as unknown as QuarterfinalWindowDocument, closed, r16Data.matchSources).join()).toContain('cannot be completed');
+    for (const replacement of [{ scoreA: 3 }, { winnerClubId: 'pe-alianza-lima' }]) {
+      const invented = structuredClone(knockout);
+      Object.assign(invented.rounds.find((round) => round.id === 'KO-SF')!.ties[0], replacement);
+      expect(validateQuarterfinalIntegrity(qfData as unknown as QuarterfinalWindowDocument, invented, r16Data.matchSources).join()).toContain('Future semifinal result');
     }
   });
 

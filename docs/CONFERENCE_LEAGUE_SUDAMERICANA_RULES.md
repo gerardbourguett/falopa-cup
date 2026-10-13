@@ -53,7 +53,9 @@ El modelo conserva también una resolución por escenarios disciplinarios inform
 
 ## Selección de semifinales 2026
 
-Por autorización posterior del usuario, se toman los **dos próximos partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite**. Se mantiene el cuadro fijo. Programación no es resultado: goles, tarjetas y puntos siguen pendientes. Un siguiente rival conocido sin fecha conserva `tbd`, sin fecha, hora o estadio inventados. Si una copa sin programación puede intercalarse, el segundo encuentro publicado de liga queda como selección provisional y se revisa cuando se publique el calendario completo. La excepción de reutilización de cuartos no aplica a semifinales.
+Por autorización posterior del usuario, se toman los **dos próximos partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite**. Se mantiene el cuadro fijo. Programación no es resultado: un partido por jugar no tiene goles, tarjetas ni puntos. Un siguiente rival conocido sin fecha conserva `tbd`, sin fecha, hora o estadio inventados. Si una copa sin programación puede intercalarse, el segundo encuentro publicado de liga queda como selección provisional y se revisa cuando se publique el calendario completo (Copa Bolivia ya tiene fechas posteriores al segundo partido de Potosí, que dejó de ser provisional). La excepción de reutilización de cuartos no aplica a semifinales.
+
+Un partido jugado de semifinales se registra con su marcador final contrastado en al menos dos medios. Las tarjetas siguen la regla de cuartos: si no hay un conteo verificado en dos fuentes distintas quedan desconocidas (`null`, nunca cero), y el puntaje del partido es un máximo provisional. Con un solo partido jugado el total es parcial; no se declara ganador de una llave hasta que ambos clubes completen sus dos partidos y el total quede verificado.
 
 ## Puntaje fantasy
 

@@ -23,6 +23,10 @@ import {
   getClubAccentColor,
   getEntryTypeSportLabel,
 } from '../../lib/tournaments/conference-league-sudamericana/club-visuals';
+import {
+  buildSemifinalClubTotal,
+  semifinalFantasyScore,
+} from '../../lib/tournaments/conference-league-sudamericana/semifinals';
 
 const entries = await getCollection('conference-league-sudamericana');
 
@@ -48,6 +52,7 @@ const qfPlanGroups = [
     .map((club) => ({ ...club, ...buildQuarterfinalClubTotal(club, r16EventIds) })),
 })).filter((group) => group.clubs.length > 0);
 const qfTotalsByClub = new Map(qfPlanGroups.flatMap((group) => group.clubs.map((club) => [club.clubId, club] as const)));
+const sfTotalsByClub = new Map((sfWindowDoc?.clubs || []).map((club) => [club.clubId, { ...club, ...buildSemifinalClubTotal(club) }] as const));
 
 const seedById = new Map<string, any>(
   (clubsDoc?.seeds || []).map((seed: any) => [seed.clubId, seed] as [string, any])
@@ -257,12 +262,13 @@ const matchSourceMap = buildMatchSourceMap(roundWindows);
 const playoffRound = knockoutDoc?.rounds?.find((round: any) => round.id === 'KO-PLAYOFF');
 const finalBracketRounds = (knockoutDoc?.rounds || [])
   .filter((round: any) => round.id !== 'KO-PLAYOFF')
-  .map((round: any) => !['KO-R16', 'KO-QF'].includes(round.id) ? round : ({
+  .map((round: any) => !['KO-R16', 'KO-QF', 'KO-SF'].includes(round.id) ? round : ({
     ...round,
     status: round.id === 'KO-R16' ? r16Status : round.status,
     ties: round.ties.map((tie: any) => {
-      const sideA = round.id === 'KO-R16' ? r16TotalsByClub.get(tie.slotA.clubId) : qfTotalsByClub.get(tie.slotA.clubId);
-      const sideB = round.id === 'KO-R16' ? r16TotalsByClub.get(tie.slotB.clubId) : qfTotalsByClub.get(tie.slotB.clubId);
+      const totalsByClub: Map<string, any> = round.id === 'KO-R16' ? r16TotalsByClub : round.id === 'KO-SF' ? sfTotalsByClub : qfTotalsByClub;
+      const sideA = totalsByClub.get(tie.slotA.clubId);
+      const sideB = totalsByClub.get(tie.slotB.clubId);
       return {
         ...tie,
         scoreA: sideA?.total ?? undefined,
@@ -945,20 +951,22 @@ const reviewMissingCards = reviewBuckets.missingCards;
 
         {round.id === 'KO-SF' && sfWindowDoc && (
           <div class="r16-audit" data-sf-plan>
-            <div class="phase-subhead"><h3>Próximos partidos oficiales</h3></div>
+            <div class="phase-subhead"><h3>Partidos oficiales</h3></div>
             <p class="r16-audit-note">
-              <strong>Desde el 9 de octubre de 2026 inclusive, sin fecha límite.</strong> Dos próximos oficiales
-              de todas las competiciones por semifinalista. Corte: {sfWindowDoc.verifiedAt}. La programación puede cambiar.
-              Fecha u hora pendiente no equivale a un partido sin puntos: todavía no hay resultados.
+              <strong>Desde el 9 de octubre de 2026 inclusive, sin fecha límite.</strong> Los dos primeros oficiales
+              de todas las competiciones por semifinalista a partir de esa fecha. Corte: {sfWindowDoc.verifiedAt}. La programación puede cambiar.
+              Un partido por jugar o con fecha pendiente no otorga puntos. * Máximo provisional: las tarjetas de los
+              partidos jugados no están verificadas (se muestran como «?»). Un total parcial corresponde solo a los
+              partidos jugados y no limita el total final.
             </p>
             <p class="r16-audit-note">
               <strong>Encarnación: fecha y hora pendientes.</strong> Rival y orden de General Caballero corroborados;
-              estadio sin confirmar. <strong>Bolívar: segundo programado provisional.</strong> Copa Bolivia ante
-              Oriente Petrolero sigue sin fecha y podría intercalarse; aún no es el segundo oficial definitivo de Potosí.
+              estadio sin confirmar. <strong>Nacional Potosí:</strong> Copa Bolivia ante Oriente Petrolero ya tiene
+              fechas, ambas posteriores (21 de octubre y 4 de noviembre), por lo que Bolívar queda como segundo oficial.
             </p>
             <div class="table-wrap" role="region" aria-label="Programación de semifinales" tabindex="0">
               <table class="r16-table">
-                <caption class="sr-only">Próximos partidos de semifinales, con fechas pendientes y selección provisional identificadas.</caption>
+                <caption class="sr-only">Partidos de semifinales: jugados, programados y con fecha pendiente. Las tarjetas desconocidas se indican con un signo de interrogación.</caption>
                 <thead><tr>
                   <th scope="col">Llave</th><th scope="col" class="col-club">Club</th><th scope="col">#</th>
                   <th scope="col">Fecha local</th><th scope="col">Hora local</th><th scope="col">Condición</th>
@@ -967,22 +975,27 @@ const reviewMissingCards = reviewBuckets.missingCards;
                   <th scope="col">Programación</th><th scope="col">Fuente</th>
                 </tr></thead>
                 <tbody>{sfWindowDoc.clubs.flatMap((club) => club.fixtures.map((fixture, index) => (
-                  <tr class={fixture.status === 'tbd' ? 'is-tbd' : 'is-scheduled'}>
+                  <tr class={`is-${fixture.status}`}>
                     <td>{club.tieId}</td><td class="col-club">{clubMeta(club.clubId).name}</td><td>{index + 1}</td>
                     <td>{fixture.sourceDate ? formatRoundDate(fixture.sourceDate) : 'Fecha pendiente'}</td>
                     <td>{fixture.startTimestamp != null ? new Date(fixture.startTimestamp * 1000).toLocaleTimeString('es-CL', { timeZone: fixture.timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }) : 'Hora pendiente'}</td>
                     <td>{fixture.isHome ? 'Local' : 'Visita'}</td><td class="col-club">{fixture.isHome ? fixture.awayClub : fixture.homeClub}</td>
                     <td class="col-club">{fixture.sourceCompetition}</td>
-                    <td>—</td><td>—</td><td>—</td><td>—</td>
-                    <td>{fixture.selectionStatus === 'provisional' ? 'Segundo programado provisional' : fixture.status === 'tbd' ? 'Fecha y hora pendientes' : 'Programado'}
+                    <td>{fixture.status === 'played' ? `${fixture.goalsFor}–${fixture.goalsAgainst}` : '—'}</td>
+                    <td>{fixture.status === 'played' ? fixture.yellowCards ?? '?' : '—'}</td>
+                    <td>{fixture.status === 'played' ? fixture.redCards ?? '?' : '—'}</td>
+                    <td>{fixture.status === 'played'
+                      ? `${fixture.yellowCards == null || fixture.redCards == null ? '≤ ' : ''}${semifinalFantasyScore(club.clubId, fixture)?.total}${fixture.yellowCards == null || fixture.redCards == null ? '*' : ''}`
+                      : '—'}</td>
+                    <td>{fixture.status === 'played' ? 'Jugado' : fixture.selectionStatus === 'provisional' ? 'Segundo programado provisional' : fixture.status === 'tbd' ? 'Fecha y hora pendientes' : 'Programado'}
                       {fixture.venue && <small> · {fixture.venue}</small>}</td>
-                    <td><a href={fixture.sourceUrl} target="_blank" rel="noreferrer">Ver fuente</a></td>
+                    <td><a href={fixture.sourceUrl} target="_blank" rel="noreferrer">{fixture.status === 'played' ? 'Ver partido' : 'Ver fuente'}</a></td>
                   </tr>
                 )))}</tbody>
               </table>
             </div>
             <details class="audit-block">
-              <summary>Fuentes y certeza de la programación de semifinales</summary>
+              <summary>Fuentes, resultados y pendientes de semifinales</summary>
               <div class="audit-body"><p class="r16-audit-note">{sfWindowDoc.note}</p>
                 <ul class="audit-list">{sfWindowDoc.clubs.map((club) => (
                   <li><strong>{clubMeta(club.clubId).name}:</strong> {club.note}{' '}

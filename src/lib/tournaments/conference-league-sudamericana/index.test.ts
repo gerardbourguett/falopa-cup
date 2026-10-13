@@ -837,7 +837,7 @@ describe('quarterfinal planning', () => {
       expect(resolveQuarterfinalWinner(a, b)).toBe(tie.winnerClubId);
     }
     const sf = knockout.rounds.find((round) => round.id === 'KO-SF')!;
-    expect(sf.status).toBe('planned');
+    expect(sf.status).toBe('in-progress');
     expect(sf.ties.flatMap((tie) => [tie.slotA.clubId, tie.slotB.clubId])).toEqual(['pe-alianza-lima', 'py-general-caballero', 've-metropolitanos', 'bo-nacional-potosi']);
     expect(sf.ties.flatMap((tie) => [tie.slotA.sourceRef, tie.slotB.sourceRef])).toEqual(['QF-1', 'QF-2', 'QF-3', 'QF-4']);
     expect(sf.ties.every((tie) => !tie.winnerClubId && tie.scoreA === undefined && tie.scoreB === undefined)).toBe(true);
