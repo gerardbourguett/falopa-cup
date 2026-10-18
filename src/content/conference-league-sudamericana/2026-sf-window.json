@@ -5,15 +5,15 @@
   "status": "in-progress",
   "windowStart": "2026-10-09",
   "selectionPolicy": "next-two-official-local-dates",
-  "verifiedAt": "2026-10-13",
-  "note": "Semifinales: los dos primeros partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Al corte del 13 de octubre hay cuatro partidos jugados (uno por semifinalista) y cuatro por jugar: tres programados y uno con fecha pendiente (General Caballero en Encarnación). Marcadores y tarjetas se contrastaron en dos fuentes independientes: estadísticas de Sofascore y de 365Scores (en General Caballero, 365Scores y ABC Color, porque Sofascore no publica tarjetas de ese partido). Con un solo partido jugado por club, cada total es parcial y no limita el resultado final. No se declara ganador de ninguna llave.",
+  "verifiedAt": "2026-10-18",
+  "note": "Semifinales: los dos primeros partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Al corte del 18 de octubre hay cinco partidos jugados y tres por jugar, todos con fecha. Alianza Lima ya completó sus dos partidos. Marcadores y tarjetas se contrastaron en dos fuentes independientes: estadísticas de Sofascore y de 365Scores (en General Caballero, 365Scores y ABC Color, porque Sofascore no publica tarjetas de ese partido). Los totales de los demás clubes son parciales y no limitan el resultado final. No se declara ganador de ninguna llave: aún no existe la resolución de ganador de semifinales.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
       "tieId": "SF-1",
       "sourceRef": "QF-1",
       "scheduleSourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
-      "note": "Primer oficial jugado el 11 de octubre en Cusco (Liga 1, Clausura F11). El segundo, ante Atlético Grau el 17 de octubre, está confirmado en el calendario de Liga 1, con fecha y hora local de Perú.",
+      "note": "Ambos partidos jugados: 11 de octubre en Cusco (Liga 1, Clausura F11) y 17 de octubre en Lima ante Atlético Grau (F12), con fecha y hora local de Perú.",
       "fixtures": [
         {
           "sourceDate": "2026-10-11",
@@ -50,19 +50,22 @@
           "homeClub": "Alianza Lima",
           "awayClub": "Atlético Grau",
           "isHome": true,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
-          "sourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
+          "goalsFor": 3,
+          "goalsAgainst": 1,
+          "yellowCards": 4,
+          "redCards": 0,
+          "sourceUrl": "https://www.sofascore.com/football/match/club-atletico-grau-alianza-lima/lWsNanc#id:16280841",
           "verificationSources": [
+            "https://www.sofascore.com/football/match/club-atletico-grau-alianza-lima/lWsNanc#id:16280841",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4760807",
             "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
           ],
           "startTimestamp": 1792287000,
           "venue": "Alejandro Villanueva",
-          "note": "20:30 de Perú (UTC−5); la fecha local es el 17, aunque UTC sea el 18."
+          "note": "Alianza Lima 3-1 Atlético Grau, 20:30 de Perú (UTC−5), Alejandro Villanueva; la fecha local es el 17, aunque UTC sea el 18. Tarjetas: Sofascore y 365Scores coinciden en 4 amarillas y 0 rojas para Alianza (Esteban Pavez, Kevin Quevedo, Jairo Vélez y Jesús Castillo según Sofascore) y 1 amarilla para Grau.",
+          "eventId": 16280841
         }
       ]
     },
@@ -71,7 +74,7 @@
       "tieId": "SF-1",
       "sourceRef": "QF-2",
       "scheduleSourceUrl": "https://www.apf.org.py/noticias/autoridades-para-la-fecha-28-de-la-intermedia",
-      "note": "Primer oficial jugado el 11 de octubre (Intermedia F28, ante Santaní). Encarnación FC sigue como siguiente rival, de visita, con fecha y hora pendientes: ABC Color (11/10) lo ubica en la fecha 29 y La Tribuna deja a 12 de Junio, en casa, para el cierre; Versus (11/10) menciona a 12 de Junio como próximo local y es la única que discrepa. Caballero está eliminado de Copa Paraguay; no se inventa estadio para Encarnación.",
+      "note": "Primer oficial jugado el 11 de octubre (Intermedia F28, ante Santaní). El segundo, ante Encarnación FC de visita (fecha 29), figura el 19 de octubre en Sofascore, que es la única fuente de la fecha y la hora; el estadio sigue sin confirmar. Versus (11/10) mencionó a 12 de Junio como próximo local, pero ABC Color y La Tribuna ubican a Encarnación en la fecha 29. Caballero está eliminado de Copa Paraguay; no se inventa estadio.",
       "fixtures": [
         {
           "sourceDate": "2026-10-11",
@@ -101,25 +104,28 @@
           "eventId": 17266233
         },
         {
-          "sourceDate": null,
+          "sourceDate": "2026-10-19",
           "timeZone": "America/Asuncion",
           "sourceCompetitionType": "local-league",
           "sourceCompetition": "División Intermedia F29",
           "homeClub": "Encarnación FC",
           "awayClub": "General Caballero",
           "isHome": false,
-          "status": "tbd",
+          "status": "scheduled",
           "selectionStatus": "confirmed",
           "goalsFor": null,
           "goalsAgainst": null,
           "yellowCards": null,
           "redCards": null,
-          "sourceUrl": "https://www.latribuna.com.py/deportes/2026/10/09/definicion-infartante-en-la-division-intermedia/",
+          "sourceUrl": "https://www.sofascore.com/football/match/encarnacion-fc-general-caballero/ucfdsxrde#id:17329347",
           "verificationSources": [
-            "https://www.latribuna.com.py/deportes/2026/10/09/definicion-infartante-en-la-division-intermedia/",
-            "https://www.apf.org.py/noticias/rubio-nu-se-mete-a-la-siguiente-ronda"
+            "https://www.sofascore.com/football/match/encarnacion-fc-general-caballero/ucfdsxrde#id:17329347",
+            "https://www.abc.com.py/deportes/futbol/intermedia/2026/10/11/general-caballero-jlm-pasa-al-frente-y-se-acerca-al-ascenso-a-primera/",
+            "https://www.latribuna.com.py/deportes/2026/10/09/definicion-infartante-en-la-division-intermedia/"
           ],
-          "note": "Rival y orden corroborados. Fecha, hora y estadio pendientes; no asignar 17 ni 18 de octubre."
+          "note": "19 de octubre, 16:30 de Paraguay (UTC−3), según Sofascore (sin segunda fuente para la fecha); estadio sin confirmar. Rival y orden corroborados por ABC Color y La Tribuna.",
+          "startTimestamp": 1792438200,
+          "eventId": 17329347
         }
       ]
     },
@@ -128,7 +134,7 @@
       "tieId": "SF-2",
       "sourceRef": "QF-3",
       "scheduleSourceUrl": "https://ligafutve.org/",
-      "note": "Primer oficial jugado el 10 de octubre (Liga FUTVE, Clausura). El segundo, ante Estudiantes de Mérida, tiene fecha local del 17 de octubre. La hora del primero (19:30 de Venezuela) la confirman Sofascore y 365Scores; la del segundo sigue pendiente porque la web oficial muestra fechas/horas sin zona explícita. Rivales y orden respaldados por Liga FUTVE; fechas locales corroboradas por fuentes secundarias. Copa Venezuela vuelve el 21 de octubre, después de estos encuentros.",
+      "note": "Primer oficial jugado el 10 de octubre (Liga FUTVE, Clausura). El segundo, ante Estudiantes de Mérida, se movió al 18 de octubre según Sofascore. Copa Venezuela vuelve el 21 de octubre, después de estos encuentros.",
       "fixtures": [
         {
           "sourceDate": "2026-10-10",
@@ -159,7 +165,7 @@
           "startTimestamp": 1791675000
         },
         {
-          "sourceDate": "2026-10-17",
+          "sourceDate": "2026-10-18",
           "timeZone": "America/Caracas",
           "sourceCompetitionType": "local-league",
           "sourceCompetition": "Liga FUTVE · Clausura",
@@ -172,14 +178,16 @@
           "goalsAgainst": null,
           "yellowCards": null,
           "redCards": null,
-          "sourceUrl": "https://www.academiadeapuestaslatam.com/stats/match/venezuela/primera-division/estudiantes-m/metropolitanos/qxRQ5lwLlm7Ee/live",
+          "sourceUrl": "https://www.sofascore.com/football/match/metropolitanos-estudiantes-de-merida/VedsFZob#id:16774733",
           "verificationSources": [
+            "https://www.sofascore.com/football/match/metropolitanos-estudiantes-de-merida/VedsFZob#id:16774733",
             "https://ligafutve.org/",
-            "https://www.academiadeapuestaslatam.com/stats/match/venezuela/primera-division/estudiantes-m/metropolitanos/qxRQ5lwLlm7Ee/live",
             "https://www.lavinotinto.com/la-copa-venezuela-se-reanudara-el-19-de-agosto/"
           ],
           "venue": "Metropolitano de Mérida",
-          "note": "Fecha local 17 de octubre; hora pendiente. La web oficial muestra 18/10 00:00 sin zona explícita; no se inventa una hora local."
+          "note": "18 de octubre, 15:30 de Venezuela (UTC−4), según Sofascore; antes figuraba el 17 de octubre. Metropolitano de Mérida.",
+          "startTimestamp": 1792351800,
+          "eventId": 16774733
         }
       ]
     },
@@ -188,7 +196,7 @@
       "tieId": "SF-2",
       "sourceRef": "QF-4",
       "scheduleSourceUrl": "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
-      "note": "Primer oficial jugado el 11 de octubre en Cochabamba (Liga, fecha 21). Segundo programado: Bolívar, 18 de octubre en Potosí. Copa Bolivia ante Oriente Petrolero ya tiene fechas (ida 21 de octubre y vuelta 4 de noviembre, según Diez.bo), ambas posteriores, por lo que no puede intercalarse antes de Bolívar. Las fechas de liga provienen de fuentes secundarias (no se encontró calendario primario); la hora del segundo partido sigue pendiente.",
+      "note": "Primer oficial jugado el 11 de octubre en Cochabamba (Liga, fecha 21). Segundo programado: Bolívar, 18 de octubre en Potosí. Copa Bolivia ante Oriente Petrolero ya tiene fechas (ida 21 de octubre y vuelta 4 de noviembre, según Diez.bo), ambas posteriores, por lo que no puede intercalarse antes de Bolívar. Las fechas de liga provienen de fuentes secundarias (no se encontró calendario primario).",
       "fixtures": [
         {
           "sourceDate": "2026-10-11",
@@ -232,14 +240,17 @@
           "goalsAgainst": null,
           "yellowCards": null,
           "redCards": null,
-          "sourceUrl": "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
+          "sourceUrl": "https://www.sofascore.com/football/match/nacional-potosi-bolivar/jQcsaeu#id:17255661",
           "verificationSources": [
+            "https://www.sofascore.com/football/match/nacional-potosi-bolivar/jQcsaeu#id:17255661",
             "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
             "https://www.futboldebolivia.net/2026/04/liga-de-la-division-profesional-2026.html",
             "https://diez.bo/futbol/la-copa-bolivia-ya-tiene-calendario-para-definir-a-su-campeon-2026_1791576050"
           ],
           "venue": "Víctor Agustín Ugarte",
-          "note": "Segundo programado de liga, 18 de octubre; horario pendiente. Copa Bolivia (Oriente Petrolero–Nacional Potosí) quedó fechada el 21 de octubre (ida) y el 4 de noviembre (vuelta), así que ya no puede intercalarse. Las mismas fuentes secundarias situaron correctamente el primer partido el 11 de octubre; no se encontró calendario primario."
+          "note": "Segundo programado de liga, 18 de octubre, 15:00 de Bolivia (UTC−4) según Sofascore. Copa Bolivia (Oriente Petrolero–Nacional Potosí) está fechada el 21 de octubre (ida) y el 4 de noviembre (vuelta), así que no se intercala.",
+          "startTimestamp": 1792350000,
+          "eventId": 17255661
         }
       ]
     }
