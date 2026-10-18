@@ -448,11 +448,12 @@
     {
       "type": "match",
       "status": "pending",
-      "date": "2026-10-16",
-      "competition": "Copa de La Liga · Final",
-      "sourceUrl": "https://www.campeonatochileno.cl/match/coquimbo-unido-ohiggins-2026-10-16/",
+      "date": "2026-10-20",
+      "competition": "Copa Chile · Cuartos de final · Ida",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/uni%C3%B3n-la-calera-coquimbo-unido-2026-10-20/",
+      "reason": "La final de la Copa de la Liga contra O'Higgins se aplazó del 16 de octubre al 14 de noviembre; la ANFP aún debe confirmar la sede. Este es el próximo partido del portador.",
       "holderId": "coquimbo-unido",
-      "challengerId": "ohiggins"
+      "challengerId": "union-la-calera"
     }
   ]
 }

@@ -19,7 +19,7 @@ const used = new Set([
 ]);
 
 describe('semifinal scheduling from October 9 without an end date', () => {
-  it('loads exactly the four fixed semifinalists, four played slots and four pending ones', () => {
+  it('loads exactly the four fixed semifinalists, five played slots and three pending ones', () => {
     expect(schema.safeParse(sfData).success).toBe(true);
     expect(validateSemifinalIntegrity(window, knockout, used)).toEqual([]);
     expect(window.clubs.map((club) => [club.clubId, club.tieId, club.sourceRef])).toEqual([
@@ -28,9 +28,9 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     ]);
     const games = window.clubs.flatMap((club) => club.fixtures);
     expect(games).toHaveLength(8);
-    expect(games.filter((game) => game.status === 'played')).toHaveLength(4);
+    expect(games.filter((game) => game.status === 'played')).toHaveLength(5);
     expect(games.filter((game) => game.status === 'scheduled')).toHaveLength(3);
-    expect(games.filter((game) => game.status === 'tbd')).toHaveLength(1);
+    expect(games.filter((game) => game.status === 'tbd')).toHaveLength(0);
     for (const game of games.filter((game) => game.status !== 'played')) expect([game.goalsFor, game.goalsAgainst, game.yellowCards, game.redCards]).toEqual([null, null, null, null]);
   });
 
@@ -51,8 +51,10 @@ describe('semifinal scheduling from October 9 without an end date', () => {
       expect(game.verificationSources.filter((url) => url.includes('365scores')).length).toBe(1);
       expect(game.verificationSources.length).toBeGreaterThanOrEqual(3);
       expect(game.note).toContain('Tarjetas:');
-      expect(club.fixtures[1].status).not.toBe('played');
+      if (club.clubId !== 'pe-alianza-lima') expect(club.fixtures[1].status).not.toBe('played');
     }
+    // Alianza completed both slots (3-1 over Grau, 4 yellows, 0 reds) confirmed by Sofascore and 365Scores.
+    expect(window.clubs[0].fixtures[1]).toMatchObject({ status: 'played', eventId: 16280841, goalsFor: 3, goalsAgainst: 1, yellowCards: 4, redCards: 0 });
     // Sofascore has no card data for Caballero: its count rests on 365Scores plus ABC Color, and the note says so.
     expect(window.clubs[1].fixtures[0].note).toContain('Sofascore no publica tarjetas');
     // Potosí's conflicting expulsion report is documented, not loaded.
@@ -62,17 +64,20 @@ describe('semifinal scheduling from October 9 without an end date', () => {
 
   it('scores each played slot as a partial total that cannot decide a tie', () => {
     const totals = window.clubs.map((club) => buildSemifinalClubTotal(club));
-    expect(totals.map((total) => total.total)).toEqual([2.75, 2.75, 7, 0]);
-    for (const total of totals) expect(total).toMatchObject({ played: 1, missingSlots: 0, disciplinePending: false, kind: 'partial' });
+    expect(totals.map((total) => total.total)).toEqual([5.75, 2.75, 7, 0]);
+    expect(totals[0]).toMatchObject({ played: 2, disciplinePending: false, kind: 'verified' });
+    for (const total of totals.slice(1)) expect(total).toMatchObject({ played: 1, missingSlots: 0, disciplinePending: false, kind: 'partial' });
+    // 3-1 win with 4 yellows = 3 + 1 margin - 1.
     // 2-1 win = 3 - 0.25 (1 yellow); 4-0 win = 3 + 3 margin + 1 clean sheet; 2-2 draw = 1 - 4 yellows * 0.25.
     expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[0])?.total)).toEqual([2.75, 2.75, 7, 0]);
     // Unknown cards would make the same slot a provisional maximum instead.
-    const unknown = structuredClone(window.clubs[0]);
+    const unknown = structuredClone(window.clubs[1]);
     Object.assign(unknown.fixtures[0], { yellowCards: null, redCards: null });
     expect(buildSemifinalClubTotal(unknown)).toMatchObject({ total: 3, disciplinePending: true, kind: 'partial' });
-    expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[1]))).toEqual([null, null, null, null]);
+    expect(window.clubs.slice(1).map((club) => semifinalFantasyScore(club.clubId, club.fixtures[1]))).toEqual([null, null, null]);
+    expect(semifinalFantasyScore('pe-alianza-lima', window.clubs[0].fixtures[1])?.total).toBe(3);
     expect(buildSemifinalClubTotal({ clubId: 'x', fixtures: [] })).toMatchObject({ total: null, played: 0, kind: 'pending', missingSlots: 2 });
-    const known = structuredClone(window.clubs[0]);
+    const known = structuredClone(window.clubs[1]);
     Object.assign(known.fixtures[0], { yellowCards: 2, redCards: 1 });
     expect(buildSemifinalClubTotal(known)).toMatchObject({ total: 1.5, disciplinePending: false, kind: 'partial' });
     Object.assign(known.fixtures[1], { status: 'played', goalsFor: 0, goalsAgainst: 0, yellowCards: 0, redCards: 0 });
@@ -84,15 +89,15 @@ describe('semifinal scheduling from October 9 without an end date', () => {
   it('preserves all researched local dates, opponents and home/away conditions', () => {
     expect(window.clubs.map((club) => club.fixtures.map((game) => [game.sourceDate, game.isHome, game.isHome ? game.awayClub : game.homeClub]))).toEqual([
       [['2026-10-11', false, 'Cusco FC'], ['2026-10-17', true, 'Atlético Grau']],
-      [['2026-10-11', true, 'Deportivo Santaní'], [null, false, 'Encarnación FC']],
-      [['2026-10-10', true, 'Deportivo Rayo Zuliano'], ['2026-10-17', false, 'Estudiantes de Mérida']],
+      [['2026-10-11', true, 'Deportivo Santaní'], ['2026-10-19', false, 'Encarnación FC']],
+      [['2026-10-10', true, 'Deportivo Rayo Zuliano'], ['2026-10-18', false, 'Estudiantes de Mérida']],
       [['2026-10-11', false, 'Aurora'], ['2026-10-18', true, 'Bolívar']],
     ]);
   });
 
   it('includes the start date and later official cup games without any artificial deadline', () => {
     const template = window.clubs[0].fixtures[1]; // a scheduled fixture without a provider event ID
-    const game = (date: string, opponent: string, type: SemifinalFixture['sourceCompetitionType'] = 'local-league') => ({ ...template, startTimestamp: undefined, sourceDate: date, homeClub: opponent, sourceCompetitionType: type });
+    const game = (date: string, opponent: string, type: SemifinalFixture['sourceCompetitionType'] = 'local-league') => ({ ...template, startTimestamp: undefined, eventId: undefined, sourceDate: date, homeClub: opponent, sourceCompetitionType: type });
     const start = game('2026-10-09', 'Club A');
     const far = game('2027-02-01', 'Club B', 'local-cup');
     const later = game('2027-03-01', 'Club C', 'conmebol');
@@ -105,20 +110,20 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     const alianza = window.clubs[0];
     expect(quarterfinalLocalDate({ ...alianza.fixtures[1], sourceDate: alianza.fixtures[1].sourceDate! })).toBe('2026-10-17');
     const times = window.clubs.flatMap((club) => club.fixtures).filter((game) => game.startTimestamp != null);
-    expect(times).toHaveLength(5);
+    expect(times).toHaveLength(8);
     expect(times.map((game) => new Date(game.startTimestamp! * 1000).toISOString())).toEqual([
-      '2026-10-11T23:30:00.000Z', '2026-10-18T01:30:00.000Z', '2026-10-11T13:00:00.000Z', '2026-10-10T23:30:00.000Z', '2026-10-11T21:15:00.000Z',
+      '2026-10-11T23:30:00.000Z', '2026-10-18T01:30:00.000Z', '2026-10-11T13:00:00.000Z', '2026-10-19T19:30:00.000Z',
+      '2026-10-10T23:30:00.000Z', '2026-10-18T19:30:00.000Z', '2026-10-11T21:15:00.000Z', '2026-10-18T19:00:00.000Z',
     ]);
-    // Only the two played games of Metropolitanos and Potosí got a confirmed kickoff; their next games still have no hour.
-    expect(window.clubs.slice(2).map((club) => [club.fixtures[0].startTimestamp != null, club.fixtures[1].startTimestamp === undefined])).toEqual([[true, true], [true, true]]);
   });
 
-  it('keeps Encarnacion date, kickoff and venue unknown without fabricating a calendar value', () => {
+  it('dates Encarnacion from a single source without inventing a venue', () => {
     const game = window.clubs[1].fixtures[1];
-    expect(game).toMatchObject({ sourceDate: null, status: 'tbd', selectionStatus: 'confirmed' });
-    expect(game.startTimestamp).toBeUndefined();
+    expect(game).toMatchObject({ sourceDate: '2026-10-19', status: 'scheduled', eventId: 17329347 });
     expect(game.venue).toBeUndefined();
-    for (const replacement of [{ status: 'scheduled' }, { sourceDate: '2026-10-17' }, { startTimestamp: 1792263600 }]) {
+    expect(game.note).toContain('sin segunda fuente');
+    // An undated slot must still be `tbd`, and a dated one cannot be `tbd`.
+    for (const replacement of [{ status: 'tbd' }, { sourceDate: null }]) {
       const changed = structuredClone(window);
       Object.assign(changed.clubs[1].fixtures[1], replacement);
       expect(schema.safeParse(changed).success).toBe(false);
@@ -145,7 +150,7 @@ describe('semifinal scheduling from October 9 without an end date', () => {
   it('rejects any future goal, yellow, red or played status without a score, including zero', () => {
     for (const replacement of [{ goalsFor: 0 }, { goalsAgainst: 1 }, { yellowCards: 0 }, { redCards: 0 }, { status: 'played' }]) {
       const changed = structuredClone(window);
-      Object.assign(changed.clubs[0].fixtures[1], replacement);
+      Object.assign(changed.clubs[2].fixtures[1], replacement);
       expect(schema.safeParse(changed).success).toBe(false);
       expect(validateSemifinalIntegrity(changed, knockout, used).length).toBeGreaterThan(0);
     }
