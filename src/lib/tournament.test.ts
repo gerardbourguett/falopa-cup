@@ -35,6 +35,7 @@ describe('distinct title transfer rules', () => {
       { date: '2026-09-30', scoreHolder: 0, scoreChallenger: 1, newHolderId: 'union-san-felipe' },
       { date: '2026-10-04', scoreHolder: 0, scoreChallenger: 2, newHolderId: 'union-san-felipe' },
       { date: '2026-10-12', scoreHolder: 0, scoreChallenger: 4, newHolderId: 'union-san-felipe' },
+      { date: '2026-10-18', scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe' },
     ]);
     for (const [cup, entries] of [['falopa-cup', falopa], ['copa-pablo-milad', redacted]] as const) {
       for (const m of entries.filter((m) => m.type === 'match' && m.status !== 'pending' && m.date >= '2026-09-22')) {
@@ -56,8 +57,11 @@ describe('distinct title transfer rules', () => {
     expect(falopa.filter((m) => m.status === 'pending')).toMatchObject([
       { date: '2026-10-20', holderId: 'coquimbo-unido', challengerId: 'union-la-calera' },
     ]);
+    expect(redacted.find((m) => m.date === '2026-10-18')).toMatchObject({
+      scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe',
+    });
     expect(redacted.filter((m) => m.status === 'pending')).toMatchObject([
-      { date: '2026-10-18', holderId: 'union-san-felipe', challengerId: 'deportes-temuco' },
+      { date: '2026-10-24', holderId: 'union-san-felipe', challengerId: 'deportes-puerto-montt' },
     ]);
   });
 });

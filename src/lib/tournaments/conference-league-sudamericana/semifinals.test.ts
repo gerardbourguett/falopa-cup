@@ -19,7 +19,7 @@ const used = new Set([
 ]);
 
 describe('semifinal scheduling from October 9 without an end date', () => {
-  it('loads exactly the four fixed semifinalists, five played slots and three pending ones', () => {
+  it('loads exactly the four fixed semifinalists, seven played slots and one pending one', () => {
     expect(schema.safeParse(sfData).success).toBe(true);
     expect(validateSemifinalIntegrity(window, knockout, used)).toEqual([]);
     expect(window.clubs.map((club) => [club.clubId, club.tieId, club.sourceRef])).toEqual([
@@ -28,8 +28,8 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     ]);
     const games = window.clubs.flatMap((club) => club.fixtures);
     expect(games).toHaveLength(8);
-    expect(games.filter((game) => game.status === 'played')).toHaveLength(5);
-    expect(games.filter((game) => game.status === 'scheduled')).toHaveLength(3);
+    expect(games.filter((game) => game.status === 'played')).toHaveLength(7);
+    expect(games.filter((game) => game.status === 'scheduled')).toHaveLength(1);
     expect(games.filter((game) => game.status === 'tbd')).toHaveLength(0);
     for (const game of games.filter((game) => game.status !== 'played')) expect([game.goalsFor, game.goalsAgainst, game.yellowCards, game.redCards]).toEqual([null, null, null, null]);
   });
@@ -51,8 +51,11 @@ describe('semifinal scheduling from October 9 without an end date', () => {
       expect(game.verificationSources.filter((url) => url.includes('365scores')).length).toBe(1);
       expect(game.verificationSources.length).toBeGreaterThanOrEqual(3);
       expect(game.note).toContain('Tarjetas:');
-      if (club.clubId !== 'pe-alianza-lima') expect(club.fixtures[1].status).not.toBe('played');
     }
+    expect(window.clubs[1].fixtures[1].status).toBe('scheduled');
+    // Metropolitanos drew 2-2 at Mérida (3 yellows) and Potosí lost 0-1 to Bolívar (1 yellow), both confirmed twice.
+    expect(window.clubs[2].fixtures[1]).toMatchObject({ status: 'played', goalsFor: 2, goalsAgainst: 2, yellowCards: 3, redCards: 0 });
+    expect(window.clubs[3].fixtures[1]).toMatchObject({ status: 'played', goalsFor: 0, goalsAgainst: 1, yellowCards: 1, redCards: 0 });
     // Alianza completed both slots (3-1 over Grau, 4 yellows, 0 reds) confirmed by Sofascore and 365Scores.
     expect(window.clubs[0].fixtures[1]).toMatchObject({ status: 'played', eventId: 16280841, goalsFor: 3, goalsAgainst: 1, yellowCards: 4, redCards: 0 });
     // Sofascore has no card data for Caballero: its count rests on 365Scores plus ABC Color, and the note says so.
@@ -64,17 +67,19 @@ describe('semifinal scheduling from October 9 without an end date', () => {
 
   it('scores each played slot as a partial total that cannot decide a tie', () => {
     const totals = window.clubs.map((club) => buildSemifinalClubTotal(club));
-    expect(totals.map((total) => total.total)).toEqual([5.75, 2.75, 7, 0]);
-    expect(totals[0]).toMatchObject({ played: 2, disciplinePending: false, kind: 'verified' });
-    for (const total of totals.slice(1)) expect(total).toMatchObject({ played: 1, missingSlots: 0, disciplinePending: false, kind: 'partial' });
+    expect(totals.map((total) => total.total)).toEqual([5.75, 2.75, 7.25, -0.25]);
+    for (const i of [0, 2, 3]) expect(totals[i]).toMatchObject({ played: 2, disciplinePending: false, kind: 'verified' });
+    expect(totals[1]).toMatchObject({ played: 1, missingSlots: 0, disciplinePending: false, kind: 'partial' });
     // 3-1 win with 4 yellows = 3 + 1 margin - 1.
     // 2-1 win = 3 - 0.25 (1 yellow); 4-0 win = 3 + 3 margin + 1 clean sheet; 2-2 draw = 1 - 4 yellows * 0.25.
     expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[0])?.total)).toEqual([2.75, 2.75, 7, 0]);
+    // 2-2 draw with 3 yellows = 0.25; 0-1 loss with 1 yellow = -0.25.
+    expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[1])?.total)).toEqual([3, undefined, 0.25, -0.25]);
     // Unknown cards would make the same slot a provisional maximum instead.
     const unknown = structuredClone(window.clubs[1]);
     Object.assign(unknown.fixtures[0], { yellowCards: null, redCards: null });
     expect(buildSemifinalClubTotal(unknown)).toMatchObject({ total: 3, disciplinePending: true, kind: 'partial' });
-    expect(window.clubs.slice(1).map((club) => semifinalFantasyScore(club.clubId, club.fixtures[1]))).toEqual([null, null, null]);
+    expect(semifinalFantasyScore(window.clubs[1].clubId, window.clubs[1].fixtures[1])).toBeNull();
     expect(semifinalFantasyScore('pe-alianza-lima', window.clubs[0].fixtures[1])?.total).toBe(3);
     expect(buildSemifinalClubTotal({ clubId: 'x', fixtures: [] })).toMatchObject({ total: null, played: 0, kind: 'pending', missingSlots: 2 });
     const known = structuredClone(window.clubs[1]);
@@ -135,7 +140,7 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     const potosi = window.clubs[3];
     expect(potosi.pendingCompetition).toBeUndefined();
     expect(potosi.fixtures[1]).toMatchObject({ sourceDate: '2026-10-18', selectionStatus: 'confirmed' });
-    expect(potosi.fixtures[1].note).toContain('21 de octubre');
+    expect(potosi.note).toContain('21 de octubre');
     expect(potosi.fixtures[1].verificationSources.join()).toContain('diez.bo');
     // An undated competing cup must still force a provisional, explained second selection.
     const changed = structuredClone(window);
@@ -150,7 +155,7 @@ describe('semifinal scheduling from October 9 without an end date', () => {
   it('rejects any future goal, yellow, red or played status without a score, including zero', () => {
     for (const replacement of [{ goalsFor: 0 }, { goalsAgainst: 1 }, { yellowCards: 0 }, { redCards: 0 }, { status: 'played' }]) {
       const changed = structuredClone(window);
-      Object.assign(changed.clubs[2].fixtures[1], replacement);
+      Object.assign(changed.clubs[1].fixtures[1], replacement);
       expect(schema.safeParse(changed).success).toBe(false);
       expect(validateSemifinalIntegrity(changed, knockout, used).length).toBeGreaterThan(0);
     }

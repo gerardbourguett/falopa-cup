@@ -365,12 +365,23 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-10-18",
       "competition": "Liga de Ascenso · Fecha 28",
-      "sourceUrl": "https://www.t13.cl/noticia/deportes13/primera-b-de-chile-2026-calendario-partidos-resultados",
+      "sourceUrl": "https://www.sofascore.com/football/match/deportes-temuco-union-san-felipe/cnbsxGX#id:15416348",
       "holderId": "union-san-felipe",
-      "challengerId": "deportes-temuco"
+      "challengerId": "deportes-temuco",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-10-24",
+      "competition": "Liga de Ascenso · Fecha 29",
+      "sourceUrl": "https://www.sofascore.com/football/match/deportes-puerto-montt-union-san-felipe/cnbsinb#id:15416353",
+      "holderId": "union-san-felipe",
+      "challengerId": "deportes-puerto-montt"
     }
   ]
 }

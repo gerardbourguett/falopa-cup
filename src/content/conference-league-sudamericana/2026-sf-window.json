@@ -5,8 +5,8 @@
   "status": "in-progress",
   "windowStart": "2026-10-09",
   "selectionPolicy": "next-two-official-local-dates",
-  "verifiedAt": "2026-10-18",
-  "note": "Semifinales: los dos primeros partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Al corte del 18 de octubre hay cinco partidos jugados y tres por jugar, todos con fecha. Alianza Lima ya completó sus dos partidos. Marcadores y tarjetas se contrastaron en dos fuentes independientes: estadísticas de Sofascore y de 365Scores (en General Caballero, 365Scores y ABC Color, porque Sofascore no publica tarjetas de ese partido). Los totales de los demás clubes son parciales y no limitan el resultado final. No se declara ganador de ninguna llave: aún no existe la resolución de ganador de semifinales.",
+  "verifiedAt": "2026-10-19",
+  "note": "Semifinales: los dos primeros partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Al corte del 19 de octubre hay siete partidos jugados y uno por jugar (General Caballero en Encarnación, 19 de octubre). Alianza Lima, Metropolitanos y Nacional Potosí ya completaron sus dos partidos. Marcadores y tarjetas se contrastaron en dos fuentes independientes: estadísticas de Sofascore y de 365Scores (en General Caballero, 365Scores y ABC Color, porque Sofascore no publica tarjetas de ese partido). No se declara ganador de ninguna llave: aún no existe la resolución de ganador de semifinales.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
@@ -134,7 +134,7 @@
       "tieId": "SF-2",
       "sourceRef": "QF-3",
       "scheduleSourceUrl": "https://ligafutve.org/",
-      "note": "Primer oficial jugado el 10 de octubre (Liga FUTVE, Clausura). El segundo, ante Estudiantes de Mérida, se movió al 18 de octubre según Sofascore. Copa Venezuela vuelve el 21 de octubre, después de estos encuentros.",
+      "note": "Ambos partidos jugados: 10 de octubre ante Rayo Zuliano (Liga FUTVE, Clausura) y 18 de octubre en Mérida. Copa Venezuela vuelve el 21 de octubre, después de estos encuentros.",
       "fixtures": [
         {
           "sourceDate": "2026-10-10",
@@ -172,20 +172,21 @@
           "homeClub": "Estudiantes de Mérida",
           "awayClub": "Metropolitanos",
           "isHome": false,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "yellowCards": 3,
+          "redCards": 0,
           "sourceUrl": "https://www.sofascore.com/football/match/metropolitanos-estudiantes-de-merida/VedsFZob#id:16774733",
           "verificationSources": [
             "https://www.sofascore.com/football/match/metropolitanos-estudiantes-de-merida/VedsFZob#id:16774733",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4801362",
             "https://ligafutve.org/",
             "https://www.lavinotinto.com/la-copa-venezuela-se-reanudara-el-19-de-agosto/"
           ],
           "venue": "Metropolitano de Mérida",
-          "note": "18 de octubre, 15:30 de Venezuela (UTC−4), según Sofascore; antes figuraba el 17 de octubre. Metropolitano de Mérida.",
+          "note": "Estudiantes de Mérida 2-2 Metropolitanos, 15:30 de Venezuela (UTC−4), Metropolitano de Mérida. Tarjetas: Sofascore y 365Scores coinciden en 3 amarillas y 0 rojas para Metropolitanos (José Riasco, Rafael Acosta y Yolfran Caricote según Sofascore) y 2 para Mérida; Sofascore no incluye el ítem de rojas, que el repo trata como cero, y 365Scores informa 0.",
           "startTimestamp": 1792351800,
           "eventId": 16774733
         }
@@ -196,7 +197,7 @@
       "tieId": "SF-2",
       "sourceRef": "QF-4",
       "scheduleSourceUrl": "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
-      "note": "Primer oficial jugado el 11 de octubre en Cochabamba (Liga, fecha 21). Segundo programado: Bolívar, 18 de octubre en Potosí. Copa Bolivia ante Oriente Petrolero ya tiene fechas (ida 21 de octubre y vuelta 4 de noviembre, según Diez.bo), ambas posteriores, por lo que no puede intercalarse antes de Bolívar. Las fechas de liga provienen de fuentes secundarias (no se encontró calendario primario).",
+      "note": "Ambos partidos jugados: 11 de octubre en Cochabamba (Liga, fecha 21) y 18 de octubre ante Bolívar (fecha 22). Copa Bolivia ante Oriente Petrolero está fechada el 21 de octubre (ida) y el 4 de noviembre (vuelta), posterior a ambos partidos, según Diez.bo.",
       "fixtures": [
         {
           "sourceDate": "2026-10-11",
@@ -234,21 +235,22 @@
           "homeClub": "Nacional Potosí",
           "awayClub": "Bolívar",
           "isHome": true,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null,
+          "goalsFor": 0,
+          "goalsAgainst": 1,
+          "yellowCards": 1,
+          "redCards": 0,
           "sourceUrl": "https://www.sofascore.com/football/match/nacional-potosi-bolivar/jQcsaeu#id:17255661",
           "verificationSources": [
             "https://www.sofascore.com/football/match/nacional-potosi-bolivar/jQcsaeu#id:17255661",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4806212",
             "https://www.bolivia.com/futbol/equipos/nacional-potosi/",
             "https://www.futboldebolivia.net/2026/04/liga-de-la-division-profesional-2026.html",
             "https://diez.bo/futbol/la-copa-bolivia-ya-tiene-calendario-para-definir-a-su-campeon-2026_1791576050"
           ],
           "venue": "Víctor Agustín Ugarte",
-          "note": "Segundo programado de liga, 18 de octubre, 15:00 de Bolivia (UTC−4) según Sofascore. Copa Bolivia (Oriente Petrolero–Nacional Potosí) está fechada el 21 de octubre (ida) y el 4 de noviembre (vuelta), así que no se intercala.",
+          "note": "Nacional Potosí 0-1 Bolívar, 15:00 de Bolivia (UTC−4), Víctor Agustín Ugarte. Tarjetas: Sofascore y 365Scores coinciden en 1 amarilla y 0 rojas para Potosí (Oscar Baldomar según Sofascore) y 5 amarillas para Bolívar.",
           "startTimestamp": 1792350000,
           "eventId": 17255661
         }
