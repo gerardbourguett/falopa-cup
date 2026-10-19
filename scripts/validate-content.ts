@@ -116,8 +116,8 @@ async function main() {
     }
   }
   const semifinalRound = conference.knockoutDoc?.rounds.find((round) => round.id === 'KO-SF');
-  if (!conference.sfWindowDoc && semifinalRound && semifinalRound.status !== 'planned') {
-    issues.push('conference/sf-window: A started semifinal round requires the semifinal window document.');
+  if (!conference.sfWindowDoc && semifinalRound && (semifinalRound.status !== 'planned' || semifinalRound.ties.some((tie) => tie.winnerClubId || tie.scoreA !== undefined || tie.scoreB !== undefined))) {
+    issues.push('conference/sf-window: A started semifinal round or any semifinal winner requires the semifinal window document.');
   }
   if (!conference.clubsDoc || !conference.stageDoc || !conference.groupsDoc) {
     issues.push('conference: faltan documentos mínimos (clubs/stage/groups) en src/content/conference-league-sudamericana');

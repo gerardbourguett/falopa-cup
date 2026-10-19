@@ -605,14 +605,10 @@ describe('quarterfinal planning', () => {
     const sf = changed.rounds.find((round) => round.id === 'KO-SF')!;
     [sf.ties[0].slotB, sf.ties[1].slotA] = [sf.ties[1].slotA, sf.ties[0].slotB];
     expect(validateQuarterfinalIntegrity(qfWindow, changed, r16Window.matchSources).join()).toContain('Fixed semifinal source refs');
-    for (const replacement of [{ scoreA: 3 }, { winnerClubId: 'pe-alianza-lima' }]) {
-      const invented = structuredClone(knockout);
-      Object.assign(invented.rounds.find((round) => round.id === 'KO-SF')!.ties[0], replacement);
-      expect(validateQuarterfinalIntegrity(qfWindow, invented, r16Window.matchSources).join()).toContain('Future semifinal result');
-    }
+    // Fabricated semifinal winners and scores are rejected by the semifinal window validator (see semifinals.test.ts).
     const final = knockout.rounds.find((round) => round.id === 'KO-F')!;
     expect(final.status).toBe('planned');
-    expect(final.ties.flatMap((tie) => [tie.slotA.clubId, tie.slotB.clubId])).toEqual([null, null]);
+    expect(final.ties.flatMap((tie) => [tie.slotA.clubId, tie.slotB.clubId])).toEqual(['pe-alianza-lima', 've-metropolitanos']);
   });
 
   it('rejects an incorrect home/away flag or fixtures belonging to another club', () => {
@@ -837,10 +833,11 @@ describe('quarterfinal planning', () => {
       expect(resolveQuarterfinalWinner(a, b)).toBe(tie.winnerClubId);
     }
     const sf = knockout.rounds.find((round) => round.id === 'KO-SF')!;
-    expect(sf.status).toBe('in-progress');
+    expect(sf.status).toBe('completed');
     expect(sf.ties.flatMap((tie) => [tie.slotA.clubId, tie.slotB.clubId])).toEqual(['pe-alianza-lima', 'py-general-caballero', 've-metropolitanos', 'bo-nacional-potosi']);
     expect(sf.ties.flatMap((tie) => [tie.slotA.sourceRef, tie.slotB.sourceRef])).toEqual(['QF-1', 'QF-2', 'QF-3', 'QF-4']);
-    expect(sf.ties.every((tie) => !tie.winnerClubId && tie.scoreA === undefined && tie.scoreB === undefined)).toBe(true);
+    expect(sf.ties.map((tie) => tie.winnerClubId ?? null)).toEqual(['pe-alianza-lima', 've-metropolitanos']);
+    expect(sf.ties.every((tie) => tie.scoreA === undefined && tie.scoreB === undefined)).toBe(true);
     const invented = structuredClone(knockout);
     invented.rounds.find((round) => round.id === 'KO-SF')!.ties[0].slotA.clubId = 'pe-adt';
     expect(validateQuarterfinalIntegrity(qfWindow, invented, r16Window.matchSources).join()).toContain('Inconsistent QF source winner');

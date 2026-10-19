@@ -302,7 +302,7 @@ const conferenceSfWindowSchema = z.object({
     kind: z.literal('sf-window'),
     edition: z.literal(2026),
     roundId: z.literal('KO-SF'),
-    status: z.enum(['planned', 'in-progress']),
+    status: z.enum(['planned', 'in-progress', 'completed']),
     windowStart: z.literal(SEMIFINAL_WINDOW_START),
     selectionPolicy: z.literal('next-two-official-local-dates'),
     verifiedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
