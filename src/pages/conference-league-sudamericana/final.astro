@@ -1,0 +1,469 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../components/Layout.astro';
+import { SITE_TITLE } from '../../consts';
+import { getClubAccentColor } from '../../lib/tournaments/conference-league-sudamericana/club-visuals';
+import {
+  FINAL_WINDOW_START,
+  buildFinalClubTotal,
+  resolveFinalResult,
+} from '../../lib/tournaments/conference-league-sudamericana/finals';
+import {
+  buildSemifinalClubTotal,
+  semifinalFantasyScore,
+} from '../../lib/tournaments/conference-league-sudamericana/semifinals';
+
+const entries = await getCollection('conference-league-sudamericana');
+const byKind = (kind: string) => entries.find((entry) => entry.data.kind === kind)?.data as any;
+const clubsDoc = byKind('clubs');
+const knockoutDoc = byKind('knockout');
+const sfDoc = byKind('sf-window');
+const fDoc = byKind('f-window');
+
+const finalRound = knockoutDoc.rounds.find((round: any) => round.id === 'KO-F');
+const tie = finalRound.ties[0];
+const semifinalRound = knockoutDoc.rounds.find((round: any) => round.id === 'KO-SF');
+
+const countryNames: Record<string, string> = {
+  BO: 'Bolivia', BR: 'Brasil', CL: 'Chile', CO: 'Colombia', EC: 'Ecuador',
+  PY: 'Paraguay', PE: 'Perú', UY: 'Uruguay', VE: 'Venezuela', AR: 'Argentina',
+};
+const seedById = new Map<string, any>((clubsDoc?.seeds || []).map((seed: any) => [seed.clubId, seed]));
+const clubMeta = (clubId: string) => {
+  const seed = seedById.get(clubId);
+  return {
+    clubId,
+    name: seed?.name || clubId,
+    country: countryNames[seed?.country] || seed?.country || '',
+    flag: `fi fi-${String(seed?.country || '').toLowerCase()}`,
+    accent: getClubAccentColor(clubId),
+  };
+};
+
+const formatScore = (value: number) => String(value);
+const finalists = [tie.slotA, tie.slotB].map((slot: any) => {
+  const plan = fDoc.clubs.find((club: any) => club.clubId === slot.clubId);
+  const total = buildFinalClubTotal(plan);
+  const semifinalPlan = sfDoc.clubs.find((club: any) => club.clubId === slot.clubId);
+  const semifinalTotal = buildSemifinalClubTotal(semifinalPlan);
+  const opponentSlot = slot === tie.slotA ? tie.slotB : tie.slotA;
+  const semifinalTie = semifinalRound.ties.find((candidate: any) => candidate.id === slot.sourceRef);
+  const semifinalRivalId = [semifinalTie.slotA.clubId, semifinalTie.slotB.clubId].find((id: string) => id !== slot.clubId);
+  const rivalPlan = sfDoc.clubs.find((club: any) => club.clubId === semifinalRivalId);
+  return {
+    ...clubMeta(slot.clubId),
+    plan,
+    total,
+    semifinalTotal,
+    semifinalRival: { ...clubMeta(semifinalRivalId), total: buildSemifinalClubTotal(rivalPlan) },
+    opponentId: opponentSlot.clubId,
+  };
+});
+const result = resolveFinalResult(finalists[0].plan, finalists[1].plan);
+const champion = result.winnerClubId ? finalists.find((club) => club.clubId === result.winnerClubId) : null;
+const playedCount = finalists.reduce((sum, club) => sum + club.total.played, 0);
+const statusLabel = champion ? 'Campeón definido' : playedCount > 0 ? 'En juego' : 'Por jugar';
+const statusClass = champion ? 'is-completed' : playedCount > 0 ? 'is-live' : 'is-planned';
+
+function totalLabel(club: (typeof finalists)[number]) {
+  if (club.total.total == null) return '—';
+  return `${club.total.disciplinePending ? '≤ ' : ''}${formatScore(club.total.total)}${club.total.disciplinePending ? '*' : ''}`;
+}
+function progressText(club: (typeof finalists)[number]) {
+  const played = club.total.played;
+  if (played === 0) return 'Sin partidos jugados';
+  return played === 1 ? '1 de 2 partidos jugados' : '2 de 2 partidos jugados';
+}
+function dateLabel(fixture: any) {
+  if (!fixture.sourceDate) return 'Fecha por confirmar';
+  const date = new Date(`${fixture.sourceDate}T12:00:00Z`);
+  return date.toLocaleDateString('es-CL', { weekday: 'short', day: '2-digit', month: '2-digit', timeZone: 'UTC' }).replace('.', '');
+}
+function timeLabel(fixture: any) {
+  if (fixture.startTimestamp == null) return 'Hora por confirmar';
+  return new Date(fixture.startTimestamp * 1000).toLocaleTimeString('es-CL', {
+    timeZone: fixture.timeZone, hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  });
+}
+function fixtureStatus(fixture: any) {
+  if (fixture.status === 'played') return { label: 'Jugado', cls: 'is-played' };
+  if (fixture.status === 'tbd') return { label: 'Por confirmar', cls: 'is-tbd' };
+  if (fixture.selectionStatus === 'provisional') return { label: 'Programado · provisional', cls: 'is-provisional' };
+  return { label: 'Programado', cls: 'is-scheduled' };
+}
+const slotScore = (club: (typeof finalists)[number], fixture: any) => semifinalFantasyScore(club.clubId, fixture, FINAL_WINDOW_START);
+const windowStartLabel = new Date(`${FINAL_WINDOW_START}T12:00:00Z`).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', timeZone: 'UTC' });
+---
+
+<Layout
+  title={`La final · Conference League Sudamericana — ${SITE_TITLE}`}
+  description={`Alianza Lima contra Metropolitanos: los dos partidos de cada finalista y el total fantasy en vivo.`}
+  currentPath="/conference-league-sudamericana"
+>
+  <section class="final-hero" aria-labelledby="final-title">
+    <div class="container final-hero-inner">
+      <a class="final-back" href="/conference-league-sudamericana#cuadro-final">← Conference League Sudamericana</a>
+      <div class="final-title-row">
+        <h1 id="final-title">La final</h1>
+        <span class={`final-chip ${statusClass}`}>{statusLabel}</span>
+      </div>
+      <p class="final-lede">
+        {finalists[0].name} contra {finalists[1].name}. Cada finalista suma sus dos próximos partidos oficiales
+        desde el {windowStartLabel}, sin fecha límite: gana el mayor total fantasy verificado.
+      </p>
+
+      <div class="final-board" role="group" aria-label="Marcador de la final">
+        {finalists.map((club, index) => (
+          <>
+            {index === 1 && <div class="final-versus" aria-hidden="true">vs</div>}
+            <article
+              class:list={['final-side', champion?.clubId === club.clubId && 'is-champion']}
+              style={`--club-accent:${club.accent}`}
+              aria-label={`${club.name}: total ${totalLabel(club)}`}
+            >
+              <header class="final-side-head">
+                <span class={`club-flag-icon ${club.flag}`} aria-hidden="true"></span>
+                <div class="final-side-name">
+                  <h2>{club.name}</h2>
+                  <span class="final-side-country">{club.country}</span>
+                </div>
+              </header>
+              <p class:list={['final-total', club.total.total == null && 'is-empty']} aria-live="polite">{club.total.total == null ? 'Sin puntos' : totalLabel(club)}</p>
+              <p class="final-total-note">
+                {club.total.total == null ? 'El total aparece al jugarse el primer partido' : club.total.played < 2 ? 'Total fantasy parcial' : club.total.disciplinePending ? 'Máximo provisional (tarjetas sin verificar)' : 'Total fantasy verificado'}
+              </p>
+              <div class="final-pips" role="img" aria-label={progressText(club)}>
+                <span class:list={['pip', club.total.played >= 1 && 'is-on']}></span>
+                <span class:list={['pip', club.total.played >= 2 && 'is-on']}></span>
+                <span class="final-pips-text">{progressText(club)}</span>
+              </div>
+              {champion?.clubId === club.clubId && <p class="final-crown">Campeón de la Conference 2026</p>}
+            </article>
+          </>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <main class="container final-main">
+    <section class="final-section" aria-labelledby="matches-title">
+      <h2 id="matches-title">Los partidos de cada finalista</h2>
+      <p class="final-section-note">
+        Dos partidos oficiales por club, de cualquier competición, desde el {windowStartLabel}. Un partido por jugar
+        o con fecha pendiente no otorga puntos. Horas en la zona del estadio.
+      </p>
+      <div class="final-columns">
+        {finalists.map((club) => (
+          <div class="final-column" style={`--club-accent:${club.accent}`}>
+            <h3 class="final-column-title">
+              <span class={`club-flag-icon ${club.flag}`} aria-hidden="true"></span>{club.name}
+            </h3>
+            <ol class="slot-list">
+              {club.plan.fixtures.map((fixture: any, index: number) => {
+                const status = fixtureStatus(fixture);
+                const rival = fixture.isHome ? fixture.awayClub : fixture.homeClub;
+                const score = fixture.status === 'played' ? slotScore(club, fixture) : null;
+                const cardsUnknown = fixture.status === 'played' && (fixture.yellowCards == null || fixture.redCards == null);
+                return (
+                  <li class={`slot ${status.cls}`}>
+                    <div class="slot-when">
+                      <span class="slot-number">Partido {index + 1}</span>
+                      <span class="slot-date">{dateLabel(fixture)}</span>
+                      <span class="slot-time">{timeLabel(fixture)}</span>
+                    </div>
+                    <div class="slot-what">
+                      <p class="slot-rival">
+                        <span class="slot-venue-tag">{fixture.isHome ? 'Local' : 'Visita'}</span>
+                        {rival}
+                      </p>
+                      <p class="slot-comp">{fixture.sourceCompetition}{fixture.venue ? ` · ${fixture.venue}` : ''}</p>
+                      {fixture.status === 'played' ? (
+                        <p class="slot-result">
+                          <strong>{fixture.goalsFor}–{fixture.goalsAgainst}</strong>
+                          <span>TA {fixture.yellowCards ?? '?'}</span>
+                          <span>TR {fixture.redCards ?? '?'}</span>
+                          <span>FX {cardsUnknown ? '≤ ' : ''}{score?.total}{cardsUnknown ? '*' : ''}</span>
+                        </p>
+                      ) : null}
+                    </div>
+                    <div class="slot-state">
+                      <span class="slot-chip">{status.label}</span>
+                      <a class="slot-link" href={fixture.sourceUrl} target="_blank" rel="noreferrer"
+                        aria-label={`${fixture.status === 'played' ? 'Ver partido' : 'Ver fuente'} de ${club.name}, partido ${index + 1}`}>
+                        {fixture.status === 'played' ? 'Ver partido' : 'Ver fuente'}
+                      </a>
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+            {club.plan.pendingCompetition && (
+              <p class="slot-warning">
+                <strong>Puede cambiar:</strong> {club.plan.pendingCompetition.sourceCompetition} sin fecha publicada
+                podría intercalarse antes del segundo partido. {club.plan.pendingCompetition.note}
+              </p>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="final-section" aria-labelledby="rules-title">
+      <h2 id="rules-title">Cómo se decide</h2>
+      <div class="rules-grid">
+        <div class="rule-card">
+          <h3>Puntaje de cada partido</h3>
+          <ul>
+            <li>Victoria 3 puntos, empate 1, derrota 0.</li>
+            <li>+1 por cada gol de diferencia sobre el primero en una victoria.</li>
+            <li>+1 si el arco queda en cero.</li>
+            <li>−1 por derrota de 3 o más goles.</li>
+            <li>−0,25 por amarilla y −1 por roja de jugadores.</li>
+          </ul>
+        </div>
+        <div class="rule-card">
+          <h3>Quién gana</h3>
+          <ul>
+            <li>Ambos finalistas deben completar sus dos partidos.</li>
+            <li>Gana quien tenga el mayor total <strong>verificado</strong>, o cuyo total supere el máximo posible del rival.</li>
+            <li>Con totales iguales la final queda en revisión: los desempates no están definidos.</li>
+          </ul>
+        </div>
+        <div class="rule-card">
+          <h3>Datos que faltan</h3>
+          <ul>
+            <li>Una tarjeta sin dos fuentes concordantes se muestra como «?» y nunca como cero.</li>
+            <li>Con tarjetas pendientes el puntaje es un máximo provisional, marcado con «≤» y «*».</li>
+            <li>Una fecha pendiente no se inventa: se publica cuando una fuente la confirma.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="final-section" aria-labelledby="path-title">
+      <h2 id="path-title">Cómo llegaron</h2>
+      <p class="final-section-note">Resultado de las semifinales, con el total fantasy de los dos partidos de cada club.</p>
+      <div class="path-grid">
+        {finalists.map((club) => (
+          <article class="path-card" style={`--club-accent:${club.accent}`}>
+            <h3>{club.name}</h3>
+            <p class="path-line">
+              <strong>{club.semifinalTotal.total}</strong>
+              <span>puntos fantasy en semifinales</span>
+            </p>
+            <p class="path-sub">
+              Superó a {club.semifinalRival.name}
+              {club.semifinalRival.total.disciplinePending ? ` (máximo ${club.semifinalRival.total.total})` : ` (${club.semifinalRival.total.total})`}
+              en {club.semifinalTotal.played} partidos oficiales.
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="final-section final-sources" aria-labelledby="sources-title">
+      <h2 id="sources-title">Fuentes y notas</h2>
+      <p class="final-section-note">{fDoc.note} Corte de datos: {fDoc.verifiedAt}.</p>
+      <details>
+        <summary>Fuentes de cada partido</summary>
+        <ul class="sources-list">
+          {finalists.map((club) => (
+            <li>
+              <strong>{club.name}.</strong> {club.plan.note}
+              <ul>
+                {club.plan.fixtures.map((fixture: any, index: number) => (
+                  <li>
+                    <span>Partido {index + 1}: {fixture.note}</span>{' '}
+                    {fixture.verificationSources.map((source: string, sourceIndex: number) => (
+                      <a href={source} target="_blank" rel="noreferrer" class="source-link">Fuente {sourceIndex + 1}</a>
+                    ))}
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </details>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  /* Hallmark · macrostructure: Scoreboard Split (custom) · tone: austere, athletic
+   * theme: night-match (tokens.css) · all colour and type via named tokens */
+  .final-hero {
+    background: var(--color-ink);
+    color: var(--color-paper);
+    border-bottom: 2px solid var(--color-conference);
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+  .final-hero-inner { display: grid; gap: var(--space-lg); min-width: 0; }
+  .final-back {
+    justify-self: start;
+    white-space: nowrap;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--color-silver);
+    padding-block: var(--space-xs);
+  }
+  .final-back:hover { color: var(--color-paper); }
+  .final-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-md); min-width: 0; }
+  .final-hero h1 {
+    font-size: clamp(3.5rem, 12vw, 8.5rem);
+    color: var(--color-white);
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+  .final-chip {
+    padding: .3rem .65rem;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    border: 1px solid var(--color-white-rule);
+    color: var(--color-paper);
+  }
+  .final-chip.is-live { background: var(--color-lime); border-color: var(--color-lime); color: var(--color-ink); }
+  .final-chip.is-completed { background: var(--color-green); border-color: var(--color-green); color: var(--color-ink); }
+  .final-lede { max-width: 60ch; margin: 0; color: var(--color-paper-muted); font-size: var(--text-lg); line-height: 1.45; }
+
+  .final-board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: stretch;
+    gap: var(--space-md);
+    margin-top: var(--space-md);
+  }
+  .final-versus {
+    align-self: center;
+    font-family: var(--font-scoreboard);
+    font-size: var(--text-lg);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--color-silver);
+  }
+  .final-side {
+    display: grid;
+    gap: var(--space-sm);
+    align-content: start;
+    min-width: 0;
+    padding: var(--space-lg);
+    background: var(--color-ink-raised);
+    border: 1px solid var(--color-white-rule);
+    border-top: 4px solid var(--club-accent, var(--color-conference));
+  }
+  .final-side.is-champion { border-color: var(--color-lime); background: var(--color-ink-soft); }
+  .final-side-head { display: flex; align-items: center; gap: var(--space-sm); min-width: 0; }
+  .final-side-name { display: grid; gap: var(--space-2xs); min-width: 0; }
+  .final-side h2 { font-size: clamp(1.4rem, 3.4vw, 2.2rem); color: var(--color-white); overflow-wrap: anywhere; min-width: 0; }
+  .final-side-country { font-size: var(--text-sm); color: var(--color-silver); }
+  .club-flag-icon { flex: none; width: 1.8rem; height: 1.35rem; background-size: cover; border-radius: var(--radius-sm); }
+  .final-total {
+    margin: var(--space-sm) 0 0;
+    font-family: var(--font-scoreboard);
+    font-weight: 700;
+    font-size: clamp(3.2rem, 11vw, 6.5rem);
+    line-height: .9;
+    letter-spacing: -.02em;
+    color: var(--color-white);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: anywhere;
+  }
+  .final-total.is-empty { font-size: clamp(1.6rem, 5vw, 2.4rem); line-height: 1.1; letter-spacing: .02em; text-transform: uppercase; color: var(--color-silver); }
+  .final-total-note { margin: 0; font-size: var(--text-sm); color: var(--color-paper-muted); }
+  .final-pips { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); }
+  .pip { width: 1.6rem; height: .4rem; background: var(--color-white-faint); border: 1px solid var(--color-white-rule); }
+  .pip.is-on { background: var(--club-accent, var(--color-conference)); border-color: var(--club-accent, var(--color-conference)); }
+  .final-pips-text { font-size: var(--text-sm); color: var(--color-silver); }
+  .final-crown {
+    margin: var(--space-xs) 0 0;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--color-lime);
+  }
+
+  .final-main { display: grid; gap: var(--space-3xl); padding-block: var(--space-2xl) var(--space-4xl); }
+  .final-section { display: grid; gap: var(--space-md); min-width: 0; }
+  .final-section h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); overflow-wrap: anywhere; }
+  .final-section-note { margin: 0; max-width: 68ch; color: var(--color-text-secondary); }
+
+  .final-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-xl); }
+  .final-column { display: grid; gap: var(--space-md); align-content: start; min-width: 0; }
+  .final-column-title {
+    display: flex; align-items: center; gap: var(--space-sm);
+    padding-bottom: var(--space-sm);
+    border-bottom: 3px solid var(--club-accent, var(--color-conference));
+    overflow-wrap: anywhere;
+  }
+  .slot-list { display: grid; gap: var(--space-sm); margin: 0; padding: 0; list-style: none; }
+  .slot {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: var(--space-xs) var(--space-md);
+    padding: var(--space-md);
+    background: var(--color-bg-secondary);
+    border: var(--border-soft);
+    border-left: 4px solid var(--color-bg-elevated);
+  }
+  .slot.is-played { border-left-color: var(--color-conference); background: var(--color-conference-tint); }
+  .slot.is-provisional, .slot.is-tbd { border-left-color: var(--color-orange); }
+  .slot-when { display: grid; gap: var(--space-2xs); align-content: start; font-family: var(--font-display); text-transform: uppercase; }
+  .slot-number { font-size: var(--text-xs); letter-spacing: .08em; color: var(--color-text-muted); }
+  .slot-date { font-size: 1.15rem; font-weight: 700; line-height: 1.05; }
+  .slot-time { font-size: var(--text-sm); color: var(--color-text-secondary); font-variant-numeric: tabular-nums; }
+  .slot-what { min-width: 0; display: grid; gap: var(--space-2xs); }
+  .slot-rival { margin: 0; font-weight: 700; font-size: 1.05rem; display: flex; flex-wrap: wrap; gap: var(--space-xs); align-items: baseline; overflow-wrap: anywhere; }
+  .slot-venue-tag {
+    font-family: var(--font-display); font-size: var(--text-xs); letter-spacing: .08em; text-transform: uppercase;
+    padding: .1rem .4rem; background: var(--color-ink); color: var(--color-paper);
+  }
+  .slot-comp { margin: 0; font-size: var(--text-sm); color: var(--color-text-secondary); overflow-wrap: anywhere; }
+  .slot-result { margin: var(--space-2xs) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: baseline; font-variant-numeric: tabular-nums; font-size: var(--text-sm); }
+  .slot-result strong { font-family: var(--font-scoreboard); font-size: 1.6rem; line-height: 1; }
+  .slot-state { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-sm); }
+  .slot-chip {
+    font-family: var(--font-display); font-size: var(--text-xs); letter-spacing: .08em; text-transform: uppercase;
+    padding: .2rem .5rem; border: 1px solid var(--color-text-muted); color: var(--color-text-secondary); white-space: nowrap;
+  }
+  .slot.is-played .slot-chip { background: var(--color-conference-dim); border-color: var(--color-conference-dim); color: var(--color-white); }
+  .slot-link { white-space: nowrap; font-weight: 700; font-size: var(--text-sm); text-decoration: underline; text-underline-offset: .2em; padding-block: var(--space-xs); }
+  .slot-link:hover { color: var(--color-conference-dim); }
+  .slot-warning {
+    margin: 0; padding: var(--space-sm) var(--space-md); font-size: var(--text-sm);
+    background: var(--color-bg-tertiary); border-left: 4px solid var(--color-orange);
+  }
+
+  .rules-grid, .path-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-md); }
+  .path-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rule-card, .path-card { padding: var(--space-lg); background: var(--color-bg-secondary); border: var(--border-soft); min-width: 0; }
+  .rule-card h3, .path-card h3 { margin-bottom: var(--space-sm); }
+  .rule-card ul { margin: 0; padding-left: 1.1rem; list-style: disc; display: grid; gap: var(--space-xs); font-size: .95rem; }
+  .path-card { border-top: 4px solid var(--club-accent, var(--color-conference)); }
+  .path-line { margin: 0 0 var(--space-xs); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-sm); }
+  .path-line strong { font-family: var(--font-scoreboard); font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+  .path-sub { margin: 0; color: var(--color-text-secondary); }
+
+  .final-sources details { border: var(--border-soft); background: var(--color-bg-secondary); padding: var(--space-md); }
+  .final-sources summary { cursor: pointer; font-weight: 700; padding-block: var(--space-xs); }
+  .sources-list, .sources-list ul { list-style: disc; }
+  .sources-list { display: grid; gap: var(--space-md); margin: var(--space-md) 0 0; padding-left: 1.1rem; font-size: .92rem; }
+  .sources-list ul { display: grid; gap: var(--space-xs); margin-top: var(--space-xs); padding-left: 1.1rem; }
+  .source-link { margin-right: var(--space-sm); white-space: nowrap; text-decoration: underline; text-underline-offset: .2em; }
+
+  @media (max-width: 900px) {
+    .final-columns, .rules-grid, .path-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .final-board { grid-template-columns: minmax(0, 1fr); }
+    .final-versus { justify-self: center; }
+    .final-side { padding: var(--space-md); }
+    .slot { grid-template-columns: minmax(0, 1fr); }
+    .slot-when { grid-template-columns: repeat(3, auto); justify-content: start; align-items: baseline; gap: var(--space-sm); }
+  }
+</style>

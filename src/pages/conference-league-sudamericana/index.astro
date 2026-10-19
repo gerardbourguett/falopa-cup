@@ -821,6 +821,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
         </div>
       </div>
       <p class="bracket-hint">Desplazá el cuadro para ver las rondas siguientes.</p>
+      <p class="final-link-row"><a class="final-link" href="/conference-league-sudamericana/final">Ver la final: partidos y total en vivo →</a></p>
     </section>
 
     {finalBracketRounds.map((round: any) => (
@@ -834,6 +835,7 @@ const reviewMissingCards = reviewBuckets.missingCards;
             {round.description || `${round.ties.length} ${round.ties.length === 1 ? 'llave' : 'llaves'} a puntaje fantasy acumulado.`}
           </p>
         </header>
+        {round.id === 'KO-F' && <p class="final-link-row"><a class="final-link" href="/conference-league-sudamericana/final">Abrir la página de la final →</a></p>}
         <div class="round-grid">
           {round.ties.map((tie: any) => {
             const a = slotIdentity(tie.slotA);
@@ -1579,6 +1581,19 @@ const reviewMissingCards = reviewBuckets.missingCards;
     color: var(--color-text-secondary);
   }
 
+  .final-link-row { margin: var(--space-sm) 0 0; }
+  .final-link {
+    display: inline-block;
+    white-space: nowrap;
+    padding: 0.55rem 0.9rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+    background: var(--color-lime);
+  }
+  .final-link:hover { background: var(--color-white); }
   .phase-state-chip {
     justify-self: end;
     padding: 0.22rem 0.5rem;

@@ -2,6 +2,7 @@ import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { QUARTERFINAL_WINDOW, quarterfinalFixtureIssues, quarterfinalLocalDate, quarterfinalParticipantIssue, quarterfinalReportsHaveDistinctSources, selectQuarterfinalFixtures } from './lib/tournaments/conference-league-sudamericana';
 import { SEMIFINAL_WINDOW_START, semifinalPlanIssues, semifinalResultIssues } from './lib/tournaments/conference-league-sudamericana/semifinals';
+import { FINAL_WINDOW_START } from './lib/tournaments/conference-league-sudamericana/finals';
 
 const blog = defineCollection({
 	loader: glob({ base: './src/content/blog', pattern: '**/*.{md,mdx}' }),
@@ -298,16 +299,8 @@ const conferenceQfWindowSchema = z.object({
     })).refine((clubs) => new Set(clubs.map((club) => club.clubId)).size === clubs.length, 'Duplicate QF club plan.'),
 }).strict();
 
-const conferenceSfWindowSchema = z.object({
-    kind: z.literal('sf-window'),
-    edition: z.literal(2026),
-    roundId: z.literal('KO-SF'),
-    status: z.enum(['planned', 'in-progress', 'completed']),
-    windowStart: z.literal(SEMIFINAL_WINDOW_START),
-    selectionPolicy: z.literal('next-two-official-local-dates'),
-    verifiedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    note: z.string(),
-    clubs: z.array(z.object({
+// One finalist/semifinalist plan: its next two official fixtures from the window start (shared by SF and F).
+const stagedClubSchema = (windowStart: string) => z.object({
         clubId: z.string(), tieId: z.string(), sourceRef: z.string(),
         scheduleSourceUrl: z.string().url(), note: z.string().min(1),
         pendingCompetition: z.object({
@@ -328,8 +321,31 @@ const conferenceSfWindowSchema = z.object({
             yellowCards: z.number().int().nonnegative().nullable(), redCards: z.number().int().nonnegative().nullable(),
         }).strict()).length(2),
     }).strict().superRefine((club, ctx) => {
-        semifinalPlanIssues(club).forEach((message) => ctx.addIssue({ code: 'custom', message }));
-    })).length(4).refine((clubs) => new Set(clubs.map((club) => club.clubId)).size === 4, 'Four distinct semifinalists required.'),
+        semifinalPlanIssues(club, windowStart).forEach((message) => ctx.addIssue({ code: 'custom', message }));
+    });
+
+const conferenceSfWindowSchema = z.object({
+    kind: z.literal('sf-window'),
+    edition: z.literal(2026),
+    roundId: z.literal('KO-SF'),
+    status: z.enum(['planned', 'in-progress', 'completed']),
+    windowStart: z.literal(SEMIFINAL_WINDOW_START),
+    selectionPolicy: z.literal('next-two-official-local-dates'),
+    verifiedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    note: z.string(),
+    clubs: z.array(stagedClubSchema(SEMIFINAL_WINDOW_START)).length(4).refine((clubs) => new Set(clubs.map((club) => club.clubId)).size === 4, 'Four distinct semifinalists required.'),
+}).strict();
+
+const conferenceFWindowSchema = z.object({
+    kind: z.literal('f-window'),
+    edition: z.literal(2026),
+    roundId: z.literal('KO-F'),
+    status: z.enum(['planned', 'in-progress', 'completed']),
+    windowStart: z.literal(FINAL_WINDOW_START),
+    selectionPolicy: z.literal('next-two-official-local-dates'),
+    verifiedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    note: z.string(),
+    clubs: z.array(stagedClubSchema(FINAL_WINDOW_START)).length(2).refine((clubs) => new Set(clubs.map((club) => club.clubId)).size === 2, 'Two distinct finalists required.'),
 }).strict();
 
 const conferenceWindowCutSchema = z.object({
@@ -367,9 +383,10 @@ const conferenceLeagueSudamericana = defineCollection({
         conferenceR16WindowSchema,
         conferenceQfWindowSchema,
         conferenceSfWindowSchema,
+        conferenceFWindowSchema,
         conferenceWindowCutSchema,
     ]).superRefine((window, ctx) => {
-        if (window.kind === 'sf-window') {
+        if (window.kind === 'sf-window' || window.kind === 'f-window') {
             window.clubs.forEach((club, clubIndex) => club.fixtures.forEach((fixture, fixtureIndex) =>
                 semifinalResultIssues(fixture, window.verifiedAt).forEach((message) =>
                     ctx.addIssue({ code: 'custom', path: ['clubs', clubIndex, 'fixtures', fixtureIndex], message }))));

@@ -1,0 +1,130 @@
+{
+  "kind": "f-window",
+  "edition": 2026,
+  "roundId": "KO-F",
+  "status": "planned",
+  "windowStart": "2026-10-20",
+  "selectionPolicy": "next-two-official-local-dates",
+  "verifiedAt": "2026-10-19",
+  "note": "Final: los dos próximos partidos oficiales de cada finalista, de todas las competiciones, desde el 20 de octubre de 2026 inclusive (el día siguiente al último partido de semifinales), sin fecha límite. Gana el mayor total fantasy verificado tras jugar ambos sus dos partidos. Programación al corte, sujeta a cambios; todavía no hay partidos jugados.",
+  "clubs": [
+    {
+      "clubId": "pe-alianza-lima",
+      "tieId": "F-1",
+      "sourceRef": "SF-1",
+      "scheduleSourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
+      "note": "Dos próximos oficiales desde el 20 de octubre: Moquegua (fecha 13) y Sporting Cristal (fecha 14) por el Clausura de Liga 1. No hay otra competición en el período.",
+      "fixtures": [
+        {
+          "eventId": 16281144,
+          "sourceDate": "2026-10-25",
+          "startTimestamp": 1792951200,
+          "timeZone": "America/Lima",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga 1 · Clausura F13",
+          "homeClub": "CD Moquegua",
+          "awayClub": "Alianza Lima",
+          "isHome": false,
+          "status": "scheduled",
+          "selectionStatus": "confirmed",
+          "venue": "25 de Noviembre",
+          "sourceUrl": "https://www.sofascore.com/football/match/cd-moquegua-alianza-lima/lWsYgXd#id:16281144",
+          "verificationSources": [
+            "https://www.sofascore.com/football/match/cd-moquegua-alianza-lima/lWsYgXd#id:16281144",
+            "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
+          ],
+          "note": "Domingo 25 de octubre, 13:00 de Perú (UTC−5), programación oficial de Liga 1. Sofascore lo muestra 15 minutos más tarde; se usa el horario oficial.",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null
+        },
+        {
+          "eventId": 16280858,
+          "sourceDate": "2026-10-29",
+          "startTimestamp": 1793305800,
+          "timeZone": "America/Lima",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga 1 · Clausura F14",
+          "homeClub": "Club Sporting Cristal",
+          "awayClub": "Alianza Lima",
+          "isHome": false,
+          "status": "scheduled",
+          "selectionStatus": "confirmed",
+          "sourceUrl": "https://www.sofascore.com/football/match/alianza-lima-club-sporting-cristal/cWslW#id:16280858",
+          "verificationSources": [
+            "https://www.sofascore.com/football/match/alianza-lima-club-sporting-cristal/cWslW#id:16280858",
+            "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
+          ],
+          "note": "29 de octubre, 15:30 de Perú (UTC−5), según Sofascore. El calendario de Liga 1 la deja como tentativa entre el 27 y el 29 de octubre: la fecha puede cambiar, el partido es el segundo oficial en cualquier caso.",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null
+        }
+      ]
+    },
+    {
+      "clubId": "ve-metropolitanos",
+      "tieId": "F-1",
+      "sourceRef": "SF-2",
+      "scheduleSourceUrl": "https://ligafutve.org/",
+      "note": "Copa Venezuela (octavos, partido único) y luego el cuadrangular A del Clausura (Metropolitanos, Carabobo, Portuguesa y La Guaira; sorteo del 19 de octubre). Rival, condición, fecha y hora del primer partido del cuadrangular siguen sin confirmar. Segundo cupo provisional: si Metropolitanos avanza en la copa, los cuartos de final podrían intercalarse; no tienen fecha.",
+      "pendingCompetition": {
+        "sourceCompetition": "Copa Venezuela · Cuartos de final",
+        "opponent": "Ganador de otra llave de octavos",
+        "isHome": false,
+        "sourceUrl": "https://en.wikipedia.org/wiki/2026_Copa_Venezuela",
+        "note": "Solo si Metropolitanos vence a Anzoátegui. Los cuartos de final no tienen fecha publicada y podrían jugarse antes del primer partido del cuadrangular."
+      },
+      "fixtures": [
+        {
+          "eventId": 17354908,
+          "sourceDate": "2026-10-22",
+          "startTimestamp": 1792695600,
+          "timeZone": "America/Caracas",
+          "sourceCompetitionType": "local-cup",
+          "sourceCompetition": "Copa Venezuela · Octavos de final",
+          "homeClub": "Metropolitanos",
+          "awayClub": "Anzoátegui FC",
+          "isHome": true,
+          "status": "scheduled",
+          "selectionStatus": "confirmed",
+          "venue": "Olímpico UCV",
+          "sourceUrl": "https://www.sofascore.com/football/match/anzoategui-fc-metropolitanos/FZobsTyrd#id:17354908",
+          "verificationSources": [
+            "https://www.sofascore.com/football/match/anzoategui-fc-metropolitanos/FZobsTyrd#id:17354908",
+            "https://en.wikipedia.org/wiki/2026_Copa_Venezuela",
+            "https://www.elnacional.com/2026/10/copa-venezuela-define-sus-cruces-de-octavos-de-final/"
+          ],
+          "note": "Partido único, 22 de octubre, 15:00 de Venezuela (UTC−4) según Sofascore y Wikipedia. El Nacional y Soccerway lo ubican el 21 de octubre: discrepancia de un día entre fuentes, sin efecto en el orden de los cupos.",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null
+        },
+        {
+          "sourceDate": null,
+          "timeZone": "America/Caracas",
+          "sourceCompetitionType": "local-league",
+          "sourceCompetition": "Liga FUTVE · Clausura, cuadrangular A",
+          "homeClub": "Rival del cuadrangular A (por confirmar)",
+          "awayClub": "Metropolitanos",
+          "isHome": false,
+          "status": "tbd",
+          "selectionStatus": "provisional",
+          "sourceUrl": "https://www.liderendeportes.com/futbol/futve/liga-futve-definio-los-cuadrangulares-de-la-fase-final/",
+          "verificationSources": [
+            "https://www.liderendeportes.com/futbol/futve/liga-futve-definio-los-cuadrangulares-de-la-fase-final/",
+            "https://ligafutve.org/"
+          ],
+          "note": "Primer partido del cuadrangular A. Rival, condición, fecha y hora por confirmar: no se asignan. Segundo programado provisional porque los cuartos de la Copa Venezuela podrían intercalarse.",
+          "goalsFor": null,
+          "goalsAgainst": null,
+          "yellowCards": null,
+          "redCards": null
+        }
+      ]
+    }
+  ]
+}

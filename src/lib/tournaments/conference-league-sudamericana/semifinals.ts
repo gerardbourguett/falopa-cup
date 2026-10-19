@@ -47,12 +47,12 @@ export interface SemifinalWindowDocument {
 
 // This is the current published schedule, not proof that an unpublished cup
 // fixture cannot interleave. Provisional selection is retained on the fixture.
-export function selectSemifinalFixtures(fixtures: SemifinalFixture[]): Array<SemifinalFixture | null> {
+export function selectSemifinalFixtures(fixtures: SemifinalFixture[], windowStart: string = SEMIFINAL_WINDOW_START): Array<SemifinalFixture | null> {
   const seen = new Set<string>();
   const candidates = fixtures.filter((fixture) =>
     ['scheduled', 'tbd', 'played'].includes(fixture.status) &&
     ['local-league', 'local-cup', 'conmebol'].includes(fixture.sourceCompetitionType) &&
-    (fixture.sourceDate === null ? fixture.status === 'tbd' : fixture.sourceDate >= SEMIFINAL_WINDOW_START))
+    (fixture.sourceDate === null ? fixture.status === 'tbd' : fixture.sourceDate >= windowStart))
     .sort((a, b) => (a.sourceDate ?? '9999-12-31').localeCompare(b.sourceDate ?? '9999-12-31') ||
       (a.startTimestamp ?? 0) - (b.startTimestamp ?? 0))
     .filter((fixture) => {
@@ -79,21 +79,21 @@ export function semifinalResultIssues(fixture: SemifinalFixture, verifiedAt?: st
   return issues;
 }
 
-export function semifinalFantasyScore(clubId: string, fixture: SemifinalFixture) {
+export function semifinalFantasyScore(clubId: string, fixture: SemifinalFixture, windowStart: string = SEMIFINAL_WINDOW_START) {
   if (fixture.status !== 'played' || fixture.goalsFor == null || fixture.goalsAgainst == null) return null;
   return computeFantasyScore({
     ...fixture, id: `SF-${clubId}-${fixture.sourceDate}`, clubId, roundId: 'KO-SF',
-    windowStart: SEMIFINAL_WINDOW_START, windowEnd: fixture.sourceDate ?? SEMIFINAL_WINDOW_START,
-    sourceDate: fixture.sourceDate ?? SEMIFINAL_WINDOW_START,
+    windowStart, windowEnd: fixture.sourceDate ?? windowStart,
+    sourceDate: fixture.sourceDate ?? windowStart,
     goalsFor: fixture.goalsFor, goalsAgainst: fixture.goalsAgainst, counted: true,
   });
 }
 
 /** Partial until both slots are played; unknown cards make a played total an upper bound, never a verified one. */
-export function buildSemifinalClubTotal(club: Pick<SemifinalClubPlan, 'clubId' | 'fixtures'>) {
-  const slots = selectSemifinalFixtures(club.fixtures);
+export function buildSemifinalClubTotal(club: Pick<SemifinalClubPlan, 'clubId' | 'fixtures'>, windowStart: string = SEMIFINAL_WINDOW_START) {
+  const slots = selectSemifinalFixtures(club.fixtures, windowStart);
   const played = slots.filter((fixture): fixture is SemifinalFixture => fixture?.status === 'played');
-  const scores = played.map((fixture) => semifinalFantasyScore(club.clubId, fixture)).filter((score) => score != null);
+  const scores = played.map((fixture) => semifinalFantasyScore(club.clubId, fixture, windowStart)).filter((score) => score != null);
   const disciplinePending = played.some((fixture) => fixture.yellowCards == null || fixture.redCards == null);
   return {
     slots,
@@ -113,20 +113,21 @@ export function buildSemifinalClubTotal(club: Pick<SemifinalClubPlan, 'clubId' |
 export function resolveSemifinalResult(
   clubA: Pick<SemifinalClubPlan, 'clubId' | 'fixtures'> | undefined,
   clubB: Pick<SemifinalClubPlan, 'clubId' | 'fixtures'> | undefined,
+  windowStart: string = SEMIFINAL_WINDOW_START,
 ): { winnerClubId: string | null; basis: 'verified-total' | null } {
   const unresolved = { winnerClubId: null, basis: null };
   if (!clubA || !clubB) return unresolved;
-  const a = buildSemifinalClubTotal(clubA);
-  const b = buildSemifinalClubTotal(clubB);
+  const a = buildSemifinalClubTotal(clubA, windowStart);
+  const b = buildSemifinalClubTotal(clubB, windowStart);
   if (a.played !== 2 || b.played !== 2 || a.total == null || b.total == null) return unresolved;
   if (a.kind === 'verified' && a.total > b.total) return { winnerClubId: clubA.clubId, basis: 'verified-total' };
   if (b.kind === 'verified' && b.total > a.total) return { winnerClubId: clubB.clubId, basis: 'verified-total' };
   return unresolved;
 }
 
-export function semifinalPlanIssues(club: SemifinalClubPlan): string[] {
+export function semifinalPlanIssues(club: SemifinalClubPlan, windowStart: string = SEMIFINAL_WINDOW_START): string[] {
   const issues: string[] = [];
-  const selected = selectSemifinalFixtures(club.fixtures).filter(Boolean);
+  const selected = selectSemifinalFixtures(club.fixtures, windowStart).filter(Boolean);
   if (JSON.stringify(selected) !== JSON.stringify(club.fixtures)) issues.push('Invalid next-two official selection.');
   if (club.pendingCompetition && (!club.note || club.fixtures[1]?.selectionStatus !== 'provisional')) {
     issues.push('An undated competing cup requires a visible note and provisional second selection.');
@@ -136,12 +137,12 @@ export function semifinalPlanIssues(club: SemifinalClubPlan): string[] {
     if ((fixture.sourceDate === null) !== (fixture.status === 'tbd')) issues.push('Unknown date must remain tbd; scheduled fixtures require a date.');
     if (!fixture.verificationSources?.length) issues.push('Schedule requires verification sources.');
     if (fixture.selectionStatus === 'provisional' && !fixture.note) issues.push('Provisional selection requires a visible explanation.');
-    if (fixture.sourceDate && fixture.sourceDate < SEMIFINAL_WINDOW_START) issues.push('Semifinal fixture precedes the inclusive start date.');
+    if (fixture.sourceDate && fixture.sourceDate < windowStart) issues.push('Semifinal fixture precedes the inclusive start date.');
     if (fixture.startTimestamp != null && (!Number.isSafeInteger(fixture.startTimestamp) || fixture.startTimestamp <= 0 || !fixture.sourceDate)) issues.push('Invalid confirmed kickoff timestamp.');
     try {
       new Intl.DateTimeFormat('sv-SE', { timeZone: fixture.timeZone });
       if (fixture.sourceDate && fixture.startTimestamp != null && quarterfinalLocalDate({ ...fixture, sourceDate: fixture.sourceDate }) !== fixture.sourceDate) issues.push('Kickoff must preserve the real venue date.');
-      const participant = quarterfinalParticipantIssue(club.clubId, { ...fixture, sourceDate: fixture.sourceDate ?? SEMIFINAL_WINDOW_START });
+      const participant = quarterfinalParticipantIssue(club.clubId, { ...fixture, sourceDate: fixture.sourceDate ?? windowStart });
       if (participant) issues.push(participant);
       if (fixture.eventId != null && !fixture.sourceUrl.endsWith(`#id:${fixture.eventId}`)) issues.push('Invalid exact event provenance.');
       if (fixture.eventId == null && /(^|\.)sofascore\.com$/i.test(new URL(fixture.sourceUrl).hostname)) issues.push('Sofascore fixtures require an exact event ID.');
