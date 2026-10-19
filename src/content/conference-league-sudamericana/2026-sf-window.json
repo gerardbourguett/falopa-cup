@@ -2,11 +2,11 @@
   "kind": "sf-window",
   "edition": 2026,
   "roundId": "KO-SF",
-  "status": "in-progress",
+  "status": "completed",
   "windowStart": "2026-10-09",
   "selectionPolicy": "next-two-official-local-dates",
   "verifiedAt": "2026-10-19",
-  "note": "Semifinales: los dos primeros partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Al corte del 19 de octubre hay siete partidos jugados y uno por jugar (General Caballero en Encarnación, 19 de octubre). Alianza Lima, Metropolitanos y Nacional Potosí ya completaron sus dos partidos. Marcadores y tarjetas se contrastaron en dos fuentes independientes: estadísticas de Sofascore y de 365Scores (en General Caballero, 365Scores y ABC Color, porque Sofascore no publica tarjetas de ese partido). Metropolitanos (7,25) ganó SF-2 sobre Nacional Potosí (−0,25) por total verificado; SF-1 sigue abierta hasta el partido de General Caballero.",
+  "note": "Semifinales: los dos primeros partidos oficiales de todas las competiciones desde el 9 de octubre de 2026 inclusive, sin fecha límite. Al corte del 19 de octubre los ocho partidos están jugados. Marcadores y tarjetas se contrastaron en dos fuentes independientes: estadísticas de Sofascore y de 365Scores. Excepción: en General Caballero Sofascore no publica tarjetas, así que las del 19 de octubre quedan desconocidas (solo 365Scores las informa) y su total es un máximo provisional. Ganadores por total verificado: Metropolitanos (7,25) sobre Nacional Potosí (−0,25) en SF-2, y Alianza Lima (5,75) sobre General Caballero (máximo 2,75) en SF-1.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
@@ -74,7 +74,7 @@
       "tieId": "SF-1",
       "sourceRef": "QF-2",
       "scheduleSourceUrl": "https://www.apf.org.py/noticias/autoridades-para-la-fecha-28-de-la-intermedia",
-      "note": "Primer oficial jugado el 11 de octubre (Intermedia F28, ante Santaní). El segundo, ante Encarnación FC de visita (fecha 29), figura el 19 de octubre en Sofascore, que es la única fuente de la fecha y la hora; el estadio sigue sin confirmar. Versus (11/10) mencionó a 12 de Junio como próximo local, pero ABC Color y La Tribuna ubican a Encarnación en la fecha 29. Caballero está eliminado de Copa Paraguay; no se inventa estadio.",
+      "note": "Ambos partidos jugados: 11 de octubre ante Santaní (Intermedia F28) y 19 de octubre en Encarnación (F29, derrota 2-3). Las tarjetas del segundo no se pudieron contrastar: Sofascore no las publica y ABC Color no las menciona.",
       "fixtures": [
         {
           "sourceDate": "2026-10-11",
@@ -111,19 +111,21 @@
           "homeClub": "Encarnación FC",
           "awayClub": "General Caballero",
           "isHome": false,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
-          "goalsFor": null,
-          "goalsAgainst": null,
+          "goalsFor": 2,
+          "goalsAgainst": 3,
           "yellowCards": null,
           "redCards": null,
           "sourceUrl": "https://www.sofascore.com/football/match/encarnacion-fc-general-caballero/ucfdsxrde#id:17329347",
           "verificationSources": [
             "https://www.sofascore.com/football/match/encarnacion-fc-general-caballero/ucfdsxrde#id:17329347",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4877014",
+            "https://www.abc.com.py/deportes/futbol/intermedia/2026/10/19/general-caballero-cae-ante-encarnacion-fc-y-todo-se-define-en-una-finalisima-por-el-ascenso/",
             "https://www.abc.com.py/deportes/futbol/intermedia/2026/10/11/general-caballero-jlm-pasa-al-frente-y-se-acerca-al-ascenso-a-primera/",
             "https://www.latribuna.com.py/deportes/2026/10/09/definicion-infartante-en-la-division-intermedia/"
           ],
-          "note": "19 de octubre, 16:30 de Paraguay (UTC−3), según Sofascore (sin segunda fuente para la fecha); estadio sin confirmar. Rival y orden corroborados por ABC Color y La Tribuna.",
+          "note": "Encarnación FC 3-2 General Caballero, 16:30 de Paraguay (UTC−3), Villa Alegre. Marcador confirmado por Sofascore, 365Scores y ABC Color. Tarjetas sin verificar: 365Scores informa 2 amarillas y 0 rojas para Caballero, pero Sofascore no publica tarjetas de este partido y ABC Color no las menciona, así que no hay segunda fuente. TA y TR quedan desconocidas.",
           "startTimestamp": 1792438200,
           "eventId": 17329347
         }

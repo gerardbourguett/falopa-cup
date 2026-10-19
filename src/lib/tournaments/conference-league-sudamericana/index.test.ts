@@ -608,7 +608,7 @@ describe('quarterfinal planning', () => {
     // Fabricated semifinal winners and scores are rejected by the semifinal window validator (see semifinals.test.ts).
     const final = knockout.rounds.find((round) => round.id === 'KO-F')!;
     expect(final.status).toBe('planned');
-    expect(final.ties.flatMap((tie) => [tie.slotA.clubId, tie.slotB.clubId])).toEqual([null, 've-metropolitanos']);
+    expect(final.ties.flatMap((tie) => [tie.slotA.clubId, tie.slotB.clubId])).toEqual(['pe-alianza-lima', 've-metropolitanos']);
   });
 
   it('rejects an incorrect home/away flag or fixtures belonging to another club', () => {
@@ -833,10 +833,10 @@ describe('quarterfinal planning', () => {
       expect(resolveQuarterfinalWinner(a, b)).toBe(tie.winnerClubId);
     }
     const sf = knockout.rounds.find((round) => round.id === 'KO-SF')!;
-    expect(sf.status).toBe('in-progress');
+    expect(sf.status).toBe('completed');
     expect(sf.ties.flatMap((tie) => [tie.slotA.clubId, tie.slotB.clubId])).toEqual(['pe-alianza-lima', 'py-general-caballero', 've-metropolitanos', 'bo-nacional-potosi']);
     expect(sf.ties.flatMap((tie) => [tie.slotA.sourceRef, tie.slotB.sourceRef])).toEqual(['QF-1', 'QF-2', 'QF-3', 'QF-4']);
-    expect(sf.ties.map((tie) => tie.winnerClubId ?? null)).toEqual([null, 've-metropolitanos']);
+    expect(sf.ties.map((tie) => tie.winnerClubId ?? null)).toEqual(['pe-alianza-lima', 've-metropolitanos']);
     expect(sf.ties.every((tie) => tie.scoreA === undefined && tie.scoreB === undefined)).toBe(true);
     const invented = structuredClone(knockout);
     invented.rounds.find((round) => round.id === 'KO-SF')!.ties[0].slotA.clubId = 'pe-adt';

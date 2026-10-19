@@ -19,7 +19,7 @@ const used = new Set([
 ]);
 
 describe('semifinal scheduling from October 9 without an end date', () => {
-  it('loads exactly the four fixed semifinalists, seven played slots and one pending one', () => {
+  it('loads exactly the four fixed semifinalists, eight played slots and none pending', () => {
     expect(schema.safeParse(sfData).success).toBe(true);
     expect(validateSemifinalIntegrity(window, knockout, used)).toEqual([]);
     expect(window.clubs.map((club) => [club.clubId, club.tieId, club.sourceRef])).toEqual([
@@ -28,15 +28,15 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     ]);
     const games = window.clubs.flatMap((club) => club.fixtures);
     expect(games).toHaveLength(8);
-    expect(games.filter((game) => game.status === 'played')).toHaveLength(7);
-    expect(games.filter((game) => game.status === 'scheduled')).toHaveLength(1);
+    expect(games.filter((game) => game.status === 'played')).toHaveLength(8);
+    expect(games.filter((game) => game.status === 'scheduled')).toHaveLength(0);
     expect(games.filter((game) => game.status === 'tbd')).toHaveLength(0);
     for (const game of games.filter((game) => game.status !== 'played')) expect([game.goalsFor, game.goalsAgainst, game.yellowCards, game.redCards]).toEqual([null, null, null, null]);
   });
 
   it('records the four played results with cards cross-checked in two independent sources', () => {
-    expect(window.status).toBe('in-progress');
-    expect(knockout.rounds.find((round) => round.id === 'KO-SF')!.status).toBe('in-progress');
+    expect(window.status).toBe('completed');
+    expect(knockout.rounds.find((round) => round.id === 'KO-SF')!.status).toBe('completed');
     expect(window.clubs.map((club) => club.fixtures[0])).toMatchObject([
       { status: 'played', sourceDate: '2026-10-11', homeClub: 'Cusco FC', awayClub: 'Alianza Lima', goalsFor: 2, goalsAgainst: 1 },
       { status: 'played', sourceDate: '2026-10-11', homeClub: 'General Caballero', awayClub: 'Deportivo Santaní', goalsFor: 2, goalsAgainst: 1 },
@@ -52,7 +52,8 @@ describe('semifinal scheduling from October 9 without an end date', () => {
       expect(game.verificationSources.length).toBeGreaterThanOrEqual(3);
       expect(game.note).toContain('Tarjetas:');
     }
-    expect(window.clubs[1].fixtures[1].status).toBe('scheduled');
+    // Caballero lost 2-3 in Encarnación; its cards stay unknown (365Scores alone reports 2 yellows, no second source).
+    expect(window.clubs[1].fixtures[1]).toMatchObject({ status: 'played', eventId: 17329347, goalsFor: 2, goalsAgainst: 3, yellowCards: null, redCards: null });
     // Metropolitanos drew 2-2 at Mérida (3 yellows) and Potosí lost 0-1 to Bolívar (1 yellow), both confirmed twice.
     expect(window.clubs[2].fixtures[1]).toMatchObject({ status: 'played', goalsFor: 2, goalsAgainst: 2, yellowCards: 3, redCards: 0 });
     expect(window.clubs[3].fixtures[1]).toMatchObject({ status: 'played', goalsFor: 0, goalsAgainst: 1, yellowCards: 1, redCards: 0 });
@@ -69,20 +70,25 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     const totals = window.clubs.map((club) => buildSemifinalClubTotal(club));
     expect(totals.map((total) => total.total)).toEqual([5.75, 2.75, 7.25, -0.25]);
     for (const i of [0, 2, 3]) expect(totals[i]).toMatchObject({ played: 2, disciplinePending: false, kind: 'verified' });
-    expect(totals[1]).toMatchObject({ played: 1, missingSlots: 0, disciplinePending: false, kind: 'partial' });
+    expect(totals[1]).toMatchObject({ played: 2, missingSlots: 0, disciplinePending: true, kind: 'upper-bound' });
     // 3-1 win with 4 yellows = 3 + 1 margin - 1.
     // 2-1 win = 3 - 0.25 (1 yellow); 4-0 win = 3 + 3 margin + 1 clean sheet; 2-2 draw = 1 - 4 yellows * 0.25.
     expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[0])?.total)).toEqual([2.75, 2.75, 7, 0]);
     // 2-2 draw with 3 yellows = 0.25; 0-1 loss with 1 yellow = -0.25.
-    expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[1])?.total)).toEqual([3, undefined, 0.25, -0.25]);
+    expect(window.clubs.map((club) => semifinalFantasyScore(club.clubId, club.fixtures[1])?.total)).toEqual([3, 0, 0.25, -0.25]);
     // Unknown cards would make the same slot a provisional maximum instead.
-    const unknown = structuredClone(window.clubs[1]);
+    const partial = () => {
+      const club = structuredClone(window.clubs[1]);
+      Object.assign(club.fixtures[1], { status: 'scheduled', goalsFor: null, goalsAgainst: null, yellowCards: null, redCards: null });
+      return club;
+    };
+    const unknown = partial();
     Object.assign(unknown.fixtures[0], { yellowCards: null, redCards: null });
     expect(buildSemifinalClubTotal(unknown)).toMatchObject({ total: 3, disciplinePending: true, kind: 'partial' });
-    expect(semifinalFantasyScore(window.clubs[1].clubId, window.clubs[1].fixtures[1])).toBeNull();
+    expect(semifinalFantasyScore(window.clubs[1].clubId, partial().fixtures[1])).toBeNull();
     expect(semifinalFantasyScore('pe-alianza-lima', window.clubs[0].fixtures[1])?.total).toBe(3);
     expect(buildSemifinalClubTotal({ clubId: 'x', fixtures: [] })).toMatchObject({ total: null, played: 0, kind: 'pending', missingSlots: 2 });
-    const known = structuredClone(window.clubs[1]);
+    const known = partial();
     Object.assign(known.fixtures[0], { yellowCards: 2, redCards: 1 });
     expect(buildSemifinalClubTotal(known)).toMatchObject({ total: 1.5, disciplinePending: false, kind: 'partial' });
     Object.assign(known.fixtures[1], { status: 'played', goalsFor: 0, goalsAgainst: 0, yellowCards: 0, redCards: 0 });
@@ -122,11 +128,11 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     ]);
   });
 
-  it('dates Encarnacion from a single source without inventing a venue', () => {
+  it('keeps the Encarnacion result without inventing a venue or unverified cards', () => {
     const game = window.clubs[1].fixtures[1];
-    expect(game).toMatchObject({ sourceDate: '2026-10-19', status: 'scheduled', eventId: 17329347 });
+    expect(game).toMatchObject({ sourceDate: '2026-10-19', status: 'played', eventId: 17329347 });
     expect(game.venue).toBeUndefined();
-    expect(game.note).toContain('sin segunda fuente');
+    expect(game.note).toContain('no hay segunda fuente');
     // An undated slot must still be `tbd`, and a dated one cannot be `tbd`.
     for (const replacement of [{ status: 'tbd' }, { sourceDate: null }]) {
       const changed = structuredClone(window);
@@ -155,7 +161,7 @@ describe('semifinal scheduling from October 9 without an end date', () => {
   it('rejects any future goal, yellow, red or played status without a score, including zero', () => {
     for (const replacement of [{ goalsFor: 0 }, { goalsAgainst: 1 }, { yellowCards: 0 }, { redCards: 0 }, { status: 'played' }]) {
       const changed = structuredClone(window);
-      Object.assign(changed.clubs[1].fixtures[1], replacement);
+      Object.assign(changed.clubs[1].fixtures[1], { status: 'scheduled', goalsFor: null, goalsAgainst: null, yellowCards: null, redCards: null }, replacement);
       expect(schema.safeParse(changed).success).toBe(false);
       expect(validateSemifinalIntegrity(changed, knockout, used).length).toBeGreaterThan(0);
     }
@@ -179,23 +185,25 @@ describe('semifinal scheduling from October 9 without an end date', () => {
   it('ties round status to the evidence and completes only with both verified winners', () => {
     const planned = { ...structuredClone(window), status: 'planned' } as SemifinalWindowDocument;
     expect(validateSemifinalIntegrity(planned, knockout, used).join()).toContain('must match the evidence');
+    const midway = { ...structuredClone(window), status: 'in-progress' } as SemifinalWindowDocument;
+    expect(validateSemifinalIntegrity(midway, knockout, used).join()).toContain('must match the evidence');
     const hidden = structuredClone(knockout);
-    hidden.rounds.find((round) => round.id === 'KO-SF')!.status = 'planned';
+    hidden.rounds.find((round) => round.id === 'KO-SF')!.status = 'in-progress';
     expect(validateSemifinalIntegrity(window, hidden, used).join()).toContain('must match the evidence');
-    const closed = { ...structuredClone(window), status: 'completed' } as SemifinalWindowDocument;
-    expect(validateSemifinalIntegrity(closed, knockout, used).join()).toContain('must match the evidence');
-    const early = structuredClone(knockout);
-    early.rounds.find((round) => round.id === 'KO-SF')!.status = 'completed';
-    expect(validateQuarterfinalIntegrity(qfData as unknown as QuarterfinalWindowDocument, early, r16Data.matchSources)).toEqual([]);
-    expect(validateSemifinalIntegrity(window, early, used).join()).toContain('must match the evidence');
+    // Completion is allowed at the round level only when the window proves both winners.
+    expect(validateQuarterfinalIntegrity(qfData as unknown as QuarterfinalWindowDocument, knockout, r16Data.matchSources)).toEqual([]);
   });
 
-  it('resolves only verified two-match totals and records SF-2 for Metropolitanos', () => {
+  it('resolves only verified two-match totals and records both semifinal winners', () => {
     const [alianza, caballero, metropolitanos, potosi] = window.clubs;
     expect(resolveSemifinalResult(metropolitanos, potosi)).toEqual({ winnerClubId: 've-metropolitanos', basis: 'verified-total' });
     expect(resolveSemifinalResult(potosi, metropolitanos)).toEqual({ winnerClubId: 've-metropolitanos', basis: 'verified-total' });
-    // Caballero has one slot played: Alianza's 5.75 cannot decide SF-1 yet.
-    expect(resolveSemifinalResult(alianza, caballero)).toEqual({ winnerClubId: null, basis: null });
+    // Caballero's unknown cards only cap its total (2.75), which stays below Alianza's verified 5.75.
+    expect(resolveSemifinalResult(alianza, caballero)).toEqual({ winnerClubId: 'pe-alianza-lima', basis: 'verified-total' });
+    // With one Caballero slot unplayed the tie stays open.
+    const open = structuredClone(caballero);
+    Object.assign(open.fixtures[1], { status: 'scheduled', goalsFor: null, goalsAgainst: null, yellowCards: null, redCards: null });
+    expect(resolveSemifinalResult(alianza, open)).toEqual({ winnerClubId: null, basis: null });
     expect(resolveSemifinalResult(undefined, caballero)).toEqual({ winnerClubId: null, basis: null });
     // Equal totals are unresolved, and an unknown card on the leader makes it an upper bound that cannot decide.
     const level = (club: typeof potosi) => {
@@ -209,8 +217,8 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     expect(resolveSemifinalResult(unknown, potosi)).toEqual({ winnerClubId: null, basis: null });
     // The stored data match the resolution, and fabrications are rejected.
     const sf = knockout.rounds.find((round) => round.id === 'KO-SF')!;
-    expect(sf.ties.map((tie) => [tie.winnerClubId ?? null, tie.winnerBasis ?? null])).toEqual([[null, null], ['ve-metropolitanos', 'verified-total']]);
-    for (const [index, replacement] of [[0, { winnerClubId: 'pe-alianza-lima', winnerBasis: 'verified-total' }], [0, { scoreA: 3 }], [1, { winnerClubId: 'bo-nacional-potosi' }], [1, { winnerBasis: 'reported-discipline-scenarios' }]] as const) {
+    expect(sf.ties.map((tie) => [tie.winnerClubId ?? null, tie.winnerBasis ?? null])).toEqual([['pe-alianza-lima', 'verified-total'], ['ve-metropolitanos', 'verified-total']]);
+    for (const [index, replacement] of [[0, { winnerClubId: 'py-general-caballero' }], [0, { scoreA: 3 }], [1, { winnerClubId: 'bo-nacional-potosi' }], [1, { winnerBasis: 'reported-discipline-scenarios' }]] as const) {
       const invented = structuredClone(knockout);
       Object.assign(invented.rounds.find((round) => round.id === 'KO-SF')!.ties[index], replacement);
       expect(validateSemifinalIntegrity(window, invented, used).length).toBeGreaterThan(0);
@@ -219,7 +227,7 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     delete missing.rounds.find((round) => round.id === 'KO-SF')!.ties[1].winnerClubId;
     expect(validateSemifinalIntegrity(window, missing, used).join()).toContain('Winner must match');
     const wrongFinal = structuredClone(knockout);
-    wrongFinal.rounds.find((round) => round.id === 'KO-F')!.ties[0].slotA.clubId = 'pe-alianza-lima';
+    wrongFinal.rounds.find((round) => round.id === 'KO-F')!.ties[0].slotA.clubId = 'py-general-caballero';
     expect(validateSemifinalIntegrity(window, wrongFinal, used).join()).toContain('Final slots');
   });
 

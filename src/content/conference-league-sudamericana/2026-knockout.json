@@ -443,7 +443,7 @@
     {
       "id": "KO-SF",
       "name": "Semifinales",
-      "status": "in-progress",
+      "status": "completed",
       "ties": [
         {
           "id": "SF-1",
@@ -456,7 +456,10 @@
             "sourceType": "tie-winner",
             "sourceRef": "QF-2",
             "clubId": "py-general-caballero"
-          }
+          },
+          "winnerClubId": "pe-alianza-lima",
+          "winnerBasis": "verified-total",
+          "tiebreakReason": "Alianza Lima 5.75 supera a General Caballero, cuyo máximo posible es 2.75 (las tarjetas del segundo partido siguen sin verificar). Alianza ganó 2-1 y 3-1; Caballero 2-1 y perdió 2-3."
         },
         {
           "id": "SF-2",
@@ -475,7 +478,7 @@
           "tiebreakReason": "Metropolitanos 7.25 supera a Nacional Potosí −0.25. Ambos completaron sus dos partidos y las tarjetas se contrastaron en Sofascore y 365Scores."
         }
       ],
-      "description": "Cruces confirmados: Alianza Lima–General Caballero y Metropolitanos–Nacional Potosí. Próximos dos oficiales desde el 9 de octubre inclusive, sin fecha límite. Metropolitanos ganó SF-2 y avanza a la final; SF-1 espera el segundo partido de General Caballero (19 de octubre)."
+      "description": "Alianza Lima (SF-1) y Metropolitanos (SF-2) avanzan a la final por total fantasy verificado tras jugar sus dos partidos oficiales desde el 9 de octubre."
     },
     {
       "id": "KO-F",
@@ -487,7 +490,7 @@
           "slotA": {
             "sourceType": "tie-winner",
             "sourceRef": "SF-1",
-            "clubId": null
+            "clubId": "pe-alianza-lima"
           },
           "slotB": {
             "sourceType": "tie-winner",
