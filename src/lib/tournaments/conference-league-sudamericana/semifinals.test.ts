@@ -6,7 +6,7 @@ import knockoutData from '../../../content/conference-league-sudamericana/2026-k
 import r16Data from '../../../content/conference-league-sudamericana/2026-r16-window.json';
 import qfData from '../../../content/conference-league-sudamericana/2026-qf-window.json';
 import { quarterfinalLocalDate } from './index';
-import { buildSemifinalClubTotal, selectSemifinalFixtures, semifinalFantasyScore, semifinalPlanIssues, validateSemifinalIntegrity, type SemifinalFixture, type SemifinalWindowDocument } from './semifinals';
+import { buildSemifinalClubTotal, resolveSemifinalResult, selectSemifinalFixtures, semifinalFantasyScore, semifinalPlanIssues, validateSemifinalIntegrity, type SemifinalFixture, type SemifinalWindowDocument } from './semifinals';
 import { validateQuarterfinalIntegrity, type KnockoutDocument, type QuarterfinalWindowDocument } from '../../validation/content-integrity';
 
 vi.mock('astro:content', async () => ({ z: (await import('astro/zod')).z, defineCollection: (definition: unknown) => definition }));
@@ -176,33 +176,51 @@ describe('semifinal scheduling from October 9 without an end date', () => {
     expect(validateSemifinalIntegrity(verified, knockout, used)).toEqual([]);
   });
 
-  it('ties round status to the evidence and never completes without a verified winner', () => {
+  it('ties round status to the evidence and completes only with both verified winners', () => {
     const planned = { ...structuredClone(window), status: 'planned' } as SemifinalWindowDocument;
-    expect(validateSemifinalIntegrity(planned, knockout, used).join()).toContain('must match the played fixtures');
+    expect(validateSemifinalIntegrity(planned, knockout, used).join()).toContain('must match the evidence');
     const hidden = structuredClone(knockout);
     hidden.rounds.find((round) => round.id === 'KO-SF')!.status = 'planned';
-    expect(validateSemifinalIntegrity(window, hidden, used).join()).toContain('must match the played fixtures');
-    const closed = structuredClone(knockout);
-    closed.rounds.find((round) => round.id === 'KO-SF')!.status = 'completed';
-    expect(validateSemifinalIntegrity(window, closed, used).length).toBeGreaterThan(0);
-    expect(validateQuarterfinalIntegrity(qfData as unknown as QuarterfinalWindowDocument, closed, r16Data.matchSources).join()).toContain('cannot be completed');
-    for (const replacement of [{ scoreA: 3 }, { winnerClubId: 'pe-alianza-lima' }]) {
-      const invented = structuredClone(knockout);
-      Object.assign(invented.rounds.find((round) => round.id === 'KO-SF')!.ties[0], replacement);
-      expect(validateQuarterfinalIntegrity(qfData as unknown as QuarterfinalWindowDocument, invented, r16Data.matchSources).join()).toContain('Future semifinal result');
-    }
+    expect(validateSemifinalIntegrity(window, hidden, used).join()).toContain('must match the evidence');
+    const closed = { ...structuredClone(window), status: 'completed' } as SemifinalWindowDocument;
+    expect(validateSemifinalIntegrity(closed, knockout, used).join()).toContain('must match the evidence');
+    const early = structuredClone(knockout);
+    early.rounds.find((round) => round.id === 'KO-SF')!.status = 'completed';
+    expect(validateQuarterfinalIntegrity(qfData as unknown as QuarterfinalWindowDocument, early, r16Data.matchSources)).toEqual([]);
+    expect(validateSemifinalIntegrity(window, early, used).join()).toContain('must match the evidence');
   });
 
-  it('rejects an end date, historical exception metadata and a premature completed phase', () => {
-    for (const replacement of [{ windowEnd: '2026-10-31' }, { windowStart: '2026-10-10' }, { status: 'completed' }]) {
-      const changed = { ...structuredClone(window), ...replacement } as SemifinalWindowDocument;
-      expect(schema.safeParse(changed).success).toBe(false);
-      expect(validateSemifinalIntegrity(changed, knockout, used).length).toBeGreaterThan(0);
+  it('resolves only verified two-match totals and records SF-2 for Metropolitanos', () => {
+    const [alianza, caballero, metropolitanos, potosi] = window.clubs;
+    expect(resolveSemifinalResult(metropolitanos, potosi)).toEqual({ winnerClubId: 've-metropolitanos', basis: 'verified-total' });
+    expect(resolveSemifinalResult(potosi, metropolitanos)).toEqual({ winnerClubId: 've-metropolitanos', basis: 'verified-total' });
+    // Caballero has one slot played: Alianza's 5.75 cannot decide SF-1 yet.
+    expect(resolveSemifinalResult(alianza, caballero)).toEqual({ winnerClubId: null, basis: null });
+    expect(resolveSemifinalResult(undefined, caballero)).toEqual({ winnerClubId: null, basis: null });
+    // Equal totals are unresolved, and an unknown card on the leader makes it an upper bound that cannot decide.
+    const level = (club: typeof potosi) => {
+      const copy = structuredClone(club);
+      copy.fixtures.forEach((f) => Object.assign(f, { goalsFor: 2, goalsAgainst: 2, yellowCards: 0, redCards: 0 }));
+      return copy;
+    };
+    expect(resolveSemifinalResult(level(metropolitanos), level(potosi))).toEqual({ winnerClubId: null, basis: null });
+    const unknown = structuredClone(metropolitanos);
+    unknown.fixtures[1].yellowCards = null;
+    expect(resolveSemifinalResult(unknown, potosi)).toEqual({ winnerClubId: null, basis: null });
+    // The stored data match the resolution, and fabrications are rejected.
+    const sf = knockout.rounds.find((round) => round.id === 'KO-SF')!;
+    expect(sf.ties.map((tie) => [tie.winnerClubId ?? null, tie.winnerBasis ?? null])).toEqual([[null, null], ['ve-metropolitanos', 'verified-total']]);
+    for (const [index, replacement] of [[0, { winnerClubId: 'pe-alianza-lima', winnerBasis: 'verified-total' }], [0, { scoreA: 3 }], [1, { winnerClubId: 'bo-nacional-potosi' }], [1, { winnerBasis: 'reported-discipline-scenarios' }]] as const) {
+      const invented = structuredClone(knockout);
+      Object.assign(invented.rounds.find((round) => round.id === 'KO-SF')!.ties[index], replacement);
+      expect(validateSemifinalIntegrity(window, invented, used).length).toBeGreaterThan(0);
     }
-    const changed = structuredClone(window);
-    Object.assign(changed.clubs[0], { selectionException: 'last-two-completed-before-2026-10-09' });
-    Object.assign(changed.clubs[0].fixtures[0], { reusedR16SourceId: 'KO-R16-pe-alianza-lima-1' });
-    expect(schema.safeParse(changed).success).toBe(false);
+    const missing = structuredClone(knockout);
+    delete missing.rounds.find((round) => round.id === 'KO-SF')!.ties[1].winnerClubId;
+    expect(validateSemifinalIntegrity(window, missing, used).join()).toContain('Winner must match');
+    const wrongFinal = structuredClone(knockout);
+    wrongFinal.rounds.find((round) => round.id === 'KO-F')!.ties[0].slotA.clubId = 'pe-alianza-lima';
+    expect(validateSemifinalIntegrity(window, wrongFinal, used).join()).toContain('Final slots');
   });
 
   it('rejects duplicate, reversed, pre-start and mismatched kickoff evidence', () => {

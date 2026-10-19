@@ -143,11 +143,11 @@ export function validateQuarterfinalIntegrity(
   for (const round of semifinalRounds) {
     const fixed = new Map([['SF-1', ['QF-1', 'QF-2']], ['SF-2', ['QF-3', 'QF-4']]]);
     if (round.ties.length !== 2 || [...fixed.keys()].some((id) => round.ties.filter((tie) => tie.id === id).length !== 1)) report('Fixed bracket requires SF-1 and SF-2 exactly once.');
-    if (!['planned', 'in-progress'].includes(round.status)) report('Semifinals cannot be completed before a winner is verified; planned or in-progress only.');
+    if (!['planned', 'in-progress', 'completed'].includes(round.status)) report('Unsupported semifinal round status.');
     for (const tie of round.ties) {
       const refs = fixed.get(tie.id);
       if (!refs || tie.slotA.sourceRef !== refs[0] || tie.slotB.sourceRef !== refs[1]) report(`${tie.id}: Fixed semifinal source refs must be preserved.`);
-      if (tie.winnerClubId || tie.scoreA !== undefined || tie.scoreB !== undefined) report(`${tie.id}: Future semifinal result.`);
+      // Winners and scores are verified against the semifinal window by validateSemifinalIntegrity.
       for (const slot of [tie.slotA, tie.slotB]) {
         const source = qf.ties.find((source) => source.id === slot.sourceRef);
         if (slot.clubId !== (source?.winnerClubId ?? null)) report(`${tie.id}: Inconsistent QF source winner.`);

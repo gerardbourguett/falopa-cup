@@ -37,7 +37,7 @@ export interface SemifinalWindowDocument {
   kind: 'sf-window';
   edition: number;
   roundId: 'KO-SF';
-  status: 'planned' | 'in-progress';
+  status: 'planned' | 'in-progress' | 'completed';
   windowStart: string;
   selectionPolicy: 'next-two-official-local-dates';
   verifiedAt: string;
@@ -105,6 +105,25 @@ export function buildSemifinalClubTotal(club: Pick<SemifinalClubPlan, 'clubId' |
   } as const;
 }
 
+/**
+ * A tie is decided only when both clubs completed their two slots and one verified
+ * total beats the rival's total or upper bound. Equal totals and unknown cards that
+ * could change the order stay unresolved: tiebreaks are not modeled for semifinals.
+ */
+export function resolveSemifinalResult(
+  clubA: Pick<SemifinalClubPlan, 'clubId' | 'fixtures'> | undefined,
+  clubB: Pick<SemifinalClubPlan, 'clubId' | 'fixtures'> | undefined,
+): { winnerClubId: string | null; basis: 'verified-total' | null } {
+  const unresolved = { winnerClubId: null, basis: null };
+  if (!clubA || !clubB) return unresolved;
+  const a = buildSemifinalClubTotal(clubA);
+  const b = buildSemifinalClubTotal(clubB);
+  if (a.played !== 2 || b.played !== 2 || a.total == null || b.total == null) return unresolved;
+  if (a.kind === 'verified' && a.total > b.total) return { winnerClubId: clubA.clubId, basis: 'verified-total' };
+  if (b.kind === 'verified' && b.total > a.total) return { winnerClubId: clubB.clubId, basis: 'verified-total' };
+  return unresolved;
+}
+
 export function semifinalPlanIssues(club: SemifinalClubPlan): string[] {
   const issues: string[] = [];
   const selected = selectSemifinalFixtures(club.fixtures).filter(Boolean);
@@ -134,13 +153,29 @@ export function semifinalPlanIssues(club: SemifinalClubPlan): string[] {
 export function validateSemifinalIntegrity(window: SemifinalWindowDocument, knockout: KnockoutDocument, usedEventIds: ReadonlySet<number>): string[] {
   const issues: string[] = [];
   const report = (message: string) => issues.push(`conference/sf-window: ${message}`);
-  if (window.edition !== 2026 || window.roundId !== 'KO-SF' || window.windowStart !== SEMIFINAL_WINDOW_START || window.selectionPolicy !== 'next-two-official-local-dates' || !['planned', 'in-progress'].includes(window.status) || 'windowEnd' in window) report('Unauthorized semifinal policy; no end date applies.');
+  if (window.edition !== 2026 || window.roundId !== 'KO-SF' || window.windowStart !== SEMIFINAL_WINDOW_START || window.selectionPolicy !== 'next-two-official-local-dates' || !['planned', 'in-progress', 'completed'].includes(window.status) || 'windowEnd' in window) report('Unauthorized semifinal policy; no end date applies.');
   const sf = knockout.rounds.find((round) => round.id === 'KO-SF');
   if (!sf) return [...issues, 'conference/sf-window: Missing semifinal bracket.'];
   // Status follows the evidence: played fixtures start the round, and completion needs a verified winner this window cannot yet prove.
   const playedCount = window.clubs.reduce((sum, club) => sum + club.fixtures.filter((fixture) => fixture.status === 'played').length, 0);
-  const expectedStatus = playedCount > 0 ? 'in-progress' : 'planned';
-  if (window.status !== expectedStatus || sf.status !== expectedStatus) report('Semifinal round and window status must match the played fixtures (planned without results, in-progress with them).');
+  const results = sf.ties.map((tie) => resolveSemifinalResult(
+    window.clubs.find((club) => club.clubId === tie.slotA.clubId), window.clubs.find((club) => club.clubId === tie.slotB.clubId)));
+  const expectedStatus = results.length === 2 && results.every((result) => result.winnerClubId) ? 'completed' : playedCount > 0 ? 'in-progress' : 'planned';
+  if (window.status !== expectedStatus || sf.status !== expectedStatus) report('Semifinal round and window status must match the evidence (planned without results, in-progress with them, completed with both winners).');
+  sf.ties.forEach((tie, index) => {
+    const result = results[index];
+    if ((tie.winnerClubId ?? null) !== result.winnerClubId) report(`${tie.id}: Winner must match the verified semifinal resolution.`);
+    if (tie.winnerClubId && tie.winnerBasis !== result.basis) report(`${tie.id}: Winner basis must be verified-total.`);
+    for (const [score, slot] of [[tie.scoreA, tie.slotA], [tie.scoreB, tie.slotB]] as const) {
+      const plan = window.clubs.find((club) => club.clubId === slot.clubId);
+      if (score !== undefined && (!plan || buildSemifinalClubTotal(plan).total !== score)) report(`${tie.id}: Stored score must equal the computed total.`);
+    }
+  });
+  const finalRound = knockout.rounds.find((round) => round.id === 'KO-F');
+  finalRound?.ties.forEach((tie) => {
+    const expected = [tie.slotA, tie.slotB].map((slot) => sf.ties.find((source) => source.id === slot.sourceRef)?.winnerClubId ?? null);
+    if (tie.slotA.clubId !== expected[0] || tie.slotB.clubId !== expected[1]) report(`${tie.id}: Final slots must hold exactly the semifinal winners.`);
+  });
   const slots = sf.ties.flatMap((tie) => [tie.slotA, tie.slotB].map((slot) => ({ ...slot, tieId: tie.id })));
   if (window.clubs.length !== 4 || new Set(window.clubs.map((club) => club.clubId)).size !== 4) report('Exactly four distinct semifinalist plans are required.');
   for (const slot of slots) if (!window.clubs.some((club) => club.clubId === slot.clubId && club.tieId === slot.tieId && club.sourceRef === slot.sourceRef)) report('Missing or rewired semifinalist plan.');

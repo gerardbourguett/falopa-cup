@@ -469,10 +469,13 @@
             "sourceType": "tie-winner",
             "sourceRef": "QF-4",
             "clubId": "bo-nacional-potosi"
-          }
+          },
+          "winnerClubId": "ve-metropolitanos",
+          "winnerBasis": "verified-total",
+          "tiebreakReason": "Metropolitanos 7.25 supera a Nacional Potosí −0.25. Ambos completaron sus dos partidos y las tarjetas se contrastaron en Sofascore y 365Scores."
         }
       ],
-      "description": "Cruces confirmados: Alianza Lima–General Caballero y Metropolitanos–Nacional Potosí. Próximos dos oficiales desde el 9 de octubre inclusive, sin fecha límite. Al 19 de octubre se jugaron siete partidos: Alianza Lima, Metropolitanos y Nacional Potosí completaron sus dos y General Caballero juega el segundo ese día. Sin ganadores registrados todavía."
+      "description": "Cruces confirmados: Alianza Lima–General Caballero y Metropolitanos–Nacional Potosí. Próximos dos oficiales desde el 9 de octubre inclusive, sin fecha límite. Metropolitanos ganó SF-2 y avanza a la final; SF-1 espera el segundo partido de General Caballero (19 de octubre)."
     },
     {
       "id": "KO-F",
@@ -489,7 +492,7 @@
           "slotB": {
             "sourceType": "tie-winner",
             "sourceRef": "SF-2",
-            "clubId": null
+            "clubId": "ve-metropolitanos"
           }
         }
       ]
