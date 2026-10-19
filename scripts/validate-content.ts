@@ -3,6 +3,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { validateSemifinalIntegrity, type SemifinalWindowDocument } from '../src/lib/tournaments/conference-league-sudamericana/semifinals';
+import { validateFinalIntegrity, type FinalWindowDocument } from '../src/lib/tournaments/conference-league-sudamericana/finals';
 import {
   validateConferenceIntegrity,
   validateTournamentIntegrity,
@@ -68,6 +69,7 @@ async function loadConferenceDocuments() {
   let windowCutDoc: ConferenceWindowCutDocument | null = null;
   let qfWindowDoc: QuarterfinalWindowDocument | null = null;
   let sfWindowDoc: SemifinalWindowDocument | null = null;
+  let fWindowDoc: FinalWindowDocument | null = null;
   let knockoutDoc: KnockoutDocument | null = null;
   let r16Sources: RoundOf16Evidence[] | null = null;
 
@@ -79,11 +81,12 @@ async function loadConferenceDocuments() {
     if (json.kind === 'window-cut') windowCutDoc = json as unknown as ConferenceWindowCutDocument;
     if (json.kind === 'qf-window') qfWindowDoc = json as unknown as QuarterfinalWindowDocument;
     if (json.kind === 'sf-window') sfWindowDoc = json as unknown as SemifinalWindowDocument;
+    if (json.kind === 'f-window') fWindowDoc = json as unknown as FinalWindowDocument;
     if (json.kind === 'knockout') knockoutDoc = json as unknown as KnockoutDocument;
     if (json.kind === 'r16-window') r16Sources = json.matchSources as RoundOf16Evidence[];
   }
 
-  return { clubsDoc, stageDoc, groupsDoc, windowCutDoc, qfWindowDoc, sfWindowDoc, knockoutDoc, r16Sources };
+  return { clubsDoc, stageDoc, groupsDoc, windowCutDoc, qfWindowDoc, sfWindowDoc, fWindowDoc, knockoutDoc, r16Sources };
 }
 
 async function main() {
@@ -114,6 +117,22 @@ async function main() {
       ]);
       issues.push(...validateSemifinalIntegrity(conference.sfWindowDoc, conference.knockoutDoc, used));
     }
+  }
+  if (conference.fWindowDoc) {
+    if (!conference.knockoutDoc || !conference.sfWindowDoc || !conference.qfWindowDoc || !conference.r16Sources) {
+      issues.push('conference/f-window: Missing knockout or previous phase sources.');
+    } else {
+      const used = new Set([
+        ...conference.r16Sources.map((source) => Number(source.sourceUrl?.match(/#id:(\d+)/)?.[1])),
+        ...conference.qfWindowDoc.clubs.flatMap((club) => club.fixtures.map((fixture) => fixture.eventId ?? NaN)),
+        ...conference.sfWindowDoc.clubs.flatMap((club) => club.fixtures.map((fixture) => fixture.eventId ?? NaN)),
+      ]);
+      issues.push(...validateFinalIntegrity(conference.fWindowDoc, conference.knockoutDoc, used));
+    }
+  }
+  const finalRound = conference.knockoutDoc?.rounds.find((round) => round.id === 'KO-F');
+  if (!conference.fWindowDoc && finalRound && (finalRound.status !== 'planned' || finalRound.ties.some((tie) => tie.winnerClubId || tie.scoreA !== undefined || tie.scoreB !== undefined))) {
+    issues.push('conference/f-window: A started final or any champion requires the final window document.');
   }
   const semifinalRound = conference.knockoutDoc?.rounds.find((round) => round.id === 'KO-SF');
   if (!conference.sfWindowDoc && semifinalRound && (semifinalRound.status !== 'planned' || semifinalRound.ties.some((tie) => tie.winnerClubId || tie.scoreA !== undefined || tie.scoreB !== undefined))) {
