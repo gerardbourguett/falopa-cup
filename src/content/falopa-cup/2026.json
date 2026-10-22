@@ -448,12 +448,12 @@
     {
       "type": "match",
       "status": "pending",
-      "date": "2026-10-20",
-      "competition": "Copa Chile · Cuartos de final · Ida",
-      "sourceUrl": "https://www.campeonatochileno.cl/match/uni%C3%B3n-la-calera-coquimbo-unido-2026-10-20/",
-      "reason": "La final de la Copa de la Liga contra O'Higgins se aplazó del 16 de octubre al 14 de noviembre; la ANFP aún debe confirmar la sede. Este es el próximo partido del portador.",
+      "date": "2026-10-25",
+      "competition": "Liga de Primera · Fecha 25",
+      "sourceUrl": "https://www.cooperativa.cl/noticias/deportes/futbol/liga-de-primera/cuando-se-juega-la-fecha-25-de-la-liga-de-primera/2026-10-12/154542.html",
+      "reason": "La ida de cuartos de Copa Chile ante Unión La Calera (20/10) se suspendió por lluvias y aún no tiene nueva fecha; la final de la Copa de la Liga contra O'Higgins se aplazó al 14 de noviembre, con sede por confirmar. Este es el próximo partido confirmado del portador.",
       "holderId": "coquimbo-unido",
-      "challengerId": "union-la-calera"
+      "challengerId": "nublense"
     }
   ]
 }

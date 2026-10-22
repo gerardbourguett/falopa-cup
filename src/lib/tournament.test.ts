@@ -53,9 +53,9 @@ describe('distinct title transfer rules', () => {
     expect(getCurrentReign(redacted)).toMatchObject({ holderId: 'union-san-felipe', since: '2026-09-26' });
     // The suspended Colo Colo–Puerto Montt resumption is no longer a title match.
     expect(falopa.find((m) => m.date === '2026-10-20' && m.holderId === 'colo-colo')).toBeUndefined();
-    // The Copa de la Liga final moved to 14 Nov, so the next defense is the Copa Chile quarterfinal.
+    // The Copa de la Liga final moved to 14 Nov, and the Copa Chile quarterfinal (20 Oct) was suspended without a new date, so the next confirmed defense is the Liga de Primera.
     expect(falopa.filter((m) => m.status === 'pending')).toMatchObject([
-      { date: '2026-10-20', holderId: 'coquimbo-unido', challengerId: 'union-la-calera' },
+      { date: '2026-10-25', holderId: 'coquimbo-unido', challengerId: 'nublense' },
     ]);
     expect(redacted.find((m) => m.date === '2026-10-18')).toMatchObject({
       scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe',
