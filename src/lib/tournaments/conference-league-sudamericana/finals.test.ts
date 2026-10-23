@@ -51,7 +51,7 @@ describe('final window from October 20 without an end date', () => {
     }
     // Metropolitanos 1-1 Anzoátegui (lost the shootout 3-4, which does not change the fantasy score): 4 yellows, 0 reds.
     expect(window.clubs[1].fixtures[0]).toMatchObject({ status: 'played', sourceDate: '2026-10-22', goalsFor: 1, goalsAgainst: 1, yellowCards: 4, redCards: 0 });
-    expect(window.clubs[1].fixtures[0].note).toContain('penales');
+    expect(window.clubs[1].fixtures[0].note).toContain('perder por penales cuenta como empate');
     expect(knockout.rounds.find((round) => round.id === 'KO-F')!.status).toBe('in-progress');
   });
 
