@@ -607,7 +607,7 @@ describe('quarterfinal planning', () => {
     expect(validateQuarterfinalIntegrity(qfWindow, changed, r16Window.matchSources).join()).toContain('Fixed semifinal source refs');
     // Fabricated semifinal winners and scores are rejected by the semifinal window validator (see semifinals.test.ts).
     const final = knockout.rounds.find((round) => round.id === 'KO-F')!;
-    expect(final.status).toBe('planned');
+    expect(final.status).toBe('in-progress');
     expect(final.ties.flatMap((tie) => [tie.slotA.clubId, tie.slotB.clubId])).toEqual(['pe-alianza-lima', 've-metropolitanos']);
   });
 

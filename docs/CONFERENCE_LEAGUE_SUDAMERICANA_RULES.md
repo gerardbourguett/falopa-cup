@@ -88,4 +88,6 @@ Un partido jugado de semifinales se registra con su marcador final contrastado e
 
 Por autorización del usuario, la final repite el método de semifinales: cada finalista (Alianza Lima y Metropolitanos) cuenta sus **dos próximos partidos oficiales de todas las competiciones desde el 20 de octubre de 2026 inclusive, sin fecha límite**, es decir, desde el día siguiente al último partido de semifinales. Los totales usan el mismo puntaje fantasy y la misma regla de tarjetas (dos fuentes independientes o `null`). Gana el finalista con mayor total verificado tras jugar ambos sus dos partidos; con totales iguales o tarjetas inciertas que puedan cambiar el orden queda en revisión, porque los desempates no están definidos. Una fecha o un rival sin confirmar queda `tbd` sin inventar valores, y una copa sin fecha que pueda intercalarse deja el segundo cupo provisional.
 
+Los partidos se definen en los 90 minutos o en 120 si hay prórroga: el marcador que cuenta es el del tiempo jugado, incluida la prórroga. Si el partido se define por penales, el resultado cuenta como **empate** para quien gane o pierda la tanda; la tanda se anota en la nota del partido y no cambia el puntaje.
+
 La interfaz dedicada vive en `/conference-league-sudamericana/final`.

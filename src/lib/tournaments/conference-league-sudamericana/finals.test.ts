@@ -36,31 +36,36 @@ function playedFinal() {
 }
 
 describe('final window from October 20 without an end date', () => {
-  it('loads the two finalists, four unplayed slots and a valid schema', () => {
+  it('loads the two finalists, one played slot and three pending ones with a valid schema', () => {
     expect(schema.safeParse(fData).success).toBe(true);
     expect(validateFinalIntegrity(window, knockout, used)).toEqual([]);
-    expect(window).toMatchObject({ status: 'planned', windowStart: FINAL_WINDOW_START });
+    expect(window).toMatchObject({ status: 'in-progress', windowStart: FINAL_WINDOW_START });
     expect(window.clubs.map((club) => [club.clubId, club.tieId, club.sourceRef])).toEqual([
       ['pe-alianza-lima', 'F-1', 'SF-1'], ['ve-metropolitanos', 'F-1', 'SF-2'],
     ]);
     const games = window.clubs.flatMap((club) => club.fixtures);
     expect(games).toHaveLength(4);
-    for (const game of games) {
-      expect(game.status).not.toBe('played');
+    expect(games.filter((game) => game.status === 'played')).toHaveLength(1);
+    for (const game of games.filter((game) => game.status !== 'played')) {
       expect([game.goalsFor, game.goalsAgainst, game.yellowCards, game.redCards]).toEqual([null, null, null, null]);
     }
-    expect(knockout.rounds.find((round) => round.id === 'KO-F')!.status).toBe('planned');
+    // Metropolitanos 1-1 Anzoátegui (lost the shootout 3-4, which does not change the fantasy score): 4 yellows, 0 reds.
+    expect(window.clubs[1].fixtures[0]).toMatchObject({ status: 'played', sourceDate: '2026-10-22', goalsFor: 1, goalsAgainst: 1, yellowCards: 4, redCards: 0 });
+    expect(window.clubs[1].fixtures[0].note).toContain('perder por penales cuenta como empate');
+    expect(knockout.rounds.find((round) => round.id === 'KO-F')!.status).toBe('in-progress');
   });
 
   it('keeps the researched dates and never invents the unconfirmed Metropolitanos opponent', () => {
     expect(window.clubs.map((club) => club.fixtures.map((game) => [game.sourceDate, game.status, game.selectionStatus]))).toEqual([
       [['2026-10-25', 'scheduled', 'confirmed'], ['2026-10-29', 'scheduled', 'confirmed']],
-      [['2026-10-22', 'scheduled', 'confirmed'], [null, 'tbd', 'provisional']],
+      [['2026-10-22', 'played', 'confirmed'], [null, 'tbd', 'confirmed']],
     ]);
     const tbd = window.clubs[1].fixtures[1];
     expect(tbd.startTimestamp).toBeUndefined();
-    expect(tbd.homeClub).toContain('por confirmar');
-    expect(window.clubs[1].pendingCompetition).toMatchObject({ sourceCompetition: expect.stringContaining('Copa Venezuela') });
+    // Radio Fe y Alegría is the only source of the La Guaira–Metropolitanos pairing; no date is assigned.
+    expect(tbd).toMatchObject({ homeClub: 'Deportivo La Guaira', awayClub: 'Metropolitanos', isHome: false });
+    // Eliminated from Copa Venezuela, so no undated cup can interleave and no pending cup remains.
+    expect(window.clubs[1].pendingCompetition).toBeUndefined();
     // The official Liga 1 time (13:00 Lima) is used instead of Sofascore's 13:15.
     expect(new Date(window.clubs[0].fixtures[0].startTimestamp! * 1000).toISOString()).toBe('2026-10-25T18:00:00.000Z');
     // A dated slot cannot be tbd and an undated one cannot be scheduled.
@@ -73,7 +78,10 @@ describe('final window from October 20 without an end date', () => {
   });
 
   it('shows no points before a played match and rejects pre-window, reused or future results', () => {
-    expect(window.clubs.map((club) => buildFinalClubTotal(club))).toMatchObject([{ total: null, played: 0, kind: 'pending' }, { total: null, played: 0, kind: 'pending' }]);
+    // 1-1 draw with 4 yellows: 1 - 1 = 0 so far; Alianza still has no points.
+    expect(window.clubs.map((club) => buildFinalClubTotal(club))).toMatchObject([
+      { total: null, played: 0, kind: 'pending' }, { total: 0, played: 1, disciplinePending: false, kind: 'partial' },
+    ]);
     expect(resolveFinalResult(window.clubs[0], window.clubs[1])).toEqual({ winnerClubId: null, basis: null });
     const early = structuredClone(window);
     early.clubs[0].fixtures[0].sourceDate = '2026-10-19';
