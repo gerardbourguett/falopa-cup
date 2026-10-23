@@ -91,6 +91,17 @@ function fixtureStatus(fixture: any) {
   if (fixture.selectionStatus === 'provisional') return { label: 'Programado · provisional', cls: 'is-provisional' };
   return { label: 'Programado', cls: 'is-scheduled' };
 }
+const simulatorClubs = finalists.map((club) => ({
+  clubId: club.clubId,
+  name: club.name,
+  baseTotal: club.total.total ?? 0,
+  basePlayed: club.total.played,
+  disciplinePending: club.total.disciplinePending,
+}));
+const simulableSlots = (club: (typeof finalists)[number]) => club.plan.fixtures
+  .map((fixture: any, index: number) => ({ fixture, index }))
+  .filter(({ fixture }: any) => fixture.status !== 'played');
+const marginOptions = [1, 2, 3, 4, 5];
 const slotScore = (club: (typeof finalists)[number], fixture: any) => semifinalFantasyScore(club.clubId, fixture, FINAL_WINDOW_START);
 const windowStartLabel = new Date(`${FINAL_WINDOW_START}T12:00:00Z`).toLocaleDateString('es-CL', { day: 'numeric', month: 'long', timeZone: 'UTC' });
 ---
@@ -208,6 +219,74 @@ const windowStartLabel = new Date(`${FINAL_WINDOW_START}T12:00:00Z`).toLocaleDat
       </div>
     </section>
 
+    <section class="final-section sim" aria-labelledby="sim-title" data-simulator>
+      <h2 id="sim-title">Simulador de la final</h2>
+      <p class="final-section-note">
+        Marca qué pasa en cada partido que falta y mira cómo cambia el total. Es una simulación: no se guarda
+        ni modifica el resultado oficial. Los partidos ya jugados cuentan con su puntaje real.
+      </p>
+
+      <div class="sim-verdict" data-sim-verdict aria-live="polite">
+        <p class="sim-verdict-title" data-sim-verdict-title>Marca los partidos para simular</p>
+        <p class="sim-verdict-sub" data-sim-verdict-sub></p>
+      </div>
+
+      <div class="final-columns">
+        {finalists.map((club) => (
+          <div class="final-column sim-column" style={`--club-accent:${club.accent}`} data-sim-club={club.clubId}>
+            <h3 class="final-column-title">
+              <span class={`club-flag-icon ${club.flag}`} aria-hidden="true"></span>{club.name}
+              <span class="sim-total" data-sim-total>—</span>
+            </h3>
+            <p class="sim-base">
+              Real hasta ahora: <strong>{club.total.total == null ? '0' : `${club.total.disciplinePending ? '≤ ' : ''}${club.total.total}`}</strong>
+              {' '}({club.total.played} de 2 partidos jugados)
+            </p>
+            {simulableSlots(club).map(({ fixture, index }: any) => {
+              const rival = fixture.isHome ? fixture.awayClub : fixture.homeClub;
+              const name = `sim-${club.clubId}-${index}`;
+              return (
+                <fieldset class="sim-slot" data-sim-slot>
+                  <legend>Partido {index + 1} · {rival}</legend>
+                  <div class="sim-seg" role="radiogroup" aria-label={`Resultado de ${club.name} en el partido ${index + 1}`}>
+                    <label><input type="radio" name={`${name}-r`} value="none" checked data-sim-result /><span>Sin simular</span></label>
+                    <label><input type="radio" name={`${name}-r`} value="win" data-sim-result /><span>Gana</span></label>
+                    <label><input type="radio" name={`${name}-r`} value="draw" data-sim-result /><span>Empata</span></label>
+                    <label><input type="radio" name={`${name}-r`} value="loss" data-sim-result /><span>Pierde</span></label>
+                  </div>
+                  <div class="sim-options">
+                    <label class="sim-field" data-sim-win-only>
+                      <span>Diferencia de goles</span>
+                      <select data-sim-margin disabled>
+                        {marginOptions.map((m) => <option value={m}>{m === 1 ? '1 gol (sin bono)' : `${m} goles (+${m - 1})`}</option>)}
+                      </select>
+                    </label>
+                    <label class="sim-check" data-sim-clean-wrap>
+                      <input type="checkbox" data-sim-clean disabled /><span>Arco en cero (+1)</span>
+                    </label>
+                    <label class="sim-check" data-sim-heavy-wrap>
+                      <input type="checkbox" data-sim-heavy disabled /><span>Derrota por 3 o más (−1)</span>
+                    </label>
+                    <label class="sim-field">
+                      <span>Amarillas (−0,25 c/u)</span>
+                      <input type="number" inputmode="numeric" min="0" max="12" step="1" value="0" data-sim-yellow />
+                    </label>
+                    <label class="sim-field">
+                      <span>Rojas (−1 c/u)</span>
+                      <input type="number" inputmode="numeric" min="0" max="5" step="1" value="0" data-sim-red />
+                    </label>
+                  </div>
+                  <p class="sim-slot-points" data-sim-points>Sin simular</p>
+                </fieldset>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      <button type="button" class="sim-reset" data-sim-reset>Reiniciar simulación</button>
+      <script type="application/json" id="sim-data" set:html={JSON.stringify(simulatorClubs)} />
+    </section>
+
     <section class="final-section" aria-labelledby="rules-title">
       <h2 id="rules-title">Cómo se decide</h2>
       <div class="rules-grid">
@@ -287,6 +366,98 @@ const windowStartLabel = new Date(`${FINAL_WINDOW_START}T12:00:00Z`).toLocaleDat
     </section>
   </main>
 </Layout>
+
+<script>
+  import { computeFantasyScore } from '../../lib/tournaments/conference-league-sudamericana/index';
+
+  const root = document.querySelector<HTMLElement>('[data-simulator]');
+  const data: Array<{ clubId: string; name: string; baseTotal: number; basePlayed: number; disciplinePending: boolean }> =
+    JSON.parse(document.getElementById('sim-data')?.textContent || '[]');
+  const fmt = (value: number) => String(value).replace('.', ',');
+
+  // Same scoring function as the official table, fed with goals implied by the marked options.
+  function slotScore(clubId: string, slot: HTMLElement) {
+    const result = slot.querySelector<HTMLInputElement>('[data-sim-result]:checked')?.value || 'none';
+    const margin = slot.querySelector<HTMLSelectElement>('[data-sim-margin]')!;
+    const clean = slot.querySelector<HTMLInputElement>('[data-sim-clean]')!;
+    const heavy = slot.querySelector<HTMLInputElement>('[data-sim-heavy]')!;
+    const yellow = slot.querySelector<HTMLInputElement>('[data-sim-yellow]')!;
+    const red = slot.querySelector<HTMLInputElement>('[data-sim-red]')!;
+    margin.disabled = result !== 'win';
+    clean.disabled = result !== 'win' && result !== 'draw';
+    heavy.disabled = result !== 'loss';
+    if (clean.disabled) clean.checked = false;
+    if (heavy.disabled) heavy.checked = false;
+    const points = slot.querySelector<HTMLElement>('[data-sim-points]')!;
+    if (result === 'none') { points.textContent = 'Sin simular'; return null; }
+
+    let goalsFor = 0;
+    let goalsAgainst = 0;
+    if (result === 'win') {
+      const diff = Number(margin.value);
+      goalsAgainst = clean.checked ? 0 : 1;
+      goalsFor = diff + goalsAgainst;
+    } else if (result === 'draw') {
+      goalsFor = goalsAgainst = clean.checked ? 0 : 1;
+    } else {
+      goalsFor = 0;
+      goalsAgainst = heavy.checked ? 3 : 1;
+    }
+    const clampCount = (input: HTMLInputElement, max: number) => Math.min(max, Math.max(0, Math.floor(Number(input.value) || 0)));
+    const score = computeFantasyScore({
+      id: 'sim', clubId, roundId: 'KO-F', windowStart: '', windowEnd: '', sourceDate: '',
+      goalsFor, goalsAgainst, yellowCards: clampCount(yellow, 12), redCards: clampCount(red, 5), counted: true,
+    } as any);
+    points.textContent = `${score.total >= 0 ? '+' : ''}${fmt(score.total)} pts · base ${fmt(score.basePoints)}, bono ${fmt(score.bonusPoints)}, descuento ${fmt(score.penaltyPoints)}`;
+    return score.total;
+  }
+
+  function update() {
+    if (!root) return;
+    const totals = data.map((club) => {
+      const column = root.querySelector<HTMLElement>(`[data-sim-club="${club.clubId}"]`)!;
+      const slots = [...column.querySelectorAll<HTMLElement>('[data-sim-slot]')];
+      const scores = slots.map((slot) => slotScore(club.clubId, slot));
+      const simulated = scores.filter((score): score is number => score != null);
+      const total = club.baseTotal + simulated.reduce((sum, value) => sum + value, 0);
+      const complete = club.basePlayed + simulated.length >= 2;
+      const label = `${club.disciplinePending ? '≤ ' : ''}${fmt(total)}`;
+      column.querySelector<HTMLElement>('[data-sim-total]')!.textContent = complete ? label : `${label} (parcial)`;
+      return { club, total, complete, any: simulated.length > 0 };
+    });
+
+    const title = root.querySelector<HTMLElement>('[data-sim-verdict-title]')!;
+    const sub = root.querySelector<HTMLElement>('[data-sim-verdict-sub]')!;
+    const [a, b] = totals;
+    if (!totals.some((entry) => entry.any)) {
+      title.textContent = 'Marca los partidos para simular';
+      sub.textContent = '';
+    } else if (!a.complete || !b.complete) {
+      const missing = totals.filter((entry) => !entry.complete).map((entry) => entry.club.name).join(' y ');
+      title.textContent = a.total === b.total ? 'Van empatados por ahora' : `Va arriba ${a.total > b.total ? a.club.name : b.club.name}`;
+      sub.textContent = `Falta simular partidos de ${missing} para definir un campeón.`;
+    } else if (a.total === b.total) {
+      title.textContent = `Empate en ${fmt(a.total)} puntos`;
+      sub.textContent = 'Los desempates no están definidos: en la realidad la final quedaría en revisión.';
+    } else {
+      const winner = a.total > b.total ? a : b;
+      const loser = winner === a ? b : a;
+      title.textContent = `Campeón simulado: ${winner.club.name}`;
+      sub.textContent = `${fmt(winner.total)} contra ${fmt(loser.total)} (${fmt(Math.abs(a.total - b.total))} de diferencia).`;
+    }
+  }
+
+  root?.addEventListener('input', update);
+  root?.addEventListener('change', update);
+  root?.querySelector('[data-sim-reset]')?.addEventListener('click', () => {
+    root.querySelectorAll<HTMLInputElement>('[data-sim-result][value="none"]').forEach((input) => { input.checked = true; });
+    root.querySelectorAll<HTMLInputElement>('[data-sim-yellow], [data-sim-red]').forEach((input) => { input.value = '0'; });
+    root.querySelectorAll<HTMLSelectElement>('[data-sim-margin]').forEach((select) => { select.value = '1'; });
+    root.querySelectorAll<HTMLInputElement>('[data-sim-clean], [data-sim-heavy]').forEach((input) => { input.checked = false; });
+    update();
+  });
+  update();
+</script>
 
 <style>
   /* Hallmark · macrostructure: Scoreboard Split (custom) · tone: austere, athletic
@@ -456,6 +627,31 @@ const windowStartLabel = new Date(`${FINAL_WINDOW_START}T12:00:00Z`).toLocaleDat
   .sources-list ul { display: grid; gap: var(--space-xs); margin-top: var(--space-xs); padding-left: 1.1rem; }
   .source-link { margin-right: var(--space-sm); white-space: nowrap; text-decoration: underline; text-underline-offset: .2em; }
 
+
+  .sim-verdict { padding: var(--space-md) var(--space-lg); background: var(--color-bg-secondary); border: var(--border-soft); border-left: 4px solid var(--color-conference); display: grid; gap: var(--space-2xs); }
+  .sim-verdict-title { margin: 0; font-family: var(--font-display); font-size: 1.4rem; text-transform: uppercase; overflow-wrap: anywhere; }
+  .sim-verdict-sub { margin: 0; color: var(--color-text-secondary); min-height: 1.2em; }
+  .sim-column { gap: var(--space-sm); }
+  .sim-total { margin-left: auto; font-family: var(--font-scoreboard); font-size: 1.8rem; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .sim-base { margin: 0; font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .sim-slot { margin: 0; min-width: 0; display: grid; gap: var(--space-sm); padding: var(--space-md); background: var(--color-bg-secondary); border: var(--border-soft); border-left: 4px solid var(--color-bg-elevated); }
+  .sim-slot legend { padding-inline: var(--space-xs); font-weight: 700; overflow-wrap: anywhere; }
+  .sim-seg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2px; }
+  .sim-seg label { position: relative; min-width: 0; }
+  .sim-seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .sim-seg span { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 2.75rem; padding: var(--space-xs); font-size: var(--text-sm); font-weight: 700; background: var(--color-bg-tertiary); border: 1px solid var(--color-text-muted); }
+  .sim-seg input:checked + span { background: var(--color-ink); color: var(--color-paper); border-color: var(--color-ink); }
+  .sim-seg input:focus-visible + span { outline: 3px solid var(--color-conference); outline-offset: 2px; }
+  .sim-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-sm); }
+  .sim-field { display: grid; gap: var(--space-2xs); font-size: var(--text-sm); min-width: 0; }
+  .sim-field select, .sim-field input { min-height: 2.75rem; width: 100%; padding: 0 var(--space-sm); font: inherit; background: var(--color-bg-tertiary); border: 1px solid var(--color-text-muted); color: inherit; }
+  .sim-check { display: flex; align-items: center; gap: var(--space-sm); min-height: 2.75rem; font-size: var(--text-sm); }
+  .sim-check input { width: 1.25rem; height: 1.25rem; flex: none; }
+  .sim-check:has(input:disabled), .sim-field:has(select:disabled) { opacity: .5; }
+  .sim-slot-points { margin: 0; font-size: var(--text-sm); font-variant-numeric: tabular-nums; color: var(--color-text-secondary); }
+  .sim-reset { justify-self: start; min-height: 2.75rem; padding: 0 var(--space-lg); font: inherit; font-weight: 700; background: transparent; border: 2px solid var(--color-ink); color: inherit; cursor: pointer; }
+  .sim-reset:hover { background: var(--color-ink); color: var(--color-paper); }
+
   @media (max-width: 900px) {
     .final-columns, .rules-grid, .path-grid { grid-template-columns: minmax(0, 1fr); }
   }
@@ -464,6 +660,7 @@ const windowStartLabel = new Date(`${FINAL_WINDOW_START}T12:00:00Z`).toLocaleDat
     .final-versus { justify-self: center; }
     .final-side { padding: var(--space-md); }
     .slot { grid-template-columns: minmax(0, 1fr); }
+    .sim-options { grid-template-columns: minmax(0, 1fr); }
     .slot-when { grid-template-columns: repeat(3, auto); justify-content: start; align-items: baseline; gap: var(--space-sm); }
   }
 </style>
