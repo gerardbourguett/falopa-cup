@@ -2,11 +2,11 @@
   "kind": "f-window",
   "edition": 2026,
   "roundId": "KO-F",
-  "status": "planned",
+  "status": "in-progress",
   "windowStart": "2026-10-20",
   "selectionPolicy": "next-two-official-local-dates",
-  "verifiedAt": "2026-10-19",
-  "note": "Final: los dos próximos partidos oficiales de cada finalista, de todas las competiciones, desde el 20 de octubre de 2026 inclusive (el día siguiente al último partido de semifinales), sin fecha límite. Gana el mayor total fantasy verificado tras jugar ambos sus dos partidos. Programación al corte, sujeta a cambios; todavía no hay partidos jugados.",
+  "verifiedAt": "2026-10-23",
+  "note": "Final: los dos próximos partidos oficiales de cada finalista, de todas las competiciones, desde el 20 de octubre de 2026 inclusive (el día siguiente al último partido de semifinales), sin fecha límite. Gana el mayor total fantasy verificado tras jugar ambos sus dos partidos. Programación al corte, sujeta a cambios. Al corte del 23 de octubre se jugó un partido (Metropolitanos–Anzoátegui); no hay campeón.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
@@ -69,14 +69,7 @@
       "tieId": "F-1",
       "sourceRef": "SF-2",
       "scheduleSourceUrl": "https://ligafutve.org/",
-      "note": "Copa Venezuela (octavos, partido único) y luego el cuadrangular A del Clausura (Metropolitanos, Carabobo, Portuguesa y La Guaira; sorteo del 19 de octubre). Rival, condición, fecha y hora del primer partido del cuadrangular siguen sin confirmar. Segundo cupo provisional: si Metropolitanos avanza en la copa, los cuartos de final podrían intercalarse; no tienen fecha.",
-      "pendingCompetition": {
-        "sourceCompetition": "Copa Venezuela · Cuartos de final",
-        "opponent": "Ganador de otra llave de octavos",
-        "isHome": false,
-        "sourceUrl": "https://en.wikipedia.org/wiki/2026_Copa_Venezuela",
-        "note": "Solo si Metropolitanos vence a Anzoátegui. Los cuartos de final no tienen fecha publicada y podrían jugarse antes del primer partido del cuadrangular."
-      },
+      "note": "Primer partido jugado: Copa Venezuela (octavos, partido único) el 22 de octubre; Metropolitanos quedó eliminado, por lo que la copa ya no puede intercalarse. Segundo cupo: primer partido del cuadrangular A del Clausura, de visita en La Guaira; fecha y hora aún no publicadas en las fuentes consultadas.",
       "fixtures": [
         {
           "eventId": 17354908,
@@ -88,37 +81,41 @@
           "homeClub": "Metropolitanos",
           "awayClub": "Anzoátegui FC",
           "isHome": true,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
           "venue": "Olímpico UCV",
           "sourceUrl": "https://www.sofascore.com/football/match/anzoategui-fc-metropolitanos/FZobsTyrd#id:17354908",
           "verificationSources": [
             "https://www.sofascore.com/football/match/anzoategui-fc-metropolitanos/FZobsTyrd#id:17354908",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4876781",
+            "https://www.elnacional.com/2026/10/el-lider-resbala-en-penales-anzoategui-elimina-a-metropolitanos-de-la-copa-venezuela/",
+            "https://www.balonazos.com/anzoategui-fc-da-la-sorpresa-en-la-copa-eliminando-a-metropolitanos-en-penales/",
             "https://en.wikipedia.org/wiki/2026_Copa_Venezuela",
             "https://www.elnacional.com/2026/10/copa-venezuela-define-sus-cruces-de-octavos-de-final/"
           ],
-          "note": "Partido único, 22 de octubre, 15:00 de Venezuela (UTC−4) según Sofascore y Wikipedia. El Nacional y Soccerway lo ubican el 21 de octubre: discrepancia de un día entre fuentes, sin efecto en el orden de los cupos.",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null
+          "note": "Metropolitanos 1-1 Anzoátegui FC, jueves 22 de octubre, 15:00 de Venezuela (UTC−4), Olímpico UCV. Goles de Guillermo Marín (Anzoátegui, ~33') y Marlon Díaz (Metropolitanos, 90'+1/90'+2); los minutos difieren entre medios. Sin prórroga: Anzoátegui ganó la tanda de penales 4-3 y eliminó a Metropolitanos. El puntaje fantasy usa el marcador del partido (1-1), sin considerar los penales. Tarjetas: 365Scores y la ficha de El Nacional coinciden en 4 amarillas y 0 rojas para Metropolitanos (Riasco, Jaimes, Camarillo y Bianciotti). La fecha, que dos fuentes ubicaban el 21 de octubre, quedó confirmada el 22.",
+          "goalsFor": 1,
+          "goalsAgainst": 1,
+          "yellowCards": 4,
+          "redCards": 0
         },
         {
           "sourceDate": null,
           "timeZone": "America/Caracas",
           "sourceCompetitionType": "local-league",
           "sourceCompetition": "Liga FUTVE · Clausura, cuadrangular A",
-          "homeClub": "Rival del cuadrangular A (por confirmar)",
+          "homeClub": "Deportivo La Guaira",
           "awayClub": "Metropolitanos",
           "isHome": false,
           "status": "tbd",
-          "selectionStatus": "provisional",
-          "sourceUrl": "https://www.liderendeportes.com/futbol/futve/liga-futve-definio-los-cuadrangulares-de-la-fase-final/",
+          "selectionStatus": "confirmed",
+          "sourceUrl": "https://www.radiofeyalegrianoticias.com/liga-futve-estos-son-los-emparejamientos-de-la-fase-final-del-clausura/",
           "verificationSources": [
+            "https://www.radiofeyalegrianoticias.com/liga-futve-estos-son-los-emparejamientos-de-la-fase-final-del-clausura/",
             "https://www.liderendeportes.com/futbol/futve/liga-futve-definio-los-cuadrangulares-de-la-fase-final/",
             "https://ligafutve.org/"
           ],
-          "note": "Primer partido del cuadrangular A. Rival, condición, fecha y hora por confirmar: no se asignan. Segundo programado provisional porque los cuartos de la Copa Venezuela podrían intercalarse.",
+          "note": "Primera jornada del cuadrangular A del Clausura: Deportivo La Guaira recibe a Metropolitanos, según Radio Fe y Alegría (única fuente del cruce). Fecha y hora por confirmar: ninguna fuente consultada las publica y no se asignan. Cupo confirmado como segundo oficial porque Metropolitanos ya no tiene Copa Venezuela.",
           "goalsFor": null,
           "goalsAgainst": null,
           "yellowCards": null,

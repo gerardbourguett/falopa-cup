@@ -483,7 +483,7 @@
     {
       "id": "KO-F",
       "name": "Final",
-      "status": "planned",
+      "status": "in-progress",
       "ties": [
         {
           "id": "F-1",
@@ -499,7 +499,7 @@
           }
         }
       ],
-      "description": "Alianza Lima contra Metropolitanos. Cada finalista suma sus dos próximos partidos oficiales desde el 20 de octubre inclusive, sin fecha límite; gana el mayor total fantasy verificado."
+      "description": "Alianza Lima contra Metropolitanos. Cada finalista suma sus dos próximos partidos oficiales desde el 20 de octubre inclusive, sin fecha límite; gana el mayor total fantasy verificado. Al 23 de octubre se jugó un partido (Metropolitanos 1-1 Anzoátegui, eliminado de la Copa Venezuela por penales); aún no hay campeón."
     }
   ]
 }
