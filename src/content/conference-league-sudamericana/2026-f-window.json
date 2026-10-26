@@ -5,15 +5,15 @@
   "status": "in-progress",
   "windowStart": "2026-10-20",
   "selectionPolicy": "next-two-official-local-dates",
-  "verifiedAt": "2026-10-23",
-  "note": "Final: los dos próximos partidos oficiales de cada finalista, de todas las competiciones, desde el 20 de octubre de 2026 inclusive (el día siguiente al último partido de semifinales), sin fecha límite. Gana el mayor total fantasy verificado tras jugar ambos sus dos partidos. Programación al corte, sujeta a cambios. Al corte del 23 de octubre se jugó un partido (Metropolitanos–Anzoátegui); no hay campeón.",
+  "verifiedAt": "2026-10-26",
+  "note": "Final: los dos próximos partidos oficiales de cada finalista, de todas las competiciones, desde el 20 de octubre de 2026 inclusive (el día siguiente al último partido de semifinales), sin fecha límite. Gana el mayor total fantasy verificado tras jugar ambos sus dos partidos. Programación al corte, sujeta a cambios. Al corte del 26 de octubre se jugaron tres partidos (Metropolitanos–Anzoátegui, Moquegua–Alianza y La Guaira–Metropolitanos); falta el segundo de Alianza Lima, por lo que no hay campeón.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
       "tieId": "F-1",
       "sourceRef": "SF-1",
       "scheduleSourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
-      "note": "Dos próximos oficiales desde el 20 de octubre: Moquegua (fecha 13) y Sporting Cristal (fecha 14) por el Clausura de Liga 1. No hay otra competición en el período.",
+      "note": "Dos próximos oficiales desde el 20 de octubre: Moquegua (fecha 13, jugado el 25 de octubre) y Sporting Cristal (fecha 14) por el Clausura de Liga 1. No hay otra competición en el período.",
       "fixtures": [
         {
           "eventId": 16281144,
@@ -25,19 +25,22 @@
           "homeClub": "CD Moquegua",
           "awayClub": "Alianza Lima",
           "isHome": false,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
           "venue": "25 de Noviembre",
           "sourceUrl": "https://www.sofascore.com/football/match/cd-moquegua-alianza-lima/lWsYgXd#id:16281144",
           "verificationSources": [
             "https://www.sofascore.com/football/match/cd-moquegua-alianza-lima/lWsYgXd#id:16281144",
-            "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
+            "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4760798",
+            "https://www.infobae.com/peru/deportes/2026/10/25/alianza-lima-vs-cd-moquegua-en-vivo-hoy-minuto-a-minuto-partido-fecha-13-torneo-clausura-liga-1-2026-goles-resumen-resultado/",
+            "https://ahora.com.pe/deportes/cantero-triunfo-alianza-lima-moquegua-clausura"
           ],
-          "note": "Domingo 25 de octubre, 13:00 de Perú (UTC−5), programación oficial de Liga 1. Sofascore lo muestra 15 minutos más tarde; se usa el horario oficial.",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null
+          "note": "CD Moquegua 0-1 Alianza Lima, domingo 25 de octubre, programado a las 13:00 de Perú (UTC−5) en el estadio 25 de Noviembre. Gol de Alan Cantero de cabeza (87'), confirmado tras revisión del VAR. Tarjetas: 365Scores muestra 1 amarilla por equipo y 0 rojas, y Infobae reporta dos amarillas en el minuto 72 (Zapata y Gaibor), con lo que Alianza Lima suma 1 amarilla y 0 rojas.",
+          "goalsFor": 1,
+          "goalsAgainst": 0,
+          "yellowCards": 1,
+          "redCards": 0
         },
         {
           "eventId": 16280858,
@@ -69,7 +72,7 @@
       "tieId": "F-1",
       "sourceRef": "SF-2",
       "scheduleSourceUrl": "https://ligafutve.org/",
-      "note": "Primer partido jugado: Copa Venezuela (octavos, partido único) el 22 de octubre; Metropolitanos quedó eliminado, por lo que la copa ya no puede intercalarse. Segundo cupo: primer partido del cuadrangular A del Clausura, de visita en La Guaira; fecha y hora aún no publicadas en las fuentes consultadas.",
+      "note": "Dos partidos jugados: Copa Venezuela (octavos, 22 de octubre; Metropolitanos quedó eliminado) y el primer partido del cuadrangular A del Clausura, de visita en La Guaira (25 de octubre).",
       "fixtures": [
         {
           "eventId": 17354908,
@@ -100,26 +103,29 @@
           "redCards": 0
         },
         {
-          "sourceDate": null,
+          "sourceDate": "2026-10-25",
           "timeZone": "America/Caracas",
           "sourceCompetitionType": "local-league",
           "sourceCompetition": "Liga FUTVE · Clausura, cuadrangular A",
           "homeClub": "Deportivo La Guaira",
           "awayClub": "Metropolitanos",
           "isHome": false,
-          "status": "tbd",
+          "status": "played",
           "selectionStatus": "confirmed",
-          "sourceUrl": "https://www.radiofeyalegrianoticias.com/liga-futve-estos-son-los-emparejamientos-de-la-fase-final-del-clausura/",
+          "sourceUrl": "https://www.espn.com/soccer/match/_/gameId/401930959/metropolitanos-deportivo-la-guaira",
           "verificationSources": [
-            "https://www.radiofeyalegrianoticias.com/liga-futve-estos-son-los-emparejamientos-de-la-fase-final-del-clausura/",
-            "https://www.liderendeportes.com/futbol/futve/liga-futve-definio-los-cuadrangulares-de-la-fase-final/",
-            "https://ligafutve.org/"
+            "https://www.espn.com/soccer/match/_/gameId/401930959/metropolitanos-deportivo-la-guaira",
+            "https://webws.365scores.com/web/game/stats/?appTypeId=5&langId=29&games=4882588",
+            "https://www.balonazos.com/metropolitanos-rescato-un-agonico-empate-ante-dvo-la-guaira-en-el-arranque-del-grupo-a/",
+            "https://www.radiofeyalegrianoticias.com/liga-futve-estos-son-los-emparejamientos-de-la-fase-final-del-clausura/"
           ],
-          "note": "Primera jornada del cuadrangular A del Clausura: Deportivo La Guaira recibe a Metropolitanos, según Radio Fe y Alegría (única fuente del cruce). Fecha y hora por confirmar: ninguna fuente consultada las publica y no se asignan. Cupo confirmado como segundo oficial porque Metropolitanos ya no tiene Copa Venezuela.",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null
+          "note": "Deportivo La Guaira 2-2 Metropolitanos, domingo 25 de octubre, 19:30 de Venezuela (UTC−4), Olímpico UCV, primera jornada del cuadrangular A. Sin prórroga ni penales. Tarjetas: 365Scores y Balonazos coinciden en 2 amarillas y 0 rojas para Metropolitanos (Ayine y Fedor) y 4 amarillas para La Guaira.",
+          "goalsFor": 2,
+          "goalsAgainst": 2,
+          "yellowCards": 2,
+          "redCards": 0,
+          "startTimestamp": 1792971000,
+          "venue": "Olímpico UCV"
         }
       ]
     }

@@ -376,12 +376,23 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-10-24",
       "competition": "Liga de Ascenso · Fecha 29",
-      "sourceUrl": "https://www.sofascore.com/football/match/deportes-puerto-montt-union-san-felipe/cnbsinb#id:15416353",
+      "sourceUrl": "https://www.prensafutbol.cl/san-felipe-derrota-puerto-montt-se-complica/",
       "holderId": "union-san-felipe",
-      "challengerId": "deportes-puerto-montt"
+      "challengerId": "deportes-puerto-montt",
+      "scoreHolder": 1,
+      "scoreChallenger": 3,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-10-31",
+      "competition": "Liga de Ascenso · Fecha 30",
+      "sourceUrl": "https://www.cooperativa.cl/noticias/deportes/futbol/liga-de-ascenso/la-programacion-de-la-ultima-fecha-de-la-liga-de-ascenso/2026-10-20/124822.html",
+      "holderId": "union-san-felipe",
+      "challengerId": "union-espanola"
     }
   ]
 }
