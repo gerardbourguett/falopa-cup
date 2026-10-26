@@ -447,13 +447,24 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-10-25",
       "competition": "Liga de Primera · Fecha 25",
-      "sourceUrl": "https://www.cooperativa.cl/noticias/deportes/futbol/liga-de-primera/cuando-se-juega-la-fecha-25-de-la-liga-de-primera/2026-10-12/154542.html",
-      "reason": "La ida de cuartos de Copa Chile ante Unión La Calera (20/10) se suspendió por lluvias y aún no tiene nueva fecha; la final de la Copa de la Liga contra O'Higgins se aplazó al 14 de noviembre, con sede por confirmar. Este es el próximo partido confirmado del portador.",
+      "sourceUrl": "https://www.biobiochile.cl/noticias/deportes/futbol/futbol-nacional/2026/10/25/liga-de-primera-nublense-coquimbo-fecha-25.shtml",
       "holderId": "coquimbo-unido",
-      "challengerId": "nublense"
+      "challengerId": "nublense",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "nublense"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-10-31",
+      "competition": "Liga de Primera · Fecha 26",
+      "sourceUrl": "https://radiolasenal.cl/con-clasico-universitario-la-programacion-de-la-fecha-26-de-la-liga-de-primera/",
+      "reason": "Próximo partido confirmado del portador: sábado 31 de octubre, 20:00, en El Teniente (programación de la fecha 26). Algunos sitios lo ubican el 1 de noviembre.",
+      "holderId": "nublense",
+      "challengerId": "ohiggins"
     }
   ]
 }

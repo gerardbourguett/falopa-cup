@@ -36,6 +36,7 @@ describe('distinct title transfer rules', () => {
       { date: '2026-10-04', scoreHolder: 0, scoreChallenger: 2, newHolderId: 'union-san-felipe' },
       { date: '2026-10-12', scoreHolder: 0, scoreChallenger: 4, newHolderId: 'union-san-felipe' },
       { date: '2026-10-18', scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe' },
+      { date: '2026-10-24', scoreHolder: 1, scoreChallenger: 3, newHolderId: 'union-san-felipe' },
     ]);
     for (const [cup, entries] of [['falopa-cup', falopa], ['copa-pablo-milad', redacted]] as const) {
       for (const m of entries.filter((m) => m.type === 'match' && m.status !== 'pending' && m.date >= '2026-09-22')) {
@@ -49,19 +50,22 @@ describe('distinct title transfer rules', () => {
       holderId: 'colo-colo', challengerId: 'coquimbo-unido', scoreHolder: 2, scoreChallenger: 5,
       newHolderId: 'coquimbo-unido',
     });
-    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'coquimbo-unido', since: '2026-10-11' });
+    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'nublense', since: '2026-10-25' });
     expect(getCurrentReign(redacted)).toMatchObject({ holderId: 'union-san-felipe', since: '2026-09-26' });
     // The suspended Colo Colo–Puerto Montt resumption is no longer a title match.
     expect(falopa.find((m) => m.date === '2026-10-20' && m.holderId === 'colo-colo')).toBeUndefined();
-    // The Copa de la Liga final moved to 14 Nov, and the Copa Chile quarterfinal (20 Oct) was suspended without a new date, so the next confirmed defense is the Liga de Primera.
+    // Ñublense's 2-1 over Coquimbo on 25 Oct moves the Falopa title; its next defense is at O'Higgins.
+    expect(falopa.find((m) => m.date === '2026-10-25')).toMatchObject({
+      holderId: 'coquimbo-unido', challengerId: 'nublense', scoreHolder: 1, scoreChallenger: 2, newHolderId: 'nublense',
+    });
     expect(falopa.filter((m) => m.status === 'pending')).toMatchObject([
-      { date: '2026-10-25', holderId: 'coquimbo-unido', challengerId: 'nublense' },
+      { date: '2026-10-31', holderId: 'nublense', challengerId: 'ohiggins' },
     ]);
     expect(redacted.find((m) => m.date === '2026-10-18')).toMatchObject({
       scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe',
     });
     expect(redacted.filter((m) => m.status === 'pending')).toMatchObject([
-      { date: '2026-10-24', holderId: 'union-san-felipe', challengerId: 'deportes-puerto-montt' },
+      { date: '2026-10-31', holderId: 'union-san-felipe', challengerId: 'union-espanola' },
     ]);
   });
 });
