@@ -483,7 +483,7 @@
     {
       "id": "KO-F",
       "name": "Final",
-      "status": "in-progress",
+      "status": "completed",
       "ties": [
         {
           "id": "F-1",
@@ -496,10 +496,15 @@
             "sourceType": "tie-winner",
             "sourceRef": "SF-2",
             "clubId": "ve-metropolitanos"
-          }
+          },
+          "winnerClubId": "pe-alianza-lima",
+          "winnerBasis": "verified-total",
+          "scoreA": 3,
+          "scoreB": 0.5,
+          "tiebreakReason": "Alianza Lima suma 3 puntos fantasy y supera a Metropolitanos, con 0,5. El resultado y las tarjetas del segundo partido de Alianza fueron proporcionados por el usuario."
         }
       ],
-      "description": "Alianza Lima contra Metropolitanos. Cada finalista suma sus dos próximos partidos oficiales desde el 20 de octubre inclusive, sin fecha límite; gana el mayor total fantasy verificado. Al 26 de octubre Metropolitanos completó sus dos partidos (1-1 con Anzoátegui, eliminado de la Copa Venezuela por penales, y 2-2 con La Guaira) y Alianza Lima jugó uno (1-0 en Moquegua); falta su segundo partido, así que aún no hay campeón."
+      "description": "Alianza Lima gana la final ante Metropolitanos por 3 a 0,5 puntos fantasy, tras completar ambos sus dos partidos."
     }
   ]
 }

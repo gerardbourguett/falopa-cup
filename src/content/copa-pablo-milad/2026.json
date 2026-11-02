@@ -388,9 +388,9 @@
     {
       "type": "match",
       "status": "pending",
-      "date": "2026-10-31",
+      "date": "2026-11-15",
       "competition": "Liga de Ascenso · Fecha 30",
-      "sourceUrl": "https://www.cooperativa.cl/noticias/deportes/futbol/liga-de-ascenso/la-programacion-de-la-ultima-fecha-de-la-liga-de-ascenso/2026-10-20/124822.html",
+      "reason": "Suspendido y reprogramado para el 15 de noviembre, según información proporcionada por el usuario.",
       "holderId": "union-san-felipe",
       "challengerId": "union-espanola"
     }

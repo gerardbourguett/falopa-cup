@@ -50,22 +50,22 @@ describe('distinct title transfer rules', () => {
       holderId: 'colo-colo', challengerId: 'coquimbo-unido', scoreHolder: 2, scoreChallenger: 5,
       newHolderId: 'coquimbo-unido',
     });
-    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'nublense', since: '2026-10-25' });
+    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'ohiggins', since: '2026-10-31' });
     expect(getCurrentReign(redacted)).toMatchObject({ holderId: 'union-san-felipe', since: '2026-09-26' });
     // The suspended Colo Colo–Puerto Montt resumption is no longer a title match.
     expect(falopa.find((m) => m.date === '2026-10-20' && m.holderId === 'colo-colo')).toBeUndefined();
-    // Ñublense's 2-1 over Coquimbo on 25 Oct moves the Falopa title; its next defense is at O'Higgins.
+    // Ñublense takes the title on 25 Oct and loses it to O'Higgins on 31 Oct.
     expect(falopa.find((m) => m.date === '2026-10-25')).toMatchObject({
       holderId: 'coquimbo-unido', challengerId: 'nublense', scoreHolder: 1, scoreChallenger: 2, newHolderId: 'nublense',
     });
-    expect(falopa.filter((m) => m.status === 'pending')).toMatchObject([
-      { date: '2026-10-31', holderId: 'nublense', challengerId: 'ohiggins' },
-    ]);
+    expect(falopa.find((m) => m.date === '2026-10-31')).toMatchObject({
+      holderId: 'nublense', challengerId: 'ohiggins', scoreHolder: 0, scoreChallenger: 1, newHolderId: 'ohiggins',
+    });
     expect(redacted.find((m) => m.date === '2026-10-18')).toMatchObject({
       scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe',
     });
     expect(redacted.filter((m) => m.status === 'pending')).toMatchObject([
-      { date: '2026-10-31', holderId: 'union-san-felipe', challengerId: 'union-espanola' },
+      { date: '2026-11-15', holderId: 'union-san-felipe', challengerId: 'union-espanola' },
     ]);
   });
 });

@@ -2,18 +2,18 @@
   "kind": "f-window",
   "edition": 2026,
   "roundId": "KO-F",
-  "status": "in-progress",
+  "status": "completed",
   "windowStart": "2026-10-20",
   "selectionPolicy": "next-two-official-local-dates",
-  "verifiedAt": "2026-10-26",
-  "note": "Final: los dos próximos partidos oficiales de cada finalista, de todas las competiciones, desde el 20 de octubre de 2026 inclusive (el día siguiente al último partido de semifinales), sin fecha límite. Gana el mayor total fantasy verificado tras jugar ambos sus dos partidos. Programación al corte, sujeta a cambios. Al corte del 26 de octubre se jugaron tres partidos (Metropolitanos–Anzoátegui, Moquegua–Alianza y La Guaira–Metropolitanos); falta el segundo de Alianza Lima, por lo que no hay campeón.",
+  "verifiedAt": "2026-11-02",
+  "note": "Final: los dos primeros partidos oficiales de cada finalista desde el 20 de octubre. Alianza Lima gana 3 puntos fantasy frente a 0,5 de Metropolitanos. El resultado y las tarjetas ante Sporting Cristal fueron proporcionados por el usuario; la fecha del 29 de octubre también fue confirmada por el usuario.",
   "clubs": [
     {
       "clubId": "pe-alianza-lima",
       "tieId": "F-1",
       "sourceRef": "SF-1",
       "scheduleSourceUrl": "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/",
-      "note": "Dos próximos oficiales desde el 20 de octubre: Moquegua (fecha 13, jugado el 25 de octubre) y Sporting Cristal (fecha 14) por el Clausura de Liga 1. No hay otra competición en el período.",
+      "note": "Alianza completó sus dos partidos de la final ante Moquegua y Sporting Cristal; resultado y tarjetas del segundo partido proporcionados por el usuario.",
       "fixtures": [
         {
           "eventId": 16281144,
@@ -45,25 +45,24 @@
         {
           "eventId": 16280858,
           "sourceDate": "2026-10-29",
-          "startTimestamp": 1793305800,
           "timeZone": "America/Lima",
           "sourceCompetitionType": "local-league",
           "sourceCompetition": "Liga 1 · Clausura F14",
           "homeClub": "Club Sporting Cristal",
           "awayClub": "Alianza Lima",
           "isHome": false,
-          "status": "scheduled",
+          "status": "played",
           "selectionStatus": "confirmed",
           "sourceUrl": "https://www.sofascore.com/football/match/alianza-lima-club-sporting-cristal/cWslW#id:16280858",
+          "note": "Sporting Cristal 3-2 Alianza Lima: 3 amarillas y 0 rojas para Alianza, según información proporcionada por el usuario. Fecha del 29 de octubre confirmada por el usuario. Las fuentes enlazadas corresponden a la programación previa, no a una verificación independiente del resultado.",
+          "goalsFor": 2,
+          "goalsAgainst": 3,
+          "yellowCards": 3,
+          "redCards": 0,
           "verificationSources": [
             "https://www.sofascore.com/football/match/alianza-lima-club-sporting-cristal/cWslW#id:16280858",
             "https://liga1.pe/fixture-y-resultados-del-clausura-liga1-te-apuesto-2026/"
-          ],
-          "note": "29 de octubre, 15:30 de Perú (UTC−5), según Sofascore. El calendario de Liga 1 la deja como tentativa entre el 27 y el 29 de octubre: la fecha puede cambiar, el partido es el segundo oficial en cualquier caso.",
-          "goalsFor": null,
-          "goalsAgainst": null,
-          "yellowCards": null,
-          "redCards": null
+          ]
         }
       ]
     },
