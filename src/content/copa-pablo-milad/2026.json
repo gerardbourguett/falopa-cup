@@ -250,12 +250,151 @@
     },
     {
       "type": "match",
-      "status": "pending",
-      "date": "2026-08-04",
-      "competition": "Copa Chile · Fecha 6",
-      "sourceUrl": "https://www.flashscore.cl/detalle-del-partido/futbol/nublense-vVvwgdNn/rangers-QZfOjEMB/?mid=lMNDRtVg",
+      "date": "2026-08-09",
+      "competition": "Liga de Ascenso - Fecha 18",
       "holderId": "rangers",
-      "challengerId": "nublense"
+      "challengerId": "curico-unido",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-08-19",
+      "competition": "Liga de Ascenso - Fecha 19",
+      "holderId": "rangers",
+      "challengerId": "deportes-recoleta",
+      "scoreHolder": 2,
+      "scoreChallenger": 4,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-08-20",
+      "competition": "Liga de Ascenso - Fecha 20",
+      "holderId": "rangers",
+      "challengerId": "magallanes",
+      "scoreHolder": 2,
+      "scoreChallenger": 3,
+      "newHolderId": "rangers"
+    },
+    {
+      "type": "match",
+      "date": "2026-08-21",
+      "competition": "Liga de Ascenso - Fecha 21",
+      "holderId": "rangers",
+      "challengerId": "san-marcos-de-arica",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "san-marcos-de-arica"
+    },
+    {
+      "type": "match",
+      "date": "2026-08-31",
+      "competition": "Liga de Ascenso · Fecha 22",
+      "sourceUrl": "https://www.cobreloa.cl/fixture/",
+      "holderId": "san-marcos-de-arica",
+      "challengerId": "cobreloa",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "san-marcos-de-arica"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-05",
+      "competition": "Liga de Ascenso · Fecha 24",
+      "sourceUrl": "https://www.goal.com/es-cl/equipo/deportes-copiapo/partidos-resultados/5vzljq8u0ug5b7ot3vytz6xkw",
+      "holderId": "san-marcos-de-arica",
+      "challengerId": "deportes-copiapo",
+      "scoreHolder": 2,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-copiapo"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-09",
+      "competition": "Liga de Ascenso · Fecha 25",
+      "sourceUrl": "https://dwosdeportes.cl/equipo/47/deportes-copiap%C3%B3/resultados",
+      "holderId": "deportes-copiapo",
+      "challengerId": "magallanes",
+      "scoreHolder": 1,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-copiapo"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-26",
+      "competition": "Liga de Ascenso · Fecha 26",
+      "sourceUrl": "https://www.unionsanfelipe.com/calendar/resultados-liga-de-ascenso-2026/",
+      "holderId": "deportes-copiapo",
+      "challengerId": "union-san-felipe",
+      "scoreHolder": 4,
+      "scoreChallenger": 1,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-30",
+      "competition": "Liga de Ascenso · Fecha 23",
+      "sourceUrl": "https://www.unionsanfelipe.com/calendar/resultados-liga-de-ascenso-2026/",
+      "holderId": "union-san-felipe",
+      "challengerId": "san-luis-de-quillota",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "date": "2026-10-04",
+      "competition": "Liga de Ascenso · Fecha 27",
+      "sourceUrl": "https://www.unionsanfelipe.com/calendar/resultados-liga-de-ascenso-2026/",
+      "holderId": "union-san-felipe",
+      "challengerId": "deportes-iquique",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "date": "2026-10-12",
+      "competition": "Liga de Ascenso · Fecha 28",
+      "sourceUrl": "https://www.unionsanfelipe.com/calendar/resultados-liga-de-ascenso-2026/",
+      "holderId": "union-san-felipe",
+      "challengerId": "rangers",
+      "scoreHolder": 0,
+      "scoreChallenger": 4,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "date": "2026-10-18",
+      "competition": "Liga de Ascenso · Fecha 29",
+      "sourceUrl": "https://www.unionsanfelipe.com/calendar/resultados-liga-de-ascenso-2026/",
+      "holderId": "union-san-felipe",
+      "challengerId": "deportes-temuco",
+      "scoreHolder": 2,
+      "scoreChallenger": 2,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "date": "2026-10-24",
+      "competition": "Liga de Ascenso · Fecha 30",
+      "sourceUrl": "https://www.unionsanfelipe.com/calendar/resultados-liga-de-ascenso-2026/",
+      "holderId": "union-san-felipe",
+      "challengerId": "deportes-puerto-montt",
+      "scoreHolder": 1,
+      "scoreChallenger": 3,
+      "newHolderId": "union-san-felipe"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-11-15",
+      "competition": "Liga de Ascenso · Fecha 30",
+      "sourceUrl": "https://www.unionsanfelipe.com/calendar/resultados-liga-de-ascenso-2026/",
+      "holderId": "union-san-felipe",
+      "challengerId": "union-espanola"
     }
   ]
 }

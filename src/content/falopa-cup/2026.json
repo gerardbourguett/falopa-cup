@@ -349,12 +349,133 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-08-08",
       "competition": "Liga de Primera · Fecha 19",
       "sourceUrl": "https://www.flashscore.cl/detalle-del-partido/futbol/cobresal-YeUwzehC/u-catolica-Qe432hiO/?mid=EuK7Pna4",
       "holderId": "cobresal",
-      "challengerId": "universidad-catolica"
+      "challengerId": "universidad-catolica",
+      "scoreHolder": 0,
+      "scoreChallenger": 2,
+      "newHolderId": "universidad-catolica"
+    },
+    {
+      "type": "match",
+      "date": "2026-08-22",
+      "competition": "Liga de Primera · Fecha 20",
+      "sourceUrl": "https://www.sofascore.com/football/match/nublense-universidad-catolica/bnbsEPc#id:15353096",
+      "holderId": "universidad-catolica",
+      "challengerId": "nublense",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "nublense"
+    },
+    {
+      "type": "match",
+      "date": "2026-08-29",
+      "competition": "Liga de Primera · Fecha 21",
+      "holderId": "nublense",
+      "challengerId": "deportes-concepcion",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "deportes-concepcion",
+      "sourceUrl": "https://concepcion.fixtur.cl/fixture/"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-04",
+      "competition": "Liga de Primera · Fecha 22",
+      "sourceUrl": "https://www.audaxitaliano.app/partidos",
+      "holderId": "deportes-concepcion",
+      "challengerId": "audax-italiano",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-13",
+      "competition": "Liga de Primera · Fecha 23",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/audax-italiano-ohiggins-2026-09-13/",
+      "holderId": "audax-italiano",
+      "challengerId": "ohiggins",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-22",
+      "competition": "Copa Chile · Octavos de final · Ida",
+      "sourceUrl": "https://www.audaxitaliano.app/partidos",
+      "holderId": "audax-italiano",
+      "challengerId": "colo-colo",
+      "scoreHolder": 0,
+      "scoreChallenger": 0,
+      "newHolderId": "audax-italiano"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-25",
+      "competition": "Copa Chile · Octavos de final · Vuelta",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/colo-colo-audax-italiano-2026-09-25/",
+      "holderId": "audax-italiano",
+      "challengerId": "colo-colo",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "colo-colo"
+    },
+    {
+      "type": "match",
+      "date": "2026-09-29",
+      "competition": "Copa Chile · Cuartos de final · Ida",
+      "sourceUrl": "https://www.goal.com/es-cl/equipo/colo-colo/partidos-resultados/ehsvy9m92bp6ktgoy6pwv8rdm",
+      "holderId": "colo-colo",
+      "challengerId": "deportes-puerto-montt",
+      "scoreHolder": 1,
+      "scoreChallenger": 0,
+      "newHolderId": "colo-colo"
+    },
+    {
+      "type": "match",
+      "date": "2026-10-11",
+      "competition": "Liga de Primera · Fecha 24",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/coquimbo-unido-colo-colo-2026-10-11/",
+      "holderId": "colo-colo",
+      "challengerId": "coquimbo-unido",
+      "scoreHolder": 2,
+      "scoreChallenger": 5,
+      "newHolderId": "coquimbo-unido"
+    },
+    {
+      "type": "match",
+      "date": "2026-10-25",
+      "competition": "Liga de Primera · Fecha 25",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/%C3%B1ublense-coquimbo-unido-2026-10-25/",
+      "holderId": "coquimbo-unido",
+      "challengerId": "nublense",
+      "scoreHolder": 1,
+      "scoreChallenger": 2,
+      "newHolderId": "nublense"
+    },
+    {
+      "type": "match",
+      "date": "2026-10-31",
+      "competition": "Liga de Primera · Fecha 26",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/ohiggins-%C3%B1ublense-2026-10-31/",
+      "holderId": "nublense",
+      "challengerId": "ohiggins",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "ohiggins"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-11-05",
+      "competition": "Liga de Primera · Fecha 27",
+      "sourceUrl": "https://www.goal.com/es-cl/equipo/ohiggins/partidos-resultados/8rpjhpm2j1q7p40zfmlqpj8am",
+      "holderId": "ohiggins",
+      "challengerId": "universidad-de-concepcion"
     }
   ]
 }
