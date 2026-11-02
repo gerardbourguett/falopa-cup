@@ -36,32 +36,32 @@ function playedFinal() {
 }
 
 describe('final window from October 20 without an end date', () => {
-  it('loads the two finalists, three played slots and one pending one with a valid schema', () => {
+  it('loads the two finalists and four played slots with a valid schema', () => {
     expect(schema.safeParse(fData).success).toBe(true);
     expect(validateFinalIntegrity(window, knockout, used)).toEqual([]);
-    expect(window).toMatchObject({ status: 'in-progress', windowStart: FINAL_WINDOW_START });
+    expect(window).toMatchObject({ status: 'completed', windowStart: FINAL_WINDOW_START });
     expect(window.clubs.map((club) => [club.clubId, club.tieId, club.sourceRef])).toEqual([
       ['pe-alianza-lima', 'F-1', 'SF-1'], ['ve-metropolitanos', 'F-1', 'SF-2'],
     ]);
     const games = window.clubs.flatMap((club) => club.fixtures);
     expect(games).toHaveLength(4);
-    expect(games.filter((game) => game.status === 'played')).toHaveLength(3);
+    expect(games.filter((game) => game.status === 'played')).toHaveLength(4);
     for (const game of games.filter((game) => game.status !== 'played')) {
       expect([game.goalsFor, game.goalsAgainst, game.yellowCards, game.redCards]).toEqual([null, null, null, null]);
     }
-    // Alianza Lima won 1-0 at Moquegua (1 yellow, 0 reds); the second slot is still pending.
+    // Alianza Lima won 1-0 at Moquegua (1 yellow, 0 reds); the second slot is also played.
     expect(window.clubs[0].fixtures[0]).toMatchObject({ status: 'played', sourceDate: '2026-10-25', goalsFor: 1, goalsAgainst: 0, yellowCards: 1, redCards: 0 });
     // La Guaira 2-2 Metropolitanos (25 Oct): 2 yellows, 0 reds.
     expect(window.clubs[1].fixtures[1]).toMatchObject({ status: 'played', sourceDate: '2026-10-25', goalsFor: 2, goalsAgainst: 2, yellowCards: 2, redCards: 0 });
     // Metropolitanos 1-1 Anzoátegui (lost the shootout 3-4, which does not change the fantasy score): 4 yellows, 0 reds.
     expect(window.clubs[1].fixtures[0]).toMatchObject({ status: 'played', sourceDate: '2026-10-22', goalsFor: 1, goalsAgainst: 1, yellowCards: 4, redCards: 0 });
     expect(window.clubs[1].fixtures[0].note).toContain('perder por penales cuenta como empate');
-    expect(knockout.rounds.find((round) => round.id === 'KO-F')!.status).toBe('in-progress');
+    expect(knockout.rounds.find((round) => round.id === 'KO-F')!.status).toBe('completed');
   });
 
   it('keeps the researched dates and never invents the unconfirmed Metropolitanos opponent', () => {
     expect(window.clubs.map((club) => club.fixtures.map((game) => [game.sourceDate, game.status, game.selectionStatus]))).toEqual([
-      [['2026-10-25', 'played', 'confirmed'], ['2026-10-29', 'scheduled', 'confirmed']],
+      [['2026-10-25', 'played', 'confirmed'], ['2026-10-29', 'played', 'confirmed']],
       [['2026-10-22', 'played', 'confirmed'], ['2026-10-25', 'played', 'confirmed']],
     ]);
     // The La Guaira–Metropolitanos pairing (first cuadrangular A matchday) was played on its first published date.
@@ -80,11 +80,11 @@ describe('final window from October 20 without an end date', () => {
   });
 
   it('shows no points before a played match and rejects pre-window, reused or future results', () => {
-    // Alianza: 1-0 with 1 yellow = 3 + 1 - 0.25 = 3.75 after one match. Metropolitanos: 1-1 with 4 yellows (0) plus 2-2 with 2 yellows (0.5) = 0.5, both verified.
+    // Alianza: 3.75 against Moquegua and -0.75 against Sporting Cristal = 3. Metropolitanos: 1-1 with 4 yellows (0) plus 2-2 with 2 yellows (0.5) = 0.5, both verified.
     expect(window.clubs.map((club) => buildFinalClubTotal(club))).toMatchObject([
-      { total: 3.75, played: 1, disciplinePending: false, kind: 'partial' }, { total: 0.5, played: 2, disciplinePending: false, kind: 'verified' },
+      { total: 3, played: 2, disciplinePending: false, kind: 'verified' }, { total: 0.5, played: 2, disciplinePending: false, kind: 'verified' },
     ]);
-    expect(resolveFinalResult(window.clubs[0], window.clubs[1])).toEqual({ winnerClubId: null, basis: null });
+    expect(resolveFinalResult(window.clubs[0], window.clubs[1])).toEqual({ winnerClubId: 'pe-alianza-lima', basis: 'verified-total' });
     const early = structuredClone(window);
     early.clubs[0].fixtures[0].sourceDate = '2026-10-19';
     expect(validateFinalIntegrity(early, knockout, used).join()).toContain('precedes the inclusive start date');
@@ -92,7 +92,7 @@ describe('final window from October 20 without an end date', () => {
     reused.clubs[0].fixtures[0].eventId = 16280841;
     reused.clubs[0].fixtures[0].sourceUrl = 'https://www.sofascore.com/football/match/test#id:16280841';
     expect(validateFinalIntegrity(reused, knockout, used).join()).toContain('cannot be reused');
-    for (const replacement of [{ goalsFor: 0 }, { yellowCards: 0 }, { status: 'played' }]) {
+    for (const replacement of [{ goalsFor: null }, { yellowCards: -1 }, { status: 'scheduled' }]) {
       const changed = structuredClone(window);
       Object.assign(changed.clubs[0].fixtures[1], replacement);
       expect(schema.safeParse(changed).success).toBe(false);
@@ -118,7 +118,7 @@ describe('final window from October 20 without an end date', () => {
     // Complete and consistent: a champion with a completed window and round.
     doc.status = 'completed';
     final.status = 'completed';
-    Object.assign(final.ties[0], { winnerClubId: 'pe-alianza-lima', winnerBasis: 'verified-total' });
+    Object.assign(final.ties[0], { winnerClubId: 'pe-alianza-lima', winnerBasis: 'verified-total', scoreA: 10, scoreB: 2 });
     expect(validateFinalIntegrity(doc, ko, used)).toEqual([]);
     // Fabricated or missing champions, wrong status and wrong scores are all rejected.
     for (const mutate of [

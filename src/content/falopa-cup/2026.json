@@ -458,13 +458,14 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-10-31",
       "competition": "Liga de Primera · Fecha 26",
-      "sourceUrl": "https://radiolasenal.cl/con-clasico-universitario-la-programacion-de-la-fecha-26-de-la-liga-de-primera/",
-      "reason": "Próximo partido confirmado del portador: sábado 31 de octubre, 20:00, en El Teniente (programación de la fecha 26). Algunos sitios lo ubican el 1 de noviembre.",
+      "reason": "Resultado y fecha proporcionados por el usuario.",
       "holderId": "nublense",
-      "challengerId": "ohiggins"
+      "challengerId": "ohiggins",
+      "scoreHolder": 0,
+      "scoreChallenger": 1,
+      "newHolderId": "ohiggins"
     }
   ]
 }
