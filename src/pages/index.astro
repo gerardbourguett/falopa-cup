@@ -111,6 +111,10 @@ const miladNextMatch = latestMilad
 
 const conferenceClubs = conferenceEntries.find((entry) => entry.data.kind === "clubs")?.data as any;
 const conferenceStage = conferenceEntries.find((entry) => entry.data.kind === "stage")?.data as any;
+const conferenceKnockout = conferenceEntries.find((entry) => entry.data.kind === "knockout")?.data as any;
+const conferenceFinal = conferenceKnockout?.rounds?.find((round: any) => round.id === "KO-F");
+const conferenceWinnerId = conferenceFinal?.status === "completed" ? conferenceFinal.ties?.[0]?.winnerClubId : null;
+const conferenceWinner = conferenceClubs?.seeds?.find((club: any) => club.clubId === conferenceWinnerId);
 const falopaLatestPlayedMatch = latestFalopa
   ? getLatestPlayedMatch(latestFalopa.data.matches)
   : null;
@@ -204,7 +208,7 @@ const heroTickerItems = [
   <section class={`${styles.championsSection} reveal`}>
     <div class="container">
       <div class={styles.sectionHeader}>
-        <span class={styles.sectionLabel}>POSEEDORES ACTUALES</span>
+        <span class={styles.sectionLabel}>CAMPEONES Y POSEEDORES</span>
       </div>
 
       <div class={styles.championsGrid}>
@@ -238,14 +242,20 @@ const heroTickerItems = [
       </div>
 
       <div class={styles.conferenceCta}>
-        <div class={styles.conferenceHeader}>NUEVO TORNEO</div>
+        <div class={styles.conferenceHeader}>{conferenceWinner ? "CAMPEÓN 2026" : "CONFERENCE LEAGUE SUDAMERICANA"}</div>
+        {conferenceWinnerId === "pe-alianza-lima" && (
+          <img class={styles.conferenceChampionLogo} src="/logos/alianza-lima.svg" alt="Escudo de Alianza Lima" width="112" height="140" />
+        )}
+        <div class={styles.conferenceContent}>
         <h3>Conference League Sudamericana 2026</h3>
-        <p>
-          Torneo continental fantasy por ventanas. Participan {conferenceClubs?.seeds?.length ?? 0} clubes,
-          con transición {conferenceClubs?.seeds?.length ?? 0} → {conferenceStage?.mainStageQualifiedIds?.length ?? 0}.
-        </p>
-        <a href="/conference-league-sudamericana" class={styles.conferenceLink}>
-          Ver Conference League Sudamericana →
+        {conferenceWinner ? (
+          <p><strong>{conferenceWinner.name}</strong> es el campeón de la Conference League Sudamericana.</p>
+        ) : (
+          <p>Torneo continental fantasy por ventanas. Participan {conferenceClubs?.seeds?.length ?? 0} clubes, con transición {conferenceClubs?.seeds?.length ?? 0} → {conferenceStage?.mainStageQualifiedIds?.length ?? 0}.</p>
+        )}
+        </div>
+        <a href={conferenceWinner ? "/conference-league-sudamericana/final" : "/conference-league-sudamericana"} class={styles.conferenceLink}>
+          {conferenceWinner ? "Ver la final →" : "Ver Conference League Sudamericana →"}
         </a>
       </div>
     </div>
