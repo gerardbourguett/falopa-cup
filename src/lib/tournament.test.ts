@@ -22,7 +22,7 @@ describe('distinct title transfer rules', () => {
     expect(computeNewHolder('copa-pablo-milad', 'holder', 'challenger', gf, ga, ph, pc)).toBe(redacted);
   });
 
-  it('tracks both holders through the verified September/October results', () => {
+  it('tracks both holders through the verified September–November results', () => {
     const load = (cup: string): MatchEntry[] => JSON.parse(readFileSync(
       new URL(`../content/${cup}/2026.json`, import.meta.url), 'utf8',
     )).matches;
@@ -50,7 +50,7 @@ describe('distinct title transfer rules', () => {
       holderId: 'colo-colo', challengerId: 'coquimbo-unido', scoreHolder: 2, scoreChallenger: 5,
       newHolderId: 'coquimbo-unido',
     });
-    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'ohiggins', since: '2026-10-31' });
+    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'universidad-de-concepcion', since: '2026-11-08' });
     expect(getCurrentReign(redacted)).toMatchObject({ holderId: 'union-san-felipe', since: '2026-09-26' });
     // The suspended Colo Colo–Puerto Montt resumption is no longer a title match.
     expect(falopa.find((m) => m.date === '2026-10-20' && m.holderId === 'colo-colo')).toBeUndefined();
@@ -61,6 +61,13 @@ describe('distinct title transfer rules', () => {
     expect(falopa.find((m) => m.date === '2026-10-31')).toMatchObject({
       holderId: 'nublense', challengerId: 'ohiggins', scoreHolder: 0, scoreChallenger: 1, newHolderId: 'ohiggins',
     });
+    expect(falopa.find((m) => m.date === '2026-11-08')).toMatchObject({
+      holderId: 'ohiggins', challengerId: 'universidad-de-concepcion', scoreHolder: 2, scoreChallenger: 3,
+      newHolderId: 'universidad-de-concepcion',
+    });
+    expect(falopa.filter((m) => m.status === 'pending')).toMatchObject([
+      { date: '2026-11-21', holderId: 'universidad-de-concepcion', challengerId: 'nublense' },
+    ]);
     expect(redacted.find((m) => m.date === '2026-10-18')).toMatchObject({
       scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe',
     });
