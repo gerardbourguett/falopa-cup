@@ -390,7 +390,8 @@
       "status": "pending",
       "date": "2026-11-15",
       "competition": "Liga de Ascenso · Fecha 30",
-      "reason": "Suspendido y reprogramado para el 15 de noviembre, según información proporcionada por el usuario.",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/uni%C3%B3n-san-felipe-uni%C3%B3n-espa%C3%B1ola-2026-11-15/",
+      "reason": "Reprogramado para el 15 de noviembre, según la programación oficial de la ANFP.",
       "holderId": "union-san-felipe",
       "challengerId": "union-espanola"
     }

@@ -466,6 +466,26 @@
       "scoreHolder": 0,
       "scoreChallenger": 1,
       "newHolderId": "ohiggins"
+    },
+    {
+      "type": "match",
+      "date": "2026-11-08",
+      "competition": "Liga de Primera · Fecha 27",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/universidad-de-concepci%C3%B3n-ohiggins-2026-11-08/",
+      "holderId": "ohiggins",
+      "challengerId": "universidad-de-concepcion",
+      "scoreHolder": 2,
+      "scoreChallenger": 3,
+      "newHolderId": "universidad-de-concepcion"
+    },
+    {
+      "type": "match",
+      "status": "pending",
+      "date": "2026-11-21",
+      "competition": "Liga de Primera · Fecha 28",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/universidad-de-concepci%C3%B3n-%C3%B1ublense-2026-11-21/",
+      "holderId": "universidad-de-concepcion",
+      "challengerId": "nublense"
     }
   ]
 }
