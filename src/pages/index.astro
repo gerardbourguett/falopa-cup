@@ -236,6 +236,7 @@ const heroTickerItems = [
           year={miladYear}
           sinceDate={formatSinceDate(miladReign?.since)}
           nextDuel={formatUpcomingDuel(miladNextMatch)}
+          seasonChampion={miladYear === 2026 && miladHolder?.holderId === "union-san-felipe"}
           accentColor="burgundy"
           href="/copa-pablo-milad"
         />
