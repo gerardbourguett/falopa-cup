@@ -12,6 +12,7 @@ interface ChampionCardProps {
   year: number;
   sinceDate: string;
   nextDuel?: string;
+  seasonChampion?: boolean;
   accentColor: 'gold' | 'burgundy';
   href: string;
 }
@@ -22,6 +23,7 @@ export function ChampionCard({
   year,
   sinceDate,
   nextDuel,
+  seasonChampion = false,
   accentColor,
   href,
 }: ChampionCardProps) {
@@ -45,7 +47,7 @@ export function ChampionCard({
         </div>
 
         <div className={styles.badge}>
-          CAMPEON ACTUAL
+          {seasonChampion ? `CAMPEÓN ${year}` : 'CAMPEON ACTUAL'}
         </div>
 
         <div className={styles.content}>

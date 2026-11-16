@@ -37,6 +37,7 @@ describe('distinct title transfer rules', () => {
       { date: '2026-10-12', scoreHolder: 0, scoreChallenger: 4, newHolderId: 'union-san-felipe' },
       { date: '2026-10-18', scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe' },
       { date: '2026-10-24', scoreHolder: 1, scoreChallenger: 3, newHolderId: 'union-san-felipe' },
+      { date: '2026-11-15', scoreHolder: 3, scoreChallenger: 4, newHolderId: 'union-san-felipe' },
     ]);
     for (const [cup, entries] of [['falopa-cup', falopa], ['copa-pablo-milad', redacted]] as const) {
       for (const m of entries.filter((m) => m.type === 'match' && m.status !== 'pending' && m.date >= '2026-09-22')) {
@@ -71,9 +72,12 @@ describe('distinct title transfer rules', () => {
     expect(redacted.find((m) => m.date === '2026-10-18')).toMatchObject({
       scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe',
     });
-    expect(redacted.filter((m) => m.status === 'pending')).toMatchObject([
-      { date: '2026-11-15', holderId: 'union-san-felipe', challengerId: 'union-espanola' },
-    ]);
+    expect(redacted.find((m) => m.date === '2026-11-15')).toMatchObject({
+      holderId: 'union-san-felipe', challengerId: 'union-espanola',
+      scoreHolder: 3, scoreChallenger: 4, newHolderId: 'union-san-felipe',
+    });
+    expect(redacted.filter((m) => m.status === 'pending')).toEqual([]);
+    expect(getCurrentHolder(redacted)?.holderId).toBe('union-san-felipe');
   });
 });
 
