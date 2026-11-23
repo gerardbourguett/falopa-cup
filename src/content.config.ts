@@ -37,6 +37,7 @@ const matchSchema = z.object({
 const tournamentSchema = z.object({
     year: z.number(),
     initialHolderId: z.string().min(1).optional(),
+    initialHolderDate: z.coerce.date().optional(),
     branch: z.string().optional(),
     championReason: z.string().optional(),
     whatIf: z.array(matchSchema).optional(),

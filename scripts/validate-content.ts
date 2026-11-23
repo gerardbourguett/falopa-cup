@@ -52,6 +52,7 @@ async function loadTournamentFiles(tournament: 'falopa-cup' | 'copa-pablo-milad'
       result.push({
         path: `${tournament}/${file}`,
         initialHolderId: json.initialHolderId,
+        initialHolderDate: json.initialHolderDate,
         matches: json.matches as Array<Record<string, unknown>>,
       });
     }

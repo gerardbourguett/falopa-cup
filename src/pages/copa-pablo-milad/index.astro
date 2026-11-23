@@ -5,7 +5,7 @@ import MatchCard from "../../components/MatchCard.astro";
 import Palmares from "../../components/Palmares.astro";
 import HolderChain from "../../components/HolderChain.astro";
 import { SITE_TITLE } from "../../consts";
-import { countSeasonHolders, getSeasonHolderChain, getSeasonHolderId, selectCurrentSeason } from "../../lib/tournament";
+import { countSeasonHolders, getPalmaresInitialHolderIds, getSeasonHolderChain, getSeasonHolderId, selectCurrentSeason } from "../../lib/tournament";
 
 const cupEntries = await getCollection("copa-pablo-milad");
 const clubsEntries = await getCollection("clubs");
@@ -17,6 +17,7 @@ const seasons = cupEntries
   .map((e) => ({
     year: e.data.year,
     initialHolderId: e.data.initialHolderId,
+    initialHolderDate: e.data.initialHolderDate,
     matches: e.data.matches.map((m: any) => ({
       ...m,
       date: m.date instanceof Date ? m.date : new Date(m.date),
@@ -92,7 +93,7 @@ const currentHolderClub = currentHolder ? clubById.get(currentHolder) : undefine
           <p class="section-kicker">Registro acumulado</p>
           <Palmares
             allMatches={allMatches}
-            initialHolderIds={seasons.filter((s) => s.initialHolderId && s.matches.some((m) => m.type === "match" && m.status !== "pending")).map((s) => s.initialHolderId!)}
+            initialHolderIds={getPalmaresInitialHolderIds(seasons)}
             clubs={clubById}
             accentColor="burgundy"
             currentHolderId={currentHolder}
@@ -172,6 +173,7 @@ const currentHolderClub = currentHolder ? clubById.get(currentHolder) : undefine
                   <div class="season-chain">
                     <HolderChain
                       chain={chain}
+                      seasonYear={season.year}
                       clubs={clubById}
                       accentColor="burgundy"
                       caption={`Cadena de poseedores · Copa REDACTED ${season.year}`}

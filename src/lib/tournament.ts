@@ -85,15 +85,25 @@ export function getSeasonHolderId(season: { matches: MatchEntry[]; initialHolder
   return getCurrentHolder(season.matches)?.holderId ?? season.initialHolderId;
 }
 
-/** Preserve the initial reign without inventing its start date. */
-export function getSeasonHolderChain(season: { matches: MatchEntry[]; initialHolderId?: string }): HolderChainEntry[] {
+/** Preserve the initial reign, including its date when known. */
+export function getSeasonHolderChain(season: { matches: MatchEntry[]; initialHolderId?: string; initialHolderDate?: string | Date }): HolderChainEntry[] {
   const chain = getHolderChain(season.matches);
   if (!season.initialHolderId) return chain;
+  const seed = season.matches.find((match) => match.type === 'seeding' && match.status !== 'pending' && match.holderId === season.initialHolderId);
+  const since = season.initialHolderDate ?? seed?.date ?? null;
   if (chain[0]?.holderId === season.initialHolderId) {
-    chain[0].since = null;
+    chain[0].since = since;
     return chain;
   }
-  return [{ holderId: season.initialHolderId, since: null, until: chain[0]?.since ?? null }, ...chain];
+  return [{ holderId: season.initialHolderId, since, until: chain[0]?.since ?? null }, ...chain];
+}
+
+/** Avoid counting an initial holder twice when legacy seed data is present. */
+export function getPalmaresInitialHolderIds(seasons: Array<{ initialHolderId?: string; matches: MatchEntry[] }>): string[] {
+  return seasons.filter((season) => season.initialHolderId &&
+    season.matches.some((match) => match.type === 'match' && match.status !== 'pending') &&
+    !season.matches.some((match) => match.type === 'seeding' && match.status !== 'pending' && match.holderId === season.initialHolderId)
+  ).map((season) => season.initialHolderId!);
 }
 
 export function countSeasonHolders(season: { matches: MatchEntry[]; initialHolderId?: string }): number {

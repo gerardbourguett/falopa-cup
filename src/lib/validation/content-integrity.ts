@@ -160,6 +160,7 @@ export function validateQuarterfinalIntegrity(
 export interface TournamentFileInput {
   path: string;
   initialHolderId?: unknown;
+  initialHolderDate?: unknown;
   matches: Array<Record<string, unknown>>;
 }
 
@@ -292,6 +293,21 @@ export function validateTournamentIntegrity(
   for (const file of files) {
     if (file.initialHolderId !== undefined && (typeof file.initialHolderId !== 'string' || !validClubIds.has(file.initialHolderId))) {
       issues.push(`${file.path}: initialHolderId=${file.initialHolderId} no existe en clubs`);
+    }
+    if (file.initialHolderDate !== undefined) {
+      const date = file.initialHolderDate;
+      const parsed = typeof date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(date) ? new Date(`${date}T00:00:00Z`) : null;
+      if (!parsed || !Number.isFinite(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) {
+        issues.push(`${file.path}: initialHolderDate debe ser una fecha válida YYYY-MM-DD`);
+      } else {
+        if (!file.initialHolderId) issues.push(`${file.path}: initialHolderDate requiere initialHolderId`);
+        if (file.matches.some((match) => new Date(String(match.date)).getTime() < parsed.getTime())) {
+          issues.push(`${file.path}: initialHolderDate debe preceder o coincidir con los partidos`);
+        }
+      }
+    }
+    if (file.initialHolderId && file.matches.some((match) => match.type === 'seeding')) {
+      issues.push(`${file.path}: initialHolderId no puede combinarse con seeding`);
     }
     if (!isAscendingByDate(file.matches)) {
       issues.push(`${file.path}: partidos no están ordenados por fecha ascendente`);
