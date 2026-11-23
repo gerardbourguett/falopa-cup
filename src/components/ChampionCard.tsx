@@ -68,7 +68,7 @@ export function ChampionCard({
               {club.name}
             </div>
             <div className={styles.sinceDate}>
-              Desde {sinceDate}
+              {sinceDate ? `Desde ${sinceDate}` : 'Fecha inicial desconocida'}
             </div>
             {nextDuel && (
               <div className={styles.nextDuel}>

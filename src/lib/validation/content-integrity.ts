@@ -159,6 +159,7 @@ export function validateQuarterfinalIntegrity(
 
 export interface TournamentFileInput {
   path: string;
+  initialHolderId?: unknown;
   matches: Array<Record<string, unknown>>;
 }
 
@@ -289,8 +290,19 @@ export function validateTournamentIntegrity(
   const issues: string[] = [];
 
   for (const file of files) {
+    if (file.initialHolderId !== undefined && (typeof file.initialHolderId !== 'string' || !validClubIds.has(file.initialHolderId))) {
+      issues.push(`${file.path}: initialHolderId=${file.initialHolderId} no existe en clubs`);
+    }
     if (!isAscendingByDate(file.matches)) {
       issues.push(`${file.path}: partidos no están ordenados por fecha ascendente`);
+    }
+
+    if (typeof file.initialHolderId === 'string') {
+      const firstMatchIndex = file.matches.findIndex((match) => match.type === 'match');
+      const firstMatch = file.matches[firstMatchIndex];
+      if (firstMatch && firstMatch.holderId !== file.initialHolderId) {
+        issues.push(`${file.path}#${firstMatchIndex}: primer holderId debe coincidir con initialHolderId=${file.initialHolderId}`);
+      }
     }
 
     file.matches.forEach((match, index) => {

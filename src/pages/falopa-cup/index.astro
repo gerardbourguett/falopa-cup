@@ -5,7 +5,7 @@ import MatchCard from "../../components/MatchCard.astro";
 import Palmares from "../../components/Palmares.astro";
 import HolderChain from "../../components/HolderChain.astro";
 import { SITE_TITLE } from "../../consts";
-import { getHolderChain } from "../../lib/tournament";
+import { countSeasonHolders, getSeasonHolderChain, getSeasonHolderId, selectCurrentSeason } from "../../lib/tournament";
 
 const cupEntries = await getCollection("falopa-cup");
 const clubsEntries = await getCollection("clubs");
@@ -47,6 +47,7 @@ type Branch = {
 };
 type Season = {
   year: number;
+  initialHolderId?: string;
   branches: Branch[] | null;
   sharedMatches: any[];
   allUniqueMatches: any[];
@@ -58,6 +59,7 @@ const seasons: Season[] = [...entriesByYear.entries()]
       const matches = normalizeMatches(entries[0].data.matches);
       return {
         year,
+        initialHolderId: entries[0].data.initialHolderId,
         branches: null,
         sharedMatches: matches,
         allUniqueMatches: matches,
@@ -81,6 +83,7 @@ const seasons: Season[] = [...entriesByYear.entries()]
 
     return {
       year,
+      initialHolderId: undefined,
       branches,
       sharedMatches: shared,
       allUniqueMatches: [...shared, ...branchAOnly, ...branchBOnly],
@@ -88,18 +91,13 @@ const seasons: Season[] = [...entriesByYear.entries()]
   })
   .sort((a, b) => b.year - a.year);
 
-const currentSeason = seasons[0];
+const currentSeason = selectCurrentSeason(seasons.map((season) => ({ ...season, matches: season.allUniqueMatches })));
 const allMatches = seasons.flatMap((s) => s.allUniqueMatches);
 
 function countTitleChanges(matches: any[]) {
   return matches.filter(
     (m) => m.status !== "pending" && m.type === "match" && m.newHolderId && m.newHolderId !== m.holderId,
   ).length;
-}
-
-function countHolders(matches: any[]) {
-  return new Set(matches.filter((m) => m.status !== "pending" && m.newHolderId).map((m) => m.newHolderId))
-    .size;
 }
 
 function countDefenses(matches: any[]) {
@@ -131,7 +129,7 @@ function getChampionId(matches: any[]): string | undefined {
 }
 
 const currentHolder = currentSeason
-  ? getChampionId(currentSeason.allUniqueMatches)
+  ? getSeasonHolderId(currentSeason)
   : undefined;
 const currentHolderClub = currentHolder ? clubById.get(currentHolder) : undefined;
 ---
@@ -177,6 +175,7 @@ const currentHolderClub = currentHolder ? clubById.get(currentHolder) : undefine
         <p class="section-kicker">Registro acumulado</p>
         <Palmares
           allMatches={allMatches}
+          initialHolderIds={seasons.filter((s) => s.initialHolderId && s.allUniqueMatches.some((m) => m.type === "match" && m.status !== "pending")).map((s) => s.initialHolderId!)}
           clubs={clubById}
           accentColor="gold"
           currentHolderId={currentHolder}
@@ -240,16 +239,20 @@ const currentHolderClub = currentHolder ? clubById.get(currentHolder) : undefine
               </div>
               <div class="mini-stat">
                 <span class="mini-stat-num">
-                  {countHolders(season.allUniqueMatches)}
+                  {countSeasonHolders({ matches: season.allUniqueMatches, initialHolderId: season.initialHolderId })}
                 </span>
                 <span class="mini-stat-label">Poseedores</span>
               </div>
             </div>
           </header>
 
+          {season.initialHolderId && (
+            <p>Poseedor inicial: {clubById.get(season.initialHolderId)?.name || season.initialHolderId}</p>
+          )}
+
           {/* Holder Chain for this season */}
           {(() => {
-            const chain = getHolderChain(season.allUniqueMatches);
+            const chain = getSeasonHolderChain({ matches: season.allUniqueMatches, initialHolderId: season.initialHolderId });
             return chain.length > 0 ? (
               <div class="season-chain">
                 <HolderChain

@@ -6,7 +6,7 @@
  *   pnpm script:next -- --tournament falopa-cup
  *   pnpm script:next -- -t copa-pablo-milad
  *
- * Reads the current title holder from the latest season JSON,
+ * Reads the current title holder from the active or explicitly selected season JSON,
  * guides you through entering the match result,
  * and prints a ready-to-paste JSON entry to stdout.
  */
@@ -14,8 +14,9 @@
 import { input, select, confirm, number } from '@inquirer/prompts';
 import { readdir, readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { computeNewHolder, getCurrentHolder, type ClubData, type MatchEntry } from '../src/lib/tournament.js';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { computeNewHolder, getCurrentHolder, getSeasonHolderChain, type ClubData, type MatchEntry } from '../src/lib/tournament.js';
+import { seasonChoices, type SeasonFile } from './season-choice.js';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
@@ -48,7 +49,7 @@ function printUsageAndExit(msg?: string): never {
 
 // ─── File helpers ─────────────────────────────────────────────────────────────
 
-async function loadLatestSeason(tournament: Tournament): Promise<{ matches: MatchEntry[]; year: number }> {
+async function loadSeasons(tournament: Tournament): Promise<SeasonFile[]> {
   const dir = join(PROJECT_ROOT, 'src', 'content', tournament);
   let files: string[];
   try {
@@ -63,16 +64,14 @@ async function loadLatestSeason(tournament: Tournament): Promise<{ matches: Matc
     process.exit(1);
   }
 
-  // Sort by filename — year is in the filename (e.g. 2026.json, 2025-1.json)
-  // Pick the one whose JSON has the highest `year` value
-  let best: { matches: MatchEntry[]; year: number } | null = null;
+  const seasons: SeasonFile[] = [];
   for (const file of files) {
     const raw = await readFile(join(dir, file), 'utf-8');
-    const data = JSON.parse(raw) as { year: number; matches: MatchEntry[] };
-    if (!best || data.year > best.year) best = { matches: data.matches, year: data.year };
+    const data = JSON.parse(raw) as { year: number; matches: MatchEntry[]; initialHolderId?: string };
+    seasons.push({ ...data, file });
   }
 
-  return best!;
+  return seasons;
 }
 
 async function loadClubs(): Promise<ClubData[]> {
@@ -88,7 +87,7 @@ async function loadClubs(): Promise<ClubData[]> {
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
-async function main() {
+export async function main() {
   let { tournament } = parseArgs();
 
   // If tournament not provided via flag, prompt for it
@@ -104,8 +103,16 @@ async function main() {
 
   // Load season + holder
   process.stderr.write('Leyendo datos de la temporada...\n');
-  const season = await loadLatestSeason(tournament);
-  const holderResult = getCurrentHolder(season.matches);
+  const { active, choices } = seasonChoices(await loadSeasons(tournament));
+  const season = choices.length === 1 ? active : await select({
+    message: '¿Qué temporada deseas registrar?',
+    choices: choices.map((entry) => ({
+      name: `${entry.year}${entry === active ? ' (actual)' : ' (aún no iniciada)'}`,
+      value: entry,
+    })),
+    default: active,
+  });
+  const holderResult = getCurrentHolder(season.matches) ?? (season.initialHolderId ? { holderId: season.initialHolderId, match: undefined } : null);
 
   if (!holderResult) {
     process.stderr.write('Error: No se pudo determinar el poseedor actual.\n');
@@ -117,12 +124,12 @@ async function main() {
   const holderClub = clubs.find((c) => c.id === holderResult.holderId);
   const holderName = holderClub?.name ?? holderResult.holderId;
 
-  const holderMatchDate =
-    holderResult.match.date instanceof Date
-      ? holderResult.match.date.toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' })
-      : new Date(holderResult.match.date).toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' });
+  const reign = getSeasonHolderChain(season).at(-1);
+  const holderMatchDate = reign?.since
+    ? new Date(reign.since).toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' })
+    : undefined;
 
-  process.stderr.write(`\nPoseedor actual: ${holderName} (desde ${holderMatchDate})\n\n`);
+  process.stderr.write(`\nPoseedor actual: ${holderName}${holderMatchDate ? ` (desde ${holderMatchDate})` : ' (poseedor inicial)'}\n\n`);
 
   // ── Prompt for match details ──────────────────────────────────────────────
 
@@ -229,7 +236,7 @@ async function main() {
     : `🛡️  ${holderName} retiene el título`;
 
   // Print the comment + JSON to stdout (pipeable)
-  const seasonFile = `src/content/${tournament}/${season.year}.json`;
+  const seasonFile = `src/content/${tournament}/${season.file}`;
   process.stdout.write(
     `// Agregar a ${seasonFile} → matches[]\n` +
     JSON.stringify(entry, null, 2) +
@@ -240,7 +247,7 @@ async function main() {
   process.stderr.write(`\n${resultLine}\n`);
 }
 
-main().catch((err: unknown) => {
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) main().catch((err: unknown) => {
   // Handle Ctrl+C gracefully
   if (err instanceof Error && err.message.includes('User force closed')) {
     process.stderr.write('\nCancelado.\n');

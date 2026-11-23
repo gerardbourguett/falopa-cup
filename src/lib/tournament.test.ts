@@ -51,7 +51,7 @@ describe('distinct title transfer rules', () => {
       holderId: 'colo-colo', challengerId: 'coquimbo-unido', scoreHolder: 2, scoreChallenger: 5,
       newHolderId: 'coquimbo-unido',
     });
-    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'universidad-de-concepcion', since: '2026-11-08' });
+    expect(getCurrentReign(falopa)).toMatchObject({ holderId: 'nublense', since: '2026-11-21' });
     expect(getCurrentReign(redacted)).toMatchObject({ holderId: 'union-san-felipe', since: '2026-09-26' });
     // The suspended Colo Colo–Puerto Montt resumption is no longer a title match.
     expect(falopa.find((m) => m.date === '2026-10-20' && m.holderId === 'colo-colo')).toBeUndefined();
@@ -66,9 +66,10 @@ describe('distinct title transfer rules', () => {
       holderId: 'ohiggins', challengerId: 'universidad-de-concepcion', scoreHolder: 2, scoreChallenger: 3,
       newHolderId: 'universidad-de-concepcion',
     });
-    expect(falopa.filter((m) => m.status === 'pending')).toMatchObject([
-      { date: '2026-11-21', holderId: 'universidad-de-concepcion', challengerId: 'nublense' },
-    ]);
+    expect(falopa.find((m) => m.date === '2026-11-21')).toMatchObject({
+      holderId: 'universidad-de-concepcion', challengerId: 'nublense',
+      scoreHolder: 2, scoreChallenger: 3, newHolderId: 'nublense',
+    });
     expect(redacted.find((m) => m.date === '2026-10-18')).toMatchObject({
       scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe',
     });

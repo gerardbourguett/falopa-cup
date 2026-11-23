@@ -58,8 +58,8 @@ export interface ClubData {
   id: string;
   name: string;
   shortName: string;
-  stadium: string;
-  logo: string;
+  stadium?: string;
+  logo?: string;
 }
 
 export interface ResolvedClub {
@@ -69,11 +69,38 @@ export interface ResolvedClub {
 
 export interface HolderChainEntry {
   holderId: string;
-  since: string | Date;
+  since: string | Date | null;
   until: string | Date | null; // null = current holder
 }
 
 // ─── Functions ───────────────────────────────────────────────────────────────
+
+/** Select the newest season with a played match, or the newest season if none has started. */
+export function selectCurrentSeason<T extends { year: number; matches: MatchEntry[] }>(seasons: T[]): T | undefined {
+  const newest = [...seasons].sort((a, b) => b.year - a.year);
+  return newest.find((season) => season.matches.some((match) => match.type === 'match' && match.status !== 'pending')) ?? newest[0];
+}
+
+export function getSeasonHolderId(season: { matches: MatchEntry[]; initialHolderId?: string }): string | undefined {
+  return getCurrentHolder(season.matches)?.holderId ?? season.initialHolderId;
+}
+
+/** Preserve the initial reign without inventing its start date. */
+export function getSeasonHolderChain(season: { matches: MatchEntry[]; initialHolderId?: string }): HolderChainEntry[] {
+  const chain = getHolderChain(season.matches);
+  if (!season.initialHolderId) return chain;
+  if (chain[0]?.holderId === season.initialHolderId) {
+    chain[0].since = null;
+    return chain;
+  }
+  return [{ holderId: season.initialHolderId, since: null, until: chain[0]?.since ?? null }, ...chain];
+}
+
+export function countSeasonHolders(season: { matches: MatchEntry[]; initialHolderId?: string }): number {
+  const ids = new Set(season.matches.filter((match) => match.status !== 'pending' && match.newHolderId).map((match) => match.newHolderId!));
+  if (season.initialHolderId) ids.add(season.initialHolderId);
+  return ids.size;
+}
 
 /**
  * Returns the current title holder from a list of match entries.
@@ -106,7 +133,7 @@ export function getCurrentReign(matches: MatchEntry[]): CurrentReignResult | nul
 
   return {
     holderId: currentReign.holderId,
-    since: currentReign.since,
+    since: currentReign.since!,
     match: currentHolder.match,
   };
 }

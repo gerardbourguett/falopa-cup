@@ -6,7 +6,7 @@ import HolderChain from "../components/HolderChain.astro";
 import styles from "./_index.module.css";
 import { getCollection } from "astro:content";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
-import { getCurrentHolder, getCurrentReign, getHolderChain } from "../lib/tournament";
+import { getSeasonHolderChain, getSeasonHolderId, selectCurrentSeason } from "../lib/tournament";
 
 const falopaCupEntries = await getCollection("falopa-cup");
 const copaPabloMiladEntries = await getCollection("copa-pablo-milad");
@@ -15,38 +15,26 @@ const clubsEntries = await getCollection("clubs");
 
 const clubById = new Map(clubsEntries.map((e) => [e.data.id || e.id, e.data]));
 
-const latestFalopa = falopaCupEntries.sort(
-  (a, b) => b.data.year - a.data.year,
-)[0];
-const latestMilad = copaPabloMiladEntries.sort(
-  (a, b) => b.data.year - a.data.year,
-)[0];
+const latestFalopa = selectCurrentSeason(falopaCupEntries.map((entry) => ({ ...entry.data, entry })))?.entry;
+const latestMilad = selectCurrentSeason(copaPabloMiladEntries.map((entry) => ({ ...entry.data, entry })))?.entry;
 
-const falopaHolder = latestFalopa
-  ? getCurrentHolder(latestFalopa.data.matches)
-  : null;
-const miladHolder = latestMilad
-  ? getCurrentHolder(latestMilad.data.matches)
-  : null;
-const falopaReign = latestFalopa
-  ? getCurrentReign(latestFalopa.data.matches)
-  : null;
-const miladReign = latestMilad
-  ? getCurrentReign(latestMilad.data.matches)
-  : null;
+const falopaHolderId = latestFalopa ? getSeasonHolderId(latestFalopa.data) : undefined;
+const miladHolderId = latestMilad ? getSeasonHolderId(latestMilad.data) : undefined;
+const falopaChain = latestFalopa ? getSeasonHolderChain(latestFalopa.data) : [];
+const miladChain = latestMilad ? getSeasonHolderChain(latestMilad.data) : [];
+const falopaReign = falopaChain.at(-1);
+const miladReign = miladChain.at(-1);
 
 function getClub(id?: string) {
   return id ? clubById.get(id) : undefined;
 }
 
-const falopaClub = getClub(falopaHolder?.holderId);
-const miladClub = getClub(miladHolder?.holderId);
+const falopaClub = getClub(falopaHolderId);
+const miladClub = getClub(miladHolderId);
 const falopaYear = latestFalopa?.data.year ?? 2026;
 const miladYear = latestMilad?.data.year ?? 2026;
 
 // Holder chains for #concepto section (show last 5 entries max)
-const falopaChain = latestFalopa ? getHolderChain(latestFalopa.data.matches) : [];
-const miladChain = latestMilad ? getHolderChain(latestMilad.data.matches) : [];
 
 function getNextPendingMatch(matches: any[]) {
   return [...matches]
@@ -236,7 +224,7 @@ const heroTickerItems = [
           year={miladYear}
           sinceDate={formatSinceDate(miladReign?.since)}
           nextDuel={formatUpcomingDuel(miladNextMatch)}
-          seasonChampion={miladYear === 2026 && miladHolder?.holderId === "union-san-felipe"}
+          seasonChampion={miladYear === 2026 && miladHolderId === "union-san-felipe"}
           accentColor="burgundy"
           href="/copa-pablo-milad"
         />
