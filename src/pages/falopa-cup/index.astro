@@ -5,7 +5,7 @@ import MatchCard from "../../components/MatchCard.astro";
 import Palmares from "../../components/Palmares.astro";
 import HolderChain from "../../components/HolderChain.astro";
 import { SITE_TITLE } from "../../consts";
-import { countSeasonHolders, getSeasonHolderChain, getSeasonHolderId, selectCurrentSeason } from "../../lib/tournament";
+import { countSeasonHolders, getPalmaresInitialHolderIds, getSeasonHolderChain, getSeasonHolderId, selectCurrentSeason } from "../../lib/tournament";
 
 const cupEntries = await getCollection("falopa-cup");
 const clubsEntries = await getCollection("clubs");
@@ -48,6 +48,7 @@ type Branch = {
 type Season = {
   year: number;
   initialHolderId?: string;
+  initialHolderDate?: Date;
   branches: Branch[] | null;
   sharedMatches: any[];
   allUniqueMatches: any[];
@@ -60,6 +61,7 @@ const seasons: Season[] = [...entriesByYear.entries()]
       return {
         year,
         initialHolderId: entries[0].data.initialHolderId,
+        initialHolderDate: entries[0].data.initialHolderDate,
         branches: null,
         sharedMatches: matches,
         allUniqueMatches: matches,
@@ -175,7 +177,7 @@ const currentHolderClub = currentHolder ? clubById.get(currentHolder) : undefine
         <p class="section-kicker">Registro acumulado</p>
         <Palmares
           allMatches={allMatches}
-          initialHolderIds={seasons.filter((s) => s.initialHolderId && s.allUniqueMatches.some((m) => m.type === "match" && m.status !== "pending")).map((s) => s.initialHolderId!)}
+          initialHolderIds={getPalmaresInitialHolderIds(seasons.map((s) => ({ ...s, matches: s.allUniqueMatches })))}
           clubs={clubById}
           accentColor="gold"
           currentHolderId={currentHolder}
@@ -252,11 +254,12 @@ const currentHolderClub = currentHolder ? clubById.get(currentHolder) : undefine
 
           {/* Holder Chain for this season */}
           {(() => {
-            const chain = getSeasonHolderChain({ matches: season.allUniqueMatches, initialHolderId: season.initialHolderId });
+            const chain = getSeasonHolderChain({ matches: season.allUniqueMatches, initialHolderId: season.initialHolderId, initialHolderDate: season.initialHolderDate });
             return chain.length > 0 ? (
               <div class="season-chain">
                 <HolderChain
                   chain={chain}
+                  seasonYear={season.year}
                   clubs={clubById}
                   accentColor="gold"
                   caption={`Cadena de poseedores · Falopa Cup ${season.year}`}

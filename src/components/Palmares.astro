@@ -1,5 +1,6 @@
 ---
 import styles from './Palmares.module.css';
+import { calculatePalmares } from '../lib/palmares';
 
 interface Club {
   id: string;
@@ -24,60 +25,7 @@ const {
   currentHolderId,
 } = Astro.props;
 
-interface ClubStats {
-  id: string;
-  reigns: number;
-  defenses: number;
-  conquests: number;
-  losses: number;
-  matchesAsHolder: number;
-}
-
-const statsMap = new Map<string, ClubStats>();
-
-function ensure(id: string): ClubStats {
-  if (!statsMap.has(id)) {
-    statsMap.set(id, {
-      id,
-      reigns: 0,
-      defenses: 0,
-      conquests: 0,
-      losses: 0,
-      matchesAsHolder: 0,
-    });
-  }
-  return statsMap.get(id)!;
-}
-
-for (const id of initialHolderIds) ensure(id).reigns++;
-
-for (const m of allMatches) {
-  if (m.status === "pending") continue;
-  if (m.type === "seeding" && m.holderId) {
-    const s = ensure(m.holderId);
-    s.reigns++;
-  }
-  if (m.type === "match") {
-    if (m.holderId) {
-      const holder = ensure(m.holderId);
-      holder.matchesAsHolder++;
-      if (m.newHolderId === m.holderId) {
-        holder.defenses++;
-      } else if (m.newHolderId && m.newHolderId !== m.holderId) {
-        holder.losses++;
-        const winner = ensure(m.newHolderId);
-        winner.conquests++;
-        winner.reigns++;
-      }
-    }
-  }
-}
-
-const ranked = [...statsMap.values()].sort((a, b) => {
-  if (b.reigns !== a.reigns) return b.reigns - a.reigns;
-  if (b.defenses !== a.defenses) return b.defenses - a.defenses;
-  return b.conquests - a.conquests;
-});
+const ranked = calculatePalmares(allMatches, initialHolderIds);
 
 function getClub(id: string) {
   return clubs.get(id);

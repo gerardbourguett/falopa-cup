@@ -12,6 +12,7 @@
  *  - compact?: boolean  (smaller logos for homepage widget vs full-page view)
  */
 import type { HolderChainEntry, ClubData } from '../lib/tournament';
+import { formatHolderChainDate } from '../lib/holder-chain-date';
 
 interface Props {
   chain: HolderChainEntry[];
@@ -20,6 +21,7 @@ interface Props {
   caption?: string;
   maxVisible?: number;
   compact?: boolean;
+  seasonYear?: number;
 }
 
 const {
@@ -29,6 +31,7 @@ const {
   caption,
   maxVisible = 0,
   compact = false,
+  seasonYear,
 } = Astro.props;
 
 const accentVar = accentColor === 'gold' ? 'var(--color-liga-primera)' : 'var(--color-liga-ascenso)';
@@ -38,8 +41,7 @@ const truncated = maxVisible > 0 && chain.length > maxVisible;
 
 function fmtDate(d: string | Date | null): string {
   if (!d) return 'Hoy';
-  const date = d instanceof Date ? d : new Date(d);
-  return date.toLocaleDateString('es-CL', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+  return formatHolderChainDate(d, seasonYear);
 }
 ---
 

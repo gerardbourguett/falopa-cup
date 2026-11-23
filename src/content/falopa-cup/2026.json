@@ -488,6 +488,15 @@
       "scoreHolder": 2,
       "scoreChallenger": 3,
       "newHolderId": "nublense"
+    },
+    {
+      "type": "match",
+      "date": "2026-11-29",
+      "competition": "Liga de Primera · Fecha 29",
+      "sourceUrl": "https://www.campeonatochileno.cl/match/%C3%B1ublense-cobresal-2026-11-29/",
+      "holderId": "nublense",
+      "challengerId": "cobresal",
+      "status": "pending"
     }
   ]
 }

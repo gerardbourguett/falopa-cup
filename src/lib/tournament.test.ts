@@ -70,6 +70,10 @@ describe('distinct title transfer rules', () => {
       holderId: 'universidad-de-concepcion', challengerId: 'nublense',
       scoreHolder: 2, scoreChallenger: 3, newHolderId: 'nublense',
     });
+    expect(falopa.filter((m) => m.status === 'pending')).toMatchObject([
+      { date: '2026-11-29', holderId: 'nublense', challengerId: 'cobresal' },
+    ]);
+    expect(getCurrentHolder(falopa)?.holderId).toBe('nublense');
     expect(redacted.find((m) => m.date === '2026-10-18')).toMatchObject({
       scoreHolder: 2, scoreChallenger: 2, newHolderId: 'union-san-felipe',
     });

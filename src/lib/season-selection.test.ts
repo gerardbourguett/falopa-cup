@@ -5,7 +5,8 @@ import milad2026 from '../content/copa-pablo-milad/2026.json';
 import milad2027 from '../content/copa-pablo-milad/2027.json';
 import coloColo from '../content/clubs/colo-colo.json';
 import trasandino from '../content/clubs/trasandino-de-los-andes.json';
-import { countSeasonHolders, getSeasonHolderChain, getSeasonHolderId, selectCurrentSeason, type MatchEntry } from './tournament';
+import { countSeasonHolders, getPalmaresInitialHolderIds, getSeasonHolderChain, getSeasonHolderId, selectCurrentSeason, type MatchEntry } from './tournament';
+import { calculatePalmares } from './palmares';
 import { validateTournamentIntegrity } from './validation/content-integrity';
 
 describe('season selection and undated initial holders', () => {
@@ -74,5 +75,46 @@ describe('season selection and undated initial holders', () => {
     expect(validateTournamentIntegrity(files, new Set([coloColo.id]))).toContain('2027.json: initialHolderId=trasandino-de-los-andes no existe en clubs');
     expect(trasandino).not.toHaveProperty('stadium');
     expect(trasandino.logo).toBe('/logos/trasandino.png');
+  });
+
+  it('records only the authorized initial date and displays it in the chain', () => {
+    expect(milad2027.initialHolderDate).toBe('2026-11-22');
+    expect(falopa2027).not.toHaveProperty('initialHolderDate');
+    expect(getSeasonHolderChain(milad2027)).toEqual([{ holderId: trasandino.id, since: '2026-11-22', until: null }]);
+  });
+
+  it.each(['falopa-cup', 'copa-pablo-milad'])('%s preserves dates and counts the initial reign once across transitions', () => {
+    const seed: MatchEntry = { type: 'seeding', date: '2026-11-22', holderId: 'colo-colo' };
+    const initial = { year: 2027, initialHolderId: 'colo-colo', initialHolderDate: '2026-11-22', matches: [] as MatchEntry[] };
+    const previous = { year: 2026, matches: [played] };
+    const defense = { ...played, newHolderId: 'colo-colo' };
+    const pendingSeason = { ...initial, matches: [pending] };
+    expect(selectCurrentSeason([previous, pendingSeason])?.year).toBe(2026);
+    expect(getPalmaresInitialHolderIds([pendingSeason])).toEqual([]);
+    const started = { ...initial, matches: [defense, { ...played, date: '2027-03-01' }] };
+    expect(selectCurrentSeason([previous, started])?.year).toBe(2027);
+    expect(getSeasonHolderChain(started)).toEqual([
+      { holderId: 'colo-colo', since: '2026-11-22', until: '2027-03-01' },
+      { holderId: 'other', since: '2027-03-01', until: null },
+    ]);
+    const stats = calculatePalmares(started.matches, getPalmaresInitialHolderIds([started]));
+    expect(stats.find((s) => s.id === 'colo-colo')).toMatchObject({ reigns: 1, defenses: 1, losses: 1 });
+    expect(stats.find((s) => s.id === 'other')).toMatchObject({ reigns: 1, conquests: 1 });
+    const legacy = { year: 2027, matches: [seed, defense] };
+    expect(getSeasonHolderChain(legacy)[0].since).toBe(seed.date);
+    expect(calculatePalmares(legacy.matches, getPalmaresInitialHolderIds([legacy])).find((s) => s.id === 'colo-colo')?.reigns).toBe(1);
+    const mixed = { ...legacy, initialHolderId: 'colo-colo' };
+    expect(getSeasonHolderChain(mixed)[0].since).toBe(seed.date);
+    expect(calculatePalmares(mixed.matches, getPalmaresInitialHolderIds([mixed])).find((s) => s.id === 'colo-colo')?.reigns).toBe(1);
+  });
+
+  it('validates date format, holder, chronology, and conflicting seed representations', () => {
+    const clubs = new Set(['colo-colo', 'other']);
+    const base = { path: '2027.json', initialHolderId: 'colo-colo', matches: [{ ...played }] };
+    expect(validateTournamentIntegrity([{ ...base, initialHolderDate: '2026-11-22' }], clubs)).toEqual([]);
+    expect(validateTournamentIntegrity([{ ...base, initialHolderDate: '2026-02-30' }], clubs)).toContain('2027.json: initialHolderDate debe ser una fecha válida YYYY-MM-DD');
+    expect(validateTournamentIntegrity([{ ...base, initialHolderId: undefined, initialHolderDate: '2026-11-22' }], clubs)).toContain('2027.json: initialHolderDate requiere initialHolderId');
+    expect(validateTournamentIntegrity([{ ...base, initialHolderDate: '2027-02-02' }], clubs)).toContain('2027.json: initialHolderDate debe preceder o coincidir con los partidos');
+    expect(validateTournamentIntegrity([{ ...base, matches: [{ type: 'seeding', date: '2026-11-22', holderId: 'colo-colo' }, { ...played }] }], clubs)).toContain('2027.json: initialHolderId no puede combinarse con seeding');
   });
 });
