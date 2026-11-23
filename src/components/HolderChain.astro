@@ -72,7 +72,7 @@ function fmtDate(d: string | Date | null): string {
           </div>
           <span class="reign-name">{club?.shortName ?? entry.holderId}</span>
           <span class="reign-dates">
-            {fmtDate(entry.since)}
+            {entry.since ? fmtDate(entry.since) : 'Fecha inicial desconocida'}
             {!isCurrent && ` → ${fmtDate(entry.until)}`}
           </span>
         </div>

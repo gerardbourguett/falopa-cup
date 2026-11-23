@@ -480,12 +480,14 @@
     },
     {
       "type": "match",
-      "status": "pending",
       "date": "2026-11-21",
       "competition": "Liga de Primera · Fecha 28",
       "sourceUrl": "https://www.campeonatochileno.cl/match/universidad-de-concepci%C3%B3n-%C3%B1ublense-2026-11-21/",
       "holderId": "universidad-de-concepcion",
-      "challengerId": "nublense"
+      "challengerId": "nublense",
+      "scoreHolder": 2,
+      "scoreChallenger": 3,
+      "newHolderId": "nublense"
     }
   ]
 }

@@ -36,6 +36,7 @@ const matchSchema = z.object({
 
 const tournamentSchema = z.object({
     year: z.number(),
+    initialHolderId: z.string().min(1).optional(),
     branch: z.string().optional(),
     championReason: z.string().optional(),
     whatIf: z.array(matchSchema).optional(),
@@ -58,8 +59,8 @@ const clubs = defineCollection({
         id: z.string(),
         name: z.string(),
         shortName: z.string(),
-        stadium: z.string(),
-        logo: z.string(),
+        stadium: z.string().optional(),
+        logo: z.string().optional(),
     }),
 });
 

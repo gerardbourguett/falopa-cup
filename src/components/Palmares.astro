@@ -5,11 +5,12 @@ interface Club {
   id: string;
   name: string;
   shortName: string;
-  logo: string;
+  logo?: string;
 }
 
 interface Props {
   allMatches: any[];
+  initialHolderIds?: string[];
   clubs: Map<string, Club>;
   accentColor?: "gold" | "burgundy";
   currentHolderId?: string;
@@ -17,6 +18,7 @@ interface Props {
 
 const {
   allMatches,
+  initialHolderIds = [],
   clubs,
   accentColor = "gold",
   currentHolderId,
@@ -46,6 +48,8 @@ function ensure(id: string): ClubStats {
   }
   return statsMap.get(id)!;
 }
+
+for (const id of initialHolderIds) ensure(id).reigns++;
 
 for (const m of allMatches) {
   if (m.status === "pending") continue;
